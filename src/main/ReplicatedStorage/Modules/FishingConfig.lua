@@ -1,0 +1,563 @@
+local Config = {}
+
+
+Config.Constants = {
+	MAX_THROW_DISTANCE = 5000,
+	PLAYER_ISLAND_RADIUS = 600,
+	FISH_TIME = 3
+}
+
+Config.ItemType = {
+	Common = "Common",
+	Rare = "Rare",
+	Epic = "Epic",
+	Legendary = "Legendary",
+	Mythic = "Mythic",
+	Junk = "Junk",
+	Gem = "Gem",
+	Hat = "Hat",
+	Fish = "Fish"
+}
+
+Config.Rarity = {
+	Common = "Common",
+	Rare = "Rare",
+	Epic = "Epic",
+	Legendary = "Legendary",
+	Mythic = "Mythic"
+}
+
+Config.ItemList = {
+	[1] = {
+		Name = "Azmus",
+		IncomeMultiplier = 9.5,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[2] = {
+		Name = "Belcher",
+		IncomeMultiplier = 1.5,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[3] = {
+		Name = "Blu",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[4] = {
+		Name = "Blueback",
+		IncomeMultiplier = 38,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[5] = {
+		Name = "Bozzo",
+		IncomeMultiplier = 19,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[6] = {
+		Name = "Bub",
+		IncomeMultiplier = 5,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[7] = {
+		Name = "Bubbles",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[8] = {
+		Name = "Cherry",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[9] = {
+		Name = "Daphne",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[10] = {
+		Name = "Fiddel",
+		IncomeMultiplier = 4.5,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[11] = {
+		Name = "Fin",
+		IncomeMultiplier = 1.5,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[12] = {
+		Name = "Flicker",
+		IncomeMultiplier = 5,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[13] = {
+		Name = "Flips",
+		IncomeMultiplier = 0.8,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[14] = {
+		Name = "Fury",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[15] = {
+		Name = "Gazella",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[16] = {
+		Name = "Gobbles",
+		IncomeMultiplier = 3.8,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[17] = {
+		Name = "Gulby",
+		IncomeMultiplier = 1.2,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[18] = {
+		Name = "Harpo",
+		IncomeMultiplier = 9.8,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[19] = {
+		Name = "Iris",
+		IncomeMultiplier = 5,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[20] = {
+		Name = "JarJar",
+		IncomeMultiplier = 3.8,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[21] = {
+		Name = "Jelly",
+		IncomeMultiplier = 21,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[22] = {
+		Name = "Jimbo",
+		IncomeMultiplier = 3.8,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[23] = {
+		Name = "Jughead",
+		IncomeMultiplier = 3,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[24] = {
+		Name = "Lilo",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[25] = {
+		Name = "Maurice",
+		IncomeMultiplier = 5,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[26] = {
+		Name = "Mello",
+		IncomeMultiplier = 1.5,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[27] = {
+		Name = "Nero",
+		IncomeMultiplier = 1.5,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[28] = {
+		Name = "Omega",
+		IncomeMultiplier = 35,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[29] = {
+		Name = "Opal",
+		IncomeMultiplier = 3,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[30] = {
+		Name = "Phantom",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[31] = {
+		Name = "Pickle",
+		IncomeMultiplier = 1.5,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[32] = {
+		Name = "Queenie",
+		IncomeMultiplier = 11,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[33] = {
+		Name = "Reya",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[34] = {
+		Name = "Rippy",
+		IncomeMultiplier = 45,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[35] = {
+		Name = "Shamoo",
+		IncomeMultiplier = 18,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[36] = {
+		Name = "Shelly",
+		IncomeMultiplier = 22,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[37] = {
+		Name = "Slippy",
+		IncomeMultiplier = 3,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[38] = {
+		Name = "Smilo",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[39] = {
+		Name = "Speckles",
+		IncomeMultiplier = 9,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[40] = {
+		Name = "Spotty",
+		IncomeMultiplier = 11,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[41] = {
+		Name = "Starso",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[42] = {
+		Name = "Stitches",
+		IncomeMultiplier = 11,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[43] = {
+		Name = "Tackle",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[44] = {
+		Name = "Tiggles",
+		IncomeMultiplier = 10,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[45] = {
+		Name = "Toffee",
+		IncomeMultiplier = 11,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[46] = {
+		Name = "Ungo",
+		IncomeMultiplier = 1.2,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[47] = {
+		Name = "Venus",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[48] = {
+		Name = "Whopper",
+		IncomeMultiplier = 1.5,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[49] = {
+		Name = "Wiggle",
+		IncomeMultiplier = 4.5,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[50] = {
+		Name = "Zeus",
+		IncomeMultiplier = 10.5,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+
+	-- junk
+	[51] = {
+		Name = "Old Boots",
+		IncomeMultiplier = 0.2,
+		Type = Config.ItemType.Junk
+	},
+
+	[52] = {
+		Name = "Bottle",
+		IncomeMultiplier = 0.2,
+		Type = Config.ItemType.Junk
+	},
+
+	[53] = {
+		Name = "Sea Weed",
+		IncomeMultiplier = 0.2,
+		Type = Config.ItemType.Junk
+	},
+
+	-- gems
+	[54] = {
+		Name = "Gem",
+		Gems = 1,
+		Type = Config.ItemType.Gem
+	},
+	[55] = {
+		Name = "Treasure Chest",
+		Gems = 10,
+		Type = Config.ItemType.Gem
+	},
+
+	-- hat
+	[56] = {
+		Name = "Any Hat",
+		Type = Config.ItemType.Hat
+	}
+}
+
+Config.ChanceTable = {
+	OpenSea = {
+		
+		-- Common (50%)
+		{ Id = 13, Percentage = 0.05 },
+		{ Id = 15, Percentage = 0.10 },
+		{ Id = 8, Percentage = 0.15 },
+		{ Id = 3, Percentage = 0.20 },
+		{ Id = 38, Percentage = 0.25 },
+		{ Id = 24, Percentage = 0.30 },
+		{ Id = 46, Percentage = 0.35 },
+		{ Id = 17, Percentage = 0.40 },
+		{ Id = 27, Percentage = 0.45 },
+		{ Id = 11, Percentage = 0.50 },
+		
+		-- Rare (25%)
+		{ Id = 23, Percentage = 0.53125 },
+		{ Id = 37, Percentage = 0.5625 },
+		{ Id = 29, Percentage = 0.59375 },
+		{ Id = 16, Percentage = 0.625 },
+		{ Id = 22, Percentage = 0.65625 },
+		{ Id = 20, Percentage = 0.6875 },
+		{ Id = 10, Percentage = 0.71875 },
+		{ Id = 49, Percentage = 0.75 },
+		
+		-- Junk (10%)
+		{ Id = 51, Percentage = 0.78333333 },
+		{ Id = 52, Percentage = 0.81666666 },
+		{ Id = 53, Percentage = 0.85 },
+		
+		-- Epic (9.789%)
+		{ Id = 39, Percentage = 0.869578 },
+		{ Id = 1, Percentage = 0.889156 },
+		{ Id = 18, Percentage = 0.908734 },
+		{ Id = 44, Percentage = 0.928312 },
+		{ Id = 50, Percentage = 0.94789 },
+		
+		-- Regular Gem (5%)
+		{ Id = 54, Percentage = 0.99789 },
+		
+		-- Treasure Chest (0.1%)
+		{ Id = 55, Percentage = 0.99889 },
+		
+		-- legendary (0.1%)
+		{ Id = 35, Percentage = 0.99914 },
+		{ Id = 5, Percentage = 0.99939 },
+		{ Id = 21, Percentage = 0.99964 },
+		{ Id = 36, Percentage = 0.99989 },
+		
+		-- mythic (0.01%)
+		{ Id = 28, Percentage = 0.999923333333333333 },
+		{ Id = 4, Percentage = 0.999956666666666666 },
+		{ Id = 34, Percentage = 0.99999 },
+		
+		-- random hat (0.001%)
+		{ Id = 56, Percentage = 1.000 }
+	},
+	GrassyLand = {
+		-- common (50%)
+		{ Id = 31, Percentage = 0.5 },
+		
+		-- rare (25%)
+		{ Id = 6, Percentage = 0.75 },
+		
+		-- Junk (10%)
+		{ Id = 51, Percentage = 0.78333333 },
+		{ Id = 52, Percentage = 0.81666666 },
+		{ Id = 53, Percentage = 0.85 },
+		
+		-- Epic (9.789%)
+		{ Id = 32, Percentage = 0.94789 },
+		
+		-- Regular Gem (5%)
+		{ Id = 54, Percentage = 0.99789 },
+
+		-- Treasure Chest (0.1%)
+		{ Id = 55, Percentage = 0.99889 },
+		
+		-- Legendary (0.1%)
+		{ Id = 41, Percentage = 0.99989 },
+		
+		-- Mythic (0.01%)
+		{ Id = 47, Percentage = 0.99999 },
+		
+		-- random hat (0.001%)
+		{ Id = 56, Percentage = 1.000 }
+	},
+	Swamp = {
+		-- common (50%)
+		{ Id = 2, Percentage = 0.5 },
+
+		-- rare (25%)
+		{ Id = 25, Percentage = 0.75 },
+
+		-- Junk (10%)
+		{ Id = 51, Percentage = 0.78333333 },
+		{ Id = 52, Percentage = 0.81666666 },
+		{ Id = 53, Percentage = 0.85 },
+
+		-- Epic (9.789%)
+		{ Id = 40, Percentage = 0.94789 },
+
+		-- Regular Gem (5%)
+		{ Id = 54, Percentage = 0.99789 },
+
+		-- Treasure Chest (0.1%)
+		{ Id = 55, Percentage = 0.99889 },
+
+		-- Legendary (0.1%)
+		{ Id = 30, Percentage = 0.99989 },
+
+		-- Mythic (0.01%)
+		{ Id = 14, Percentage = 0.99999 },
+
+		-- random hat (0.001%)
+		{ Id = 56, Percentage = 1.000 }
+	},
+	SandIsland = {
+		-- common (50%)
+		{ Id = 26, Percentage = 0.5 },
+
+		-- rare (25%)
+		{ Id = 12, Percentage = 0.75 },
+
+		-- Junk (10%)
+		{ Id = 51, Percentage = 0.78333333 },
+		{ Id = 52, Percentage = 0.81666666 },
+		{ Id = 53, Percentage = 0.85 },
+
+		-- Epic (9.789%)
+		{ Id = 45, Percentage = 0.94789 },
+
+		-- Regular Gem (5%)
+		{ Id = 54, Percentage = 0.99789 },
+
+		-- Treasure Chest (0.1%)
+		{ Id = 55, Percentage = 0.99889 },
+
+		-- Legendary (0.1%)
+		{ Id = 7, Percentage = 0.99989 },
+
+		-- Mythic (0.01%)
+		{ Id = 33, Percentage = 0.99999 },
+
+		-- random hat (0.001%)
+		{ Id = 56, Percentage = 1.000 }
+	},
+	TreasureBeach = {
+		-- common (50%)
+		{ Id = 48, Percentage = 0.5 },
+
+		-- rare (25%)
+		{ Id = 19, Percentage = 0.75 },
+
+		-- Junk (10%)
+		{ Id = 51, Percentage = 0.78333333 },
+		{ Id = 52, Percentage = 0.81666666 },
+		{ Id = 53, Percentage = 0.85 },
+
+		-- Epic (9.789%)
+		{ Id = 42, Percentage = 0.94789 },
+
+		-- Regular Gem (5%)
+		{ Id = 54, Percentage = 0.99789 },
+
+		-- Treasure Chest (0.1%)
+		{ Id = 55, Percentage = 0.99889 },
+
+		-- Legendary (0.1%)
+		{ Id = 9, Percentage = 0.99989 },
+
+		-- Mythic (0.01%)
+		{ Id = 43, Percentage = 0.99999 },
+	}
+}
+
+
+Config.IslandsData = {
+	GrassyLand = {
+		CenterPosition = Vector3.new(22.2, 22.06, -3341.3)
+	},
+	Swamp = {
+		CenterPosition = Vector3.new(1691.982, 7.72, -1102.589)
+	},
+	SandIsland = {
+		CenterPosition = Vector3.new(112.5, 6.5, 1038.3)
+	},
+	TreasureBeach = {
+		CenterPosition = Vector3.new(-1540.914, 9.402, -1160.668)
+	}
+}
+
+
+return Config

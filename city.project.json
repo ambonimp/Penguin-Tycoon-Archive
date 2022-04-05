@@ -1,0 +1,45 @@
+{
+    "name": "Penguin Tycoon",
+    "servePlaceIds": [
+      9170899192
+    ],
+    "tree": {
+      "$className": "DataModel",
+  
+      "ReplicatedFirst": {
+        "$className": "ReplicatedFirst",
+        "$ignoreUnknownInstances": true,
+        "$path": "src/city/ReplicatedFirst"
+      },
+      "ReplicatedStorage": {
+        "$className": "ReplicatedStorage",
+        "$ignoreUnknownInstances": true,
+        "$path": "src/city/ReplicatedStorage"
+      },
+      "ServerScriptService": {
+        "$className": "ServerScriptService",
+        "$ignoreUnknownInstances": true,
+        "$path": "src/city/ServerScriptService"
+      },
+      "ServerStorage": {
+        "$className": "ServerStorage",
+        "$ignoreUnknownInstances": true,
+        "$path": "src/city/ServerStorage"
+      },
+  
+      "StarterPlayer": {
+        "$className": "StarterPlayer",
+        "StarterCharacterScripts": {
+          "$className": "StarterCharacterScripts",
+          "$ignoreUnknownInstances": true,
+          "$path": "src/city/StarterPlayer/StarterCharacterScripts"
+        },
+        "StarterPlayerScripts": {
+          "$className": "StarterPlayerScripts",
+          "$ignoreUnknownInstances": true,
+          "$path": "src/city/StarterPlayer/StarterPlayerScripts"
+        },
+        "$ignoreUnknownInstances": true
+      }
+    }
+  }
