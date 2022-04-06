@@ -851,7 +851,7 @@ end
 
 if ProximityPrompt then
 	ProximityPrompt.Triggered:Connect(function(player)
-		if player == game.Players.LocalPlayer and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
+		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
 			PetUI.LoadEgg("Egg1",Paths)
 			Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
 			Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
