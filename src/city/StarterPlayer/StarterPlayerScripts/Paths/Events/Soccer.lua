@@ -146,6 +146,11 @@ function Soccer:EventStarted()
 	if game.Players.LocalPlayer:GetAttribute("Minigame") ~= "Soccer" then EventInfoUI.EventInfoText.Visible = true return end
 	SoccerUI.Visible = true
 	EventInfoUI.EventInfoText.Visible = false
+	if game.Players.LocalPlayer.Character:GetAttribute("Team") == "Red" then
+		RedTeam.Team.Visible = true
+	else
+		BlueTeam.Team.Visible = true
+	end
 end
 
 function Soccer.EventEnded()
