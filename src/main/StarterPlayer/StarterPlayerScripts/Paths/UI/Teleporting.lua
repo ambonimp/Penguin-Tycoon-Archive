@@ -193,6 +193,22 @@ function Teleporting:RefreshFriends()
 	end
 end
 
+local ProximityPrompt
+
+if workspace:FindFirstChild("Portals") then
+	ProximityPrompt = workspace.Portals.Portal.PrimaryPart.ProximityPrompt
+elseif Paths.Tycoon then
+	ProximityPrompt = Paths.Tycoon:WaitForChild("PenguinCity").PrimaryPart.ProximityPrompt
+end
+
+if ProximityPrompt then
+	ProximityPrompt.Triggered:Connect(function(player)
+		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false then
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
+		end
+	end)
+end
+
 
 coroutine.wrap(function()
 	Teleporting:RefreshFriends()

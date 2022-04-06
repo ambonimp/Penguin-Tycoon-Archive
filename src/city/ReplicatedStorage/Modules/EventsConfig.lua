@@ -31,7 +31,7 @@ EventsConfig["Falling Tiles"] = {
 }
 
 EventsConfig["Soccer"] = {
-	MinPlayers = 1,
+	MinPlayers = 2,
 	MaxPlayers = 12,
 	Duration = 180,
 	MaxGoals = 10,
