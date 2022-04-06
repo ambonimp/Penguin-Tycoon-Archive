@@ -38,6 +38,9 @@ local function ResetEvent()
 	for i, v in pairs(TotalVotes:GetChildren()) do
 		v.Value = 0
 	end
+	for i,value in pairs (EventValues.Voting:GetChildren()) do
+		value.Value = 0
+	end
 end
 
 
@@ -81,7 +84,9 @@ end
 local function GetChosenEvent(Options)
 	local HighestNum = 0
 	local ChosenOption = false
-
+	for i,value in pairs (EventValues.Voting:GetChildren()) do
+		TotalVotes:FindFirstChild(value.Name).Value = value.Value
+	end
 	for i, v in pairs(TotalVotes:GetChildren()) do
 		if v.Value >= HighestNum then
 			HighestNum = v.Value
@@ -89,10 +94,7 @@ local function GetChosenEvent(Options)
 		end
 	end
 	
-	-- Display chosen event to the players
-	wait(1)
-
-	Remotes.Events:FireAllClients("Event Chosen", ChosenOption)
+	print(Options,ChosenOption)
 	
 	return Options[ChosenOption]
 end
@@ -105,7 +107,7 @@ local function SendInvites(ChosenEvent)
 	for i = Modules.EventsConfig.ACCEPT_TIMER, 0, -0.1 do
 		EventValues.StartingTimer.Value = math.floor(i)
 		EventValues.TextToDisplay.Value = "Accept to join! ("..math.floor(i)..")".." - "..#Participants:GetChildren().."/"..Modules.EventsConfig[ChosenEvent].MaxPlayers.." Player(s)"
-		wait(0.1)
+		task.wait(0.1)
 	end
 end
 
@@ -136,7 +138,7 @@ local function StartingCountdown(ChosenEvent)
 		if #Participants:GetChildren() <= 0 then
 			break
 		end
-		wait(1)
+		task.wait(1)
 	end
 end
 
@@ -180,23 +182,23 @@ local function EventLoop()
 		
 
 		-- Choose 3 Events to vote from
-		--local Options = ChooseEvents()
+		local Options = ChooseEvents()
 		
 
 		-- Initiate voting for everyone
-		--InitiateVoting(Options)
+		InitiateVoting(Options)
 		
 		
 		-- Get chosen event
-		--local ChosenEvent = GetChosenEvent(Options)
-		pEvent = pEvent + 1
+		ChosenEvent = GetChosenEvent(Options)
+		--[[pEvent = pEvent + 1
 		local nextEvent = AllEvents[pEvent]
 		if nextEvent == nil then
 			pEvent = 1
 			nextEvent = AllEvents[pEvent]
 		end
 		
-		ChosenEvent = nextEvent
+		ChosenEvent = nextEvent--]]
 		previousEvent = ChosenEvent
 		
 		EventValues.CurrentEvent.Value = ChosenEvent

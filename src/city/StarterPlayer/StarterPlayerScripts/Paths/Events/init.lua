@@ -83,7 +83,6 @@ local function InitiateVoting(Options) -- {["Option#"] = "Event"}
 	CurrentVote = false
 	for i, Option in pairs(EventVotingUI.Options:GetChildren()) do
 		if Option:IsA("ImageButton") then
-			print(Modules.EventsConfig[Options[Option.Name]].ImageID)
 			Option.EventName.Text = Modules.EventsConfig[Options[Option.Name]]["Display Name"]
 			Option.Votes.Text = "0"
 			Option.EventImage.Image = "rbxassetid://"..Modules.EventsConfig[Options[Option.Name]].ImageID
@@ -109,7 +108,7 @@ local function StartingPrompt(Event)
 	
 	
 	EventPromptUI.Visible = true
-	wait(Modules.EventsConfig.ACCEPT_TIMER)
+	task.wait(Modules.EventsConfig.ACCEPT_TIMER)
 	EventPromptUI.Visible = false
 end
 
@@ -147,6 +146,24 @@ EventPromptUI.Accept.MouseButton1Down:Connect(function()
 	EventPromptUI.Visible = false
 end)
 
+for i, Option in pairs(EventVotingUI.Options:GetChildren()) do
+	if Option:IsA("ImageButton") then
+		Option.MouseButton1Down:Connect(function()
+			Remotes.Events:FireServer("Voting",Option.Name)
+		end)
+	end
+end
+
+for i,value in pairs (EventValues.Voting:GetChildren()) do
+	value.Changed:Connect(function()
+		EventVotingUI.Options:FindFirstChild(value.Name).Votes.Text = value.Value
+	end)
+end
+
+EventVotingUI.Confirm.MouseButton1Click:Connect(function()
+	EventVotingUI.Visible = false
+end)
+
 
 
 --- Connecting Functions ---
@@ -175,7 +192,7 @@ end)
 
 Remotes.Events.OnClientEvent:Connect(function(Action, Info, Info2)
 	if Action == "Voting" then
-		
+		InitiateVoting(Info)
 	elseif Action == "Event Chosen" then
 		
 	elseif Action == "Event Prompt" then

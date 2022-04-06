@@ -296,6 +296,7 @@ function Soccer:StartEvent()
 	
 	if redscore > bluescore then --red won
 		winners = redteam
+		confetti(Map.RedConfetti)
 		text = "Red team won with a score of "..redscore.."!"
 		Services.RStorage.Assets.RedChampion:Clone().Parent = Map
 		Map.RedChampion.Name = "Winners"
@@ -316,6 +317,7 @@ function Soccer:StartEvent()
 		addGems(15,0)
 	elseif redscore < bluescore then -- blue won
 		winners = blueteam
+		confetti(Map.BlueConfetti)
 		text = "Blue team won with a score of "..bluescore.."!"
 		Services.RStorage.Assets.BlueChampion:Clone().Parent = Map
 		Map.BlueChampion.Name = "Winners"

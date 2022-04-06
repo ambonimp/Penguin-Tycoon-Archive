@@ -210,6 +210,17 @@ if ProximityPrompt then
 	end)
 end
 
+if Paths.Tycoon then
+	local BillBoard = Paths.Tycoon:WaitForChild("Board")
+	local UI = BillBoard.PrimaryPart.SurfaceGui
+	UI.Parent = Paths.Player.PlayerGui
+	UI.Adornee = BillBoard.PrimaryPart
+	UI.Confirm.MouseButton1Down:Connect(function()
+		Teleporting:OpenConfirmation()
+		Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
+	end)
+end
+
 
 coroutine.wrap(function()
 	Teleporting:RefreshFriends()

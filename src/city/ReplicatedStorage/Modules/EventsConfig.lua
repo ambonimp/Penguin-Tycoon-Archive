@@ -5,7 +5,7 @@ EventsConfig.Events = {"Falling Tiles","Skate Race","Soccer"}
 
 
 EventsConfig.INTERMISSION_INTERVAL = 30
-EventsConfig.VOTE_TIMER = 3
+EventsConfig.VOTE_TIMER = 10
 EventsConfig.ACCEPT_TIMER = 10
 
 
