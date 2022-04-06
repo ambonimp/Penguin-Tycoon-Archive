@@ -204,6 +204,7 @@ end
 if ProximityPrompt then
 	ProximityPrompt.Triggered:Connect(function(player)
 		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false then
+			Teleporting:OpenConfirmation()
 			Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
 		end
 	end)
