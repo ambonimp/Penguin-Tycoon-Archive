@@ -169,6 +169,11 @@ Remotes.SoccerEvent.OnClientEvent:Connect(function(kind,team)
 					workspace.Event:FindFirstChildOfClass("Model").BlueConfetti.Oof:Play()
 				end
 			end
+		elseif kind == "hit" then
+			local ball = team
+			if ball then
+				ball.Dive:Play()
+			end
 		end
 	end
 end)

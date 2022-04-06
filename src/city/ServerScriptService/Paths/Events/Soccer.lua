@@ -115,10 +115,10 @@ function Soccer:StartEvent()
 	EventValues.TextToDisplay.Value = "GO!!"
 	wait(1)
 	EventValues.TextToDisplay.Value = "Minigame in progress.."
+
 	local function handleBall(ball)
 		ball:SetNetworkOwner(nil)
 		local db = {}
-		local justPlayed = false
 		ball.Touched:Connect(function(hit)
 			if db[hit.Parent] == nil and hit.Parent and game.Players:GetPlayerFromCharacter(hit.Parent) then
 				db[hit.Parent] = true
@@ -128,15 +128,7 @@ function Soccer:StartEvent()
 				else
 					ball:ApplyImpulse(hit.Parent.HumanoidRootPart.CFrame.LookVector * velocity/10 * ball:GetMass())
 				end
-				if justPlayed == false then
-					print("HIT BALL")
-					justPlayed = true
-					ball.Dive:Play()
-					spawn(function()
-						wait(1)
-						justPlayed = false
-					end)
-				end	
+				Paths.Remotes.SoccerEvent:FireClient(game.Players:GetPlayerFromCharacter(hit.Parent),"hit",ball)
 				wait(.5)
 				db[hit.Parent] = nil
 			end
@@ -350,6 +342,7 @@ function Soccer:StartEvent()
 
 	Remotes.Events:FireAllClients("Event Ended","Soccer")
 	if Map:FindFirstChild("Winners") then
+		Map.Winners.Champion.Trophy.Cheering:Play()
 		for i, Participant in pairs(Participants:GetChildren()) do
 			local player = game.Players:FindFirstChild(Participant.Name)
 			if player then
