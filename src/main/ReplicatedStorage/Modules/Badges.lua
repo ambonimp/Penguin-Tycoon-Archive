@@ -40,6 +40,7 @@ Badges.Purchases = {
 	["New Island!#22"] = 2124929783;
 	["New Island!#23"] = 2124929784;
 	["New Island!#24"] = 2124929785;
+	["New Island!#25"] = 2124929786;
 }
 
 return Badges
