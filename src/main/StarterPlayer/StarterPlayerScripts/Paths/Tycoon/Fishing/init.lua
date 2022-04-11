@@ -28,18 +28,25 @@ local FishingRemote: RemoteEvent = remotes:WaitForChild("FishingRemote")
 local reelDebounce = false
 local MAX_THROWING_DISTANCE = 150 -- studs
 local Fishing = {}
+local totalEarned = {
+	Money = 0,
+	Gems = 0
+}
+
 
 bobberHandler.InitFishingModule(Fishing)
 
 ------ Module Variables ------
 
 Fishing.LastUpdate = {
+	isAFKFishing = false,
 	IsFishing = false,
 	Bobber = nil,
 	lastClickPos = nil,
 	InWaterTimer = nil,
 	BobberReturning = false,
 	FishingAnimationActive = false,
+	RunningMain = false,
 	EquippedTool = nil
 }
 
@@ -65,25 +72,23 @@ function Fishing.CancelThrow(callEvent, died)
 	end
 	
 	ResetLastUpdate()
-	
 	if callEvent then
 		FishingRemote:FireServer('Cancel')
 	end
-	
 	animationService.Cancel(Fishing)
 end
 
 function Fishing.Throw()
 	if LastUpdate.BobberReturning then 
+		LastUpdate.RunningMain = false
 		return
-	elseif LastUpdate.IsFishing  then
+	elseif LastUpdate.IsFishing then
 		Fishing.CancelThrow(true)
 	end
 	
 	local tool = localPlayer.Character:FindFirstChild("Tool")
 	if LastUpdate.lastClickPos and tool then
 		local tip = tool.Tip
-		
 		if (localPlayer.Character:GetPivot().Position - LastUpdate.lastClickPos).Magnitude > MAX_THROWING_DISTANCE then
 			Fishing.CancelThrow(true)
 			return
@@ -95,23 +100,27 @@ function Fishing.Throw()
 			StartPosition = tip.Position,
 			ClickPosition = LastUpdate.lastClickPos
 		}
-		
 		FishingRemote:FireServer('Create', data)
+		LastUpdate.RunningMain = false
 	else
+		LastUpdate.RunningMain = false
 		Fishing.CancelThrow(true)
 		animationService.Cancel(Fishing)
 	end
 end
 
 function Fishing.Main()
+	if LastUpdate.RunningMain then return end
+	LastUpdate.RunningMain = true
 	Fishing.CancelThrow(true)
-	
+
 	LastUpdate.EquippedTool = localPlayer:GetAttribute("Tool")
 	LastUpdate.lastClickPos = bobberHandler.GetLocation()
 	if LastUpdate.lastClickPos then
 		local distance = funcLib.DistanceBetween(LastUpdate.lastClickPos, localPlayer.Character:GetPivot().Position)
-		if distance > MAX_THROWING_DISTANCE then return end
+		if distance > MAX_THROWING_DISTANCE then LastUpdate.RunningMain = false return end
 	else
+		LastUpdate.RunningMain = false
 		return
 	end
 	
@@ -120,11 +129,33 @@ function Fishing.Main()
 	local toolAttribute = localPlayer:GetAttribute("Tool")
 	if toolAttribute == "Fishing Rod" or toolAttribute == "Gold Fishing Rod" then	
 		animationService.ThrowAnimation(localPlayer, Fishing)
+	else
+		LastUpdate.RunningMain = false
 	end		
 end
 
 function WaitForDelete()
 	while task.wait() and LastUpdate.BobberReturning do end
+end
+
+local SuffixList = { "", "K", "M", "B", "T", "Q" }
+
+local function abbreviateNumber(value, idp)
+	local exp = math.floor(math.log(math.max(1, math.abs(value)), 1000))
+	local suffix = SuffixList[1 + exp] or ("e+" .. exp)
+	local norm = math.floor(value * ((10 ^ idp) / (1000 ^ exp))) / (10 ^ idp)
+
+	return ("%." .. idp .. "f%s"):format(norm, suffix)
+end
+
+function updateAFKText(money,gems)
+	--You have earned <font color="#DADF22">XXXX Money</font> & <font color="#2C96FF">YYYY Gems</font>!
+	local ui = paths.UI.Top.AFKFishing
+	if money >= 1000 then
+		ui.Amount.Text = "You have earned <font color=\"#DADF22\">"..abbreviateNumber(money,2).." Money</font> & <font color=\"#2C96FF\">"..gems.." Gems</font>!"
+	else
+		ui.Amount.Text = "You have earned <font color=\"#DADF22\">"..money.." Money</font> & <font color=\"#2C96FF\">"..gems.." Gems</font>!"
+	end
 end
 
 function RetrieveFish()
@@ -133,25 +164,33 @@ function RetrieveFish()
 	
 	-- entry point for GUI probably
 	local reelFish: RemoteFunction = remotes:WaitForChild("ReelFish")
-	local result = reelFish:InvokeServer(Fishing.LastUpdate.lastClickPos)
-	
+	local result = reelFish:InvokeServer(Fishing.LastUpdate.lastClickPos,nil,Fishing.LastUpdate.isAFKFishing)
 	-- Will only show notification and GUI animation for fish
-	if result.LootInfo.Type == "Fish" then
+	if result and result.LootInfo.Type == "Fish" then
+		totalEarned.Money += result.Worth
 		uiAnimations.FishRetrievedAnimation(result)
 		paths.Modules.Index.FishCaught(result, true)
 		
-	elseif result.LootInfo.Type == "Junk" then
+	elseif result and result.LootInfo.Type == "Junk" then
+		totalEarned.Money += result.Worth
 		uiAnimations.JunkRetrievedAnimation(result)
 		
-	elseif result.LootInfo.Type == "Gem" then
+	elseif result and result.LootInfo.Type == "Gem" then
+		totalEarned.Gems += result.LootInfo.Gems
 		uiAnimations.GemsRetrievedAnimation(result)
 	end
-	
 	FishingRemote:FireServer('Delete')
-	
+
+	if LastUpdate.isAFKFishing then
+		updateAFKText(totalEarned.Money,totalEarned.Gems)
+	end
+
 	WaitForDelete()
 	LastUpdate.lastClickPos = nil
 	LastUpdate.InWaterTimer = nil
+	LastUpdate.IsFishing = false
+	LastUpdate.RunningMain = false
+	
 	reelDebounce = false
 end 
 
@@ -163,8 +202,14 @@ function VerifyFishTimer()
 	else
 		debounce = 3
 	end
-	
-	if LastUpdate.InWaterTimer and (os.clock() - LastUpdate.InWaterTimer > debounce) then
+	--[[if Fishing.LastUpdate.isAFKFishing then
+		if LastUpdate.EquippedTool and LastUpdate.EquippedTool == 'Gold Fishing Rod' then
+			debounce = 10
+		else
+			debounce = 15
+		end
+	end]]
+	if LastUpdate.InWaterTimer and (os.clock() - LastUpdate.InWaterTimer > debounce) and LastUpdate.IsFishing then
 		RetrieveFish()
 	end
 end
@@ -190,25 +235,74 @@ function IsPlayerMovingCancelFishing()
 end
 
 function GameLoop()
+	if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") and localPlayer.Character:FindFirstChild("Humanoid").SeatPart ~= nil and localPlayer.Character:FindFirstChild("Humanoid").SeatPart.Parent.Name == "Boat#1" then
+		Fishing.LastUpdate.isAFKFishing = true
+		if paths.UI.Top.AFKFishing.Visible == false then
+			paths.UI.Top.AFKFishing.Visible = true
+			localPlayer.Character.Humanoid.JumpPower = 0
+			updateAFKText(0,0)
+		end
+		
+		if Fishing.LastUpdate.IsFishing == false and not Fishing.LastUpdate.RunningMain then
+			if localPlayer:GetAttribute("Tool") == "None" then
+				Fishing.LastUpdate.RunningMain = true
+				if paths.UI.Tools:FindFirstChild("Gold Fishing Rod") then
+					paths.Remotes.Tools:FireServer("Equip Tool", "Gold Fishing Rod")
+				else
+					paths.Remotes.Tools:FireServer("Equip Tool", "Fishing Rod")
+				end
+				repeat task.wait() until localPlayer:GetAttribute("Tool") ~= "None" or Fishing.LastUpdate.isAFKFishing == false
+				Fishing.LastUpdate.RunningMain = false
+			end
+			if Fishing.LastUpdate.isAFKFishing then
+				task.wait(.5)
+				if Fishing.LastUpdate.isAFKFishing then
+					Fishing.Main()	
+				end
+			end
+		end
+	else
+		totalEarned.Money = 0
+		totalEarned.Gems = 0
+		Fishing.LastUpdate.isAFKFishing = false
+		if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+			localPlayer.Character.Humanoid.JumpPower = 60
+		end
+		paths.UI.Top.AFKFishing.Visible = false
+	end
+
+	
 	poolHandler.Main()
-	IsPlayerMovingCancelFishing()
+	if Fishing.LastUpdate.isAFKFishing == false then
+		IsPlayerMovingCancelFishing()
+	end
 	VerifyFishTimer()
 end
 
 InputService.InputBegan:Connect(function(input, gameProcessed)
-	if gameProcessed then return end
+	if gameProcessed or Fishing.LastUpdate.isAFKFishing then return end
 	if (input.UserInputType == Enum.UserInputType.MouseButton1 or 
 		input.UserInputType == Enum.UserInputType.Touch or 
 		input.KeyCode == Enum.KeyCode.ButtonR2) and 
 		not funcLib.PlayerIsSwimming(paths.Player.Character) and localPlayer.Character:FindFirstChild("Tool") then
 		if funcLib.CursorWithinFrame(localPlayer) then return end
-		
 		Fishing.Main()
 	end
 end)
 
+paths.UI.Top.AFKFishing.Exit.MouseButton1Down:Connect(function()
+	if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+		localPlayer.Character.Humanoid.Sit = false
+		localPlayer.Character.Humanoid.JumpPower = 60
+		paths.UI.Top.AFKFishing.Visible = false
+		Fishing.CancelThrow(true)
+	end
+end)
+
 InputService.JumpRequest:Connect(function()
-	Fishing.CancelThrow(true)
+	if not LastUpdate.isAFKFishing then
+		Fishing.CancelThrow(true)
+	end
 end)
 
 

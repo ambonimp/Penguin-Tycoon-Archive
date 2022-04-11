@@ -40,6 +40,51 @@ function Character:Spawned(Player, Character, OldChar)
 	end
 end
 
+function Character:EquipShirt(Player,ShirtName)
+	local Shirt = Paths.Services.RStorage.Assets.Shirts:FindFirstChild(ShirtName):Clone()
+	local Character = Player.Character
+	if Character == nil then return end
+	for i,part in pairs (Shirt:GetChildren()) do
+		if part.Name == "Left" then
+			if Character:FindFirstChild("Left") then
+				Character:FindFirstChild("Left"):Destroy()
+			end
+			local newLeft = part
+			local weld = Instance.new("WeldConstraint")
+			
+			newLeft.CFrame = Character["Arm L"].CFrame * CFrame.new(0,.175,0)
+			newLeft.Parent = Character
+			weld.Part0 = Character["Arm L"]
+			weld.Part1 = newLeft
+			weld.Parent = newLeft
+		elseif part.Name == "Right" then
+			if Character:FindFirstChild("Right") then
+				Character:FindFirstChild("Right"):Destroy()
+			end
+			local newRight = part
+			local weld = Instance.new("WeldConstraint")
+
+			newRight.CFrame = Character["Arm R"].CFrame * CFrame.new(0,.175,0)
+			newRight.Parent = Character
+			weld.Part0 = Character["Arm R"]
+			weld.Part1 = newRight
+			weld.Parent = newRight
+		elseif part.Name == "Center" then
+			if Character:FindFirstChild("Center") then
+				Character:FindFirstChild("Center"):Destroy()
+			end
+			local newMain = part
+			local weld = Instance.new("WeldConstraint")
+
+			newMain.CFrame = Character["Main"].CFrame * CFrame.new(0,-.175,-.42) * CFrame.Angles(0,math.rad(180),0)
+			newMain.Parent = Character
+			weld.Part0 = Character["Main"]
+			weld.Part1 = newMain
+			weld.Parent = newMain
+		end
+	end
+end
+
 
 -- Spawns the character
 -- Player: Object, Type: String - no longer used, it was previously used to determine whether the player spawned as their 'Avatar' or a 'Penguin'

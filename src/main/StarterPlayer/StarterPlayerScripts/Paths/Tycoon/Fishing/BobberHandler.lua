@@ -53,13 +53,22 @@ function BobberHandler.CreateBopper(character)
 end
 
 function BobberHandler.GetLocation()
-	local mousePos = InputService:GetMouseLocation()
-	local unitRay = camera:ViewportPointToRay(mousePos.X, mousePos.Y)	
+	if fishingModule.LastUpdate.isAFKFishing then
+		local ray = Ray.new((localPlayer.Character.PrimaryPart.CFrame*CFrame.new(0,0,-20)).Position, Vector3.new(0, -100, 0))
+		local hit, position, normal, mat = workspace:FindPartOnRay(ray,localPlayer.Character)
 
-	local result = workspace:Raycast(unitRay.Origin, unitRay.Direction * 500, raycastParams)
-
-	if result and result.Material == Enum.Material.Water then
-		return result.Position
+		if mat and mat == Enum.Material.Water then
+			return position
+		end
+	else
+		local mousePos = InputService:GetMouseLocation()
+		local unitRay = camera:ViewportPointToRay(mousePos.X, mousePos.Y)	
+	
+		local result = workspace:Raycast(unitRay.Origin, unitRay.Direction * 500, raycastParams)
+	
+		if result and result.Material == Enum.Material.Water then
+			return result.Position
+		end
 	end
 end
 
@@ -207,7 +216,6 @@ FishingRemote.OnClientEvent:Connect(function(player: Player, handlingType: strin
 	local bpd = CurrentBobberData[player.UserId]
 	
 	if handlingType == 'Create' then
-		--if bpd.Bobber then DestroyBobber(player.UserId) end
 		bpd['Bobber'] = BobberHandler.CreateBopper(character)
 		
 		if not bpd['Bobber'] then return end
@@ -219,7 +227,6 @@ FishingRemote.OnClientEvent:Connect(function(player: Player, handlingType: strin
 			bpd.Bobber:Destroy()
 			bpd.Bobber = nil
 		end
-		
 	elseif handlingType == 'Cancel' and bpd.Bobber then
 		if typeof(bpd.Bobber) == "Instance" then
 			bpd.Bobber:Destroy()

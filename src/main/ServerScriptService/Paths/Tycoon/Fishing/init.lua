@@ -20,6 +20,7 @@ local RequestList = {}
 local itemTypes = config.ItemType
 
 local Fishing = {}
+local RewardQueue = {}
 
 function Fishing.GetRandomId(chanceTable)
 	if not chanceTable then return end
@@ -130,7 +131,7 @@ function GetEnchantState(position)
 	return rand:NextNumber(0, 1) <= decimalChance
 end
 
-function AddReward(player, returnData, hitPosition)
+function AddReward(player, returnData, hitPosition,AFKFishing)
 	local sessionData = modules.PlayerData.sessionData
 	local lootInfo = returnData.LootInfo
 	
@@ -144,11 +145,16 @@ function AddReward(player, returnData, hitPosition)
 			end
 			
 		elseif lootInfo.Type == itemTypes.Gem then
-			modules.Income:AddGems(player, lootInfo.Gems, "Reward")
+			--if not AFKFishing then
+				modules.Income:AddGems(player, lootInfo.Gems, "Reward")
+			--end
+			
 			
 		-- no need to save junk to index, just give money
 		elseif lootInfo.Type == itemTypes.Junk then
-			modules.Income:AddMoney(player, returnData.Worth)	
+			--if not AFKFishing then
+				modules.Income:AddMoney(player, returnData.Worth)
+			--end	
 			
 		-- all fish			
 		else
@@ -157,7 +163,9 @@ function AddReward(player, returnData, hitPosition)
 			returnData.Enchanted = GetEnchantState(hitPosition)
 			if returnData.Enchanted then returnData.Worth *= 10 end
 			
-			modules.Income:AddMoney(player, returnData.Worth)	
+			--if not AFKFishing then
+				modules.Income:AddMoney(player, returnData.Worth)
+			--end
 			
 			if returnData.Enchanted then
 				if enchantedFishFound and enchantedFishFound[tostring(lootInfo.Id)] then
@@ -178,9 +186,12 @@ function AddReward(player, returnData, hitPosition)
 end
 
 
-function Main(player, hitPosition, reroll)
+function Main(player, hitPosition, reroll,AFKFishing)
 	if not reroll and not GetPlayerRequest(player) then return end
-
+	local multiplier = 1
+	if AFKFishing then
+		multiplier = .25
+	end
 	local playerIncome = player:GetAttribute("Income") or 0	
 
 	local data = {}
@@ -189,11 +200,16 @@ function Main(player, hitPosition, reroll)
 
 
 	if data.LootInfo["IncomeMultiplier"] then
-		data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0		
+		
+		data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
+		local old = data.Worth
+		if old ~= 0 then
+			data.Worth = math.ceil(data.Worth * multiplier)
+		end
 	end
 
 	if modules.Income then		
-		AddReward(player, data, hitPosition)	
+		AddReward(player, data, hitPosition,AFKFishing)	
 		announcementRemote:FireAllClients(player, data.LootInfo)
 		return data
 	end

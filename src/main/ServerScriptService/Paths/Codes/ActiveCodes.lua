@@ -48,6 +48,17 @@ local Active = {
 		AccessoryName = "Heart Eyes";
 		ReturnText = "Accessory Received!"
 	};
+	["EVA"] = {
+		RewardType = "Gems";
+		Amount = 50;
+		ReturnText = "+50 Gems!"
+	};
+	
+	["SLY"] = {
+		RewardType = "Gems";
+		Amount = 50;
+		ReturnText = "+50 Gems!"
+	};
 }
 
 return Active

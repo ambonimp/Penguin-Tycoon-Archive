@@ -39,6 +39,7 @@ function AnimationService.IdleAnimation(localPlayer)
 end
 
 function AnimationService.Cancel(fishingModule)
+	fishingModule.LastUpdate.RunningMain = false
 	AnimationService.Destroy(idle)
 	AnimationService.Destroy(catch)
 	AnimationService.Destroy(throw)
