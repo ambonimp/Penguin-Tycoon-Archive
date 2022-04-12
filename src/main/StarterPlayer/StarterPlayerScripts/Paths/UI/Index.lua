@@ -125,7 +125,9 @@ function Index.FishCaught(fishInfo, isNew)
 		-- if it's a new fish then add it to the local table so it's not necessary to request it from the server
 		if isNew then
 			if not playerFish[tostring(fishInfo.Id)] then
-				Index.NewFishUnlocked(fishInfo)
+				if paths.Modules.Fishing.LastUpdate.isAFKFishing == false then
+					Index.NewFishUnlocked(fishInfo)
+				end
 				playerFish[tostring(fishInfo.Id)] = 0
 			end
 		end

@@ -131,11 +131,21 @@ function GetEnchantState(position)
 	return rand:NextNumber(0, 1) <= decimalChance
 end
 
+remotes.AFKFishing.OnServerEvent:Connect(function(player,fishing)
+	if fishing then
+		modules.PlayerData.sessionData[player.Name]["WasFishing"] = os.time()
+	else
+		modules.PlayerData.sessionData[player.Name]["WasFishing"] = nil
+	end
+end)
+
 function AddReward(player, returnData, hitPosition,AFKFishing)
 	local sessionData = modules.PlayerData.sessionData
 	local lootInfo = returnData.LootInfo
 	
 	if sessionData and sessionData[player.Name] then
+		
+		
 		-- should hats be added to some sort of index?
 		if lootInfo.Type == itemTypes.Hat then
 			local result = GiveHat(player, sessionData[player.Name])

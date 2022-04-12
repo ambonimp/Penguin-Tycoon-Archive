@@ -6,7 +6,7 @@ local Paths = require(script.Parent)
 local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
-
+local previousEvent = nil
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
 
 local EventModules = {}
@@ -56,7 +56,9 @@ end
 local function ChooseEvents()
 	local AllEvents = {}
 	for i, v in pairs(Modules.EventsConfig.Events) do table.insert(AllEvents, v) end
-	
+	if previousEvent and table.find(AllEvents,previousEvent) then
+		table.remove(AllEvents,table.find(AllEvents,previousEvent))
+	end
 	local Options = {}
 	for i = 1, 3, 1 do
 		local Num = Random.new():NextInteger(1, #AllEvents)
@@ -169,7 +171,6 @@ local function StartEvent(ChosenEvent)
 	return Winners, DisplayText
 end
 
-local previousEvent = AllEvents[2]
 local pEvent = 2
 local function EventLoop()
 	while true do
@@ -179,8 +180,8 @@ local function EventLoop()
 		
 		-- Intermission
 		Intermission()
-		
-
+		--Voting:
+		--[[
 		-- Choose 3 Events to vote from
 		local Options = ChooseEvents()
 		
@@ -190,8 +191,10 @@ local function EventLoop()
 		
 		
 		-- Get chosen event
-		ChosenEvent = GetChosenEvent(Options)
-		--[[pEvent = pEvent + 1
+		ChosenEvent = GetChosenEvent(Options)--]]
+
+		--random event
+		pEvent = pEvent + 1
 		local nextEvent = AllEvents[pEvent]
 		if nextEvent == nil then
 			pEvent = 1

@@ -26,7 +26,7 @@ function DoubleJump:NewCharacter(Character)
 	Humanoid = Character:WaitForChild("Humanoid")
 	Animation = Humanoid:LoadAnimation(Character:WaitForChild("Animations"):WaitForChild("Double Jump"))
 	Animation.Looped = false
-	
+
 	Humanoid.StateChanged:Connect(function(old,new)
 		State = new.Name
 		if State == "Landed" or State == "Running" or State == "RunningNoPhysics" then

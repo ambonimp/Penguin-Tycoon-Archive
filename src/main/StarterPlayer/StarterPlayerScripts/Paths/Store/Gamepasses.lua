@@ -16,11 +16,11 @@ local Store = UI.Center.Store
 
 --- Gamepass Variables ---
 local AllGamepasses = {
-	25313170,	 -- x2 Income
-	26268187, -- Faster Speed
-	26268229, -- Double Jump
-	26269102, -- VIP
-	28927736, -- Gold Fishing Rod
+	{25313170,"Earn more money!"},	 -- x2 Income
+	{26268187,"Run faster!"}, -- Faster Speed
+	{26268229,"Jump twice!"}, -- Double Jump
+	{26269102,"VIP Tag and Golden Hearts!"}, -- VIP
+	{28927736,"x2 Fish"}, -- Gold Fishing Rod
 }
 
 
@@ -61,16 +61,16 @@ coroutine.wrap(function()
 	repeat OwnedPasses = Remotes.GetStat:InvokeServer("Gamepasses") if not OwnedPasses then wait(1) end until OwnedPasses
 
 	for i, Gamepass in pairs(AllGamepasses) do
-		local Info = Services.MPService:GetProductInfo(Gamepass, Enum.InfoType.GamePass)
+		local Info = Services.MPService:GetProductInfo(Gamepass[1], Enum.InfoType.GamePass)
 
 		if Info["IsForSale"] then
 			local Template = Dependency.GamepassTemplate:Clone()
 
-			Template.Name = Gamepass
+			Template.Name = Gamepass[1]
 			Template.PassName.TheText.Text = Info["Name"]
 			Template.Purchase.TheText.Text = Modules.Format:FormatComma(Info["PriceInRobux"])
 			Template.Icon.Image = "rbxassetid://"..Info["IconImageAssetId"]
-			
+			Template.Description.Text = Gamepass[2]
 			if OwnedPasses[tostring(Gamepass)] then
 				Gamepasses:SetOwned(Template)
 			end
@@ -79,7 +79,7 @@ coroutine.wrap(function()
 
 			Template.Purchase.MouseButton1Down:Connect(function()
 				if Template.Purchase.Visible == true then
-					Services.MPService:PromptGamePassPurchase(Paths.Player, Gamepass)
+					Services.MPService:PromptGamePassPurchase(Paths.Player, Gamepass[1])
 				end
 			end)
 		end

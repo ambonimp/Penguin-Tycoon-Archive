@@ -61,6 +61,12 @@ local Active = {
 		Amount = 50;
 		ReturnText = "+50 Gems!"
 	};
+
+	["WILCO"] = {
+		RewardType = "Gems";
+		Amount = 50;
+		ReturnText = "+50 Gems!"
+	};
 }
 
 return Active

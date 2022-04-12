@@ -67,6 +67,7 @@ local function LoadEmote(ID)
 end
 
 local function CanPlayEmote()
+	if game.Players.LocalPlayer:GetAttribute("AFKFishing") then return end
 	if EmoteDB then
 		return false
 	end
