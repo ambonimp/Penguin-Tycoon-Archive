@@ -1,7 +1,7 @@
 local EventsConfig = {}
 
 
-EventsConfig.Events = {"Falling Tiles","Skate Race","Soccer","Egg Hunt"}
+EventsConfig.Events = {"Falling Tiles","Skate Race","Soccer"}--,"Egg Hunt"}
 
 
 EventsConfig.INTERMISSION_INTERVAL = 30
