@@ -9,6 +9,7 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local UI = Paths.UI
 
+local Dependency = Paths.Dependency:WaitForChild(script.Name)
 
 --- Help Variables ---
 local PointerButton = UI.Right.Buttons.Pointer
@@ -72,7 +73,7 @@ function Help:EnablePointerBeam()
 			
 			local A2 = ChosenItem.Hitbox:FindFirstChild("Attachment") or Instance.new("Attachment", ChosenItem.Hitbox)
 			
-			local Beam = Root:FindFirstChild("Pointer") or script.Pointer:Clone()
+			local Beam = Root:FindFirstChild("Pointer") or Dependency.Pointer:Clone()
 			Beam.Color = ColorSequence.new({
 				ColorSequenceKeypoint.new(0, ChosenItem.Part.Color), 
 				ColorSequenceKeypoint.new(1, ChosenItem.Part.Color)

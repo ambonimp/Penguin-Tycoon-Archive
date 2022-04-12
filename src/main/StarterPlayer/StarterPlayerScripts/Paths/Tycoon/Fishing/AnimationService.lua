@@ -17,11 +17,15 @@ function AnimationService.InitializeAnimation(localPlayer, animationType, priori
 	return animation
 end
 
-function AnimationService.ThrowAnimation(localPlayer, fishingModule)
+function AnimationService.ThrowAnimation(localPlayer, fishingModule,wasAFK)
 	fishingModule.LastUpdate.FishingAnimationActive = true	
 	throw = AnimationService.InitializeAnimation(localPlayer, animations.Throw, animationPriority.Action)
 	throw.KeyframeReached:Connect(function()
-		AnimationService.IdleAnimation(localPlayer)
+		if fishingModule.LastUpdate.isAFKFishing ~= wasAFK then
+			AnimationService.Cancel(fishingModule)
+			return
+		end
+		AnimationService.IdleAnimation(localPlayer,fishingModule)
 		fishingModule.Throw()
 	end)
 end
@@ -31,11 +35,11 @@ function AnimationService.CatchAnimation(localPlayer)
 	catch = AnimationService.InitializeAnimation(localPlayer, animations.Throw, animationPriority.Action)
 end
 
-function AnimationService.IdleAnimation(localPlayer)
+function AnimationService.IdleAnimation(localPlayer,fishingModule)
 	AnimationService.Destroy(idle)
-	
+
 	idle = AnimationService.InitializeAnimation(localPlayer, animations.Idle, animationPriority.Idle)
-	idle.Looped = true
+	idle.Looped = true	
 end
 
 function AnimationService.Cancel(fishingModule)

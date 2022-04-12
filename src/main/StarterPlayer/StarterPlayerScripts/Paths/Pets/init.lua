@@ -165,7 +165,7 @@ function Pets.addPetToPlayer(Player)
 	
 	local function playerInBoat()
 		if Character and Character:FindFirstChild("Humanoid") and Character.Humanoid.SeatPart and (string.find(string.lower(Character.Humanoid.SeatPart.Parent.Name),"boat") or string.find(string.lower(Character.Humanoid.SeatPart.Parent.Name),"raft")) then
-			Character:SetAttribute("InBoat",false)
+			Character:SetAttribute("InBoat",true)
 			return true
 		elseif Character and Character:FindFirstChild("Humanoid") then
 			local result = getSpawnPosition(Character,0,0)
@@ -611,6 +611,9 @@ function Pets.addPetToPlayer(Player)
 		if Player ~= game.Players.LocalPlayer then
 			NewChar:GetAttributeChangedSignal("PetAnimation"):Connect(PetAnimationChanged)
 		end
+		Character.Humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
+			playerInBoat()
+		end)
 	end)
 	
 	Player:GetAttributeChangedSignal("PetID"):Connect(function()
@@ -687,6 +690,10 @@ function Pets.addPetToPlayer(Player)
 	Character:WaitForChild("Humanoid").Died:Connect(function()
 		removePet()
 	end)
+
+	Character.Humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
+		playerInBoat()
+	end)
 	
 	if Player ~= game.Players.LocalPlayer then
 		Character:GetAttributeChangedSignal("PetAnimation"):Connect(PetAnimationChanged)
@@ -739,7 +746,7 @@ RunService:BindToRenderStep("PetHandling",Enum.RenderPriority.Character.Value,fu
 						Material = Enum.Material.SmoothPlastic,
 					}
 				end
-				if continu and PetModel and PetModel.PrimaryPart and (PetModel.PrimaryPart.Position-Character.PrimaryPart.Position).magnitude > 50 or Character:GetAttribute("InBoat") then
+				if continu and PetModel and PetModel.PrimaryPart and (PetModel.PrimaryPart.Position-Character.PrimaryPart.Position).magnitude > 50 then
 					local height = spawnPos5.Position.Y  + PetModel:GetExtentsSize().Y/2
 					Pet[3].CFrame = CFrame.new(Vector3.new(spawnPos5.Position.X ,height,spawnPos5.Position.Z),Vector3.new(Character.PrimaryPart.Position.X,height,Character.PrimaryPart.Position.Z))
 					PetModel:SetPrimaryPartCFrame(Pet[3].CFrame)
@@ -756,7 +763,7 @@ RunService:BindToRenderStep("PetHandling",Enum.RenderPriority.Character.Value,fu
 							elseif string.find(Character.Humanoid.SeatPart.Parent.Name,"SmallSeat") then --sit infront of player in small round seats
 								spawnPos = getSpawnPosition(Character,-1,4) 
 							else --sit around player, find position
-								for i = 1,8 do
+								for i = 8,1,-1 do
 									local angle = i * (fullCircle / 8)
 									local x, z = getXAndZPositions(angle)
 									local position = (Character.PrimaryPart.CFrame * CFrame.new(x, 0, z)).p
