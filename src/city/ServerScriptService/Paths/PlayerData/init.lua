@@ -189,6 +189,19 @@ local function SetupNewStats(Player)
 		Data["Twitter Verification"] = false
 	end
 
+	if not Data["Event"] then
+		Data["Event"] = {
+			[1] = "Egg Hunt",
+			[2] = {
+				["Blue"] = 0,
+				["Green"] = 0,
+				["Purple"] = 0,
+				["Red"] = 0,
+				["Gold"] = 0,
+			}
+		}
+	end
+
 	Data["Emotes"] = {
 		["Sit"] = true;
 		["Wave"] = true;

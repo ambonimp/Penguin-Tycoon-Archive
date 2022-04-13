@@ -1,7 +1,7 @@
 local Audio = {}
 
 Audio.Music = {
-	["Egg Hunt"] = "rbxassetid://1839336610";
+	["Egg Hunt"] = "rbxassetid://9351398981";
 	["Soccer"] = "rbxassetid://9281853936";
 	["Skate Race"] = "rbxassetid://9281859168";
 	["Falling Tiles"] = "rbxassetid://9281853936";

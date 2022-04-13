@@ -181,7 +181,7 @@ local function EventLoop()
 		-- Intermission
 		Intermission()
 		--Voting:
-		--[[
+		
 		-- Choose 3 Events to vote from
 		local Options = ChooseEvents()
 		
@@ -194,7 +194,7 @@ local function EventLoop()
 		ChosenEvent = GetChosenEvent(Options)--]]
 
 		--random event
-		pEvent = pEvent + 1
+		--[[pEvent = pEvent + 1
 		local nextEvent = AllEvents[pEvent]
 		if nextEvent == nil then
 			pEvent = 1

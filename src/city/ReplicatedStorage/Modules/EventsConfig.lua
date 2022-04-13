@@ -1,7 +1,7 @@
 local EventsConfig = {}
 
 
-EventsConfig.Events = {"Falling Tiles","Skate Race","Soccer"}--,"Egg Hunt"}
+EventsConfig.Events = {"Falling Tiles","Skate Race","Soccer","Egg Hunt"}
 
 
 EventsConfig.INTERMISSION_INTERVAL = 30
@@ -43,7 +43,7 @@ EventsConfig["Soccer"] = {
 EventsConfig["Egg Hunt"] = {
 	MinPlayers = 1,
 	MaxPlayers = 20,
-	Duration = 180,
+	Duration = 120,
 	ImageID = 9348758097,
 	["Display Name"] = "Egg Hunt",
 	--["Tutorial"] = "Reach the end to win!",
