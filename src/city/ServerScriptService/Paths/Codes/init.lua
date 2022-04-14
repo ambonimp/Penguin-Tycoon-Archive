@@ -8,6 +8,8 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
+local ServerStorage = game:GetService("ServerStorage")
+local EventHandler = ServerStorage:FindFirstChild("EventHandler")
 
 --- Functions ---
 function Codes.CodeIsRedeemed(Player, NewCode)
@@ -44,6 +46,15 @@ function Codes.RedeemCode(Player, Code)
 	local CodeData = Modules.ActiveCodes[Code]
 	Codes.GiveReward[CodeData.RewardType](Player, CodeData)
 	
+		-- Fires a bindable event to notify server that this event has occured with given data
+	-- Used normally to integrate with Game Analytics / Dive / Playfab
+	local success, msg = pcall(function()
+		EventHandler:Fire("codeRedeem", Player, {
+			code = Code,
+			data = CodeData,
+		})
+	end)
+
 	return CodeData.ReturnText or "Success!"
 end
 
