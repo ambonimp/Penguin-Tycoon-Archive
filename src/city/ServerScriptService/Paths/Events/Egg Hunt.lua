@@ -1,6 +1,5 @@
 local EggHunt = {}
 
-
 --- Main Variables ---
 local Paths = require(script.Parent.Parent)
 
@@ -19,11 +18,12 @@ local chances = {
 }
 
 local itemList  = {
-	["Backwards Cap"] = {Type = "Accessory" , Chance = 20},
-	["Bear Hat"] = {Type = "Accessory" , Chance = 20},
-	["Cowboy"] = {Type = "Accessory" , Chance = 20},
-	["Party Hat"] = {Type = "Accessory" , Chance = 20},
-	["Pink Sunhat"] = {Type = "Accessory" , Chance = 20},
+	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = {"Blue",150}},
+	--["Easter Basket"] = {Type = "Accessory" , Needed = {"Green",120}},
+	--["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
+	--["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
+	--["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
+	--["Chick In An Egg"] = {Type = "Accessory" , Needed = {"Gold",60}},
 }
 
 --- Event Variables ---
@@ -47,6 +47,7 @@ function EggHunt:SpawnPlayers(ChosenBugName, ChosenBugNum)
 			Character.Humanoid.WalkSpeed = 0
 			
 			Modules.Character:EquipShirt(player,"Bunny Suit")
+			Services.RStorage.Assets.Basket:Clone().Parent = Character
 			player.Character.Humanoid.Died:Connect(function()
 				playerName:Destroy()
 			end)
@@ -165,13 +166,15 @@ function EggHunt:InitiateEvent(Event)
 						end
 
 						local data = Modules.PlayerData.sessionData[hit.Parent.Name] 
+						local send = nil
 						if data and data["Event"] and data["Event"][1] == "Egg Hunt" then
 							if data["Stats"]["Soccer"] then
 								data["Event"][2][egg.Name] += 1
+								send = data["Event"]
 							end
 						end
 
-						Remotes.EggHunt:FireClient(game.Players:FindFirstChild(hit.Parent.Name),"Collected",spawn,(data and data["Event"]) and data["Event"][2] or nil)
+						Remotes.EggHunt:FireClient(game.Players:FindFirstChild(hit.Parent.Name),"Collected",spawn,send)
 						local tbl = findTbl(hit.Parent.Name)
 						
 						EggsCollected[tbl][2] += egg:GetAttribute("Score")

@@ -8,8 +8,6 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
-
-
 --- Event Variables ---
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
@@ -20,6 +18,28 @@ local EventVotingUI = Paths.UI.Top.EventVoting
 local EventPromptUI = Paths.UI.Top.EventPrompt
 local EventUIs = Paths.UI.Right.EventUIs
 local EventUI = EventUIs["Egg Hunt"]
+
+local Data = Services.RStorage.Remotes.GetStat:InvokeServer("Event")
+
+local itemList  = {
+	["Backwards Cap"] = {Type = "Accessory" , Needed = {"Blue",150}},
+	["Bear Hat"] = {Type = "Accessory" , Needed = {"Green",120}},
+	["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
+	["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
+	["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
+}
+
+function updateEggUI()
+	if Data and Data[1] == "Egg Hunt" then
+		local UI = Paths.UI.Center.EggHunt
+
+		UI.Eggs:FindFirstChild("Blue"):FindFirstChild("Number").Text = Data[2]["Blue"]
+		UI.Eggs:FindFirstChild("Red"):FindFirstChild("Number").Text = Data[2]["Red"]
+		UI.Eggs:FindFirstChild("Purple"):FindFirstChild("Number").Text = Data[2]["Purple"]
+		UI.Eggs:FindFirstChild("Green"):FindFirstChild("Number").Text = Data[2]["Green"]
+		UI.Eggs:FindFirstChild("Gold"):FindFirstChild("Number").Text = Data[2]["Gold"]
+	end
+end
 
 function findTbl(playerName,EggsCollected)
 	for i,v in pairs (EggsCollected) do
@@ -61,6 +81,10 @@ Remotes.EggHunt.OnClientEvent:Connect(function(kind,tab,all)
 			Paths.Audio.Collected:Clone().Parent = tab
 		end
 		tab.Collected:Play()
+		if all then
+			Data = all
+			updateEggUI()
+		end
 	end
 end)
 
@@ -89,5 +113,19 @@ function EggHunt:UpdateEvent(Info)
 	
 end
 
+updateEggUI()
+
+local ProximityPrompt
+if workspace:FindFirstChild("Easter") then
+	ProximityPrompt = workspace.Easter.ProximityPart.Value:WaitForChild("ProximityPrompt")
+end
+
+if ProximityPrompt then
+	ProximityPrompt.Triggered:Connect(function(player)
+		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.EggHunt,true)
+		end
+	end)
+end
 
 return EggHunt

@@ -45,7 +45,7 @@ local Active = {
 	["100KEYES"] = {
 		RewardType = "Accessory";
 		AccessoryType = "Eyes";
-		AccessoryName = "100k";
+		AccessoryName = "100k Eyes";
 		ReturnText = "Accessory Received!"
 	};
 	["EVA"] = {
