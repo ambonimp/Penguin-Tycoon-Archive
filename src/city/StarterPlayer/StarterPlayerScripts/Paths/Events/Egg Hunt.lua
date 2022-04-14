@@ -67,6 +67,7 @@ end)
 --- Event Functions ---
 function EggHunt:EventStarted()
 	if Participants:FindFirstChild(Paths.Player.Name) then
+		workspace.Gravity = 160
 		local Map = workspace.Event["Event Map"]
 
 		EventInfoUI.ExitEvent.Visible = true
@@ -80,7 +81,7 @@ function EggHunt.InitiateEvent()
 end
 
 function EggHunt.EventEnded()
-
+	workspace.Gravity = 196.2
 end
 
 --- Event Updating ---

@@ -24,9 +24,9 @@ function Penguins:PenguinPurchased(Player, PenguinName)
 end
 
 
-function Penguins:LoadPenguin(Penguin, Info)
+function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoadColor)
 	-- Load penguin appearance
-	if Info["BodyColor"] ~= "Default" then
+	if Info["BodyColor"] ~= "Default" and not DontLoadColor then
 		local Color = Color3.new(Info["BodyColor"]["R"], Info["BodyColor"]["G"], Info["BodyColor"]["B"])
 
 		local PenguinBody = Penguin:FindFirstChild("Main")
@@ -39,9 +39,8 @@ function Penguins:LoadPenguin(Penguin, Info)
 			PenguinArmR.Color = Color
 		end
 	end
-
 	-- Load accessory
-	if Info["Accessory"] ~= "Default" then
+	if Info["Accessory"] ~= "Default" and not DontLoadHat then
 		local Humanoid = Penguin:FindFirstChild("Humanoid")
 		local Model = Services.SStorage.Accessories:FindFirstChild(Info["Accessory"])
 
@@ -59,7 +58,7 @@ function Penguins:LoadPenguin(Penguin, Info)
 	end
 
 	-- Load eyes
-	if Info["Eyes"] then
+	if Info["Eyes"] and not DontLoadEyes then
 		local Humanoid = Penguin:FindFirstChild("Humanoid")
 		local Model = Services.SStorage.Eyes:FindFirstChild(Info["Eyes"])
 

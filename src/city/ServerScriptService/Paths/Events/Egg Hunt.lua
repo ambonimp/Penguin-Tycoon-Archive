@@ -43,9 +43,10 @@ function EggHunt:SpawnPlayers(ChosenBugName, ChosenBugNum)
 			local player = game.Players:FindFirstChild(playerName.Name)
 			local SpawnPos = Map.Spawns:GetChildren()[i].CFrame
 			Remotes.Lighting:FireClient(player, "Egg Hunt")
-			local Character = Modules.Character:Spawn(player, SpawnPos)
+			local Character = Modules.Character:Spawn(player, SpawnPos,true)
 			Character.Humanoid.WalkSpeed = 0
-
+			
+			Modules.Character:EquipShirt(player,"Bunny Suit")
 			player.Character.Humanoid.Died:Connect(function()
 				playerName:Destroy()
 			end)
