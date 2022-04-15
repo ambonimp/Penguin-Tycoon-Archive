@@ -168,10 +168,8 @@ function EggHunt:InitiateEvent(Event)
 						local data = Modules.PlayerData.sessionData[hit.Parent.Name] 
 						local send = nil
 						if data and data["Event"] and data["Event"][1] == "Egg Hunt" then
-							if data["Stats"]["Soccer"] then
-								data["Event"][2][egg.Name] += 1
-								send = data["Event"]
-							end
+							data["Event"][2][egg.Name] += 1
+							send = data["Event"]
 						end
 
 						Remotes.EggHunt:FireClient(game.Players:FindFirstChild(hit.Parent.Name),"Collected",spawn,send)
