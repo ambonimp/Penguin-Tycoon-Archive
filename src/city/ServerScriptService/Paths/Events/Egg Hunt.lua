@@ -18,8 +18,8 @@ local chances = {
 }
 
 local itemList  = {
-	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 75},
-	["Easter Basket"] = {Type = "Accessory" , Needed = 25},
+	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 400},
+	["Easter Basket"] = {Type = "Accessory" , Needed = 1200},
 	--["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
 	--["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
 	--["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},

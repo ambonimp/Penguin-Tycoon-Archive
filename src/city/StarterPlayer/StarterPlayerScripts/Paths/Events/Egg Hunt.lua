@@ -24,8 +24,8 @@ local TotalEggs = 0
 local Data = Services.RStorage.Remotes.GetStat:InvokeServer("Event")
 
 local itemList  = {
-	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 75},
-	["Easter Basket"] = {Type = "Accessory" , Needed = 25},
+	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 400},
+	["Easter Basket"] = {Type = "Accessory" , Needed = 1200},
 	--["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
 	--["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
 	--["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
@@ -35,7 +35,7 @@ local itemList  = {
 
 local toText = {
 	[1] = "1ST",
-	[2] = "1ND",
+	[2] = "2ND",
 	[3] = "3RD",
 	[4] = "4TH",
 	[5] = "5TH",
@@ -134,6 +134,7 @@ Remotes.EggHunt.OnClientEvent:Connect(function(kind,tab,all)
 				FinishedUI.Eggs:FindFirstChild("Gold"):FindFirstChild("Number").Text = eggs["Gold"]
 
 				FinishedUI.Visible = true
+				Paths.Modules.Buttons:UIOn(FinishedUI,true)
 			end
 		end
 	elseif kind == "Update" then
@@ -180,6 +181,7 @@ end)
 --- Event Functions ---
 function EggHunt:EventStarted()
 	if Participants:FindFirstChild(Paths.Player.Name) then
+		Paths.Modules.Buttons:UIOff(Paths.UI.Center.EggHunt,true)
 		workspace.Gravity = 160
 		local Map = workspace.Event["Event Map"]
 

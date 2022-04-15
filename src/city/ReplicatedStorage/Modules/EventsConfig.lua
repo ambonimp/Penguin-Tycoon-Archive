@@ -41,7 +41,7 @@ EventsConfig["Soccer"] = {
 }
 
 EventsConfig["Egg Hunt"] = {
-	MinPlayers = 1,
+	MinPlayers = 2,
 	MaxPlayers = 20,
 	Duration = 120,
 	ImageID = 9348758097,

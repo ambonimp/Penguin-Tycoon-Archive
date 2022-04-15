@@ -35,6 +35,7 @@ local function ResetEvent()
 	workspace.Event:ClearAllChildren()
 	ChosenEvent = nil
 	PlayerVotes = {}
+	Voted = {}
 	for i, v in pairs(TotalVotes:GetChildren()) do
 		v.Value = 0
 	end
@@ -54,6 +55,7 @@ end
 
 
 local function ChooseEvents()
+	
 	local AllEvents = {}
 	for i, v in pairs(Modules.EventsConfig.Events) do table.insert(AllEvents, v) end
 	if previousEvent and table.find(AllEvents,previousEvent) then
@@ -66,6 +68,11 @@ local function ChooseEvents()
 		table.remove(AllEvents, Num)
 		Options["Option"..i] = Choice
 	end
+	Voted = {
+		["Option1"] = {},
+		["Option2"] = {},
+		["Option3"] = {},
+	}
 	
 	return Options
 end
@@ -78,7 +85,7 @@ local function InitiateVoting(Options)
 	for i = Modules.EventsConfig.VOTE_TIMER, 0, -0.1 do
 		EventValues.StartingTimer.Value = math.floor(i)
 		EventValues.TextToDisplay.Value = "Voting! ("..math.floor(i)..")"
-		wait(0.1)
+		task.wait(0.1)
 	end
 end
 
@@ -95,9 +102,14 @@ local function GetChosenEvent(Options)
 			ChosenOption = v.Name
 		end
 	end
-	
-	print(Options,ChosenOption)
-	
+	for i = 1,Modules.EventsConfig[Options[ChosenOption]].MaxPlayers do
+		local x = Voted[ChosenOption][i]
+		if x then
+			local Value = Instance.new("StringValue")
+			Value.Name = x
+			Value.Parent = Participants
+		end
+	end
 	return Options[ChosenOption]
 end
 
@@ -279,15 +291,18 @@ Remotes.Events.OnServerEvent:Connect(function(player, task, info)
 	if task == "Voting" and Events.CurrentState == "Voting" then
 		if PlayerVotes[player] then
 			EventValues.Voting[PlayerVotes[player]].Value -= 1
+			table.remove(Voted[PlayerVotes[player]],table.find(Voted[PlayerVotes[player]],player.Name))
 			if info ~= PlayerVotes[player] then
 				EventValues.Voting[info].Value += 1
 				PlayerVotes[player] = info
+				table.insert(Voted[info],player.Name)
 			else
 				PlayerVotes[player] = nil
 			end
 		else
 			EventValues.Voting[info].Value += 1
 			PlayerVotes[player] = info
+			table.insert(Voted[info],player.Name)
 		end
 
 	elseif task == "Accept Prompt" and Events.CurrentState == "Starting" and not Participants:FindFirstChild(player.Name) and #Participants:GetChildren() < Modules.EventsConfig[ChosenEvent].MaxPlayers then

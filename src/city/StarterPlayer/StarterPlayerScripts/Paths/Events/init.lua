@@ -106,8 +106,9 @@ local function StartingPrompt(Event)
 	
 	EventVotingUI.Visible = false
 	
-	
-	EventPromptUI.Visible = true
+	if Participants:FindFirstChild(game.Players.LocalPlayer.Name) == nil then
+		EventPromptUI.Visible = true
+	end
 	task.wait(Modules.EventsConfig.ACCEPT_TIMER)
 	EventPromptUI.Visible = false
 end
