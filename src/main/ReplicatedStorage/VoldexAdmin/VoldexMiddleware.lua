@@ -10,6 +10,7 @@ function VoldexMiddleware.IsPlayerAuthorized(player: Player): boolean
     
     local groupId = groupData.groupId
     local groupRank = groupData.groupRank
+
 	return player:GetRankInGroup(groupId) >= groupRank
 end
 

@@ -63,9 +63,9 @@ local function banPlayer(player: Player, reason): string
 	end
 end
 
-local function getPlayerAvatar(player: Player): string
+local function getPlayerAvatar(playerId: number): string
 	-- Fetch the thumbnail
-	local userId = player.UserId
+	local userId = playerId
 	local thumbType = Enum.ThumbnailType.HeadShot
 	local thumbSize = Enum.ThumbnailSize.Size420x420
 	local content, isReady = Players:GetUserThumbnailAsync(userId, thumbType, thumbSize)
@@ -98,6 +98,134 @@ local function createButton(label: string, isPrimary: boolean): ImageButton
 	textLabel.Parent = button
 
 	return button
+end
+
+local function trim(str)
+	return string.gsub(str, "^%s*(.-)%s*$", "%1")
+end
+
+local function getTimeToDisplay(time)
+	if time <= 1 then
+		return "Never joined", ""		
+	end
+	
+	local playtime = time
+	local timeTag = "seconds"
+	if playtime > 60 then
+		playtime = playtime / 60
+		timeTag = "minutes"
+		if playtime > 60 then
+			playtime = playtime / 60
+			timeTag = "hours"
+		end
+	end
+
+	return string.sub(tostring(playtime), 1,5), timeTag
+end
+
+local function promptPlaytime(player: Player)
+	local success, playerData = Postie.InvokeServer("GetPlayerData", 5, player)
+	if not success then
+		return false
+	end
+	
+	baseFrame:TweenPosition(UDim2.fromScale(baseFrame.Position.X.Scale, 1), nil, nil, 0.3)
+
+	promptFrame = Instance.new("Frame")
+	promptFrame.Position = UDim2.fromScale(0.291, 0.328)
+	promptFrame.Size = UDim2.fromScale(0.429, 0.419)
+	promptFrame.BorderSizePixel = 5
+	promptFrame.Name = "Prompt Ban"
+	promptFrame.Parent = listPlayersUi
+
+	local promptHeader = Instance.new("Frame")
+	promptHeader.AutoLocalize = false
+	promptHeader.Name = "Header"
+	promptHeader.Size = UDim2.fromScale(1, 0.137)
+	promptHeader.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	promptHeader.Parent = promptFrame
+
+	local promptBody = Instance.new("Frame")
+	promptBody.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	promptBody.AutoLocalize = false
+	promptBody.Size = UDim2.fromScale(1, 1 - promptHeader.Size.Y.Scale)
+	promptBody.Position = UDim2.fromScale(0, promptHeader.Size.Y.Scale)
+	promptBody.Name = "Body"
+	promptBody.Parent = promptFrame
+
+	local promptLabel = Instance.new("TextBox")
+	promptLabel.Name = "name"
+	promptLabel.ClearTextOnFocus = false
+	promptLabel.TextEditable = false
+	promptLabel.Size = UDim2.fromScale(0.941, 0.165)
+	promptLabel.Position = UDim2.fromScale(0.016, 0)
+	promptLabel.Font = Enum.Font.GothamBlack
+	promptLabel.TextColor3 = Color3.fromRGB(58, 58, 58)
+	promptLabel.TextScaled = true
+	promptLabel.Text = ("Stats for %s (%d):"):format(player.Name, player.UserId)
+	promptLabel.BackgroundTransparency = 1
+	promptLabel.BorderSizePixel = 0
+	promptLabel.Parent = promptBody
+
+	local playtime, timeTag = getTimeToDisplay(playerData.totalPlaytime)
+
+	local promptLabelStats = Instance.new("TextBox")
+	promptLabelStats.Name = "stats"
+	promptLabelStats.ClearTextOnFocus = false
+	promptLabelStats.TextEditable = false
+	promptLabelStats.Size = UDim2.fromScale(0.972, 0.459)
+	promptLabelStats.Position = UDim2.fromScale(0.01, 0.178)
+	promptLabelStats.Font = Enum.Font.GothamBlack
+	promptLabelStats.TextColor3 = Color3.fromRGB(58, 58, 58)
+	promptLabelStats.TextScaled = false
+	promptLabelStats.TextSize = 22
+	promptLabelStats.Text = ("Total playtime: %s %s"):format(playtime, timeTag)
+	promptLabelStats.BackgroundTransparency = 1
+	promptLabelStats.BorderSizePixel = 0
+	promptLabelStats.Parent = promptBody
+
+	local averagePlaytime, timeTag = getTimeToDisplay(playerData.averagePlaytime)
+
+	local promptLabelStats2 = Instance.new("TextBox")
+	promptLabelStats2.Name = "stats"
+	promptLabelStats2.ClearTextOnFocus = false
+	promptLabelStats2.TextEditable = false
+	promptLabelStats2.Size = UDim2.fromScale(0.972, 0.459)
+	promptLabelStats2.Position = UDim2.fromScale(0.01, 0.278)
+	promptLabelStats2.Font = Enum.Font.GothamBlack
+	promptLabelStats2.TextColor3 = Color3.fromRGB(58, 58, 58)
+	promptLabelStats2.TextScaled = false
+	promptLabelStats2.TextSize = 22
+	promptLabelStats2.Text = ("Average playtime: %s %s"):format(averagePlaytime, timeTag)
+	promptLabelStats2.BackgroundTransparency = 1
+	promptLabelStats2.BorderSizePixel = 0
+	promptLabelStats2.Parent = promptBody
+
+	local promptHeaderAvatar = Instance.new("ImageLabel")
+	promptHeaderAvatar.Name = "avatar"
+	promptHeaderAvatar.BorderSizePixel = 0
+	promptHeaderAvatar.BackgroundTransparency = 1
+	promptHeaderAvatar.Size = UDim2.fromScale(0.126, 1.715)
+	promptHeaderAvatar.Position = UDim2.fromScale(0.421, -0.915)
+	promptHeaderAvatar.Image = getPlayerAvatar(player.UserId)
+	promptHeaderAvatar.SizeConstraint = Enum.SizeConstraint.RelativeXY
+	promptHeaderAvatar.Parent = promptHeader
+
+	local btnCancel = createButton("CANCEL", false)
+	btnCancel.Position = UDim2.fromScale(0.525, 0.77)
+	btnCancel.Size = UDim2.fromScale(0.418, 0.151)
+	btnCancel.Parent = promptBody
+
+	local function closePrompt()
+		baseFrame.Visible = true
+		promptFrame:Destroy()
+		promptFrame = nil
+		baseFrame:TweenPosition(UDim2.fromScale(baseFrame.Position.X.Scale, 0.08), nil, nil, 0.3)
+	end
+
+	btnCancel.MouseButton1Click:Connect(function()
+		closePrompt()
+	end)
 end
 
 local function promptBan(player: Player)
@@ -167,7 +295,7 @@ local function promptBan(player: Player)
 	promptHeaderAvatar.BackgroundTransparency = 1
 	promptHeaderAvatar.Size = UDim2.fromScale(0.126, 1.715)
 	promptHeaderAvatar.Position = UDim2.fromScale(0.421, -0.915)
-	promptHeaderAvatar.Image = getPlayerAvatar(player)
+	promptHeaderAvatar.Image = getPlayerAvatar(player.UserId)
 	promptHeaderAvatar.SizeConstraint = Enum.SizeConstraint.RelativeXY
 	promptHeaderAvatar.Parent = promptHeader
 
@@ -202,6 +330,48 @@ local function promptBan(player: Player)
 	end)
 end
 
+local function searchPlayer(id) :Player
+	id = trim(id)
+	local defaultName = "Unknown"
+
+	if id == "" then
+		notify(false, "No player was found")
+		return false
+	end
+
+	if not tonumber(id) then
+		local success, response = pcall(function()
+			defaultName = id
+			id = Players:GetUserIdFromNameAsync(id)
+		end)
+		if not success then
+			notify(false, "This USERNAME is not valid!")
+			return false
+		end
+	else
+		local success, response = pcall(function()
+			defaultName = Players:GetNameFromUserIdAsync(id)
+		end)
+		if not success then
+			notify(false, "This ID is not valid!")
+			return false
+		end
+	end
+
+	local fakePlayer = {
+		UserId = id,
+		Name = defaultName,
+	}
+	local player = fakePlayer
+
+	if Players:GetPlayerByUserId(id) then
+		player = Players:GetPlayerByUserId(id)
+	end
+
+	return player
+end
+
+
 local function fillList(players: table, body: Frame)
 	local function createRow(player)
 		local row = Instance.new("Frame")
@@ -213,7 +383,7 @@ local function fillList(players: table, body: Frame)
 		row:SetAttribute("id", player.UserId)
 		row:SetAttribute("DisplayName", player.DisplayName)
 
-		local content = getPlayerAvatar(player)
+		local content = getPlayerAvatar(player.UserId)
 
 		local avatar = Instance.new("ImageLabel")
 		avatar.Name = "avatar"
@@ -254,9 +424,15 @@ local function fillList(players: table, body: Frame)
 		textUser.TextXAlignment = Enum.TextXAlignment.Left
 		textUser.Parent = row
 
-		local btnBan = createButton("BAN PLAYER", true)
+		local btnBan = createButton("BAN PLAYER", false)
+		btnBan.Size = UDim2.fromScale(0.125, 0.350)
 		btnBan.Position = UDim2.fromScale(0.591, 0.251)
 		btnBan.Parent = row
+
+		local btnPlaytime = createButton("CHECK PLAYTIME", true)
+		btnPlaytime.Size = UDim2.fromScale(0.125, 0.350)
+		btnPlaytime.Position = UDim2.fromScale(btnBan.Position.X.Scale + 0.14, btnBan.Position.Y.Scale)
+		btnPlaytime.Parent = row
 
 		btnBan.MouseButton1Click:Connect(function()
 			if isClosing then
@@ -270,13 +446,26 @@ local function fillList(players: table, body: Frame)
 			promptBan(player)
 		end)
 
+		btnPlaytime.MouseButton1Click:Connect(function()
+			if isClosing then
+				return
+			end
+
+			if promptFrame then
+				promptFrame:Destroy()
+			end
+
+			promptPlaytime(player)
+		end)
+
 		table.insert(rows, row)
 	end
 
 	for _, player in pairs(players) do
-		if player ~= Players.LocalPlayer then
+		--[[ if player ~= Players.LocalPlayer then
 			createRow(player)
-		end
+		end ]]
+		createRow(player)
 	end
 end
 
@@ -314,6 +503,18 @@ local function createScreenGui()
 	header.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	header.Parent = baseFrame
 
+	local btnSearch = createButton("BAN FROM ID/USER", true)
+	btnSearch.Position = UDim2.fromScale(0.5, 0.268)
+	btnSearch.Size = UDim2.fromScale(0.210, 0.40)
+	btnSearch.Visible = false
+	btnSearch.Parent = header
+
+	local btnSearchStats = createButton("STATS FROM ID/USER", true)
+	btnSearchStats.Position = UDim2.fromScale(0.75, 0.268)
+	btnSearchStats.Size = UDim2.fromScale(0.150, 0.40)
+	btnSearchStats.Visible = false
+	btnSearchStats.Parent = header
+
 	local searchInput = Instance.new("TextBox")
 	searchInput.BackgroundColor3 = Color3.fromRGB(61, 61, 61)
 	searchInput.PlaceholderText = "Search..."
@@ -327,10 +528,15 @@ local function createScreenGui()
 	searchInput.Changed:Connect(function(property)
 		if property == "Text" then
 			local searchFor = searchInput.Text
+			btnSearch.Visible = searchFor:len() > 0 and true or false
+			btnSearchStats.Visible = searchFor:len() > 0 and true or false
+
 			for _, row in pairs(rows) do
-				if string.upper(row.Name:sub(1, searchFor:len())) ~= string.upper(searchFor)
-				and string.sub(row:GetAttribute("id"), 1, searchFor:len()) ~= searchFor
-				and string.upper(string.sub(row:GetAttribute("DisplayName"), 1, searchFor:len())) ~= string.upper(searchFor)
+				if
+					string.upper(row.Name:sub(1, searchFor:len())) ~= string.upper(searchFor)
+					and string.sub(row:GetAttribute("id"), 1, searchFor:len()) ~= searchFor
+					and string.upper(string.sub(row:GetAttribute("DisplayName"), 1, searchFor:len()))
+						~= string.upper(searchFor)
 				then
 					row.Visible = false
 				else
@@ -338,6 +544,32 @@ local function createScreenGui()
 				end
 			end
 		end
+	end)
+
+	btnSearch.MouseButton1Click:Connect(function()
+		if isClosing then
+			return
+		end
+
+		if promptFrame then
+			promptFrame:Destroy()
+		end
+
+		local player = searchPlayer(searchInput.Text)
+		promptBan(player)
+	end)
+
+	btnSearchStats.MouseButton1Click:Connect(function()
+		if isClosing then
+			return
+		end
+
+		if promptFrame then
+			promptFrame:Destroy()
+		end
+
+		local player = searchPlayer(searchInput.Text)
+		promptPlaytime(player)
 	end)
 
 	local closeButton = Instance.new("ImageButton")
@@ -407,7 +639,7 @@ local function onInputBegan(input: InputObject, gpe: any)
 
 	-- Check for Admin Input
 	if
-		input.KeyCode == Enum.KeyCode.Comma
+		input.KeyCode == Enum.KeyCode.Semicolon
 		and (userInputService:IsKeyDown(Enum.KeyCode.LeftShift) or userInputService:IsKeyDown(Enum.KeyCode.RightShift))
 	then
 		if not listPlayersUi then

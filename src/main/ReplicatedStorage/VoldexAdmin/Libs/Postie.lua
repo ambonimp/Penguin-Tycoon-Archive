@@ -71,23 +71,23 @@ local httpService = game:GetService("HttpService")
 local runService = game:GetService("RunService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 
-if not script:FindFirstChild("Sent") then
+if not script:FindFirstChild("VoldexPostieSent") then
 	--Create
 	local f = Instance.new("RemoteEvent")
-	f.Name = "Sent"
+	f.Name = "VoldexPostieSent"
 	f.Parent = script
 end
 
-if not script:FindFirstChild("Received") then
+if not script:FindFirstChild("VoldexPostieReceived") then
 	--Create
 	local f = Instance.new("RemoteEvent")
-	f.Name = "Received"
+	f.Name = "VoldexPostieReceived"
 	f.Parent = script
 end
 
 -- data:
-local sent = script.Sent
-local received = script.Received
+local sent = script.VoldexPostieSent
+local received = script.VoldexPostieReceived
 local isServer = runService:IsServer()
 local idToCallbackMap = {}
 local listeners = {}
@@ -106,10 +106,10 @@ end
 
 
 -- Postie:
-local postie = {}
+local voldexPostie = {}
 
 -- Function Postie.InvokeClient(id: string, player: Instance<Player>, timeout: number, ...args: any) -> boolean, ...any // yields, server-side
-function postie.InvokeClient(id: string, player: Player, timeout: number, ...: any): (boolean, ...any)
+function voldexPostie.InvokeClient(id: string, player: Player, timeout: number, ...: any): (boolean, ...any)
 	assert(isServer, "Postie.InvokeClient can only be called from the server")
 	assert(typeof(id) == "string", "bad argument #1 to Postie.InvokeClient, expects string")
 	assert(typeof(player) == "Instance" and player:IsA("Player"), "bad argument #2 to Postie.InvokeClient, expects Instance<Player>")
@@ -140,7 +140,7 @@ function postie.InvokeClient(id: string, player: Player, timeout: number, ...: a
 end
 
 -- Function Postie.InvokeServer(id: string, timeout: number, ...args: any) -> boolean, ...any // yields, client-side
-function postie.InvokeServer(id: string, timeout: number, ...: any): (boolean, ...any)
+function voldexPostie.InvokeServer(id: string, timeout: number, ...: any): (boolean, ...any)
 	assert(not isServer, "Postie.InvokeServer can only be called from the client")
 	assert(typeof(id) == "string", "bad argument #1 to Postie.InvokeServer, expects string")
 	assert(typeof(timeout) == "number", "bad argument #2 to Postie.InvokeServer, expects number")
@@ -170,13 +170,13 @@ function postie.InvokeServer(id: string, timeout: number, ...: any): (boolean, .
 end
 
 -- Function Postie.SetCallback(id: string, callback?: (...args: any))
-function postie.SetCallback(id: string, callback:((...any)->any)?)
+function voldexPostie.SetCallback(id: string, callback:((...any)->any)?)
 	assert(typeof(id) == "string", "bad argument #1 to Postie.SetCallback, expects string")
 	idToCallbackMap[id] = callback
 end
 
 -- Function Postie.GetCallback(id: string) -> (...)?
-function postie.GetCallback(id: string): ((...any)->any)?
+function voldexPostie.GetCallback(id: string): ((...any)->any)?
 	assert(typeof(id) == "string", "bad argument #1 to Postie.GetCallback, expects string")
 	return idToCallbackMap[id]
 end
@@ -210,4 +210,4 @@ else
 	end)
 end
 
-return postie
+return voldexPostie

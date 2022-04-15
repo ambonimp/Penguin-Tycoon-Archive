@@ -143,6 +143,8 @@ Accessories.All = {
 	
 	--- Event Hats ---
 	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
+	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
+	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false};
 }
 
 return Accessories

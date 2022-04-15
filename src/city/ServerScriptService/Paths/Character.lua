@@ -52,48 +52,73 @@ function Character:EquipShirt(Player,ShirtName)
 	local Shirt = Paths.Services.RStorage.Assets.Shirts:FindFirstChild(ShirtName):Clone()
 	local Character = Player.Character
 	if Character == nil then return end
-	for i,part in pairs (Shirt:GetChildren()) do
-		if part.Name == "Left" then
-			if Character:FindFirstChild("Left") then
-				Character:FindFirstChild("Left"):Destroy()
-			end
-			local newLeft = part
-			local weld = Instance.new("WeldConstraint")
-			
-			newLeft.CFrame = Character["Arm L"].CFrame * CFrame.new(0,.175,0)
-			newLeft.Parent = Character
-			weld.Part0 = Character["Arm L"]
-			weld.Part1 = newLeft
-			weld.Parent = newLeft
-		elseif part.Name == "Right" then
-			if Character:FindFirstChild("Right") then
-				Character:FindFirstChild("Right"):Destroy()
-			end
-			local newRight = part
-			local weld = Instance.new("WeldConstraint")
+	if Character:FindFirstChild("Shirt") then
+		Character:FindFirstChild("Shirt"):Destroy()
+	end
+	local Model = Instance.new("Model")
+	Model.Parent = Character
+	Model.Name = "Shirt"
+	if Shirt.PrimaryPart and Shirt.PrimaryPart.Name == "MainModel" then
 
-			newRight.CFrame = Character["Arm R"].CFrame * CFrame.new(0,.175,0)
-			newRight.Parent = Character
-			weld.Part0 = Character["Arm R"]
-			weld.Part1 = newRight
-			weld.Parent = newRight
-		elseif part.Name == "Center" then
-			if Character:FindFirstChild("Center") then
-				Character:FindFirstChild("Center"):Destroy()
-			end
-			local newMain = part
-			local weld = Instance.new("WeldConstraint")
+		Shirt:SetPrimaryPartCFrame(Character:GetPrimaryPartCFrame())
+		for i,part in pairs (Shirt:GetChildren()) do
+			if part.Name ~= "MainModel" then
+				if Character:FindFirstChild(part.Name) then
+					local old = Character:FindFirstChild(part.Name)
+					local new = part
+					local weld = Instance.new("WeldConstraint")
+					local offset = nil
+					if old.Name == "Main" then
+						offset = Shirt.PrimaryPart.CFrame:toObjectSpace(new.CFrame)
+					end
+					if offset then
+						new.CFrame = old.CFrame * offset
+					else
+						new.CFrame = old.CFrame
+					end
 
-			newMain.CFrame = Character["Main"].CFrame * CFrame.new(0,-.175,-.42) * CFrame.Angles(0,math.rad(180),0)
-			newMain.Parent = Character
-			weld.Part0 = Character["Main"]
-			weld.Part1 = newMain
-			weld.Parent = newMain
+					weld.Part0 = old
+					weld.Part1 = new
+					weld.Parent = new
+					new.Parent = Model
+				end
+			end
+		end
+	else
+		for i,part in pairs (Shirt:GetChildren()) do
+			if part.Name == "Left" then
+				local newLeft = part
+				local weld = Instance.new("WeldConstraint")
+				
+				newLeft.CFrame = Character["Arm L"].CFrame * CFrame.new(0,.175,0)
+				newLeft.Parent = Model
+				weld.Part0 = Character["Arm L"]
+				weld.Part1 = newLeft
+				weld.Parent = newLeft
+			elseif part.Name == "Right" then
+				local newRight = part
+				local weld = Instance.new("WeldConstraint")
+	
+				newRight.CFrame = Character["Arm R"].CFrame * CFrame.new(0,.175,0)
+				newRight.Parent = Model
+				weld.Part0 = Character["Arm R"]
+				weld.Part1 = newRight
+				weld.Parent = newRight
+			elseif part.Name == "Center" then
+				local newMain = part
+				local weld = Instance.new("WeldConstraint")
+	
+				newMain.CFrame = Character["Main"].CFrame * CFrame.new(Shirt:GetAttribute("X") or 0,Shirt:GetAttribute("Y") or 0,Shirt:GetAttribute("Z") or 0) * CFrame.Angles(0,math.rad(Shirt:GetAttribute("Rotation") or 0),0)
+				newMain.Parent = Model
+				weld.Part0 = Character["Main"]
+				weld.Part1 = newMain
+				weld.Parent = newMain
+			end
 		end
 	end
 end
 
-function Character:Spawn(Player, SpecificLocation)
+function Character:Spawn(Player, SpecificLocation,DontLoad)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	if not Data then Player:Kick("Data Error | CODE: CHARACTER") return end
 	
@@ -129,8 +154,9 @@ function Character:Spawn(Player, SpecificLocation)
 	NamePlate.Hearts.Visible = Data["Settings"]["Show Hearts"]
 	--NamePlate.PlayerToHideFrom = Player
 
+
+	Modules.Penguins:LoadPenguin(Penguin, Data["My Penguin"],DontLoad)
 	
-	Modules.Penguins:LoadPenguin(Penguin, Data["My Penguin"])
 
 
 	-- Make sure the penguin doesn't fall into unloaded parts
@@ -141,7 +167,6 @@ function Character:Spawn(Player, SpecificLocation)
 			Penguin.HumanoidRootPart.Anchored = false
 		end
 	end)()
-	
 	return Penguin
 end
 

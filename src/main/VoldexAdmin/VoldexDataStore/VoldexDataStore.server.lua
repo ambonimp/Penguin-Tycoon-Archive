@@ -91,9 +91,6 @@ Players.PlayerRemoving:Connect(function(player)
 			pcall(function()
 				payload.placeId = game.PlaceId
 				diveSDK:recordEvent(player, "gameSessionEnded", payload)
-				--[[ diveSDK:onClientRelease(function(player, diveData)
-					local payload = playersData[player.UserId]
-				end) ]]
 			end)
 		end
 	end)

@@ -87,6 +87,7 @@ Eyes.All = {
 	
 	--- Code Eyes ---
 	["Heart Eyes"] = {Rarity = "Regular", IsForSale = false};
+	["100k Eyes"] = {Rarity = "Regular", IsForSale = false};
 }
 
 return Eyes
