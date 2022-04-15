@@ -18,8 +18,8 @@ local chances = {
 }
 
 local itemList  = {
-	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = {"Blue",150}},
-	--["Easter Basket"] = {Type = "Accessory" , Needed = {"Green",120}},
+	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 100},
+	["Easter Basket"] = {Type = "Accessory" , Needed = 150},
 	--["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
 	--["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
 	--["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
@@ -195,7 +195,7 @@ function EggHunt:InitiateEvent(Event)
 						task.wait()
 					end
 					egg:Destroy()
-					task.wait(math.random(15,30))
+					task.wait(math.random(10,20))
 					addEgg()
 				end
 			end)
@@ -242,6 +242,7 @@ function EggHunt:StartEvent()
 	table.sort(EggsCollected,function(a,b)
 		return a[2] > b[2]
 	end)
+	Remotes.EggHunt:FireAllClients("Finished",EggsCollected)
 	for i = 1,#EggsCollected do
 		local tbl = EggsCollected[i]
 		if tbl and game.Players:FindFirstChild(tbl[1]) then
@@ -258,5 +259,26 @@ function EggHunt:StartEvent()
 	end
 	return {EggsCollected[1][1],EggsCollected[2] and EggsCollected[2][1] or nil,EggsCollected[3] and EggsCollected[3][1] or nil}
 end
+
+Remotes.EggHunt.OnServerEvent:Connect(function(player,itemToRedeem)
+	if itemList[itemToRedeem] then
+		local data = Modules.PlayerData.sessionData[player.Name] 
+		if data and data["Event"] and data["Event"][1] == "Egg Hunt" then
+			if data["Event"][3] == nil then
+				data["Event"][3] = {}
+			end
+			if not data["Event"][3][itemToRedeem] then
+				local Total = data["Event"][2]["Blue"] + data["Event"][2]["Red"] + data["Event"][2]["Purple"] + data["Event"][2]["Green"] + data["Event"][2]["Gold"]
+				if Total >= itemList[itemToRedeem].Needed then
+					data["Event"][3][itemToRedeem] = true
+					if itemList[itemToRedeem].Type == "Accessory" then
+						Paths.Modules.Accessories:ItemAcquired(player,itemToRedeem,"Accessory")
+						Remotes.EggHunt:FireClient(player,"Collected",nil,data["Event"])
+					end
+				end
+			end
+		end
+	end
+end)
 
 return EggHunt

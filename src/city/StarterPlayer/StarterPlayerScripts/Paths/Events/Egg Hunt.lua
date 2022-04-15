@@ -18,26 +18,74 @@ local EventVotingUI = Paths.UI.Top.EventVoting
 local EventPromptUI = Paths.UI.Top.EventPrompt
 local EventUIs = Paths.UI.Right.EventUIs
 local EventUI = EventUIs["Egg Hunt"]
+local FinishedUI = Paths.UI.Center.EggHuntFinished
 
+local TotalEggs = 0
 local Data = Services.RStorage.Remotes.GetStat:InvokeServer("Event")
 
 local itemList  = {
-	["Backwards Cap"] = {Type = "Accessory" , Needed = {"Blue",150}},
-	["Bear Hat"] = {Type = "Accessory" , Needed = {"Green",120}},
-	["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
-	["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
-	["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
+	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 100},
+	["Easter Basket"] = {Type = "Accessory" , Needed = 150},
+	--["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
+	--["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
+	--["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
+	--["Chick In An Egg"] = {Type = "Accessory" , Needed = {"Gold",60}},
+}
+
+
+local toText = {
+	[1] = "1ST",
+	[2] = "1ND",
+	[3] = "3RD",
+	[4] = "4TH",
+	[5] = "5TH",
+	[6] = "6TH",
+	[7] = "7TH",
+	[8] = "8TH",
+	[9] = "9TH",
+	[10] = "10TH",
+	[11] = "11TH",
+	[12] = "12TH",
+	[13] = "13TH",
+	[14] = "14TH",
+	[15] = "15TH",
+	[16] = "16TH",
+	[17] = "17TH",
+	[18] = "18TH",
+	[19] = "19TH",
+	[20] = "20TH",
 }
 
 function updateEggUI()
 	if Data and Data[1] == "Egg Hunt" then
 		local UI = Paths.UI.Center.EggHunt
 
+		local Total = Data[2]["Blue"] + Data[2]["Red"] + Data[2]["Purple"] + Data[2]["Green"] + Data[2]["Gold"]
+		UI.Eggs.Total.Number.Text = Total
+		--[[
 		UI.Eggs:FindFirstChild("Blue"):FindFirstChild("Number").Text = Data[2]["Blue"]
 		UI.Eggs:FindFirstChild("Red"):FindFirstChild("Number").Text = Data[2]["Red"]
 		UI.Eggs:FindFirstChild("Purple"):FindFirstChild("Number").Text = Data[2]["Purple"]
 		UI.Eggs:FindFirstChild("Green"):FindFirstChild("Number").Text = Data[2]["Green"]
-		UI.Eggs:FindFirstChild("Gold"):FindFirstChild("Number").Text = Data[2]["Gold"]
+		UI.Eggs:FindFirstChild("Gold"):FindFirstChild("Number").Text = Data[2]["Gold"] 
+		]]
+		TotalEggs = Total
+
+		for i,Unlockable in pairs (Paths.UI.Center.EggHunt.Unlockables.Frame:GetChildren()) do
+			if Unlockable:IsA("Frame") and itemList[Unlockable.Name] then
+				local Needed = itemList[Unlockable.Name].Needed
+				if TotalEggs >= Needed then
+					Unlockable.Claim.BackgroundColor3 = Color3.new(0.098039, 0.839215, 0)
+					Unlockable.Claim.UIStroke.Color = Color3.new(0.090196, 0.619607, 0.023529)
+					Unlockable.Claim.TextLabel.Text = "Claim"
+				end
+				if Data[3][Unlockable.Name] then
+					Unlockable.Claim.BackgroundColor3 = Color3.new(0, 0.811764, 0.839215)
+					Unlockable.Claim.UIStroke.Color = Color3.new(0.023529, 0.501960, 0.619607)
+					Unlockable.Claim.TextLabel.Text = "Claimed"
+				end
+			end
+		end
 	end
 end
 
@@ -49,7 +97,46 @@ function findTbl(playerName,EggsCollected)
 end
 
 Remotes.EggHunt.OnClientEvent:Connect(function(kind,tab,all)
-	if kind == "Update" then
+	if kind == "Finished" then
+		table.sort(tab,function(a,b)
+			return a[2] > b[2]
+		end)
+
+		for i = 1,10 do
+			local ui = FinishedUI.Placement:FindFirstChild(i)
+			if tab[i] then
+				ui.Visible = true
+				ui.PlayerName.Text = tab[i][1]..":"
+				ui.Score.Text = tab[i][2]
+				if tab[i][1] == game.Players.LocalPlayer.Name then
+					ui.BackgroundColor3 = Color3.new(0.901960, 0.843137, 0.058823)
+				else
+					ui.BackgroundColor3 = Color3.new(1, 1, 1)
+				end
+			else
+				ui.BackgroundColor3 = Color3.new(1, 1, 1)
+				ui.PlayerName.Text = ""
+				ui.Score.Text = ""
+			end
+		end
+	
+		local f = findTbl(game.Players.LocalPlayer.Name,tab)
+		if f then
+			local plr = tab[f]
+			if plr then
+				FinishedUI.Title.Text = "YOU PLACED "..toText[f]
+				local score = plr[2]
+				local eggs = plr[3]
+				FinishedUI.Eggs:FindFirstChild("Blue"):FindFirstChild("Number").Text = eggs["Blue"]
+				FinishedUI.Eggs:FindFirstChild("Red"):FindFirstChild("Number").Text = eggs["Red"]
+				FinishedUI.Eggs:FindFirstChild("Purple"):FindFirstChild("Number").Text = eggs["Purple"]
+				FinishedUI.Eggs:FindFirstChild("Green"):FindFirstChild("Number").Text = eggs["Green"]
+				FinishedUI.Eggs:FindFirstChild("Gold"):FindFirstChild("Number").Text = eggs["Gold"]
+
+				FinishedUI.Visible = true
+			end
+		end
+	elseif kind == "Update" then
 		table.sort(tab,function(a,b)
 			return a[2] > b[2]
 		end)
@@ -77,10 +164,12 @@ Remotes.EggHunt.OnClientEvent:Connect(function(kind,tab,all)
 			EventUI.Number.Text = score
 		end
 	elseif kind == "Collected" then
-		if tab:FindFirstChild("Collected") == nil then
-			Paths.Audio.Collected:Clone().Parent = tab
+		if tab then
+			if tab:FindFirstChild("Collected") == nil then
+				Paths.Audio.Collected:Clone().Parent = tab
+			end
+			tab.Collected:Play()
 		end
-		tab.Collected:Play()
 		if all then
 			Data = all
 			updateEggUI()
@@ -114,6 +203,30 @@ function EggHunt:UpdateEvent(Info)
 end
 
 updateEggUI()
+
+if Data then
+	for i,Unlockable in pairs (Paths.UI.Center.EggHunt.Unlockables.Frame:GetChildren()) do
+		if Unlockable:IsA("Frame") and itemList[Unlockable.Name] then
+			local Needed = itemList[Unlockable.Name].Needed
+			Unlockable.Claim.MouseButton1Down:Connect(function()
+				if TotalEggs >= Needed then
+					Remotes.EggHunt:FireServer(Unlockable.Name)
+				end
+			end)
+	
+			if TotalEggs >= Needed then
+				Unlockable.Claim.BackgroundColor3 = Color3.new(0.098039, 0.839215, 0)
+				Unlockable.Claim.UIStroke.Color = Color3.new(0.090196, 0.619607, 0.023529)
+				Unlockable.Claim.TextLabel.Text = "Claim"
+			end
+			if Data[3][Unlockable.Name] then
+				Unlockable.Claim.BackgroundColor3 = Color3.new(0, 0.811764, 0.839215)
+				Unlockable.Claim.UIStroke.Color = Color3.new(0.023529, 0.501960, 0.619607)
+				Unlockable.Claim.TextLabel.Text = "Claimed"
+			end
+		end
+	end
+end
 
 local ProximityPrompt
 if workspace:FindFirstChild("Easter") then

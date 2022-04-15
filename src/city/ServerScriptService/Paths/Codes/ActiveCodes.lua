@@ -14,7 +14,6 @@ local Active = {
 	--	ReturnText = "Accessory Received!"
 	--};
 
-
 	["MINERHAT"] = {
 		RewardType = "Accessory";
 		AccessoryType = "Accessory";

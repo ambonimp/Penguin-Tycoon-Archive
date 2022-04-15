@@ -191,13 +191,16 @@ local function SetupNewStats(Player)
 
 	if not Data["Event"] then
 		Data["Event"] = {
-			[1] = "Egg Hunt",
-			[2] = {
+			[1] = "Egg Hunt", -- event name
+			[2] = { --eggs found
 				["Blue"] = 0,
 				["Green"] = 0,
 				["Purple"] = 0,
 				["Red"] = 0,
 				["Gold"] = 0,
+			},
+			[3] = {
+				--unlocked
 			}
 		}
 	end
