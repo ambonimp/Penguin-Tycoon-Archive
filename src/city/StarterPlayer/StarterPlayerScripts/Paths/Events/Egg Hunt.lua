@@ -24,8 +24,8 @@ local TotalEggs = 0
 local Data = Services.RStorage.Remotes.GetStat:InvokeServer("Event")
 
 local itemList  = {
-	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 100},
-	["Easter Basket"] = {Type = "Accessory" , Needed = 150},
+	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 75},
+	["Easter Basket"] = {Type = "Accessory" , Needed = 25},
 	--["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
 	--["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
 	--["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
@@ -206,14 +206,9 @@ updateEggUI()
 
 if Data then
 	for i,Unlockable in pairs (Paths.UI.Center.EggHunt.Unlockables.Frame:GetChildren()) do
+		local Needed = 0
 		if Unlockable:IsA("Frame") and itemList[Unlockable.Name] then
-			local Needed = itemList[Unlockable.Name].Needed
-			Unlockable.Claim.MouseButton1Down:Connect(function()
-				if TotalEggs >= Needed then
-					Remotes.EggHunt:FireServer(Unlockable.Name)
-				end
-			end)
-	
+			Needed = itemList[Unlockable.Name].Needed
 			if TotalEggs >= Needed then
 				Unlockable.Claim.BackgroundColor3 = Color3.new(0.098039, 0.839215, 0)
 				Unlockable.Claim.UIStroke.Color = Color3.new(0.090196, 0.619607, 0.023529)
@@ -224,6 +219,13 @@ if Data then
 				Unlockable.Claim.UIStroke.Color = Color3.new(0.023529, 0.501960, 0.619607)
 				Unlockable.Claim.TextLabel.Text = "Claimed"
 			end
+		end
+		if Unlockable:FindFirstChild("Claim") then
+			Unlockable.Claim.MouseButton1Down:Connect(function()
+				if TotalEggs >= Needed then
+					Remotes.EggHunt:FireServer(Unlockable.Name)
+				end
+			end)
 		end
 	end
 end
