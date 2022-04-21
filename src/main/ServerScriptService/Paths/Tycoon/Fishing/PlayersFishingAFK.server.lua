@@ -6,7 +6,7 @@ local MessagingService = game:GetService("MessagingService")
 
 -- Constants
 local MESSAGING_TOPIC = "AFKFishingEvent"
-local ROUTINE_INTERVAL = 5
+local ROUTINE_INTERVAL = 20
 
 -- Members
 local servers = {}
