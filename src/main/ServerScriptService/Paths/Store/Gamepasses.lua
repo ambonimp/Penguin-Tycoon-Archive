@@ -14,15 +14,19 @@ local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandl
 
 --- Gamepass Variables ---
 local AllGamepasses = {
-	25313170,	 -- x2 Income
+	25313170, -- x2 Income
 	26268187, -- Faster Speed
 	26268229, -- Double Jump
 	26269102, -- VIP
 	28927736, -- Gold Fishing Rod
+	41205566, -- Luxury Boat
+	41205759, -- Powered Glider
 }
 
 local GamepassButtons = {
-	[28927736] = "Gold Fishing Rod#1"
+	[28927736] = "Gold Fishing Rod#1",
+	[41205566] = "Luxury Boat#1",
+	[41205759] = "Powered Glider#1"
 }
 
 
@@ -63,18 +67,13 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 			-- Gold Fishing Rod
 			elseif gamepass == 28927736 then
 				Modules.Tools.AddTool(Player, "Gold Fishing Rod")
-				
 			end
 		end
 		
 		-- Gamepass buttons/tycoon item
 		if GamepassButtons[gamepass] then
-			Data["Tycoon"][GamepassButtons[gamepass]] = true
-
-			local Tycoon = Modules.Ownership:GetPlayerTycoon(Player)
-			if Tycoon.Buttons:FindFirstChild(GamepassButtons[tonumber(gamepass)]) then
-				Modules.Placement:AnimateOut(Tycoon.Buttons[GamepassButtons[tonumber(gamepass)]])
-			end
+			local ButtonName = GamepassButtons[gamepass]
+			Modules.Purchasing:ItemPurchased(Player, ButtonName, true)
 		end
 	end
 end

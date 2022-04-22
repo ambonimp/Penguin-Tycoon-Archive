@@ -140,7 +140,13 @@ local function StartingCountdown(ChosenEvent)
 		end
 	end
 	-- Initiate Event
-	EventModules[ChosenEvent]:InitiateEvent(ChosenEvent)
+	local s,m = pcall(function()
+		EventModules[ChosenEvent]:InitiateEvent(ChosenEvent)
+	end)
+	
+	if s == false then
+		warn(m)
+	end
 
 	-- Spawn Players in
 	EventModules[ChosenEvent]:SpawnPlayers()
@@ -228,59 +234,74 @@ local function EventLoop()
 			workspace:SetAttribute("Minigame",true)
 			StartingCountdown(ChosenEvent)
 			
-			local Winners, DisplayText = StartEvent(ChosenEvent)
+			local Winners, DisplayText = nil,nil
 			
-			if Winners then
-				for _, winner in pairs(Winners) do
-					-- Fires a bindable event to notify server that this event has occured with given data
-					-- Used normally to integrate with Game Analytics / Dive / Playfab
-					local player = game.Players:FindFirstChild(winner)
-					local success, msg = pcall(function()
-						EventHandler:Fire("minigameWon", player, {
-							minigame = ChosenEvent
-						})
-					end)
-				end	
-				
-				local WinnersText = ""
-				for i, v in pairs(Winners) do
-					if i == #Winners then
-						WinnersText = WinnersText..v
-					else
-						WinnersText = WinnersText..v..", "
+			local s,m = pcall(function()
+				Winners, DisplayText = StartEvent(ChosenEvent)
+			end)
+			if s == false then
+				warn(m)
+			end
+			
+			local s,m = pcall(function()
+				if Winners then
+					for _, winner in pairs(Winners) do
+						-- Fires a bindable event to notify server that this event has occured with given data
+						-- Used normally to integrate with Game Analytics / Dive / Playfab
+						local player = game.Players:FindFirstChild(winner)
+						local success, msg = pcall(function()
+							EventHandler:Fire("minigameWon", player, {
+								minigame = ChosenEvent
+							})
+						end)
+					end	
+					
+					local WinnersText = ""
+					for i, v in pairs(Winners) do
+						if i == #Winners then
+							WinnersText = WinnersText..v
+						else
+							WinnersText = WinnersText..v..", "
+						end
 					end
-				end
 
-				if DisplayText then
+					if DisplayText then
+						EventValues.TextToDisplay.Value = DisplayText
+					else
+						EventValues.TextToDisplay.Value = "Winner(s): "..WinnersText.."!"
+					end
+
+					wait(2) -- Give time to flex n stuff
+				elseif DisplayText then
 					EventValues.TextToDisplay.Value = DisplayText
 				else
-					EventValues.TextToDisplay.Value = "Winner(s): "..WinnersText.."!"
+					EventValues.TextToDisplay.Value = "Nobody Wins!"
 				end
-
-				wait(2) -- Give time to flex n stuff
-			elseif DisplayText then
-				EventValues.TextToDisplay.Value = DisplayText
-			else
-				EventValues.TextToDisplay.Value = "Nobody Wins!"
-			end
+				
+				if ChosenEvent == "Soccer" then
+					wait(4)
+				else
+					wait(2)
+				end
+				
+				Remotes.Events:FireAllClients("Event Ended",ChosenEvent)
+				for i,player in pairs (game.Players:GetPlayers()) do
+					player:SetAttribute("Minigame","none")
+				end
+				-- End the event
+				workspace:SetAttribute("Minigame",false)
+				for index, playerName in pairs(Participants:GetChildren()) do
+					local player = game.Players:FindFirstChild(playerName.Name)
+					if player then
+						Modules.Character:Spawn(player)
+					end
+				end
+				
+			end)
 			
-			if ChosenEvent == "Soccer" then
-				wait(4)
-			else
-				wait(2)
+			if s == false then
+				warn(m)
 			end
-			
-			Remotes.Events:FireAllClients("Event Ended",ChosenEvent)
-			for i,player in pairs (game.Players:GetPlayers()) do
-				player:SetAttribute("Minigame","none")
-			end
-			-- End the event
-			workspace:SetAttribute("Minigame",false)
-			for index, playerName in pairs(Participants:GetChildren()) do
-				local player = game.Players:FindFirstChild(playerName.Name)
-				Modules.Character:Spawn(player)
-			end
-			
 
 		end
 	end

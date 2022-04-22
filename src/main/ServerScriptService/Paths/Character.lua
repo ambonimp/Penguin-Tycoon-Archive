@@ -10,6 +10,7 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 local Dependency = Paths.Dependency:WaitForChild(script.Name)
+local AllOutfits = Modules.AllOutfits
 
 --- Functions ---
 
@@ -40,49 +41,38 @@ function Character:Spawned(Player, Character, OldChar)
 	end
 end
 
-function Character:EquipShirt(Player,ShirtName)
-	local Shirt = Paths.Services.RStorage.Assets.Shirts:FindFirstChild(ShirtName):Clone()
-	local Character = Player.Character
+
+function Character:EquipShirt(Character,ShirtName)
 	if Character == nil then return end
+	if Character:FindFirstChild("Shirt") then
+		Character:FindFirstChild("Shirt"):Destroy()
+	end
+	if ShirtName == "None" then
+		return
+	end
+	local Shirt = Paths.Services.RStorage.Assets.Shirts:FindFirstChild(ShirtName):Clone()
+	local Model = Instance.new("Model")
+	Model.Parent = Character
+	Model.Name = "Shirt"
+	Model:SetAttribute("ItemName",ShirtName)
 	for i,part in pairs (Shirt:GetChildren()) do
-		if part.Name == "Left" then
-			if Character:FindFirstChild("Left") then
-				Character:FindFirstChild("Left"):Destroy()
-			end
-			local newLeft = part
-			local weld = Instance.new("WeldConstraint")
-			
-			newLeft.CFrame = Character["Arm L"].CFrame * CFrame.new(0,.175,0)
-			newLeft.Parent = Character
-			weld.Part0 = Character["Arm L"]
-			weld.Part1 = newLeft
-			weld.Parent = newLeft
-		elseif part.Name == "Right" then
-			if Character:FindFirstChild("Right") then
-				Character:FindFirstChild("Right"):Destroy()
-			end
-			local newRight = part
-			local weld = Instance.new("WeldConstraint")
+		if Character:FindFirstChild(part.Name) and part.Name ~= "Accessory" then
+			for _,realPart in pairs (part:GetChildren()) do
+				local old = Character:FindFirstChild(part.Name)
+				local new = realPart
 
-			newRight.CFrame = Character["Arm R"].CFrame * CFrame.new(0,.175,0)
-			newRight.Parent = Character
-			weld.Part0 = Character["Arm R"]
-			weld.Part1 = newRight
-			weld.Parent = newRight
-		elseif part.Name == "Center" then
-			if Character:FindFirstChild("Center") then
-				Character:FindFirstChild("Center"):Destroy()
+				new.CFrame = old.CFrame * part.CFrame:toObjectSpace(new.CFrame)
+				
+				local weld = Instance.new("WeldConstraint")
+				weld.Part0 = old
+				weld.Part1 = new
+				weld.Parent = new
+				new.Anchored = false
+				new.Parent = Model
 			end
-			local newMain = part
-			local weld = Instance.new("WeldConstraint")
-
-			newMain.CFrame = Character["Main"].CFrame * CFrame.new(0,-.175,-.42) * CFrame.Angles(0,math.rad(180),0)
-			newMain.Parent = Character
-			weld.Part0 = Character["Main"]
-			weld.Part1 = newMain
-			weld.Parent = newMain
 		end
 	end
+	Shirt:Destroy()
 end
 
 
@@ -109,6 +99,19 @@ function Character:Spawn(Player, Type)
 	if Data["Settings"]["Faster Speed"] then
 		Penguin.Humanoid.WalkSpeed *= Data["Walkspeed Multiplier"]
 	end
+
+	local lastChange = os.time()
+	Penguin:GetAttributeChangedSignal("PetAnimation"):Connect(function()
+		local lastc = lastChange
+		lastChange = os.time()
+		local last = Penguin:GetAttribute("PetAnimation")
+		if last ~= "none" then
+			task.wait(8)
+			if Penguin:GetAttribute("PetAnimation") == last and os.time()-lastc >= 7 then
+				Penguin:SetAttribute("PetAnimation","none")
+			end
+		end
+	end)
 
 	-- Insert custom nameplate
 	local NamePlate = Dependency.CustomName:Clone()

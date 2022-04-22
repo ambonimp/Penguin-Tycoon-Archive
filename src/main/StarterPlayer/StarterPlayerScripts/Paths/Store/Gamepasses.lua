@@ -21,6 +21,8 @@ local AllGamepasses = {
 	{26268229,"Jump twice!"}, -- Double Jump
 	{26269102,"VIP Tag and Golden Hearts!"}, -- VIP
 	{28927736,"x2 Fish"}, -- Gold Fishing Rod
+	{41205566,"Luxury Boat that drives faster!"}, -- Luxury Boat
+	{41205759,"Super Glider that flies faster!"}, -- Super Glider
 }
 
 

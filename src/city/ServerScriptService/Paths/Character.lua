@@ -7,7 +7,7 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
-
+local AllOutfits = Modules.AllOutfits
 --- Functions ---
 function Character:Spawned(Player, Character, OldChar)
 	wait()
@@ -48,74 +48,37 @@ function Character:MoveTo(Player, SpecificLocation)
 	end
 end
 
-function Character:EquipShirt(Player,ShirtName)
-	local Shirt = Paths.Services.RStorage.Assets.Shirts:FindFirstChild(ShirtName):Clone()
-	local Character = Player.Character
+function Character:EquipShirt(Character,ShirtName)
 	if Character == nil then return end
 	if Character:FindFirstChild("Shirt") then
 		Character:FindFirstChild("Shirt"):Destroy()
 	end
+	if ShirtName == "None" then
+		return
+	end
+	local Shirt = Paths.Services.RStorage.Assets.Shirts:FindFirstChild(ShirtName):Clone()
 	local Model = Instance.new("Model")
 	Model.Parent = Character
 	Model.Name = "Shirt"
-	if Shirt.PrimaryPart and Shirt.PrimaryPart.Name == "MainModel" then
+	Model:SetAttribute("ItemName",ShirtName)
+	for i,part in pairs (Shirt:GetChildren()) do
+		if Character:FindFirstChild(part.Name) and part.Name ~= "Accessory" then
+			for _,realPart in pairs (part:GetChildren()) do
+				local old = Character:FindFirstChild(part.Name)
+				local new = realPart
 
-		Shirt:SetPrimaryPartCFrame(Character:GetPrimaryPartCFrame())
-		for i,part in pairs (Shirt:GetChildren()) do
-			if part.Name ~= "MainModel" then
-				if Character:FindFirstChild(part.Name) then
-					local old = Character:FindFirstChild(part.Name)
-					local new = part
-					local weld = Instance.new("WeldConstraint")
-					local offset = nil
-					if old.Name == "Main" then
-						offset = Shirt.PrimaryPart.CFrame:toObjectSpace(new.CFrame)
-					end
-					if offset then
-						new.CFrame = old.CFrame * offset
-					else
-						new.CFrame = old.CFrame
-					end
-
-					weld.Part0 = old
-					weld.Part1 = new
-					weld.Parent = new
-					new.Parent = Model
-				end
-			end
-		end
-	else
-		for i,part in pairs (Shirt:GetChildren()) do
-			if part.Name == "Left" then
-				local newLeft = part
-				local weld = Instance.new("WeldConstraint")
+				new.CFrame = old.CFrame * part.CFrame:toObjectSpace(new.CFrame)
 				
-				newLeft.CFrame = Character["Arm L"].CFrame * CFrame.new(0,.175,0)
-				newLeft.Parent = Model
-				weld.Part0 = Character["Arm L"]
-				weld.Part1 = newLeft
-				weld.Parent = newLeft
-			elseif part.Name == "Right" then
-				local newRight = part
 				local weld = Instance.new("WeldConstraint")
-	
-				newRight.CFrame = Character["Arm R"].CFrame * CFrame.new(0,.175,0)
-				newRight.Parent = Model
-				weld.Part0 = Character["Arm R"]
-				weld.Part1 = newRight
-				weld.Parent = newRight
-			elseif part.Name == "Center" then
-				local newMain = part
-				local weld = Instance.new("WeldConstraint")
-	
-				newMain.CFrame = Character["Main"].CFrame * CFrame.new(Shirt:GetAttribute("X") or 0,Shirt:GetAttribute("Y") or 0,Shirt:GetAttribute("Z") or 0) * CFrame.Angles(0,math.rad(Shirt:GetAttribute("Rotation") or 0),0)
-				newMain.Parent = Model
-				weld.Part0 = Character["Main"]
-				weld.Part1 = newMain
-				weld.Parent = newMain
+				weld.Part0 = old
+				weld.Part1 = new
+				weld.Parent = new
+				new.Anchored = false
+				new.Parent = Model
 			end
 		end
 	end
+	Shirt:Destroy()
 end
 
 function Character:Spawn(Player, SpecificLocation,DontLoad)
@@ -145,6 +108,18 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 	if Data["Settings"]["Faster Speed"] then
 		Penguin.Humanoid.WalkSpeed *= Data["Walkspeed Multiplier"]
 	end
+	local lastChange = os.time()
+	Penguin:GetAttributeChangedSignal("PetAnimation"):Connect(function()
+		local lastc = lastChange
+		lastChange = os.time()
+		local last = Penguin:GetAttribute("PetAnimation")
+		if last ~= "none" then
+			task.wait(8)
+			if Penguin:GetAttribute("PetAnimation") == last and os.time()-lastc >= 7 then
+				Penguin:SetAttribute("PetAnimation","none")
+			end
+		end
+	end)
 
 	-- Insert custom nameplate
 	local NamePlate = Dependency.CustomName:Clone()
@@ -155,9 +130,9 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 	--NamePlate.PlayerToHideFrom = Player
 
 
-	Modules.Penguins:LoadPenguin(Penguin, Data["My Penguin"],DontLoad)
+	Modules.Penguins:LoadPenguin(Penguin, Data["My Penguin"],nil,nil,nil)
 	
-
+ 
 
 	-- Make sure the penguin doesn't fall into unloaded parts
 	Penguin.HumanoidRootPart.Anchored = true
@@ -166,7 +141,9 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 		if Penguin:FindFirstChild("HumanoidRootPart") then
 			Penguin.HumanoidRootPart.Anchored = false
 		end
+		--[[]]
 	end)()
+
 	return Penguin
 end
 

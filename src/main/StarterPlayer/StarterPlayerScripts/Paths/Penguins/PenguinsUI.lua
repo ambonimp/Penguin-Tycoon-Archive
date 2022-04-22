@@ -16,12 +16,13 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 local PenguinList = UI.Center.Penguins.List
 local CustomizationUI = UI.Left.Customization
 
+local PenguinsData = Remotes.GetStat:InvokeServer("Penguins")
+
 
 
 --- Setup Penguins ---
 function PenguinsUI:SetupPenguin(Penguin)
 	if PenguinList:FindFirstChild(Penguin.Name) then return end
-	
 	local Template = Dependency.PenguinTemplate:Clone()
 	Template.Penguin.Value = Penguin
 	Template.Name = Penguin.Name
@@ -38,11 +39,12 @@ function PenguinsUI:SetupPenguin(Penguin)
 	
 	Template.Upgrade.MouseButton1Down:Connect(function()
 		if Penguin:GetAttribute("Income") then
-			local UpgradeSuccess, Info = Remotes.Customization:InvokeServer("Upgrade", Penguin)
-
+			local UpgradeSuccess, Info, NewData = Remotes.Customization:InvokeServer("Upgrade", Penguin)
+			if NewData then
+				PenguinsData = NewData
+			end
 			if UpgradeSuccess then
 				PenguinsUI:PenguinInfoUpdated(Penguin)
-
 			else
 				local Reason = Info
 
@@ -56,7 +58,10 @@ function PenguinsUI:SetupPenguin(Penguin)
 end
 
 -- Update penguins when they are upgraded
-Remotes.Store.OnClientEvent:Connect(function(PurchaseType, PurchaseInfo, IsPurchased)
+Remotes.Store.OnClientEvent:Connect(function(PurchaseType, PurchaseInfo, IsPurchased,NewPenguinsData)
+	if NewPenguinsData then
+		PenguinsData = NewPenguinsData
+	end
 	if PurchaseType == "Penguin Upgraded" then
 		if IsPurchased then -- If purchase was true/successful then 
 			PenguinsUI:PenguinInfoUpdated(PurchaseInfo)
@@ -139,6 +144,9 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 		-- Is an npc penguin
 		else 
 			local PenguinName = Penguin.Info.PenguinInfo.PenguinName.Text
+			if Penguin.Info.PenguinInfo.PenguinLevel.Text == "Level X" then
+				Penguin.Info.PenguinInfo.PenguinLevel.Text = "Level 1"
+			end
 			local PenguinLevel = tonumber(string.split(string.split(Penguin.Info.PenguinInfo.PenguinLevel.Text, "/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL))[1], " ")[2])
 			
 			local Income = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), PenguinLevel)

@@ -54,7 +54,7 @@ function Soccer:SpawnPlayers(ChosenBugName, ChosenBugNum)
 			local Character = Modules.Character:Spawn(player, SpawnPos)
 			Character.Humanoid.WalkSpeed = 0
 
-			Modules.Character:EquipShirt(player,"BlueJersey")
+			Modules.Character:EquipShirt(player.Character,"Blue Jersey")
 			
 			Character:SetAttribute("Team","Blue")
 		end
@@ -67,7 +67,7 @@ function Soccer:SpawnPlayers(ChosenBugName, ChosenBugNum)
 			local Character = Modules.Character:Spawn(player, SpawnPos)
 			Character.Humanoid.WalkSpeed = 0
 			
-			Modules.Character:EquipShirt(player,"RedJersey")
+			Modules.Character:EquipShirt(player.Character,"Red Jersey")
 			
 			Character:SetAttribute("Team","Red")
 		end

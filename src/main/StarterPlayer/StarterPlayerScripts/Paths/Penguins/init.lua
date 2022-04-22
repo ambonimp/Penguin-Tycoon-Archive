@@ -70,10 +70,16 @@ local function ButtonClicked(button)
 	UIdb = false
 end
 
+function Penguins.ButtonClicked(Button)
+	ButtonClicked(Button)
+end
+
 for i, Button in pairs(CustomizationUI.Customization.Buttons:GetChildren()) do
-	Button.MouseButton1Down:Connect(function()
-		ButtonClicked(Button)
-	end)
+	if Button:IsA("ImageButton") then
+		Button.MouseButton1Down:Connect(function()
+			ButtonClicked(Button)
+		end)
+	end
 end
 
 

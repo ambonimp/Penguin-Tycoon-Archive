@@ -1,6 +1,3 @@
--- Handles everything to do with the player penguin and other customizable penguins;
--- Loading penguin appearance, equipping accessories and eyes, changing bodycolor, and upgrading
-
 local Penguins = {}
 
 --- Main Variables ---
@@ -12,12 +9,9 @@ local Remotes = Paths.Remotes
 
 
 --- Initializing ---
-
--- Adds the default penguin information to the player's data when it's purchased
--- Player: Object, PenguinName: String
 function Penguins:PenguinPurchased(Player, PenguinName)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	
+
 	if Data then
 		Data["Penguins"][PenguinName] = {
 			["Name"] = 	 string.split(PenguinName, "#")[1];
@@ -30,11 +24,9 @@ function Penguins:PenguinPurchased(Player, PenguinName)
 end
 
 
--- Loads penguin appearance
--- Penguin: Object/Model, Info: info table as seen above
-function Penguins:LoadPenguin(Penguin, Info)
+function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoadColor,Player)
 	-- Load penguin appearance
-	if Info["BodyColor"] ~= "Default" then
+	if Info["BodyColor"] ~= "Default" and not DontLoadColor then
 		local Color = Color3.new(Info["BodyColor"]["R"], Info["BodyColor"]["G"], Info["BodyColor"]["B"])
 
 		local PenguinBody = Penguin:FindFirstChild("Main")
@@ -47,9 +39,8 @@ function Penguins:LoadPenguin(Penguin, Info)
 			PenguinArmR.Color = Color
 		end
 	end
-	
 	-- Load accessory
-	if Info["Accessory"] ~= "Default" then
+	if Info["Accessory"] ~= "Default" and not DontLoadHat then
 		local Humanoid = Penguin:FindFirstChild("Humanoid")
 		local Model = Services.SStorage.Accessories:FindFirstChild(Info["Accessory"])
 
@@ -65,9 +56,13 @@ function Penguins:LoadPenguin(Penguin, Info)
 			Humanoid:AddAccessory(Model)
 		end
 	end
-	
+
+	if Info["Outfit"] then
+		Modules.Character:EquipShirt(Penguin,Info["Outfit"])
+	end
+
 	-- Load eyes
-	if Info["Eyes"] and Info["Eyes"] ~= "Default" then
+	if Info["Eyes"] and not DontLoadEyes then
 		local Humanoid = Penguin:FindFirstChild("Humanoid")
 		local Model = Services.SStorage.Eyes:FindFirstChild(Info["Eyes"])
 
@@ -83,8 +78,7 @@ function Penguins:LoadPenguin(Penguin, Info)
 			Humanoid:AddAccessory(Model)
 		end
 	end
-	
-	-- Load penguin stats
+
 	local PenguinInfo = Penguin:WaitForChild("Info", 1)
 
 	if PenguinInfo then
@@ -96,8 +90,6 @@ function Penguins:LoadPenguin(Penguin, Info)
 end
 
 
--- Changes the penguin name; for both the player nickname and customizable penguins
--- Player: Object, Penguin: Object/Model, NewName: String
 Penguins["Change Name"] = function(Player, Penguin, NewName)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 
@@ -105,10 +97,10 @@ Penguins["Change Name"] = function(Player, Penguin, NewName)
 		local Success, Result = pcall(function()
 			return Services.TextService:FilterStringAsync(NewName, Player.UserId)
 		end)
-		
+
 		if Success and string.len(NewName) <= 20 then
 			local FilteredName = Result:GetNonChatStringForUserAsync(Player.UserId)
-			
+
 			if Success then
 				if Data["Penguins"][Penguin.Name] then
 					Data["Penguins"][Penguin.Name]["Name"] = FilteredName
@@ -117,21 +109,21 @@ Penguins["Change Name"] = function(Player, Penguin, NewName)
 					Data["My Penguin"]["Name"] = FilteredName
 					Penguin.HumanoidRootPart.CustomName.PlrName.Text = FilteredName
 				end
-				
-				
+
+
 				return true, FilteredName
 			end
 		end
-		
+
 		return false, Data["Penguins"][Penguin.Name]["Name"]
 	end
 end
 
 
--- Equipping a new accessory, replaces the old one if a new one is attempting to be equipped
--- Player: Object, Penguin: Object/Model, Accessory: String (the name of the accessory)
 Penguins["Equip Accessory"] = function(Player, Penguin, Accessory)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
+	if not Penguin or not Data then return end
+	
 	local Humanoid = Penguin:FindFirstChild("Humanoid")
 	local Model = Services.SStorage.Accessories:FindFirstChild(Accessory)
 
@@ -144,8 +136,9 @@ Penguins["Equip Accessory"] = function(Player, Penguin, Accessory)
 		-- Change accessory in data
 		if Penguin == Player.Character then -- If it's their own penguin, save to their own table
 			Data["My Penguin"]["Accessory"] = Accessory
-		else
+		elseif Data["Penguins"][Penguin.Name] then
 			Data["Penguins"][Penguin.Name]["Accessory"] = Accessory
+		else return
 		end
 
 		-- Add physical accessory
@@ -155,11 +148,20 @@ Penguins["Equip Accessory"] = function(Player, Penguin, Accessory)
 	end
 end
 
+Penguins["Equip Outfits"] = function(Player, Outfit)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+	if not Data then return end
+	if Data["Outfits"][Outfit] then
+		Data["My Penguin"]["Outfit"] = Outfit
+		Modules.Character:EquipShirt(Player.Character,Outfit)
+	end
+end
 
--- Equipping new eyes, replaces the old eyes if the new eyes are different
--- Player: Object, Penguin: Object/Model, Eyes: String (the name of the eyes)
+
 Penguins["Equip Eyes"] = function(Player, Penguin, Eyes)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
+	if not Penguin or not Data then return end
+	
 	local Humanoid = Penguin:FindFirstChild("Humanoid")
 	local Model = Services.SStorage.Eyes:FindFirstChild(Eyes)
 
@@ -172,8 +174,9 @@ Penguins["Equip Eyes"] = function(Player, Penguin, Eyes)
 		-- Change accessory in data
 		if Penguin == Player.Character then -- If it's their own penguin, save to their own table
 			Data["My Penguin"]["Eyes"] = Eyes
-		else
+		elseif Data["Penguins"][Penguin.Name] then
 			Data["Penguins"][Penguin.Name]["Eyes"] = Eyes
+		else return
 		end
 
 		-- Add physical accessory
@@ -184,28 +187,26 @@ Penguins["Equip Eyes"] = function(Player, Penguin, Eyes)
 end
 
 
--- Changes body color of the penguin
--- Player: Object, Penguin: Object/Model, Color: Color3 value
--- IMPORTANT: Color data *MUST NOT* be saved as a Color3 as it's considered a 'userdata' - this would make the data unable to be saved completely, as such resulting in data loss until their data is manually fixed and not containing userdata
 Penguins["Change BodyColor"] = function(Player, Penguin, Color)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
+	if not Penguin or not Data then return end
 
 	if Data["Penguins"][Penguin.Name] or Player.Character == Penguin then
 		-- Create color table
 		local ColorTable = {["R"] = Color.R, ["G"] = Color.G, ["B"] = Color.B}
-		
+
 		-- Change Color in data
 		if Penguin == Player.Character then -- If it's their own penguin, save to their own table
 			Data["My Penguin"]["BodyColor"] = ColorTable
 		else
 			Data["Penguins"][Penguin.Name]["BodyColor"] = ColorTable
 		end
-		
+
 		-- Change physical penguin color
 		local PenguinBody = Penguin:FindFirstChild("Main")
 		local PenguinArmL = Penguin:FindFirstChild("Arm L") or Penguin:FindFirstChild("ArmL")
 		local PenguinArmR = Penguin:FindFirstChild("Arm R") or Penguin:FindFirstChild("ArmR")
-		
+
 		if PenguinBody and PenguinArmL and PenguinArmR then
 			PenguinBody.Color = Color
 			PenguinArmL.Color = Color
@@ -213,7 +214,6 @@ Penguins["Change BodyColor"] = function(Player, Penguin, Color)
 		end
 	end
 end
-
 
 -- Upgrades the penguin level (Regular penguins; max level is 10, found in RStorage.Modules.GameInfo.MAX_PENGUIN_LEVEL, player penguin: no max level)
 -- Player: Object, Penguin: Object/Model
@@ -256,9 +256,8 @@ function Penguins:UpgradePenguin(Player, Penguin)
 	Data["Income"] += IncomeToGive
 	Player:SetAttribute("Income", Data["Income"])
 	
-	return true, Level
+	return true, Level, Data["Penguins"]
 end
-
 
 -- This initiates and does the checks if the upgrade is valid
 -- Player: Object, Penguin: Object/Model
@@ -307,11 +306,23 @@ Penguins["Upgrade"] = function(Player, Penguin)
 end
 
 
--- Receives and fires the correct function
+
+Penguins["Equip Emote"] = function(Player, Emote, Slot)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+	
+	if Data then
+		-- If player has the emote and slot is valid then
+		if Data["Equipped Emotes"][tostring(Slot)] and Data["Emotes"][Emote] then
+			Data["Equipped Emotes"][tostring(Slot)] = Emote
+		end
+	end
+end
+
+
 Remotes.Customization.OnServerInvoke = function(Player, Function, Penguin, Info1)
 	if Penguins[Function] then
 		local a, b = Penguins[Function](Player, Penguin, Info1)
-		
+
 		return a, b
 	end
 end

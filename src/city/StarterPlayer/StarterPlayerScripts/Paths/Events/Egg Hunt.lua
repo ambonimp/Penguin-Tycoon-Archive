@@ -24,14 +24,12 @@ local TotalEggs = 0
 local Data = Services.RStorage.Remotes.GetStat:InvokeServer("Event")
 
 local itemList  = {
-	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 400},
-	["Easter Basket"] = {Type = "Accessory" , Needed = 1200},
-	--["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
-	--["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
-	--["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
-	--["Chick In An Egg"] = {Type = "Accessory" , Needed = {"Gold",60}},
+	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 200},
+	["Finding Egg"] = {Type = "Emote" , Needed = 400},
+	["Bunny Hop"] = {Type = "Emote" , Needed = 500},
+	["Eating Egg"] = {Type = "Emote" , Needed = 600},
+	["Easter Basket"] = {Type = "Accessory" , Needed = 750},
 }
-
 
 local toText = {
 	[1] = "1ST",
@@ -88,6 +86,10 @@ function updateEggUI()
 		end
 	end
 end
+
+Paths.UI.Center.EggHunt.MoreEggs.MouseButton1Down:Connect(function()
+	Services.MPService:PromptProductPurchase(Paths.Player, 1258558775)
+end)
 
 function findTbl(playerName,EggsCollected)
 	for i,v in pairs (EggsCollected) do
@@ -205,12 +207,12 @@ function EggHunt:UpdateEvent(Info)
 end
 
 updateEggUI()
-
 if Data then
 	for i,Unlockable in pairs (Paths.UI.Center.EggHunt.Unlockables.Frame:GetChildren()) do
 		local Needed = 0
 		if Unlockable:IsA("Frame") and itemList[Unlockable.Name] then
 			Needed = itemList[Unlockable.Name].Needed
+			Unlockable.Price.Number.Text = Needed
 			if TotalEggs >= Needed then
 				Unlockable.Claim.BackgroundColor3 = Color3.new(0.098039, 0.839215, 0)
 				Unlockable.Claim.UIStroke.Color = Color3.new(0.090196, 0.619607, 0.023529)
@@ -226,6 +228,10 @@ if Data then
 			Unlockable.Claim.MouseButton1Down:Connect(function()
 				if TotalEggs >= Needed then
 					Remotes.EggHunt:FireServer(Unlockable.Name)
+
+					Unlockable.Claim.BackgroundColor3 = Color3.new(0, 0.811764, 0.839215)
+					Unlockable.Claim.UIStroke.Color = Color3.new(0.023529, 0.501960, 0.619607)
+					Unlockable.Claim.TextLabel.Text = "Claimed"
 				end
 			end)
 		end

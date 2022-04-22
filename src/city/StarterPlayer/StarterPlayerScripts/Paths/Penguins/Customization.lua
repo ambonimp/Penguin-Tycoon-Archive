@@ -93,6 +93,7 @@ function Customization:EnterUI(Penguin)
 	
 	-- Disable things for entering ui
 	Modules.Character:Freeze()
+	UI.Left.GemDisplay.Visible = false
 	UI.Left.Buttons.Visible = false
 	UI.Center.Visible = false
 	UI.Bottom.Buttons.Visible = false
@@ -143,6 +144,16 @@ function Customization:EnterUI(Penguin)
 		end
 	end
 
+	local CurrentOutfit = Penguin:FindFirstChild("Shirt")
+
+	if CurrentOutfit then
+		if CustomizationUI.Customization.Sections.Outfits.Holder:FindFirstChild(CurrentOutfit:GetAttribute("ItemName")) then
+			SelectedAccessoryUI.Parent = CustomizationUI.Customization.Sections.Outfits.Holder[CurrentOutfit:GetAttribute("ItemName")]
+		end
+	else
+		SelectedAccessoryUI.Parent = CustomizationUI.Customization.Sections.Outfits.Holder["None"]
+	end
+
 	local PenguinBody = Penguin:WaitForChild("Main", 3)
 
 	if PenguinBody then
@@ -171,7 +182,7 @@ function Customization:ExitUI()
 	
 	-- Tween out UI
 	CustomizationUI:TweenPosition(UDim2.new(-1.5, 0, 0.5, 0), "In", "Back", 0.3, true)
-	
+	UI.Left.GemDisplay.Visible = true
 	UI.Left.Buttons.Visible = true
 	UI.Center.Visible = true
 	UI.Bottom.Buttons.Visible = true

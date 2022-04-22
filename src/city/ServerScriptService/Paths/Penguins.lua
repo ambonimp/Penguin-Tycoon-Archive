@@ -24,7 +24,7 @@ function Penguins:PenguinPurchased(Player, PenguinName)
 end
 
 
-function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoadColor)
+function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoadColor,Player)
 	-- Load penguin appearance
 	if Info["BodyColor"] ~= "Default" and not DontLoadColor then
 		local Color = Color3.new(Info["BodyColor"]["R"], Info["BodyColor"]["G"], Info["BodyColor"]["B"])
@@ -55,6 +55,10 @@ function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoad
 			Model.Name = "Customization_Accessory"
 			Humanoid:AddAccessory(Model)
 		end
+	end
+
+	if Info["Outfit"] then
+		Modules.Character:EquipShirt(Penguin,Info["Outfit"])
 	end
 
 	-- Load eyes
@@ -132,6 +136,15 @@ Penguins["Equip Accessory"] = function(Player, Penguin, Accessory)
 		local Model = Model:Clone()
 		Model.Name = "Customization_Accessory"
 		Humanoid:AddAccessory(Model)
+	end
+end
+
+Penguins["Equip Outfits"] = function(Player, Outfit)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+	if not Data then return end
+	if Data["Outfits"][Outfit] then
+		Data["My Penguin"]["Outfit"] = Outfit
+		Modules.Character:EquipShirt(Player.Character,Outfit)
 	end
 end
 

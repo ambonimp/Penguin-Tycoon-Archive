@@ -13,23 +13,27 @@ local UI = Paths.UI
 --- Handle Store Buttons ---
 local Store = UI.Center.Store
 
-local PreviousOpen = Store.Sections.Accessories
+local PreviousOpen = {
+	[Store] = Store.Sections.Accessory,
+	[UI.Center.Clothing] = UI.Center.Clothing.Sections.Accessory,
+}
+	
 local Debounce = false
 
 -- Initialize Accessories being open
-Store.Sections.Accessories.Visible = true
-Store.Sections.Accessories.Position = UDim2.new(0.5, 0, 0.5, 0)
-Store.Buttons.Accessories.BackgroundTransparency = 0.2
+Store.Sections.Accessory.Visible = true
+Store.Sections.Accessory.Position = UDim2.new(0.5, 0, 0.5, 0)
+Store.Buttons.Accessory.BackgroundTransparency = 0.2
 
-local function ButtonClicked(button)
+local function ButtonClicked(button,Store)
 	if Debounce then return end
 	Debounce = true
 
 	-- If button clicked is the same as previous open, just turn it off
-	if PreviousOpen ~= Store.Sections[button.Name] then
+	if PreviousOpen[Store] ~= Store.Sections[button.Name] then
 		-- Out
-		PreviousOpen:TweenPosition(UDim2.new(0.5, 0, 1.7, 0), "Out", "Quart", 0.2, true)
-		Store.Buttons[PreviousOpen.Name].BackgroundTransparency = 0.8
+		PreviousOpen[Store]:TweenPosition(UDim2.new(0.5, 0, 1.7, 0), "Out", "Quart", 0.2, true)
+		Store.Buttons[PreviousOpen[Store].Name].BackgroundTransparency = 0.8
 		
 		-- In
 		Store.Sections[button.Name].Position = UDim2.new(0.5, 0, 1.7, 0)
@@ -38,8 +42,8 @@ local function ButtonClicked(button)
 		button.BackgroundTransparency = 0.2
 		
 		task.wait(0.15)
-		PreviousOpen.Visible = false
-		PreviousOpen = Store.Sections[button.Name]
+		PreviousOpen[Store].Visible = false
+		PreviousOpen[Store] = Store.Sections[button.Name]
 	end
 
 	Debounce = false
@@ -47,33 +51,27 @@ end
 
 for i, Button in pairs(Store.Buttons:GetChildren()) do
 	Button.MouseButton1Down:Connect(function()
-		ButtonClicked(Button)
+		ButtonClicked(Button,Store)
 	end)
 end
 
--- Connecting the "+" (buy more) buttons to open the sections inside the UIs
-UI.Top.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Money)
-end)
-
-UI.Top.GemDisplay.BuyMore.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Money)
-end)
-
 UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Accessories)
+	ButtonClicked(Store.Buttons.Accessories,Store)
+end)
+
+UI.Left.Customization.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButton1Down:Connect(function()
+	ButtonClicked(UI.Center.Clothing.Buttons.Outfits,UI.Center.Clothing)
 end)
 
 UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Accessories)
+	ButtonClicked(Store.Buttons.Accessories,Store)
 end)
 
-
--- Refresh button
-Store.Sections.Accessories.Refresh.MouseButton1Down:Connect(function()
-	Services.MPService:PromptProductPurchase(Paths.Player, 1233004731)
-end)
-
+for i, Button in pairs(UI.Center.Clothing.Buttons:GetChildren()) do
+	Button.MouseButton1Down:Connect(function()
+		ButtonClicked(Button,UI.Center.Clothing)
+	end)
+end
 
 
 return Store

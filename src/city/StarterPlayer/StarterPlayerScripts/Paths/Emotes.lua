@@ -318,6 +318,10 @@ coroutine.wrap(function()
 			Emotes:NewEmote(Emote)
 		end
 	end
+	
+	Services.RStorage.Remotes.NewEmote.OnClientEvent:Connect(function(emote)
+		Emotes:NewEmote(emote)
+	end)
 
 	for Slot, EquippedEmote in pairs(EquippedEmotes) do
 		Emotes:EquipEmote(EquippedEmote, Slot)

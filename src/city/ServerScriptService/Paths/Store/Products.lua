@@ -16,6 +16,7 @@ local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandl
 --- Product Variables ---
 local MoneyProducts = {[1224873708] = true, [1224873843] = true, [1224873847] = true, [1224873846] = true, [1224873844] = true, [1224873842] = true}
 local AccessoryProducts = {[1231222251] = true, [1231222252] = true, [1231222253] = true}
+local OutfitProducts = {[1259048717] = true, [1259048739] = true, [1259048664] = true}
 local EyesProducts = {[1232615468] = true}
 
 local PenguinProducts = {
@@ -72,6 +73,10 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 		elseif AccessoryProducts[product] then
 			Modules.Accessories:AccessoryPurchased(Player)
 			
+		-- Outfit Products
+		elseif OutfitProducts[product] then
+			Modules.Accessories:OutfitPurchased(Player)
+				
 			
 		-- Eyes Products
 		elseif EyesProducts[product] then
@@ -88,6 +93,20 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 		-- Refresh Store
 		elseif product == 1233004731 then
 			Modules.Accessories:RefreshStore(Player)
+
+		--50 eggs event product
+		elseif product == 1258558775 then
+			local data =  Modules.PlayerData.sessionData[Player.Name]
+			if data then
+				data["Event"][2]["Blue"] += 10
+				data["Event"][2]["Green"] += 10
+				data["Event"][2]["Purple"] += 10
+				data["Event"][2]["Red"] += 10
+				data["Event"][2]["Gold"] += 10
+				Remotes.EggHunt:FireClient(Player,"Collected",nil,data["Event"])
+			else
+				return Enum.ProductPurchaseDecision.NotProcessedYet
+			end
 		end
 	end
 	

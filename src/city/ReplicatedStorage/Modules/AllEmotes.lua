@@ -105,6 +105,74 @@ Emotes.All = {
 	["Floss"] = {ID = 8210262128, Rarity = "Free", IsForSale = false,Image = 8527636921};
 	["Push Ups"] = {ID = 8210259556, Rarity = "Free", IsForSale = false,Image = 8527636706};
 
+	["Bunny Hop"] = {ID = 9412022744, Rarity = "Event",EventName = "Egg Hunt", IsForSale = false,Image = 9375659185};
+	["Eating Egg"] = {ID = 9412038945, Rarity = "Event",EventName = "Egg Hunt", IsForSale = false,Image = 9375658638,Prop = true,
+		PropFunction = function(player,track)
+			local cf = player.Character:GetPrimaryPartCFrame() 
+			local prop = game.ReplicatedStorage.Assets["Chocolate Egg"]:Clone()
+			prop:SetAttribute("Time",track.Length)
+			resizeModel(prop,.01)
+			player.Character.Humanoid.WalkSpeed = 0
+			track:GetMarkerReachedSignal("START"):Connect(function()
+				prop:SetPrimaryPartCFrame(cf*CFrame.new(0,1.5,-2.15))
+				prop.Parent = workspace.Props
+
+				tweenModelSize(prop, .4, 100, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
+				for i = 1,3 do
+					tweenModelSize(prop, .2, .75, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+					task.wait(.1)
+				end
+			end)
+			track:GetMarkerReachedSignal("END"):Connect(function()
+				if prop then
+					prop:Destroy()
+				end
+			end)
+			player.Character.Humanoid.WalkSpeed = 32
+			track:Play()
+		end
+	};
+	["Finding Egg"] = {ID = 9412054426, Rarity = "Event",EventName = "Egg Hunt", IsForSale = false,Image = 9375658964,Prop = true,
+		PropFunction = function(player,track)
+			local cf = player.Character:GetPrimaryPartCFrame() 
+			local prop = game.ReplicatedStorage.Assets["Gold Egg"]:Clone()
+			prop:SetAttribute("Time",track.Length)
+			resizeModel(prop,.01)
+			prop.Parent = workspace.Props
+			prop:SetPrimaryPartCFrame(cf*CFrame.new(0,-2,-2.5))
+			player.Character.Humanoid.WalkSpeed = 0
+			tweenModelSize(prop, .4, 85, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
+
+
+			track:GetMarkerReachedSignal("PICKUP"):Connect(function()
+				if prop then
+					for i,v in pairs (prop:GetChildren()) do
+						v.Anchored = false
+						if v ~= prop.PrimaryPart then
+							local weld = Instance.new("WeldConstraint")
+							weld.Part0 = prop.PrimaryPart
+							weld.Part1 = v
+							weld.Parent = v
+						end
+					end
+
+					prop:SetPrimaryPartCFrame(prop:GetPrimaryPartCFrame()*CFrame.new(-.25,.25,0)*CFrame.Angles(math.rad(-65),0,math.rad(-10)))
+	
+					local weld = Instance.new("WeldConstraint")
+					weld.Part0 = player.Character["Arm L"]
+					weld.Part1 = prop.PrimaryPart
+					weld.Parent = prop.PrimaryPart
+				end
+			end)
+			track:GetMarkerReachedSignal("DROP"):Connect(function()
+				if prop then
+					prop:Destroy()
+				end
+			end)
+			player.Character.Humanoid.WalkSpeed = 32
+			track:Play()
+		end
+	};
 	["Stove Opening"] = {ID = 9185940435, Rarity = "Free", IsForSale = false,Image = 9193895325,Prop = true,
 		PropFunction = function(player,track)
 			local cf = player.Character:GetPrimaryPartCFrame() 
@@ -119,7 +187,6 @@ Emotes.All = {
 			local raycastResult = workspace:Raycast(rayOrigin, rayDirection, raycastParams)
 			
 			if raycastResult then
-				print(raycastResult)
 				local hasOvenParent = raycastResult.Instance.Parent.Name == "Oven" or raycastResult.Instance.Parent.Parent.Name == "Oven" 
 				if hasOvenParent then
 					local oven
@@ -164,7 +231,7 @@ Emotes.All = {
 					prop:SetPrimaryPartCFrame(cf)
 					prop.Parent = workspace.Props
 					spawn(function()
-						tweenModelSize(prop, .4, 100, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
+						tweenModelSize(prop, .4, 80, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
 					end)
 					while not ended and prop and prop.PrimaryPart do
 						if prop then

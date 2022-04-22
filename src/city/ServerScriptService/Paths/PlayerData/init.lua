@@ -72,10 +72,15 @@ function PlayerData:SetupPlayerData(player)
 					["BodyColor"] = "Default";
 					["Accessory"] = "None";
 					["Eyes"] = "Default";
+					["Outfit"] = "None";
 				},
 
 				-- Accessory Info
 				["Accessories"] = {
+					["None"] = true;
+				},
+
+				["Outfits"] = {
 					["None"] = true;
 				},
 				
@@ -104,7 +109,7 @@ function PlayerData:SetupPlayerData(player)
 				["Rotation Timer"] = os.time();
 				--["Rotation Index"] = 1;
 				["Accessory Rotation"] = Modules.AllAccessories:ChooseStoreAccessories();
-
+				--["Outfits Rotation"] = Modules.AllOutfits:ChooseStoreAccessories();
 				-- Social Stats
 				["Hearts"] = 0,
 				["Regular Hearts Given"] = {},
@@ -161,8 +166,12 @@ local function SetupNewStats(Player)
 	end
 
 	if not Data["Eyes Rotation"] then
-		Data["Eyes Rotation"] = Modules.AllEyes:ChooseStoreEyes();
+		Data["Eyes Rotation"] = Modules.AllEyes:ChooseStoreEyes()
 	end
+
+	--[[if not Data["Outfits Rotation"] then
+		Data["Outfits Rotation"] = Modules.AllOutfits:ChooseStoreAccessories()
+	end]]
 	
 	if not Data["LastPlayTime"] then
 		Data["LastPlayTime"] = os.time()-(30*60)
@@ -205,27 +214,31 @@ local function SetupNewStats(Player)
 		}
 	end
 
-	Data["Emotes"] = {
-		["Sit"] = true;
-		["Wave"] = true;
-		["Sleep"] = true;
-		["Point"] = true;
-		["Salute"] = true;
-		["Whack"] = true;
-		["Dab"] = true;
-		["Wavy"] = true;
-		["Clap"] = true;
-		["Hug"] = true;
-		["Shy"] = true;
-		["Floss"] = true;
-		["Push Ups"] = true;
-		["Stove Opening"] = true;
-		["Dough Flipping"] = true;
-		["Cheering"] = true;
-		["Crying"] = true;
-		["Giving Pizza"] = true;
-		["Vegetable Cutting"] = true;
-	}
+	if Data["Event"] then
+		if not Data["Event"][3] then
+			Data["Event"][3] = {}
+		end
+	end
+
+	if not Data["Outfits"] then
+		Data["Outfits"] = {
+			["None"] = true,
+		}
+	end
+
+	if not Data["My Penguin"]["Outfit"] then
+		Data["My Penguin"]["Outfit"] = "None"
+	end
+
+	if not Data["Emotes"]["Vegetable Cutting"] then
+		Data["Emotes"]["Vegetable Cutting"] = true;
+		Data["Emotes"]["Giving Pizza"] = true;
+		Data["Emotes"]["Crying"] = true;
+		Data["Emotes"]["Stove Opening"] = true;
+		Data["Emotes"]["Dough Flipping"] = true;
+		Data["Emotes"]["Cheering"] = true;
+	end
+		
 
 	if not Data["Equipped Emotes"] then
 		Data["Equipped Emotes"] = {

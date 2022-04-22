@@ -188,6 +188,8 @@ function Pets.addPetToPlayer(Player)
 				ReplicatedStorage.Remotes.ResetPetAnimation:FireServer()
 				wait(.75)
 			until game.Players.LocalPlayer.Character == nil or game.Players.LocalPlayer.Character:GetAttribute("PetAnimation") == "none"
+			Pet[1]:SetAttribute("State","Idle")
+			Pet[1]:SetAttribute("Status","Idling")
 		end)
 	end
 	
@@ -333,8 +335,11 @@ function Pets.addPetToPlayer(Player)
 					end
 					Throwing = false
 					con:Disconnect()
+					Pet[1]:SetAttribute("State","Idle")
+					Pet[1]:SetAttribute("Status","Idling")
 				end)
 				if s == false then
+					warn(m)
 					RunService:UnbindFromRenderStep("LookAtPlayer"..Player.Name)
 					if model then
 						model:Destroy()
@@ -344,6 +349,8 @@ function Pets.addPetToPlayer(Player)
 					end
 					Throwing = false
 					con:Disconnect()
+					Pet[1]:SetAttribute("State","Idle")
+					Pet[1]:SetAttribute("Status","Idling")
 				end
 			end)
 			
@@ -421,10 +428,13 @@ function Pets.addPetToPlayer(Player)
 							sitPet()
 						end
 						Feeding = false
+						Pet[1]:SetAttribute("State","Idle")
+						Pet[1]:SetAttribute("Status","Idling")
 					end
 				end
 			end)
 			if s == false then
+				warn(m)
 				Feeding = false
 				if Player == game.Players.LocalPlayer then
 					resetPetAnimation()
@@ -435,6 +445,8 @@ function Pets.addPetToPlayer(Player)
 				if heart then
 					heart:Destroy()
 				end
+				Pet[1]:SetAttribute("State","Idle")
+				Pet[1]:SetAttribute("Status","Idling")
 			end
 		end
 	end

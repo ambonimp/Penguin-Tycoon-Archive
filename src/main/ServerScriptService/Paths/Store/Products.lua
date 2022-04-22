@@ -16,6 +16,7 @@ local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandl
 --- Product Variables ---
 local MoneyProducts = {[1224873708] = true, [1224873843] = true, [1224873847] = true, [1224873846] = true, [1224873844] = true, [1224873842] = true}
 local AccessoryProducts = {[1231222251] = true, [1231222252] = true, [1231222253] = true}
+local OutfitProducts = {[1259048717] = true, [1259048739] = true, [1259048664] = true}
 local EyesProducts = {[1232615468] = true}
 
 local PenguinProducts = {
@@ -27,7 +28,7 @@ local TycoonProducts = {
 	[1224873709] = "Fish Shop#1", [1224873705] = "Hot Chocolate#1", [1224873707] = "Sawmill#1", [1224873704] = "Royal Egg#1", [1229622731] = "Vending Machine#1", 
 	[1229624896] = "Massage Table#1", [1229625136] = "Beehive#1", [1229627953] = "Ice Cream Stand#1", [1229628483] = "Tiki Bar#1", [1229629428] = "Luxury Boat#1", 
 	[1232236945] = "Planets#1", [1233161301] = "Watch Tower#1", [1234046860] = "Globe#1", [1234046883] = "Space Rocks#1", [1240569736] = "Powered Glider#1",
-	[1254284581] = "Table#2",[1255289603] = "Mammoth#1",[1255290553] = "Skull#1",
+	[1254284581] = "Table#2",[1255289603] = "Mammoth#1",[1255290553] = "Skull#1",[1259073561] = "Witch's Garden#1",
 }
 
 local EggProducts = {
@@ -73,6 +74,9 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 		elseif AccessoryProducts[product] then
 			Modules.Accessories:AccessoryPurchased(Player)
 			
+		-- Outfit Products
+		elseif OutfitProducts[product] then
+			Modules.Accessories:OutfitPurchased(Player)
 			
 		-- Eyes Products
 		elseif EyesProducts[product] then
@@ -173,7 +177,7 @@ function Products:PenguinUpgradePurchased(Player)
 		local Penguin = PurchaseDBs[Player.Name]
 		
 		local Success, Info = Modules.Penguins:UpgradePenguin(Player, Penguin)
-		Remotes.Store:FireClient(Player, "Penguin Upgraded", Penguin, Success)
+		Remotes.Store:FireClient(Player, "Penguin Upgraded", Penguin, Success,Modules.PlayerData.sessionData[Player.Name]["Penguins"])
 		
 		wait()
 		PurchaseDBs[Player.Name] = nil

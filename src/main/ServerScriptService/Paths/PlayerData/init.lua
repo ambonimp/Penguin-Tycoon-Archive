@@ -184,6 +184,7 @@ local function SetupNewStats(Player)
 	
 	if IsTesting or IsQA then
 		Data["Money"] = 1000000000
+		Data["Gems"] = 1000000000
 	end
 
 	if not Data["Tools"] then
@@ -201,28 +202,39 @@ local function SetupNewStats(Player)
 	if not Data["Twitter Verification"] then
 		Data["Twitter Verification"] = false
 	end
+	if not Data["Emotes"] then
+		Data["Emotes"] = {
+			["Sit"] = true;
+			["Wave"] = true;
+			["Sleep"] = true;
+			["Point"] = true;
+			["Salute"] = true;
+			["Whack"] = true;
+			["Dab"] = true;
+			["Wavy"] = true;
+			["Clap"] = true;
+			["Hug"] = true;
+			["Shy"] = true;
+			["Floss"] = true;
+			["Push Ups"] = true;
+			["Stove Opening"] = true;
+			["Dough Flipping"] = true;
+			["Cheering"] = true;
+			["Crying"] = true;
+			["Giving Pizza"] = true;
+			["Vegetable Cutting"] = true;
+		}
+	end
 	
-	Data["Emotes"] = {
-		["Sit"] = true;
-		["Wave"] = true;
-		["Sleep"] = true;
-		["Point"] = true;
-		["Salute"] = true;
-		["Whack"] = true;
-		["Dab"] = true;
-		["Wavy"] = true;
-		["Clap"] = true;
-		["Hug"] = true;
-		["Shy"] = true;
-		["Floss"] = true;
-		["Push Ups"] = true;
-		["Stove Opening"] = true;
-		["Dough Flipping"] = true;
-		["Cheering"] = true;
-		["Crying"] = true;
-		["Giving Pizza"] = true;
-		["Vegetable Cutting"] = true;
-	}
+	if not Data["Emotes"]["Vegetable Cutting"] then
+		Data["Emotes"]["Vegetable Cutting"] = true;
+		Data["Emotes"]["Giving Pizza"] = true;
+		Data["Emotes"]["Crying"] = true;
+		Data["Emotes"]["Stove Opening"] = true;
+		Data["Emotes"]["Dough Flipping"] = true;
+		Data["Emotes"]["Cheering"] = true;
+	end
+		
 	
 	if not Data["Equipped Emotes"] then
 		Data["Equipped Emotes"] = {
@@ -246,6 +258,16 @@ local function SetupNewStats(Player)
 				--{Name = "Plushy"},	
 			},
 		}
+	end
+
+	if not Data["Outfits"] then
+		Data["Outfits"] = {
+			["None"] = true,
+		}
+	end
+
+	if not Data["My Penguin"]["Outfit"] then
+		Data["My Penguin"]["Outfit"] = "None"
 	end
 	
 end

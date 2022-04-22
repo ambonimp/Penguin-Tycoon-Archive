@@ -1,4 +1,8 @@
 local emotes = {}
+
+local Paths = require(script.Parent)
+
+local Services = Paths.Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Assets = ReplicatedStorage:WaitForChild("Assets")
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
@@ -12,6 +16,9 @@ local Playing = {}
 
 workspace:WaitForChild("Props").ChildAdded:Connect(function(object)
 	local t = object:GetAttribute("Time") or 7
+	if t == 0 then
+		t = 3
+	end
 	wait(t)
 	if object then
 		object:Destroy()
@@ -49,6 +56,18 @@ game.Players.PlayerRemoving:Connect(function(Player)
 		LoadedAnims[Player.Name] = {}
 	end
 end)
+
+function emotes.ClaimEmote(player,emote)
+	local ename = emote
+	local data = Paths.Modules.PlayerData.sessionData[player.Name] 
+	if AllEmotes.All[emote] and data then
+		local emote = AllEmotes.All[emote] 
+		if emote.Rarity == "Event" and data["Event"] and data["Event"][1] == emote.EventName then
+			data["Emotes"][ename] = true
+			Remotes.NewEmote:FireClient(player,ename)
+		end
+	end
+end
 
 
 return emotes

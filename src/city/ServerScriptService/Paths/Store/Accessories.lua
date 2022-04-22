@@ -20,11 +20,18 @@ function Accessories:ItemAcquired(Player, Item, ItemType)
 			PlayerItems = Data["Accessories"]
 		elseif ItemType == "Eyes" then
 			PlayerItems = Data["Eyes"]
+		elseif ItemType == "Outfits" then
+			PlayerItems = Data["Outfits"]
 		end
 		
 		if not PlayerItems[Item] then
 			PlayerItems[Item] = true
 			Remotes.Store:FireClient(Player, ItemType, Item, true)
+
+			if ItemType == "Outfits" then
+				Data["My Penguin"]["Outfit"] = Item
+				Modules.Character:EquipShirt(Player.Character,Item)
+			end
 		end
 	end
 end
@@ -65,14 +72,23 @@ Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Item, ItemType,
 	local data = Modules.PlayerData.sessionData[Player.Name]
 	
 	if data and ActionType == "Buy Item" and not PurchaseDBs[Player.Name] then
-		if not Modules.PlayerData.sessionData[Player.Name][ItemType.." Rotation"][Item] then return end
+		if ItemType ~= "Outfits" then
+			--if not Modules.PlayerData.sessionData[Player.Name][ItemType.." Rotation"][Item] then return end
+		end
 		
+		local n = "Accessories"
 		local Module 
 		if ItemType == "Accessory" then
 			Module = Modules.AllAccessories
 		elseif ItemType == "Eyes" then
+			n = ItemType
 			Module = Modules.AllEyes
+		elseif ItemType == "Outfits" then
+			n = ItemType
+			Module = Modules.AllOutfits
 		end
+
+		if data[n][Item] then return end
 		
 		if CurrencyType == "Robux" then
 			PurchaseDBs[Player.Name] = Item 
@@ -118,17 +134,25 @@ function Accessories:RefreshStore(Player)
 	if Data then
 		Data["Rotation Timer"] = os.time()
 		Data["Accessory Rotation"] = Modules.AllAccessories:ChooseStoreAccessories()
+		--Data["Outfits Rotation"] = Modules.AllOutfits:ChooseStoreAccessories()
 		Data["Eyes Rotation"] = Modules.AllEyes:ChooseStoreEyes()
 		Remotes.Store:FireClient(Player, "Store Rotated")
 	end
 end
 
-
-
-
 Services.MPService.PromptProductPurchaseFinished:Connect(function(UserID, ProductID, Purchased)
 	PurchaseDBs[game.Players:GetNameFromUserIdAsync(UserID)] = nil
 end)
+
+function Accessories:OutfitPurchased(Player)
+	if Modules.PlayerData.sessionData[Player.Name] and PurchaseDBs[Player.Name] then
+		local Outfit = PurchaseDBs[Player.Name]
+		Accessories:ItemAcquired(Player, Outfit, "Outfits")
+		wait()
+		PurchaseDBs[Player.Name] = nil
+	end
+end
+
 
 function Accessories:AccessoryPurchased(Player)
 	if Modules.PlayerData.sessionData[Player.Name] and PurchaseDBs[Player.Name] then

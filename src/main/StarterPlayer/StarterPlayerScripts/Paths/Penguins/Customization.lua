@@ -95,14 +95,15 @@ function Customization:EnterUI(Penguin, PreviousUI)
 	
 	if Penguin:FindFirstChild("CameraAngle") then
 		CameraAngleCF = Penguin.CameraAngle.CFrame
-
+		Modules.Penguins.ButtonClicked(CustomizationUI.Customization.Buttons.Color)
+		CustomizationUI.Customization.Buttons.Outfits.Visible = false
 		-- Make plr invis if it's a regular/tycoon penguin
 		Modules.Character:Invisible(true)
 		
 	elseif Penguin:GetAttribute("Penguin") then
 		--CameraAngleCF = Penguin.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(10), math.rad(180), 0) * CFrame.new(0, 2, 5) -- viewport angle
 		CameraAngleCF = Penguin.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(5), math.rad(178), math.rad(0)) * CFrame.new(-3, 0.5, 8)
-		
+		CustomizationUI.Customization.Buttons.Outfits.Visible = true
 	else
 		return -- If the player selects to customize but has their avatar selected
 	end
@@ -117,6 +118,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 	if Penguin:FindFirstChild("Info") then
 		Penguin.Info.ProximityPrompt.Enabled = false
 	end
+	UI.Left.GemDisplay.Visible = false
 	UI.Left.Buttons.Visible = false
 	UI.Center.Visible = false
 	UI.Top.MoneyDisplay.BuyMore.Visible = false
@@ -215,7 +217,7 @@ function Customization:ExitUI()
 	
 	-- Tween out UI
 	CustomizationUI:TweenPosition(UDim2.new(-1.5, 0, 0.5, 0), "In", "Back", 0.3, true)
-	
+	UI.Left.GemDisplay.Visible = true
 	UI.Left.Buttons.Visible = true
 	UI.Center.Visible = true
 	UI.Top.MoneyDisplay.BuyMore.Visible = true
@@ -253,6 +255,11 @@ end)
 CustomizationUI.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()
 	UIToReOpen = nil
 end)
+
+CustomizationUI.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButton1Down:Connect(function()
+	UIToReOpen = nil
+end)
+
 
 CustomizationUI.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Down:Connect(function()
 	UIToReOpen = nil

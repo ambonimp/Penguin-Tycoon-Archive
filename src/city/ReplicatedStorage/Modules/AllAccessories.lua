@@ -63,6 +63,8 @@ Accessories.Unlockables = {
 	["Farmer#1"] = "Straw Hat";
 	["Farmer#2"] = "Gardening Hat";
 	["Adventurer#1"] = "Adventurer Hat";
+	["Witch#1"] = "Witch Hat";
+	["Shroom#1"] = "Mushroom Hat";
 	-- Pick-up Unlockables
 	["Bunny Ears"] = true;
 	["Feather Hat"] = true;
@@ -90,6 +92,9 @@ Accessories.All = {
 	["Backwards Cap"] = {Rarity = "Free", IsForSale = false};
 	["Gardening Hat"] = {Rarity = "Free", IsForSale = false};
 	["Adventurer Hat"] = {Rarity = "Free", IsForSale = false};
+	["Witch Hat"] = {Rarity = "Free", IsForSale = false};
+	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false};
+
 	--- Purchaseable Hats ---
 	-- Rares
 	["Conical Straw Hat"] = {Rarity = "Rare", IsForSale = true};

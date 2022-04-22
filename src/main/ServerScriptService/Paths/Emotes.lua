@@ -12,6 +12,9 @@ local Playing = {}
 
 workspace:WaitForChild("Props").ChildAdded:Connect(function(object)
 	local t = object:GetAttribute("Time") or 7
+	if t == 0 then
+		t = 3
+	end
 	wait(7)
 	if object then
 		object:Destroy()

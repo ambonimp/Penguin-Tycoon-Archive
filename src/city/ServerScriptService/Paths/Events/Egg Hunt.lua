@@ -18,12 +18,11 @@ local chances = {
 }
 
 local itemList  = {
-	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 400},
-	["Easter Basket"] = {Type = "Accessory" , Needed = 1200},
-	--["Cowboy"] = {Type = "Accessory" , Needed = {"Purple",70}},
-	--["Party Hat"] = {Type = "Accessory" , Needed = {"Red",50}},
-	--["Pink Sunhat"] = {Type = "Accessory" , Needed = {"Gold",30}},
-	--["Chick In An Egg"] = {Type = "Accessory" , Needed = {"Gold",60}},
+	["Pink Bunny Ears"] = {Type = "Accessory" , Needed = 200},
+	["Finding Egg"] = {Type = "Emote" , Needed = 400},
+	["Bunny Hop"] = {Type = "Emote" , Needed = 500},
+	["Eating Egg"] = {Type = "Emote" , Needed = 600},
+	["Easter Basket"] = {Type = "Accessory" , Needed = 750},
 }
 
 --- Event Variables ---
@@ -46,7 +45,7 @@ function EggHunt:SpawnPlayers(ChosenBugName, ChosenBugNum)
 			local Character = Modules.Character:Spawn(player, SpawnPos,true)
 			Character.Humanoid.WalkSpeed = 0
 			
-			Modules.Character:EquipShirt(player,"Bunny Suit")
+			Modules.Character:EquipShirt(player.Character,"Bunny Suit")
 			Services.RStorage.Assets.Basket:Clone().Parent = Character
 			player.Character.Humanoid.Died:Connect(function()
 				playerName:Destroy()
@@ -198,7 +197,9 @@ function EggHunt:InitiateEvent(Event)
 				end
 			end)
 		end
-		addEgg()
+		pcall(function()
+			addEgg()
+		end)
 	end
 
 
@@ -272,6 +273,8 @@ Remotes.EggHunt.OnServerEvent:Connect(function(player,itemToRedeem)
 					if itemList[itemToRedeem].Type == "Accessory" then
 						Paths.Modules.Accessories:ItemAcquired(player,itemToRedeem,"Accessory")
 						Remotes.EggHunt:FireClient(player,"Collected",nil,data["Event"])
+					elseif itemList[itemToRedeem].Type == "Emote" then
+						Paths.Modules.Emotes.ClaimEmote(player,itemToRedeem)
 					end
 				end
 			end

@@ -165,7 +165,7 @@ function Pets.addPetToPlayer(Player)
 	
 	local function playerInBoat()
 		if Character and Character:FindFirstChild("Humanoid") and Character.Humanoid.SeatPart and (string.find(string.lower(Character.Humanoid.SeatPart.Parent.Name),"boat") or string.find(string.lower(Character.Humanoid.SeatPart.Parent.Name),"raft")) then
-			Character:SetAttribute("InBoat",true)
+			Character:SetAttribute("InBoat",false)
 			return true
 		elseif Character and Character:FindFirstChild("Humanoid") then
 			local result = getSpawnPosition(Character,0,0)
@@ -188,6 +188,8 @@ function Pets.addPetToPlayer(Player)
 				ReplicatedStorage.Remotes.ResetPetAnimation:FireServer()
 				wait(.75)
 			until game.Players.LocalPlayer.Character == nil or game.Players.LocalPlayer.Character:GetAttribute("PetAnimation") == "none"
+			Pet[1]:SetAttribute("State","Idle")
+			Pet[1]:SetAttribute("Status","Idling")
 		end)
 	end
 	
@@ -333,6 +335,8 @@ function Pets.addPetToPlayer(Player)
 					end
 					Throwing = false
 					con:Disconnect()
+					Pet[1]:SetAttribute("State","Idle")
+					Pet[1]:SetAttribute("Status","Idling")
 				end)
 				if s == false then
 					RunService:UnbindFromRenderStep("LookAtPlayer"..Player.Name)
@@ -344,6 +348,8 @@ function Pets.addPetToPlayer(Player)
 					end
 					Throwing = false
 					con:Disconnect()
+					Pet[1]:SetAttribute("State","Idle")
+					Pet[1]:SetAttribute("Status","Idling")
 				end
 			end)
 			
@@ -421,6 +427,8 @@ function Pets.addPetToPlayer(Player)
 							sitPet()
 						end
 						Feeding = false
+						Pet[1]:SetAttribute("State","Idle")
+						Pet[1]:SetAttribute("Status","Idling")
 					end
 				end
 			end)
@@ -435,6 +443,8 @@ function Pets.addPetToPlayer(Player)
 				if heart then
 					heart:Destroy()
 				end
+				Pet[1]:SetAttribute("State","Idle")
+				Pet[1]:SetAttribute("Status","Idling")
 			end
 		end
 	end
@@ -611,9 +621,6 @@ function Pets.addPetToPlayer(Player)
 		if Player ~= game.Players.LocalPlayer then
 			NewChar:GetAttributeChangedSignal("PetAnimation"):Connect(PetAnimationChanged)
 		end
-		Character.Humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
-			playerInBoat()
-		end)
 	end)
 	
 	Player:GetAttributeChangedSignal("PetID"):Connect(function()
@@ -690,10 +697,6 @@ function Pets.addPetToPlayer(Player)
 	Character:WaitForChild("Humanoid").Died:Connect(function()
 		removePet()
 	end)
-
-	Character.Humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
-		playerInBoat()
-	end)
 	
 	if Player ~= game.Players.LocalPlayer then
 		Character:GetAttributeChangedSignal("PetAnimation"):Connect(PetAnimationChanged)
@@ -746,7 +749,7 @@ RunService:BindToRenderStep("PetHandling",Enum.RenderPriority.Character.Value,fu
 						Material = Enum.Material.SmoothPlastic,
 					}
 				end
-				if continu and PetModel and PetModel.PrimaryPart and (PetModel.PrimaryPart.Position-Character.PrimaryPart.Position).magnitude > 50 then
+				if continu and PetModel and PetModel.PrimaryPart and (PetModel.PrimaryPart.Position-Character.PrimaryPart.Position).magnitude > 50 or Character:GetAttribute("InBoat") then
 					local height = spawnPos5.Position.Y  + PetModel:GetExtentsSize().Y/2
 					Pet[3].CFrame = CFrame.new(Vector3.new(spawnPos5.Position.X ,height,spawnPos5.Position.Z),Vector3.new(Character.PrimaryPart.Position.X,height,Character.PrimaryPart.Position.Z))
 					PetModel:SetPrimaryPartCFrame(Pet[3].CFrame)
