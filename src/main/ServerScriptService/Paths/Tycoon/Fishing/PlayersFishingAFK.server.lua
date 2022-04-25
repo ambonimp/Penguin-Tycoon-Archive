@@ -7,6 +7,8 @@ local MessagingService = game:GetService("MessagingService")
 -- Constants
 local MESSAGING_TOPIC = "AFKFishingEvent"
 local ROUTINE_INTERVAL = 5
+local GROUP_ID = 12843903
+local GROUP_RANK = 240
 
 -- Members
 local servers = {}
@@ -46,20 +48,22 @@ local function checkPlayersFishingInServer()
 end
 
 remoteFunction.OnServerInvoke = function(player)
-	-- Start checking
-	checkPlayersFishingInServer()
+	if player:GetRankInGroup(GROUP_ID) >= GROUP_RANK then
+		-- Start checking
+		checkPlayersFishingInServer()
 
-	print("Processing how many players are AFK fishing (Wait a few seconds) ...")
-	
-	-- Waiting interval
-	wait(ROUTINE_INTERVAL)
+		print("Processing how many players are AFK fishing (Wait a few seconds) ...")
 
-	-- Do the count with data from all servers
-	local total = 0
-	for _, server in pairs(servers) do
-		total = total + server
+		-- Waiting interval
+		wait(ROUTINE_INTERVAL)
+
+		-- Do the count with data from all servers
+		local total = 0
+		for _, server in pairs(servers) do
+			total = total + server
+		end
+
+		-- Shows in server console output how many concurrent players are fishing
+		print("Players AFK fishing: " .. total)
 	end
-
-	-- Shows in server console output how many concurrent players are fishing
-	print("Players AFK fishing: " .. total)
 end
