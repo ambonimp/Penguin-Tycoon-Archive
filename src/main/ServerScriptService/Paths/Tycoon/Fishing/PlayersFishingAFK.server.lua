@@ -6,10 +6,14 @@ local MessagingService = game:GetService("MessagingService")
 
 -- Constants
 local MESSAGING_TOPIC = "AFKFishingEvent"
-local ROUTINE_INTERVAL = 20
+local ROUTINE_INTERVAL = 5
 
 -- Members
 local servers = {}
+
+local remoteFunction = Instance.new("RemoteFunction")
+remoteFunction.Name = "CountPlayersFishingAFK"
+remoteFunction.Parent = game:GetService("ReplicatedStorage").Remotes
 
 -- Listener to receive messages from others servers with the players AFK count
 local subscribeSuccess, subscribeConnection = pcall(function()
@@ -41,22 +45,21 @@ local function checkPlayersFishingInServer()
 	end
 end
 
--- Routine to check players AFK fishing
-pcall(function()
-	while true do
-        -- Start checking
-		checkPlayersFishingInServer()
+remoteFunction.OnServerInvoke = function(player)
+	-- Start checking
+	checkPlayersFishingInServer()
 
-        -- Waiting interval
-		wait(ROUTINE_INTERVAL)
+	print("Processing how many players are AFK fishing (Wait a few seconds) ...")
+	
+	-- Waiting interval
+	wait(ROUTINE_INTERVAL)
 
-        -- Do the count with data from all servers
-		local total = 0
-		for _, server in pairs(servers) do
-			total = total + server
-		end
-
-        -- Shows in server console output how many concurrent players are fishing
-		print("Players AFK fishing: " .. total)
+	-- Do the count with data from all servers
+	local total = 0
+	for _, server in pairs(servers) do
+		total = total + server
 	end
-end)
+
+	-- Shows in server console output how many concurrent players are fishing
+	print("Players AFK fishing: " .. total)
+end
