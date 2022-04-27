@@ -1,11 +1,16 @@
 local ServerStorage = game:GetService("ServerStorage")
 local Players = game:GetService("Players")
 local DiveSDK = require(ServerStorage.DiveSDK)
-local EventBody = require(ServerStorage.DiveSDK.EventBody)
 local EventHandler = ServerStorage:FindFirstChild("EventHandler")
+local AnalyticsService = game:GetService("AnalyticsService")
 
 EventHandler.Event:Connect(function(event, player, data)
 	DiveSDK:recordEvent(player, event, data)
+
+    	-- Tries to post Playfab event
+	pcall(function()
+		AnalyticsService:FireCustomEvent(player, event, data)
+	end)
 end)
 
 -- Example functions for a joined player
