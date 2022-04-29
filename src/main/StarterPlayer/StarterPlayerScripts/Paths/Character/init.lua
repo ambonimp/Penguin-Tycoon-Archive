@@ -52,6 +52,27 @@ function Character.CharacterAdded(Character)
 			task.wait(1)
 			Modules.CharacterSelect:Respawn()
 		end)
+
+		local last = nil
+
+		Humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
+			if Humanoid.SeatPart and Humanoid.SeatPart.Parent:FindFirstChild("MainPart") then
+				print("is In boat")
+				last = Humanoid.SeatPart
+			elseif last and Humanoid.SeatPart == nil then
+				print("left boat")
+				local Model = last.Parent
+				Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, 0, 0)
+				Model.MainPart.BodyForce.Force = Vector3.new(0,0,0)
+				for i,v in pairs (Model:GetDescendants()) do
+					if v:IsA("BasePart") then
+						v.AssemblyLinearVelocity = Vector3.new(0,0,0)
+						v.AssemblyAngularVelocity = Vector3.new(0,0,0)
+					end
+				end
+				last = nil
+			end
+		end)
 		
 		
 		--- Tools stuff ---

@@ -19,12 +19,32 @@ function Placement:MoveModel(Model, Pos, Rotation)
 	Model:PivotTo(NewCFrame)
 end
 
+function Placement:LoadExtra(Player,Model)
+	local PlayerTycoon = Modules.Ownership:GetPlayerTycoon(Player)
+	local CenterPos = Paths.Template.Center.Position
+	local ModelPos = Model:GetPivot().p
+	local DiffPos = ModelPos - CenterPos
+	
+	local TycoonPos = PlayerTycoon.Center.Position
+	local RelativePos = TycoonPos + DiffPos
+	
+	-- Get tycoon rotation
+	local Rotation = PlayerTycoon.Center.Orientation.Y
+	
+	Placement:MoveModel(Model, RelativePos, Rotation)
+
+	Model.Parent = PlayerTycoon
+end
+
 
 function Placement:GetRelativePos(Tycoon, Item, IsButton)
 	local Tycoon = workspace.Tycoons:FindFirstChild(Tycoon)
 	if not Tycoon then return end
 	
 	local Button = Paths.Template.Buttons:FindFirstChild(Item)
+	if Item == "Sailboat#1" then
+		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
+	end
 	if not Button then return end
 	
 	local Model 
@@ -55,6 +75,9 @@ end
 function Placement:NewItem(Player, Item, IsAnimated)
 	-- Variables
 	local Button = Paths.Template.Buttons:FindFirstChild(Item)
+	if Item == "Sailboat#1" then
+		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
+	end
 	if not Button then return end
 	
 	local Island = Button:GetAttribute("Island")
@@ -66,7 +89,7 @@ function Placement:NewItem(Player, Item, IsAnimated)
 
 	local PlayerTycoon = Modules.Ownership:GetPlayerTycoon(Player)
 	
-	if PlayerTycoon.Tycoon:FindFirstChild(Button:GetAttribute("Object")) then return end
+	if PlayerTycoon.Tycoon:FindFirstChild(Item) then return end
 	
 	local Model = Model:Clone()
 	Model.Parent = PlayerTycoon.Tycoon
@@ -99,11 +122,15 @@ function Placement:NewItem(Player, Item, IsAnimated)
 			Modules.Tools.AddTool(Player, Model:GetAttribute("Tool"))
 		end
 	end
-
 	-- Play animation, if applicapble
 	if IsAnimated and not (Model:FindFirstChild("Humanoid") or Model:FindFirstChild("AnimationController")) then
 		self:AnimateIn(Model)
 	end
+	task.defer(function()
+		if Item == "Dock#2" then
+			Modules.Vehicles:SetUpSailboatBuild(Player)
+		end
+	end)
 end
 
 

@@ -10,6 +10,15 @@ local Remotes = Paths.Remotes
 
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
 
+local Day = os.date("%A")
+local Mult = 1
+
+if Day == "Saturday" or Day == "Sunday" then
+	Mult = 2
+else
+	Mult = 1
+end
+
 --- Other Variables ---
 local INCOME_INTERVAL = 3
 local GEM_INTERVAL = 15*60
@@ -43,7 +52,8 @@ function Income:AddGems(Player, Amount, Source)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 
 	if Data then
-		Data["Stats"]["Total Gems"] += Amount
+		Amount = Amount * Mult 
+		Data["Stats"]["Total Gems"] += Amount 
 
 		Data["Gems"] += Amount
 		Player:SetAttribute("Gems", Data["Gems"])
@@ -70,7 +80,7 @@ function Income:IncomeLoop()
 				
 				if PlayerIncome > 0 then
 					-- Add Money
-					Income:AddMoney(Player, PlayerIncome)
+					Income:AddMoney(Player, PlayerIncome*Mult)
 				end
 				
 				-- Add to total playtime
@@ -99,6 +109,12 @@ function Income:GemLoop()
 			end
 		end
 		wait(1)
+		Day = os.date("%A")
+		if Day == "Saturday" or Day == "Sunday" then
+			Mult = 2
+		else
+			Mult = 1
+		end
 	end
 end
 

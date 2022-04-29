@@ -28,6 +28,10 @@ function Loading:LoadTycoon(Player)
 				Modules.Buttons:NewButton(Player, Button.Name)
 			end
 		end
+
+		for i, Extra in pairs(Paths.Template.Extra:GetChildren()) do
+			Modules.Placement:LoadExtra(Player,Extra:Clone())
+		end
 	end
 	
 	Modules.Buttons:NewButton(Player, "Snow#1")

@@ -1,6 +1,264 @@
 local Setup = {}
+local Paths = require(script.Parent)
+local PromptService = game:GetService("ProximityPromptService")
+local SailboatBuild = Paths.Remotes:WaitForChild("SailboatBuild")
+local currentlySelected = "Sail 1"
 
 game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
 game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+
+function GetAngle(vector1, vector2)
+	return math.acos(math.clamp(vector1.Unit:Dot(vector2.Unit), -1, 1))
+end
+
+function GetRotationInstructionsToPoint(position)
+    -- Get Camera Vectors
+    local camera = workspace.CurrentCamera
+    local cameraCframe = camera.CFrame
+    local cameraDirection = cameraCframe.LookVector.Unit
+    local cameraRightDirection = cameraCframe.RightVector.Unit
+    local cameraLeftDirection = -cameraRightDirection
+
+    -- Get to-point Vectors
+    local cameraToPoint = position - cameraCframe.Position
+    local cameraToPointDirection = cameraToPoint.Unit
+
+    --------------------------
+    -- X
+    local rotationX = GetAngle(
+        Vector3.new(cameraDirection.X, 0, cameraDirection.Z),
+        Vector3.new(cameraToPointDirection.X, 0, cameraToPointDirection.Z)
+    )
+
+    -- Calculate if this vector leans more to the left or to the right of the camera
+    local rotationXRight = GetAngle(
+        Vector3.new(cameraRightDirection.X, 0, cameraRightDirection.Z),
+        Vector3.new(cameraToPointDirection.X, 0, cameraToPointDirection.Z)
+    )
+
+    local rotationXLeft = GetAngle(
+        Vector3.new(cameraLeftDirection.X, 0, cameraLeftDirection.Z),
+        Vector3.new(cameraToPointDirection.X, 0, cameraToPointDirection.Z)
+    )
+
+    if rotationXLeft < rotationXRight then
+        rotationX = -rotationX
+    end
+
+    --------------------------
+    -- Y
+    local rotationY = GetAngle(
+        Vector3.new(
+            1,
+            cameraDirection.Y,
+            0
+        ),
+        Vector3.new(
+            1,
+            cameraToPointDirection.Y,
+            0
+        )
+    )
+
+    if cameraDirection.Y < cameraToPointDirection.Y then
+        rotationY = -rotationY
+    end
+
+    return Vector2.new(rotationX, rotationY)
+end
+
+
+local function onPromptTriggered(promptObject, player)
+    if player == game.Players.LocalPlayer then
+        if promptObject.ActionText == "Sailboat" then
+            Paths.Modules.Buttons:UIOn(Paths.UI.Center.BoatUnlock,true)
+        elseif promptObject.ObjectText == "Gamepass" then
+            local id = promptObject:GetAttribute("Gamepass")
+            Paths.Services.MPService:PromptGamePassPurchase(Paths.Player, id)
+        end
+    end
+end
+
+function changeSelected(new)
+    local last = currentlySelected
+    local UI = Paths.UI.Center.BoatUnlock.Items.Unlocked:FindFirstChild(last)
+    UI.BackgroundColor3 = Color3.fromRGB(47, 112, 172)
+    UI.UIStroke.Color = Color3.fromRGB(29, 33, 68)
+
+    local UI = Paths.UI.Center.BoatUnlock.Items.Unlocked:FindFirstChild(new)
+    UI.BackgroundColor3 = Color3.new(0.231372, 0.6, 0.137254)
+    UI.UIStroke.Color = Color3.new(0.101960, 0.254901, 0.062745)
+
+    currentlySelected = new
+end
+
+function unlockItem(itemName,doAnim)
+    local model = game.ReplicatedStorage.BoatBuildParts:FindFirstChild(itemName)
+    local UI = Paths.UI.Center.BoatUnlock.Items.Unlocked:FindFirstChild(itemName)
+    local am = 1
+    for i,v in pairs (Paths.UI.Center.BoatUnlock.Items.Unlocked:GetChildren()) do
+        if v:IsA("Frame") and v.ViewportFrame.ImageColor3 == Color3.new(1,1,1) then
+            am = am + 1
+        end
+    end
+    if UI then
+        UI.ViewportFrame.ImageColor3 = Color3.new(1,1,1)
+        UI.ItemName.Text = itemName
+        UI.ItemName.TextColor3 = Color3.new(1,1,1)
+        UI.Location.Text = model:GetAttribute("Location")
+        UI.Location.TextColor3 = Color3.new(1,1,1)
+        if doAnim and am < 10 then
+            Paths.UI.Top.Compass.Visible = false
+            local n = UI.ViewportFrame:Clone()
+            local foundBoatPart = Paths.UI.Top.FoundBoatPart
+            if foundBoatPart:FindFirstChild("ViewportFrame") then
+                foundBoatPart.ViewportFrame:Destroy()
+            end
+            n.Parent = foundBoatPart
+            foundBoatPart.Size = UDim2.fromScale(0,0)
+            foundBoatPart.Visible = true
+            foundBoatPart.Text.Text = "You found a Sailboat part: "..itemName.."!"
+            Paths.Audio.Celebration:Play()
+            foundBoatPart:TweenSize(UDim2.fromScale(.309,.527),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
+            task.defer(function()
+                task.wait(3)
+                foundBoatPart:TweenSize(UDim2.fromScale(0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.25)
+                task.wait(.25)
+                if Paths.UI.Center.BoatUnlock.Compass.Owned.Visible == true then
+                    Paths.UI.Top.Compass.Visible = true
+                end
+                foundBoatPart.Visible = false
+            end)
+        end
+    end
+    am = 0
+    for i,v in pairs (Paths.UI.Center.BoatUnlock.Items.Unlocked:GetChildren()) do
+        if v:IsA("Frame") and v.ViewportFrame.ImageColor3 == Color3.new(1,1,1) then
+            am = am + 1
+        end
+    end
+    Paths.UI.Center.BoatUnlock.Items.Text.Text =  am.."/10 ITEMS FOUND"
+    if doAnim and am == 10 then
+        Paths.UI.Top.Compass.Visible = false
+        Paths.UI.Top.FoundBoatPart.Visible = false
+        local foundBoatPart = Paths.UI.Top.SailboatCompleted
+        foundBoatPart.Size = UDim2.fromScale(0,0)
+        foundBoatPart.Visible = true
+        Paths.Audio.Celebration:Play()
+        foundBoatPart:TweenSize(UDim2.fromScale(.457,.778),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
+        task.defer(function()
+            task.wait(5)
+            foundBoatPart:TweenSize(UDim2.fromScale(0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.25)
+            task.wait(.25)
+            foundBoatPart.Visible = false
+        end)
+        Paths.Services.RunService:UnbindFromRenderStep("Compass")
+    end
+end
+
+function startCompass(selected)
+    local UI = Paths.UI.Top.Compass
+    local player = game.Players.LocalPlayer
+    Paths.Services.RunService:BindToRenderStep("Compass",Enum.RenderPriority.Camera.Value+1,function()
+        if player and player.Character and workspace:FindFirstChild(currentlySelected) then
+            local pos = workspace:FindFirstChild(currentlySelected):GetPrimaryPartCFrame().Position
+            UI.Point.Rotation = math.deg(GetRotationInstructionsToPoint(pos).X)
+        end
+    end)
+    UI.Button.MouseButton1Down:Connect(function()
+        Paths.Modules.Buttons:UIOn(Paths.UI.Center.BoatUnlock,true)
+    end)
+    changeSelected(selected)
+    UI.Visible = true
+end
+
+function activateCompass(selected)
+    for i,frame in pairs (Paths.UI.Center.BoatUnlock.Items.Unlocked:GetChildren()) do
+        if frame:IsA("Frame") then
+            local model = game.ReplicatedStorage.BoatBuildParts:FindFirstChild(frame.Name)
+            frame.Location.Text = model:GetAttribute("Location")
+
+            frame.Button.MouseButton1Down:Connect(function()
+                if workspace:FindFirstChild(frame.Name) then
+                    changeSelected(frame.Name)
+                end
+            end)
+        end
+    end
+    Paths.UI.Center.BoatUnlock.Compass.Owned.Visible = true
+    Paths.UI.Center.BoatUnlock.Compass.NotOwned.Visible = false
+    startCompass(selected)
+
+end
+
+function SailboatBuild.OnClientInvoke(items)
+    if items == "Compass" then
+        local unlocked = Paths.Remotes:WaitForChild("GetStat"):InvokeServer("BoatUnlocked")
+        local selected = "Sail 1"
+        for i,v in pairs (unlocked[2]) do
+            if v == false then
+                selected = i
+                break
+            end
+        end
+        activateCompass(selected)
+    else
+        for ModelName,CFra in pairs (items) do
+            if CFra == true then
+                unlockItem(ModelName)
+            elseif game.ReplicatedStorage.BoatBuildParts:FindFirstChild(ModelName) then
+                local c = game.ReplicatedStorage.BoatBuildParts:FindFirstChild(ModelName):Clone()
+                c:SetPrimaryPartCFrame(CFra)
+                c.Parent = workspace
+                local deb = false
+                c.PrimaryPart.Touched:Connect(function(hit)
+                    if deb then return end
+                    deb = true
+                    if hit.Parent == game.Players.LocalPlayer.Character then
+                        CFra = true
+                        unlockItem(ModelName,true)
+                        SailboatBuild:InvokeServer(c.Name)
+                        local unlocked = Paths.Remotes:WaitForChild("GetStat"):InvokeServer("BoatUnlocked")
+                        local selected = "Sail 1"
+                        for i,v in pairs (unlocked[2]) do
+                            if v == false then
+                                selected = i
+                                break
+                            end
+                        end
+                        changeSelected(selected)
+                        c:Destroy()
+                    end
+                    task.wait(.1)
+                    deb = false
+                end)
+            end
+        end
+    end
+end
+
+local unlocked = Paths.Remotes:WaitForChild("GetStat"):InvokeServer("BoatUnlocked")
+local ownsCompass = Paths.Remotes:WaitForChild("GetStat"):InvokeServer("Compass")
+
+if ownsCompass and unlocked[1] == false then
+    local selected = "Sail 1"
+    for i,v in pairs (unlocked[2]) do
+        if v == false then
+            selected = i
+            break
+        end
+    end
+    activateCompass(selected)
+else
+    Paths.UI.Center.BoatUnlock.Compass.NotOwned.ImageButton.MouseButton1Down:connect(function()
+        Paths.Services.MPService:PromptProductPurchase(Paths.Player, 1260546076)
+    end)
+    Paths.UI.Center.BoatUnlock.Compass.NotOwned.ImageButton.Buy.MouseButton1Down:connect(function()
+        Paths.Services.MPService:PromptProductPurchase(Paths.Player, 1260546076)
+    end)
+    
+end
+
+PromptService.PromptTriggered:Connect(onPromptTriggered)
 
 return Setup

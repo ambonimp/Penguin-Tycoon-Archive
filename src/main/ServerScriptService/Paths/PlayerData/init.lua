@@ -269,6 +269,24 @@ local function SetupNewStats(Player)
 	if not Data["My Penguin"]["Outfit"] then
 		Data["My Penguin"]["Outfit"] = "None"
 	end
+
+	if not Data["BoatUnlocked"] then
+		Data["BoatUnlocked"] = {
+			[1] = false,
+			[2] = {
+				["Hull"] = false,
+				["Windows"] = false,
+				["Deck"] = false,
+				["Lifebuoy"] = false,
+				["Helm"] = false,
+				["Seat"] = false,
+				["Mast"] = false,
+				["Sail 1"] = false,
+				["Sail 2"] = false,
+				["Flag"] = false,
+			},
+		}
+	end
 	
 end
 
@@ -399,9 +417,9 @@ game.Players.PlayerAdded:Connect(function(Player)
 			end 
 		end)
 	end
-
+	--Modules.Vehicles:SetUpSailboatBuild(Player)
 	Modules.Chat:ApplyChatTag(Player)
-	wait(5)
+	task.wait(5)
 	-- Setup Chat
 	Modules.Chat:ApplyChatTag(Player)
 end)

@@ -153,7 +153,7 @@ remotes.AFKFishing.OnServerEvent:Connect(function(player, fishing)
 	if fishing then
 		player:SetAttribute("isAFKFishing", true)
 		modules.PlayerData.sessionData[player.Name]["WasFishing"] = os.time()
-	else
+	elseif  modules.PlayerData.sessionData[player.Name] and modules.PlayerData.sessionData[player.Name]["WasFishing"] then
 		player:SetAttribute("isAFKFishing", false)
 		local duration = os.time() - modules.PlayerData.sessionData[player.Name]["WasFishing"]
 		modules.PlayerData.sessionData[player.Name]["WasFishing"] = nil
@@ -168,6 +168,9 @@ remotes.AFKFishing.OnServerEvent:Connect(function(player, fishing)
 				})
 			end)
 		end
+	else
+		player:SetAttribute("isAFKFishing", false)
+		modules.PlayerData.sessionData[player.Name]["WasFishing"] = nil
 	end
 end)
 

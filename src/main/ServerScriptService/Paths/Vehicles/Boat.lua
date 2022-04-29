@@ -59,6 +59,7 @@ function Boat:Setup(Model)
 		end
 
 		if Property == "Occupant" then
+			Model.MainPart.Anchored = false
 			-- Make previous occupant no longer massless
 			if PreviousOccupant then
 				for i, v in pairs(PreviousOccupant) do
@@ -100,6 +101,15 @@ function Boat:Setup(Model)
 				
 			-- if occupant is nil (aka player just left the boat) then
 			else
+				Model.MainPart.Anchored = true
+				Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, 0, 0)
+				Model.MainPart.BodyForce.Force = Vector3.new(0,0,0)
+				for i,v in pairs (Model:GetDescendants()) do
+					if v:IsA("BasePart") then
+						v.AssemblyLinearVelocity = Vector3.new(0,0,0)
+						v.AssemblyAngularVelocity = Vector3.new(0,0,0)
+					end
+				end
 				Prompt.Enabled = true
 			end
 		end

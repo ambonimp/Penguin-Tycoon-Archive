@@ -89,7 +89,11 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 			
 		elseif EggProducts[product] then
 			Modules.Pets.BuyPet(Player,EggProducts[product],true)
-			
+		
+		--compass
+		elseif product == 1260546076 then
+			Modules.PlayerData.sessionData[Player.Name]["Compass"] = true
+			Paths.Remotes:WaitForChild("SailboatBuild"):InvokeClient(Player,"Compass")
 		-- Refresh Store
 		elseif product == 1233004731 then
 			Modules.Accessories:RefreshStore(Player)
