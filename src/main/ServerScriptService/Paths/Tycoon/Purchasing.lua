@@ -54,17 +54,22 @@ end
 
 function Purchasing:ItemPurchased(Player, Item, IsAnimated)
 	local Button = Paths.Template.Buttons:FindFirstChild(Item)
+	if Item == "Sailboat#1" then
+		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
+	end
 	if not Button then return end
-
+	local Item2 = Button:GetAttribute("Object2")
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-
+	print(Button,Item,Item2)
 	-- Add income
 	Data["Income"] += Button:GetAttribute("Income")
 	Player:SetAttribute("Income", Data["Income"])
 
 	-- Add item to their data so it saves
 	Data["Tycoon"][Item] = true
-
+	--if Item2 then
+	--	Data["Tycoon"][Item2] = true
+	--end
 	-- Add specific items to their own table
 	if Button:GetAttribute("Type") then
 		if Button:GetAttribute("Type") == "Penguin" then
@@ -93,7 +98,9 @@ function Purchasing:ItemPurchased(Player, Item, IsAnimated)
 
 	-- Place item
 	Modules.Placement:NewItem(Player, Item, IsAnimated)
-	
+	--if Item2 then
+	--	Modules.Placement:NewItem(Player, Item2, IsAnimated)
+	--end
 	--[[
 		Fires a bindable event to notify server that this event has occured with given data
 		Used normally to integrate with Game Analytics / Dive / Playfab

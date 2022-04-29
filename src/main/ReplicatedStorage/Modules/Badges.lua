@@ -11,6 +11,8 @@ function Badges:AwardBadge(UserID, BadgeID)
 end
 
 Badges.Purchases = {
+	["Sailboat#1"] = 2126143691;
+
 	["New Island!#0"] = 2124907090; -- Starter Island (Given immediately, since its not purchased)
 	["New Island!#1"] = 2124907091;
 	["New Island!#2"] = 2124907092;
@@ -40,7 +42,8 @@ Badges.Purchases = {
 	["New Island!#22"] = 2124929783;
 	["New Island!#23"] = 2124929784;
 	["New Island!#24"] = 2124929785;
-	["New Island!#25"] = 2124929786;
+	["New Island!#25"] = 2124929786; 
+	["New Island!#26"] = 2124929787;
 }
 
 return Badges

@@ -7,6 +7,8 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
+local SailboatBuild = Remotes:WaitForChild("SailboatBuild")
+
 local VehicleModules = {}
 for i, v in pairs(script:GetChildren()) do
 	VehicleModules[v.Name] = require(v)
@@ -18,7 +20,76 @@ local AllVehicles = Services.SStorage.Vehicles
 
 local SpawningDBs = {}
 
+function SailboatBuild.OnServerInvoke(Player,item)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
 
+	if Data then
+		Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2][item] = true
+
+		local alltrue = true
+
+		for i,v in pairs (Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2]) do
+			if v == false then
+				alltrue = false
+				break
+			end
+		end
+		if alltrue then
+			Modules.Badges:AwardBadge(Player.UserId, Modules.Badges.Purchases["Sailboat#1"])
+			Modules.PlayerData.sessionData[Player.Name]["Tycoon"]["Sailboat#1"] = true
+			Modules.Placement:NewItem(Player, "Sailboat#1", true)
+			Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][1] = true
+			local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
+			if Tycoon.Tycoon:FindFirstChild("Dock#2") and Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("Building") then
+				Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("Building"):Destroy()
+			end
+		end
+	end
+end
+
+function Vehicles:SetUpSailboatBuild(Player)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+
+	if Data then
+		if Data["Tycoon"]["Dock#2"] then
+			local unlocked = Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][1]
+			if unlocked == false then
+				local items = {}
+				local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
+				for i,Model in pairs (game.ReplicatedStorage.BoatBuildParts:GetChildren()) do
+					if Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2][Model.Name] == false then
+						if Model:GetAttribute("InTycoon") then
+							local CenterPos = Paths.Template.Center.Position
+							local ModelPos = Model:GetPivot().p
+							local DiffPos = ModelPos - CenterPos
+							
+							local TycoonPos = Tycoon.Center.Position
+							local Pos = TycoonPos + DiffPos
+							local Rotation = Tycoon.Center.Orientation.Y
+	
+							local x, y, z = Model:GetPivot():ToOrientation()
+							local TycoonRotation = CFrame.Angles(x, y, z)-- + math.rad(Rotation), z)
+							
+							local NewCFrame = CFrame.new(Pos) * TycoonRotation
+	
+							items[Model.Name] = NewCFrame
+						else
+							items[Model.Name] = Model:GetPrimaryPartCFrame()
+						end
+					elseif Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2][Model.Name] then
+						items[Model.Name] = true
+					end
+				end
+				Paths.Remotes:WaitForChild("SailboatBuild"):InvokeClient(Player,items)
+			else
+				local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
+				if Tycoon.Tycoon:FindFirstChild("Dock#2") and Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("Building") then
+					Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("Building"):Destroy()
+				end
+			end
+		end
+	end
+end
 
 --- Initializing ---
 function Vehicles:SetupVehicleButton(Player, Button)
@@ -28,9 +99,15 @@ function Vehicles:SetupVehicleButton(Player, Button)
 			
 			if game.Players:GetPlayerFromCharacter(Char) == Player and Button:GetAttribute("Vehicle") and not SpawningDBs[Player.Name] then
 				SpawningDBs[Player.Name] = true
-				
+				if Button:GetAttribute("Vehicle") == "Sailboat" then
+					local unlocked = Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][1]
+					if not unlocked then
+						task.wait(1)
+						SpawningDBs[Player.Name] = nil
+						return
+					end
+				end
 				Vehicles:SpawnVehicle(Player, Button)
-				
 				task.wait(1)
 				SpawningDBs[Player.Name] = nil
 			end
@@ -67,6 +144,11 @@ function Vehicles:SpawnVehicle(Player, Button)
 		
 		if Prompt then
 			VehicleModules[VehicleType]:Setup(Model)
+		end
+		
+		task.wait(2.5)
+		if Seat.Occupant == nil then
+			Model.MainPart.Anchored = true
 		end
 	end
 end

@@ -11,7 +11,14 @@ local UI = Paths.UI
 
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 --- UI Variables ---
+local Day = os.date("%A")
+local Mult = 1
 
+if Day == "Saturday" or Day == "Sunday" then
+	Mult = 2
+else
+	Mult = 1
+end
 
 
 --- Other Variables
@@ -47,6 +54,11 @@ end
 
 
 function Animations:MoneyChanged(Change, NewMoney)
+	local Day = os.date("%A")
+	local add = ""
+	if Day == "Saturday" or Day == "Sunday" then
+		add = " (X2 DAY)"
+	end
 	local Template = Dependency.MoneyChanged:Clone()
 	Template.Position = UDim2.new(0.14, 0, 1.05, 0)
 	Template.Size = UDim2.new(1, 0, 0, 0)
@@ -68,7 +80,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 		YSize = 0.35
 	end
 
-	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))
+	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change)) ..add
 	Template.Parent = UI.Top.MoneyDisplay
 
 	Template:TweenSize(UDim2.new(1, 0, YSize, 0), "Out", "Quart", 0.25, true)
@@ -82,7 +94,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 	Template.Change.Value = Change
 
 	Template.Change.Changed:Connect(function(Value)
-		Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Value))
+		Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Value))..add
 	end)
 
 	TrickleChangeTween:Play()
@@ -116,6 +128,11 @@ end
 
 
 function Animations:GemsChanged(Change, NewGems)
+	local Day = os.date("%A")
+	local add = ""
+	if Day == "Saturday" or Day == "Sunday" then
+		add = " (X2 DAY)"
+	end
 	local Template = Dependency.GemsChanged:Clone()
 	Template.Position = UDim2.new(0.14, 0, 1.05, 0)
 	Template.Size = UDim2.new(1, 0, 0, 0)
@@ -139,7 +156,7 @@ function Animations:GemsChanged(Change, NewGems)
 
 	Template.Size = UDim2.new(0.5, 0, 0.02, 0)
 
-	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))
+	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))..add
 	Template.Parent = UI.Top.GemDisplay
 
 	Template:TweenSize(UDim2.new(1, 0, YSize, 0), "Out", "Quart", 0.25, true)
