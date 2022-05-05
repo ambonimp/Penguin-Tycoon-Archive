@@ -33,14 +33,20 @@ end
 
 function newChopped(amount)
 	local treeReward = Paths.UI.Center.TreeReward:Clone()
+	treeReward.Parent = Paths.UI.Center
 	local big = treeReward.Size
 	treeReward.Size = UDim2.fromScale(0,0)
-	treeReward.Text = amount
+	treeReward.Text = "+ $ "..amount
 
 	treeReward.Position = UDim2.fromScale(math.random(25,75)/100,math.random(25,75)/100)
-	local tween = Paths.Services.TweenService:Create(big,TweenInfo.new(.1),{Size = big})
+	local tween = Paths.Services.TweenService:Create(treeReward,TweenInfo.new(.1),{Size = big})
 	treeReward.Visible = true
 	tween:Play()
+	task.wait(1)
+	local tween = Paths.Services.TweenService:Create(treeReward,TweenInfo.new(.1),{Size = UDim2.fromScale(0,0)})
+	tween:Play()
+	task.wait(.1)
+	treeReward:Destroy()
 end
 
 Remotes.Axe.OnClientEvent:Connect(function(amount)

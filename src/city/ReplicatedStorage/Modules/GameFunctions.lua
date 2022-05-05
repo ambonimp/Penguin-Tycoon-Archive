@@ -27,12 +27,17 @@ end
 
 --- Penguin Functions ---
 function GameFunctions:GetPenguinIncome(Income, Level)
+	if Level == 30 then
+		Level = 10.01
+	end
 	local LevelIncome = math.floor(Income^(1+(Level-1)/80) * Level * 1.2)
 	local NumLength = string.len(tostring(LevelIncome)) - 3
 	local RoundingMultiplier = 10 ^ NumLength
 
 	local FinalIncome = math.ceil(LevelIncome/RoundingMultiplier) * RoundingMultiplier
-
+	if Level > 10 then
+		FinalIncome = FinalIncome * 2
+	end
 	return FinalIncome
 end
 

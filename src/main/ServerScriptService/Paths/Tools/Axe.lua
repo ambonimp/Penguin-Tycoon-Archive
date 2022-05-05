@@ -89,11 +89,11 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
             end
             if Data then
 				local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
-                Modules.Income:AddMoney(Player,(PlayerIncome*Mult*Mult2)/Tree:GetAttribute("MaxHealth"))
-                Remotes.Axe:FireClient(Player,(PlayerIncome*Mult*Mult2)/Tree:GetAttribute("MaxHealth"))
+                Modules.Income:AddMoney(Player,math.floor((PlayerIncome*Mult*Mult2)/Tree:GetAttribute("MaxHealth")))
+                Remotes.Axe:FireClient(Player,math.floor((PlayerIncome*Mult*Mult2)/Tree:GetAttribute("MaxHealth")))
             elseif Player:GetAttribute("Income") then
-                Modules.Income:AddMoney(Player,(Player:GetAttribute("Income")*Mult*Mult2)/Tree:GetAttribute("MaxHealth"))
-                Remotes.Axe:FireClient(Player,(Player:GetAttribute("Income")*Mult*Mult2)/Tree:GetAttribute("MaxHealth"))
+                Modules.Income:AddMoney(Player,math.floor((Player:GetAttribute("Income")*Mult*Mult2)/Tree:GetAttribute("MaxHealth")))
+                Remotes.Axe:FireClient(Player,math.floor((Player:GetAttribute("Income")*Mult*Mult2)/Tree:GetAttribute("MaxHealth")))
             end
         end
     end
