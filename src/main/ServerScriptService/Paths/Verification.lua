@@ -11,7 +11,7 @@ local HttpService = game:GetService("HttpService")
 
 
 --- Verification Variables ---
-local CONST_DEBOUNCE = 5
+local CONST_DEBOUNCE = 30
 local INTEGRATION_KEY = "MyRmhCzgKcFA2D4"
 local debounces = {}
 local url = "http://voldex-social-verification-826978666.us-east-2.elb.amazonaws.com/twitter"
