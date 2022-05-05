@@ -21,6 +21,16 @@ if IsTesting or IsQA then
 	GEM_INTERVAL = 3*60
 end
 
+local Day = os.date("%A")
+local Mult = 1
+
+if Day == "Saturday" or Day == "Sunday" then
+	Mult = 2
+else
+	Mult = 1
+end
+
+
 --- Income Function ---
 function Income:AddMoney(Player, Amount)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
@@ -42,6 +52,9 @@ function Income:AddGems(Player, Amount, Source)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 
 	if Data then
+		if Amount > 0 then
+			Amount = Amount * Mult 
+		end
 		Data["Stats"]["Total Gems"] += Amount
 
 		Data["Gems"] += Amount
@@ -69,7 +82,7 @@ function Income:IncomeLoop()
 				
 				if PlayerIncome > 0 then
 					-- Add Money
-					Income:AddMoney(Player, PlayerIncome)
+					Income:AddMoney(Player, PlayerIncome*Mult)
 				end
 				
 				-- Add to total playtime
@@ -98,7 +111,13 @@ function Income:GemLoop()
 				end
 			end
 		end
-		wait(1)
+		task.wait(1)
+		Day = os.date("%A")
+		if Day == "Saturday" or Day == "Sunday" then
+			Mult = 2
+		else
+			Mult = 1
+		end
 	end
 end
 

@@ -43,7 +43,6 @@ function GameFunctions:GetPenguinPrice(Price, Level)
 	local RoundingMultiplier = 10 ^ NumLength
 
 	local FinalPrice = math.floor(LevelPrice/RoundingMultiplier) * RoundingMultiplier
-
 	return FinalPrice
 end
 

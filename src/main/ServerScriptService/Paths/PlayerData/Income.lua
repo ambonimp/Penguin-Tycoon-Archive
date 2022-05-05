@@ -52,7 +52,9 @@ function Income:AddGems(Player, Amount, Source)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 
 	if Data then
-		Amount = Amount * Mult 
+		if Amount > 0 then
+			Amount = Amount * Mult 
+		end
 		Data["Stats"]["Total Gems"] += Amount 
 
 		Data["Gems"] += Amount
@@ -108,7 +110,7 @@ function Income:GemLoop()
 				end
 			end
 		end
-		wait(1)
+		task.wait(1)
 		Day = os.date("%A")
 		if Day == "Saturday" or Day == "Sunday" then
 			Mult = 2

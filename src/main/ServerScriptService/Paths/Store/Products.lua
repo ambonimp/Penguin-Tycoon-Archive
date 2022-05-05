@@ -21,7 +21,8 @@ local EyesProducts = {[1232615468] = true}
 
 local PenguinProducts = {
 	[1231367104] = true, [1231367150] = true, [1231367190] = true, -- Basic (59), Medium (119), High (199)
-	[1231367260] = true, [1231367285] = true, [1231367306] = true -- Expensive (449), Extreme (999), Insane (2499)
+	[1231367260] = true, [1231367285] = true, [1231367306] = true, -- Expensive (449), Extreme (999), Insane (2499)
+	[1261487367] = true, --super
 } 
 
 local TycoonProducts = {
@@ -85,7 +86,7 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 			
 		-- Penguin Products
 		elseif PenguinProducts[product] then
-			Products:PenguinUpgradePurchased(Player)
+			Products:PenguinUpgradePurchased(Player,product == 1261487367)
 			
 		elseif EggProducts[product] then
 			Modules.Pets.BuyPet(Player,EggProducts[product],true)
@@ -126,7 +127,7 @@ local PurchaseDBs = {}
 
 -- Upgrading penguins with robux
 -- Player: Object, ActionType: String, Penguin: Object/Model
-Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Penguin)
+Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Penguin, isSuper)
 	if ActionType == "Penguin" and not PurchaseDBs[Player.Name] and Modules.PlayerData.sessionData[Player.Name] then
 		if Modules.PlayerData.sessionData[Player.Name]["Penguins"][Penguin.Name] or Penguin == Player.Character then
 			local Data = Modules.PlayerData.sessionData[Player.Name]
@@ -146,7 +147,7 @@ Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Penguin)
 				UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), Level + 1)
 				Income = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), Level)
 				
-				if Level >= Modules.GameInfo.MAX_PENGUIN_LEVEL then return end
+				if Level >= Modules.GameInfo.MAX_PENGUIN_LEVEL and not isSuper then return end
 			end
 			
 			-- 6 different tiers of leveling up, the further they are the more expensive it gets, so they can't just p2w to #1
@@ -165,7 +166,10 @@ Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Penguin)
 			end
 			
 			local ProductID = PenguinPurchaseLevels[PurchaseLevel]
-
+			if isSuper then
+				ProductID = 1261487367
+				if Penguin:GetAttribute("IsSuper") then return end
+			end
 			PurchaseDBs[Player.Name] = Penguin 
 			Services.MPService:PromptProductPurchase(Player, ProductID)
 		end
@@ -176,11 +180,10 @@ Services.MPService.PromptProductPurchaseFinished:Connect(function(UserID, Produc
 	PurchaseDBs[game.Players:GetNameFromUserIdAsync(UserID)] = nil
 end)
 
-function Products:PenguinUpgradePurchased(Player)
-	if Modules.PlayerData.sessionData[Player.Name] and PurchaseDBs[Player.Name] then
-		local Penguin = PurchaseDBs[Player.Name]
-		
-		local Success, Info = Modules.Penguins:UpgradePenguin(Player, Penguin)
+function Products:PenguinUpgradePurchased(Player,isSuper,P)
+	if Modules.PlayerData.sessionData[Player.Name] and (PurchaseDBs[Player.Name] or P) then
+		local Penguin = PurchaseDBs[Player.Name] or P
+		local Success, Info = Modules.Penguins:UpgradePenguin(Player, Penguin,isSuper)
 		Remotes.Store:FireClient(Player, "Penguin Upgraded", Penguin, Success,Modules.PlayerData.sessionData[Player.Name]["Penguins"])
 		
 		wait()

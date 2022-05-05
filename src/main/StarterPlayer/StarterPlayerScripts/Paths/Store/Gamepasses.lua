@@ -23,6 +23,7 @@ local AllGamepasses = {
 	{28927736,"x2 Fish"}, -- Gold Fishing Rod
 	{41205566,"Luxury Boat that drives faster!"}, -- Luxury Boat
 	{41205759,"Super Glider that flies faster!"}, -- Super Glider
+	{43183311,"x2 income per chopped tree!"}, -- Gold Axe
 }
 
 

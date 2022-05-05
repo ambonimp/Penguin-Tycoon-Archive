@@ -29,6 +29,7 @@ function Penguins:SetupPenguin(Penguin)
 			Modules.PenguinsUI:SetupPenguin(Penguin)
 
 			ProximityPrompt.Triggered:Connect(function(Player)
+				
 				Modules.Customization:EnterUI(Penguin)
 			end)
 		end
@@ -104,6 +105,49 @@ end)()
 
 
 --- Upgrading Penguins ---
+
+
+CustomizationUI.Super.MouseButton1Down:Connect(function()
+	local Penguin = CustomizationUI.PenguinSelected.Value
+	if Penguin then
+		Remotes.Store:FireServer("Penguin", Penguin, true)
+	end
+end)
+CustomizationUI.Instant.MouseButton1Down:Connect(function()
+	local Penguin = CustomizationUI.PenguinSelected.Value
+	if Penguin then
+		Remotes.Store:FireServer("Penguin", Penguin)
+	end
+end)
+Remotes.Store.OnClientEvent:Connect(function(PurchaseType, PurchaseInfo, IsPurchased,NewPenguinsData)
+	if PurchaseType == "Penguin Upgraded" then
+		local Penguin = CustomizationUI.PenguinSelected.Value
+		if IsPurchased and Penguin then -- If purchase was true/successful then 
+			local NewLevel = tonumber(string.split(string.split(Penguin.Info.PenguinInfo.PenguinLevel.Text, "/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL))[1], " ")[2])
+
+			-- Update penguin UI
+			if Penguin:GetAttribute("Income") then
+				local Income = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), NewLevel)
+				local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), NewLevel + 1)
+
+				CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.Info.PenguinInfo.PenguinName.Text
+				CustomizationUI.PenguinNameBG.PenguinLevel.Text = Penguin.Info.PenguinInfo.PenguinLevel.Text
+
+				if NewLevel < Modules.GameInfo.MAX_PENGUIN_LEVEL then
+					CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
+				else
+					CustomizationUI.Upgrade.TheText.Text = "Max Level"
+				end
+				if NewLevel >= 10 then
+					CustomizationUI.Instant.Visible = false
+				end
+				if NewLevel == 30 then
+					CustomizationUI.Super.Visible = false
+				end
+			end
+		end
+	end
+end)
 CustomizationUI.Upgrade.MouseButton1Down:Connect(function()
 	local Penguin = CustomizationUI.PenguinSelected.Value
 

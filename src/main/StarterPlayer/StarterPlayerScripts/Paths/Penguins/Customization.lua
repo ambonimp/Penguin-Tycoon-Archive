@@ -128,8 +128,17 @@ function Customization:EnterUI(Penguin, PreviousUI)
 	-- For regular, tycoon penguins
 	if Penguin:FindFirstChild("Info") then
 		-- Get penguin info
+		CustomizationUI.Instant.Position = UDim2.fromScale(0.838,1.015)
+		CustomizationUI.Super.Visible = true
 		local Level = tonumber(string.split(string.split(Penguin.Info.PenguinInfo.PenguinLevel.Text, "/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL))[1], " ")[2])
-		
+		if Level == 30 then
+			CustomizationUI.Super.Visible = false
+		end
+		if Level >= 10 then
+			CustomizationUI.Instant.Visible = false
+		else
+			CustomizationUI.Instant.Visible = true
+		end
 		local Income = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), Level)
 		local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), Level + 1)
 		
@@ -145,7 +154,9 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		
 	else -- For the player's penguin
 		local Level = Paths.Player:GetAttribute("Level")
-		
+		CustomizationUI.Instant.Position = UDim2.fromScale(0.645,1.015)
+		CustomizationUI.Super.Visible = false
+		CustomizationUI.Instant.Visible = true
 		local Income = Modules.GameFunctions:GetPlayerPenguinIncome(Level)
 		local UpgradePrice = Modules.GameFunctions:GetPlayerPenguinPrice(Level + 1)
 		

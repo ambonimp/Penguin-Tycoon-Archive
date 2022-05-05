@@ -3,6 +3,7 @@ local Paths = require(script.Parent)
 local PromptService = game:GetService("ProximityPromptService")
 local SailboatBuild = Paths.Remotes:WaitForChild("SailboatBuild")
 local currentlySelected = "Sail 1"
+local compassUnlocked = false
 
 game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
 game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
@@ -71,10 +72,17 @@ end
 local function onPromptTriggered(promptObject, player)
     if player == game.Players.LocalPlayer then
         if promptObject.ActionText == "Sailboat" then
-            Paths.Modules.Buttons:UIOn(Paths.UI.Center.BoatUnlock,true)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.BoatUnlock,true)
+		elseif promptObject.ActionText == "Buy Poofies!" then
+			Paths.Modules.Pets.PetUI.LoadEgg(promptObject:GetAttribute("EggName"),Paths)
+			Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
         elseif promptObject.ObjectText == "Gamepass" then
             local id = promptObject:GetAttribute("Gamepass")
             Paths.Services.MPService:PromptGamePassPurchase(Paths.Player, id)
+        elseif promptObject.ActionText == "Penguin City" then
+            Paths.Modules.Teleporting:OpenConfirmation()
+            Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
         end
     end
 end
@@ -121,7 +129,13 @@ function unlockItem(itemName,doAnim)
             Paths.Audio.Celebration:Play()
             foundBoatPart:TweenSize(UDim2.fromScale(.309,.527),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
             task.defer(function()
-                task.wait(3)
+                foundBoatPart.BottomText.Text = am.."/10 items found"
+                if am == 1 then
+                    Paths.Modules.Buttons:UIOn(Paths.UI.Center.FirstBoatPart,true)
+                    task.wait(4)
+                else
+                    task.wait(3)
+                end
                 foundBoatPart:TweenSize(UDim2.fromScale(0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.25)
                 task.wait(.25)
                 if Paths.UI.Center.BoatUnlock.Compass.Owned.Visible == true then
@@ -189,10 +203,27 @@ function activateCompass(selected)
     Paths.UI.Center.BoatUnlock.Compass.NotOwned.Visible = false
     startCompass(selected)
 
+    local isOn = true
+    local function switch()
+        print("switch")
+        isOn = not isOn
+        if isOn then
+            Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.On.Text.Text = "Disable"
+            Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.On.BackgroundColor3 = Color3.fromRGB(255,26,10)
+        else
+            Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.On.Text.Text = "Enable"
+            Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.On.BackgroundColor3 = Color3.fromRGB(106, 255, 14)
+        end
+        Paths.UI.Top.Compass.Visible = isOn
+    end
+
+    Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.MouseButton1Down:Connect(switch)
+    Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.On.MouseButton1Down:Connect(switch)
 end
 
 function SailboatBuild.OnClientInvoke(items)
     if items == "Compass" then
+        compassUnlocked = true
         local unlocked = Paths.Remotes:WaitForChild("GetStat"):InvokeServer("BoatUnlocked")
         local selected = "Sail 1"
         for i,v in pairs (unlocked[2]) do
@@ -226,7 +257,9 @@ function SailboatBuild.OnClientInvoke(items)
                                 break
                             end
                         end
-                        changeSelected(selected)
+                        if compassUnlocked then
+                            changeSelected(selected)
+                        end
                         c:Destroy()
                     end
                     task.wait(.1)
@@ -241,6 +274,7 @@ local unlocked = Paths.Remotes:WaitForChild("GetStat"):InvokeServer("BoatUnlocke
 local ownsCompass = Paths.Remotes:WaitForChild("GetStat"):InvokeServer("Compass")
 
 if ownsCompass and unlocked[1] == false then
+    compassUnlocked = true
     local selected = "Sail 1"
     for i,v in pairs (unlocked[2]) do
         if v == false then
@@ -252,11 +286,10 @@ if ownsCompass and unlocked[1] == false then
 else
     Paths.UI.Center.BoatUnlock.Compass.NotOwned.ImageButton.MouseButton1Down:connect(function()
         Paths.Services.MPService:PromptProductPurchase(Paths.Player, 1260546076)
-    end)
-    Paths.UI.Center.BoatUnlock.Compass.NotOwned.ImageButton.Buy.MouseButton1Down:connect(function()
-        Paths.Services.MPService:PromptProductPurchase(Paths.Player, 1260546076)
-    end)
-    
+	end)
+	Paths.UI.Center.BoatUnlock.Compass.NotOwned.ImageButton.Buy.MouseButton1Down:connect(function()
+		Paths.Services.MPService:PromptProductPurchase(Paths.Player, 1260546076)
+	end)
 end
 
 PromptService.PromptTriggered:Connect(onPromptTriggered)

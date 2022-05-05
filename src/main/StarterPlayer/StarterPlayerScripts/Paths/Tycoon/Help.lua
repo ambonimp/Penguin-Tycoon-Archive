@@ -124,6 +124,12 @@ PointerButton.MouseButton1Down:Connect(function()
 	end
 end)
 
-
+task.defer(function()
+	task.wait(3)
+	local data = Paths.Remotes.GetStat:InvokeServer("Tycoon")
+	if not data["Dock#1"] then
+		Help:EnablePointerBeam()
+	end
+end)
 
 return Help

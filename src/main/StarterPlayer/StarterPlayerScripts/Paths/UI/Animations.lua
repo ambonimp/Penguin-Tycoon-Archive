@@ -56,7 +56,7 @@ end
 function Animations:MoneyChanged(Change, NewMoney)
 	local Day = os.date("%A")
 	local add = ""
-	if Day == "Saturday" or Day == "Sunday" then
+	if (Day == "Saturday" or Day == "Sunday") and Change > 0 then
 		add = " (X2 DAY)"
 	end
 	local Template = Dependency.MoneyChanged:Clone()
@@ -130,7 +130,7 @@ end
 function Animations:GemsChanged(Change, NewGems)
 	local Day = os.date("%A")
 	local add = ""
-	if Day == "Saturday" or Day == "Sunday" then
+	if (Day == "Saturday" or Day == "Sunday") and Change > 0 then
 		add = " (X2 DAY)"
 	end
 	local Template = Dependency.GemsChanged:Clone()

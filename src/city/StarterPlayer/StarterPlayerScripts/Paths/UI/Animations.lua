@@ -11,6 +11,15 @@ local UI = Paths.UI
 
 
 --- UI Variables ---
+local Day = os.date("%A")
+local Mult = 1
+
+if Day == "Saturday" or Day == "Sunday" then
+	Mult = 2
+else
+	Mult = 1
+end
+
 
 
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
@@ -47,6 +56,11 @@ end
 
 
 function Animations:MoneyChanged(Change, NewMoney)
+	local Day = os.date("%A")
+	local add = ""
+	if (Day == "Saturday" or Day == "Sunday") and Change > 0 then
+		add = " (X2 DAY)"
+	end
 	local Template = Dependency.MoneyChanged:Clone()
 	Template.Position = UDim2.new(0.37, 0, 0.9, 0)
 	Template.AnchorPoint = Vector2.new(0, 0.5)
@@ -69,7 +83,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 
 	Template.Size = UDim2.new(0.5, 0, 0.02, 0)
 
-	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))
+	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))..add
 	Template.Parent = UI.BLCorner
 
 	Template:TweenSize(UDim2.new(0.5, 0, YSize, 0), "Out", "Quart", 0.25, true)
@@ -83,7 +97,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 	Template.Change.Value = Change
 
 	Template.Change.Changed:Connect(function(Value)
-		Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Value))
+		Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Value))..add
 	end)
 
 	TrickleChangeTween:Play()
@@ -117,6 +131,11 @@ end
 
 
 function Animations:GemsChanged(Change, NewGems)
+	local Day = os.date("%A")
+	local add = ""
+	if (Day == "Saturday" or Day == "Sunday") and Change > 0 then
+		add = " (X2 DAY)"
+	end
 	local Template = Dependency.GemsChanged:Clone()
 	Template.Position = UDim2.new(0.37, 0, 0.7, -10)
 	Template.AnchorPoint = Vector2.new(0, 0.5)
@@ -139,7 +158,7 @@ function Animations:GemsChanged(Change, NewGems)
 
 	Template.Size = UDim2.new(0.5, 0, 0.02, 0)
 
-	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))
+	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))..add
 	Template.Parent = UI.BLCorner
 
 	Template:TweenSize(UDim2.new(0.5, 0, YSize, -10), "Out", "Quart", 0.25, true)
@@ -153,7 +172,7 @@ function Animations:GemsChanged(Change, NewGems)
 	Template.Change.Value = Change
 
 	Template.Change.Changed:Connect(function(Value)
-		Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Value))
+		Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Value))..add
 	end)
 
 	TrickleChangeTween:Play()
