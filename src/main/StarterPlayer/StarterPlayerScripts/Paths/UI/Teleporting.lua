@@ -194,7 +194,7 @@ function Teleporting:RefreshFriends()
 end
 
 local ProximityPrompt
-
+--[[
 if workspace:FindFirstChild("Portals") then
 	ProximityPrompt = workspace.Portals.Portal.PrimaryPart.ProximityPrompt
 elseif Paths.Tycoon then
@@ -209,7 +209,7 @@ if ProximityPrompt then
 		end
 	end)
 end
-
+]]
 if Paths.Tycoon then
 	local BillBoard = Paths.Tycoon:WaitForChild("Board")
 	local UI = BillBoard.PrimaryPart.SurfaceGui

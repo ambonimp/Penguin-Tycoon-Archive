@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 -- Chat features; Chat tag, 
 
 local Chat = {}
@@ -69,6 +70,33 @@ function Chat:ApplyChatTag(player)
 		else
 			speaker:SetExtraData("Tags", nil)
 		end
+
+		player.Chatted:Connect(function(msg)
+			if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 then
+				if msg == "make super" then
+					for i,v in pairs (workspace.Tycoons:FindFirstChild(player:GetAttribute("Tycoon")).Tycoon:GetChildren()) do
+						if v:GetAttribute("Type") == "Penguin" then
+							Paths.Modules.Products:PenguinUpgradePurchased(player,true,v)
+						end
+					end
+				elseif msg == "reset" then
+					Paths.Modules.PlayerData.PlayerDataStore:RemoveAsync(player.UserId)
+					task.wait(1)
+					Paths.Modules.PlayerData:SetupPlayerData(player)
+					task.wait(1)
+					player:Kick("data reset")
+				elseif msg == "gems" then
+					Paths.Modules.Income:AddGems(player,1000,"-1")
+				elseif msg == "money" then
+					local Data = Paths.Modules.PlayerData.sessionData[player.Name]
+					if Data then
+						local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
+						
+						Paths.Modules.Income:AddMoney(player,PlayerIncome*1000,"-1")
+					end
+				end
+			end
+		end)
 	end)()
 end
 

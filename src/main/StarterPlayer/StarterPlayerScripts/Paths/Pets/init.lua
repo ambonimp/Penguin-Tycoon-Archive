@@ -19,7 +19,7 @@ local PetModels = {}
 local LastPetStats = {}
 local DidAdd = {}
 
-local PetUI = require(script:WaitForChild("PetUI"))
+Pets.PetUI = require(script:WaitForChild("PetUI"))
 local PartTweenInfo = TweenInfo.new(.15,Enum.EasingStyle.Linear,Enum.EasingDirection.In)
 
 local isAdopting = false
@@ -148,7 +148,7 @@ function Pets.addPetToPlayer(Player)
 				Pet[18]:Disconnect()
 			end
 			pcall(function()
-				PetUI.CleanConnections()
+				Pets.PetUI.CleanConnections()
 			end)
 			RunService:UnbindFromRenderStep("PetInteractUI")
 			if table.find(PetModels,Pet) then
@@ -569,7 +569,7 @@ function Pets.addPetToPlayer(Player)
 				PetName.Adornee = Pet[1].PrimaryPart
 				PetName.PetName.Text = Player:GetAttribute("PetName")
 				if Player == game:GetService("Players").LocalPlayer then
-					local PetUI,PetClick = PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunction,sitPet,playerInBoat)
+					local PetUI,PetClick = Pets.PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunction,sitPet,playerInBoat)
 					
 					Pet[7] = PetUI
 					Pet[8] = PetClick
@@ -838,7 +838,7 @@ end)
 print("add pet to localplayer")
 Pets.addPetToPlayer(game:GetService("Players").LocalPlayer)
 print("load inventory")
-PetUI.Inventory(Paths)
+Pets.PetUI.Inventory(Paths)
 print("end load inventory")
 game.Players.LocalPlayer:SetAttribute("BuyingEgg",false)
 
@@ -860,13 +860,13 @@ elseif workspace:FindFirstChild("PetShop") then
 end
 
 if ProximityPrompt then
-	ProximityPrompt.Triggered:Connect(function(player)
+	--[[ProximityPrompt.Triggered:Connect(function(player)
 		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
-			PetUI.LoadEgg("Egg1",Paths)
+			Pets.PetUI.LoadEgg("Egg1",Paths)
 			Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
 			Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
 		end
-	end)
+	end)]]
 else
 	print("no proximity prompt")
 end

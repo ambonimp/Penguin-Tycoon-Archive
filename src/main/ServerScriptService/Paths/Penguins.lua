@@ -61,6 +61,10 @@ function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoad
 		Modules.Character:EquipShirt(Penguin,Info["Outfit"])
 	end
 
+	if Info["Super"] then
+		Penguin:SetAttribute("IsSuper",true)
+	end
+
 	-- Load eyes
 	if Info["Eyes"] and not DontLoadEyes then
 		local Humanoid = Penguin:FindFirstChild("Humanoid")
@@ -219,22 +223,31 @@ end
 -- Player: Object, Penguin: Object/Model
 -- Separated into 2 functions as it was too long
 -- This function does the upgrade itself
-function Penguins:UpgradePenguin(Player, Penguin)
+function Penguins:UpgradePenguin(Player, Penguin,isSuper)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	
 	local Level
 	local OldIncome
 	local NewIncome
-
+	if isSuper then
+		Penguin:SetAttribute("IsSuper",true)
+	end
 	if Data["Penguins"][Penguin.Name] and Penguin:GetAttribute("Price") and Penguin:GetAttribute("Income") then
-		if Data["Penguins"][Penguin.Name]["Level"] == Modules.GameInfo.MAX_PENGUIN_LEVEL then return false, Data["Penguins"][Penguin.Name]["Level"] end
-
+		if Data["Penguins"][Penguin.Name]["Level"] == Modules.GameInfo.MAX_PENGUIN_LEVEL and not isSuper then return false, Data["Penguins"][Penguin.Name]["Level"] end
+		local oldLevel = Data["Penguins"][Penguin.Name]["Level"]
 		-- Upgrade the penguin's level
 		Data["Penguins"][Penguin.Name]["Level"] += 1
-
+		if isSuper then
+			Data["Penguins"][Penguin.Name]["Level"] = 30
+			Data["Penguins"][Penguin.Name]["Super"] = true
+		end
 		-- Give the player the new income
 		Level = Data["Penguins"][Penguin.Name]["Level"]
-		OldIncome = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), Level-1)
+		if isSuper then
+			OldIncome = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), oldLevel)
+		else
+			OldIncome = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), Level-1)
+		end
 		NewIncome = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), Level)
 
 		-- Update the penguin UI
@@ -261,7 +274,7 @@ end
 
 -- This initiates and does the checks if the upgrade is valid
 -- Player: Object, Penguin: Object/Model
-Penguins["Upgrade"] = function(Player, Penguin)
+Penguins["Upgrade"] = function(Player, Penguin, IsSuper)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	
 	if Data["Penguins"][Penguin.Name] and Penguin:GetAttribute("Price") and Penguin:GetAttribute("Income") then
@@ -276,6 +289,9 @@ Penguins["Upgrade"] = function(Player, Penguin)
 			
 			if PlayerMoney >= UpgradePrice then
 				Data["Money"] -= UpgradePrice
+				if IsSuper then
+					Penguin:SetAttribute("IsSuper",true)
+				end
 				Player:SetAttribute("Money", Data["Money"])
 				
 				return Penguins:UpgradePenguin(Player, Penguin)

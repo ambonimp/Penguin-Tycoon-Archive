@@ -1,3 +1,4 @@
+local TweenService = game:GetService("TweenService")
 local Tools = {}
 
 
@@ -22,10 +23,21 @@ local Keybinds = {
 	[Enum.KeyCode.Six] = 6, [Enum.KeyCode.Seven] = 7, [Enum.KeyCode.Eight] = 8, [Enum.KeyCode.Nine] = 9, [Enum.KeyCode.Zero] = 0, 
 }
 
-
+function stopAnimation(Template,Tool)
+	Template:SetAttribute("Animating",false)
+	local tween = TweenService:Create(Template.BG,TweenInfo.new(.2),{BackgroundColor3 = Color3.fromRGB(48, 176, 255)})
+	tween:Play()
+	if Tool == "Fishing Rod" then
+		Paths.UI.Bottom.ToolText.Visible = true
+		Paths.UI.Bottom.ToolText.Text = "Click on nearby water to start fishing!"
+	elseif Tool == "Axe" then
+		Paths.UI.Bottom.ToolText.Visible = true
+		Paths.UI.Bottom.ToolText.Text = "Walk infront of a tree to start chopping!"
+	end
+end
 
 --- Tool Functions ---
-function Tools.AddTool(Tool)
+function Tools.AddTool(Tool,isNew)
 	if Paths.UI.Tools:FindFirstChild(Tool) then return end
 	LastAdded = os.time()
 	
@@ -35,13 +47,36 @@ function Tools.AddTool(Tool)
 	Template.Keybind.Text = #Paths.UI.Tools:GetChildren()
 	Template.LayoutOrder = #Paths.UI.Tools:GetChildren()
 	
+	local isAnimating = isNew or false
+
+	Template:SetAttribute("Animating",isAnimating)
+
 	Template.MouseButton1Down:Connect(function()
 		if Modules.Fishing and not Modules.Fishing.LastUpdate.FishingAnimationActive then
+			if isAnimating then
+				stopAnimation(Template,Tool)
+				isAnimating = false
+			end
 			Remotes.Tools:FireServer("Equip Tool", Tool)
+			task.wait(3)
+			Paths.UI.Bottom.ToolText.Visible = false
 		end
 	end)
 	
 	Template.Parent = Paths.UI.Tools
+
+	if isAnimating then
+		task.defer(function()
+			while Template:GetAttribute("Animating") do
+				local tween = TweenService:Create(Template.BG,TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(240, 202, 34)})
+				tween:Play()
+				task.wait(.4)
+				local tween = TweenService:Create(Template.BG,TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(48, 176, 255)})
+				tween:Play()
+				task.wait(.3)
+			end
+		end)
+	end
 end
 
 
@@ -127,6 +162,11 @@ Services.InputService.InputBegan:Connect(function(input, gameProcessed)
 					if v:IsA("ImageButton") and tonumber(v.Keybind.Text) == Keybinds[KeyPressed] then
 						if Modules.Fishing and not Modules.Fishing.LastUpdate.FishingAnimationActive then
 							Remotes.Tools:FireServer("Equip Tool", v.Name)	
+							if v:GetAttribute("Animating") then
+								stopAnimation(v,v.Name)
+								task.wait(3)
+								Paths.UI.Bottom.ToolText.Visible = false
+							end
 						end
 					end
 				end
@@ -140,15 +180,27 @@ end)
 Remotes.Tools.OnClientEvent:Connect(function(Action, Tool)
 	if Action == "Add Tool" then
 		Tools.AnimateNewTool(Tool) -- Animate it, since this will only fire when a new tool is purchased
-		Tools.AddTool(Tool)
+		Tools.AddTool(Tool,true)
 	end
 end)
 
 local PlayerTools = Remotes.GetStat:InvokeServer("Tools")
+local ToolExeptions = {
+	["Gold Axe"] = "Axe",
+	["Gold Fishing Rod"] = "Fishing Rod",
+	["Powered Glider"] = "Glider"
+}
 local tbl = {}
 for Tool, isOwned in pairs(PlayerTools) do
 	table.insert(tbl, Tool)
 end
+
+for name,exception in pairs (ToolExeptions) do
+	if table.find(tbl,name) and table.find(tbl,exception) then
+		table.remove(tbl,table.find(tbl,exception))
+	end
+end
+
 for i, Tool in ipairs(tbl) do
 	Tools.AddTool(Tool)
 end

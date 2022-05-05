@@ -65,7 +65,7 @@ function PlayerData:SetupPlayerData(player)
 		if not data then--or player.Name == "Kippiiq" then
 			PlayerData.sessionData[player.Name] = {
 				-- Session Stats
-				["Money"] = 10,
+				["Money"] = 50,
 				["Income"] = 0,
 				["Tycoon"] = {},
 				["Penguins"] = {},
@@ -115,7 +115,7 @@ function PlayerData:SetupPlayerData(player)
 
 				-- Long term stats
 				["Stats"] = {
-					["Total Money"] = 10,
+					["Total Money"] = 50,
 					["Total Playtime"] = 0,
 				},
 
@@ -148,6 +148,31 @@ end
 
 
 --- DATA FUNCTIONS ---
+local function getPlayerIncome(Player)
+	local previousIncome = PlayerData.sessionData[Player.Name]["Income"]
+	
+	local levelIncome = Modules.GameFunctions:GetPlayerPenguinIncome(PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
+	local total = levelIncome
+	for i,v in pairs (PlayerData.sessionData[Player.Name]["Tycoon"]) do
+		local item = game.ServerStorage:WaitForChild("Template"):WaitForChild("Buttons"):FindFirstChild(i)
+		if item == nil then
+			item = game.ServerStorage:WaitForChild("Template"):WaitForChild("Upgrades"):FindFirstChild("Island1"):FindFirstChild(i)
+		end
+		if item ~= nil then
+			local income = item:GetAttribute("Income")
+			if item:GetAttribute("Type") == "Penguin" then
+				income = Modules.GameFunctions:GetPenguinIncome(income,PlayerData.sessionData[Player.Name]["Penguins"][i].Level) 
+			end
+			total = total + income
+		else
+			print("ILLEGAL:",i)
+		end
+	end
+	PlayerData.sessionData[Player.Name]["Income"] = total
+	Player:SetAttribute("Income",total) 
+end
+
+
 
 -- setting up new stats that the player doesn't have by default, or, for non-new players, since they won't get the default data anyway
 local function SetupNewStats(Player)
@@ -346,6 +371,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	Player:SetAttribute("Tycoon", "None")
 	Player:SetAttribute("Money", PlayerData.sessionData[Player.Name]["Money"])
 	Player:SetAttribute("Gems", PlayerData.sessionData[Player.Name]["Gems"])
+	getPlayerIncome(Player)
 	Player:SetAttribute("Income", PlayerData.sessionData[Player.Name]["Income"])
 	Player:SetAttribute("Level", PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
 	Player:SetAttribute("Pet", "none")
@@ -375,7 +401,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	local IncomeStat = Instance.new("IntValue", leaderstats)
 	IncomeStat.Name = "Income"
-	IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"] * PlayerData.sessionData[Player.Name]["Income Multiplier"]
+	IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"]
 
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
@@ -389,7 +415,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	end)
 	
 	Player:GetAttributeChangedSignal("Income"):Connect(function()
-		IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"] * PlayerData.sessionData[Player.Name]["Income Multiplier"]
+		IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"]
 	end)
 	
 	Player:SetAttribute("Loaded",true)

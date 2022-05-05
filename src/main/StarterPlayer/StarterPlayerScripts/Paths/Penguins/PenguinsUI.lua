@@ -37,6 +37,17 @@ function PenguinsUI:SetupPenguin(Penguin)
 		Modules.Customization:EnterUI(Penguin, PenguinList.Parent)
 	end)
 	
+	if Penguin == Paths.Player.Character then
+		Template.Super.Visible = false
+		Template.Instant.AnchorPoint = Vector2.new(0,0)
+		Template.Instant.Position = UDim2.fromScale(.03,.6)
+		Template.Upgrade.Position = UDim2.fromScale(.37,.6)
+	else
+		Template.Super.MouseButton1Down:Connect(function()
+			Remotes.Store:FireServer("Penguin", Penguin, true)
+		end)
+	end
+
 	Template.Upgrade.MouseButton1Down:Connect(function()
 		if Penguin:GetAttribute("Income") then
 			local UpgradeSuccess, Info, NewData = Remotes.Customization:InvokeServer("Upgrade", Penguin)
@@ -167,6 +178,22 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				Template.PenguinPrice.Visible = false
 				Template.Upgrade.TheText.Text = "MAX"
 				Template.Upgrade.BackgroundTransparency = 0.8
+			end
+			if PenguinLevel == 10 then
+				Template.Instant.Visible = false
+				Template.Super.AnchorPoint = Vector2.new(.7,0)
+				Template.Super.Position = UDim2.fromScale(.4,.6)
+				Template.Super.Size = UDim2.fromScale(.4,.17)
+				Template.Upgrade.Position = UDim2.fromScale(.55,.59)
+				Template.Upgrade.Size = UDim2.fromScale(.4,.19)
+			end
+			if PenguinLevel == 30 then
+				Template.Instant.Visible = false
+				Template.Super.Visible = false
+				Template.Upgrade.AnchorPoint = Vector2.new(0.5,0)
+				Template.Upgrade.Position = UDim2.fromScale(.5,.6)
+				Template.Upgrade.Size = UDim2.fromScale(.935,.17)
+				Template.Upgrade.TheText.Text = "SUPER PENGUIN"
 			end
 		end
 	end
