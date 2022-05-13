@@ -284,7 +284,7 @@ function SkateRace:StartEvent()
 		for i, Participant in pairs(Participants:GetChildren()) do
 			local player = game.Players:FindFirstChild(Participant.Name)
 			if player then
-				Remotes.Events:FireClient(player, "Skate Race Winners Camera", Map.Winners.CameraAngle.CFrame)
+				Remotes.Events:FireClient(player, "Skate Race Winners Camera", Map.Winners.CameraAngle.CFrame,Rankings)
 			end
 		end
 		

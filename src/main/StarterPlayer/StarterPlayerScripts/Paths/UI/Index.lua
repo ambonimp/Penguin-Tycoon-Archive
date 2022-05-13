@@ -10,6 +10,7 @@ local modules = paths.Modules
 local remotes = paths.Remotes
 
 local rarityColors = {
+	["Junk"] = Color3.fromRGB(105, 64, 40),
 	["Free"] = Color3.fromRGB(240, 240, 240);
 	["Regular"] = Color3.fromRGB(0, 200, 255);
 	
@@ -23,6 +24,7 @@ local rarityColors = {
 }
 
 local rarityLayoutNumbers = {
+	["Junk"] = -3;
 	["Free"] = -2;
 	["Regular"] = -1;
 	
@@ -39,6 +41,11 @@ local rarityLayoutNumbers = {
 
 --- UI Variables ---
 local playerFish = remotes.GetStat:InvokeServer("Fish Found")
+local playerJunk = remotes.GetStat:InvokeServer("Junk Found") or {
+	["51"] = 0,
+	["52"] = 0,
+	["53"] = 0,
+}
 local playerEnchantedFish = remotes.GetStat:InvokeServer("Enchanted Fish Found")
 local playerAccessories = remotes.GetStat:InvokeServer("Accessories")
 local playerEyes = remotes.GetStat:InvokeServer("Eyes")
@@ -112,6 +119,12 @@ end)
 
 --- Index Functions ---
 function Index.FishCaught(fishInfo, isNew)
+	if fishInfo == "Junk" then
+		local Template = indexUI.Sections.Fish.Holder.List[tostring(isNew)]
+		playerJunk[tostring(isNew)] += 1
+		Template.FishAmount.Text = "x"..playerJunk[tostring(isNew)]
+		return
+	end
 	local isEnchanted = fishInfo.Enchanted
 	local fishInfo = fishInfo.LootInfo
 	
@@ -161,6 +174,41 @@ end
 -- Loading fish
 local function LoadAllFish()
 	-- Load fish templates
+	local junk = {
+		["51"] = {
+			Name = "Old Boots",
+			Type = "Junk"
+		},
+	
+		["52"] = {
+			Name = "Bottle",
+			Type = "Junk"
+		},
+	
+		["53"] = {
+			Name = "Sea Weed",
+			Type = "Junk"
+		},
+	}
+
+	for id,info in pairs (junk) do 
+		local Template = Dependency.FishTemplate:Clone()
+		
+		Template.FishRarity.TextColor3 = rarityColors[info.Type]
+		Template.FishIcon.Image = "rbxgameasset://Images/"..info.Name.."_Junk"
+		Template.FishName.Text = info.Name
+		Template.Name = id
+		Template.Parent = indexUI.Sections.Fish.Holder.List
+		
+		Template.LayoutOrder = -3
+		if playerJunk[tostring(id)] then
+			Template.FishAmount.Text = "x"..playerJunk[tostring(id)]
+		else
+			Template.FishAmount.Text = "x0"
+		end
+		Template.FishRarity.Text = "0.825%"
+	end
+
 	for id, fishInfo in pairs(modules.FishingConfig.ItemList) do
 		if not fishInfo.Rarity then continue end
 		
@@ -197,8 +245,9 @@ local function LoadAllFish()
 				if i > 1 then percentageDecimal = fishInfo.Percentage - fishes[i-1].Percentage end
 				local percentageRounded = math.floor((percentageDecimal + 0.000001) * 100000)/1000
 				indexUI.Sections.Fish.Holder.List[tostring(fishInfo.Id)].FishRarity.Text = percentageRounded.."%"
-				
-				indexUI.Sections.Fish.Holder.List[tostring(fishInfo.Id)].LayoutOrder = (100 - percentageRounded) * 10 * rarityLayoutNumbers[modules.FishingConfig.ItemList[fishInfo.Id].Rarity]
+				if percentageRounded and modules.FishingConfig.ItemList[fishInfo.Id] and modules.FishingConfig.ItemList[fishInfo.Id].Rarity then
+					indexUI.Sections.Fish.Holder.List[tostring(fishInfo.Id)].LayoutOrder = (100 - percentageRounded) * 10 * rarityLayoutNumbers[modules.FishingConfig.ItemList[fishInfo.Id].Rarity]
+				end
 			end
 		end
 	end

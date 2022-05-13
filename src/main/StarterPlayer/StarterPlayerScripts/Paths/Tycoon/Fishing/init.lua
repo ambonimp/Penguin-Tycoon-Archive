@@ -174,7 +174,7 @@ function RetrieveFish()
 	elseif result and result.LootInfo.Type == "Junk" then
 		totalEarned.Money += result.Worth
 		uiAnimations.JunkRetrievedAnimation(result)
-		
+		paths.Modules.Index.FishCaught("Junk", result.LootInfo.Id)
 	elseif result and result.LootInfo.Type == "Gem" then
 		totalEarned.Gems += result.LootInfo.Gems
 		uiAnimations.GemsRetrievedAnimation(result)
@@ -295,6 +295,9 @@ InputService.InputBegan:Connect(function(input, gameProcessed)
 		input.KeyCode == Enum.KeyCode.ButtonR2) and 
 		not funcLib.PlayerIsSwimming(paths.Player.Character) and localPlayer.Character:FindFirstChild("Tool") then
 		if funcLib.CursorWithinFrame(localPlayer) then return end
+		if LastUpdate.IsFishing and input.UserInputType == Enum.UserInputType.Touch then
+			return
+		end
 		Fishing.Main()
 	end
 end)
@@ -333,6 +336,13 @@ localPlayer.CharacterRemoving:Connect(function()
 	remotes.AFKFishing:FireServer(false)
 end)
 
+remotes.FishRewards.OnClientEvent:Connect(function(rarity,reward)
+	if reward == nil then
+		paths.Modules.Setup:Notification("You were awarded with "..rarity.." for collecting 200 of it's kind!",Color3.new(.5,0.4,1),4.5)
+	else
+		paths.Modules.Setup:Notification("You were awarded with  <font color=\"rgb(62, 210, 255)\">"..reward.." gems</font> for catching all "..rarity.." fish!",Color3.new(.5,0.4,1),6.5)
+	end
+end)
 
 RunService.RenderStepped:Connect(GameLoop)
 return Fishing

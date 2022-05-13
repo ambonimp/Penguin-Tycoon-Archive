@@ -75,6 +75,7 @@ function Character:EquipShirt(Character,ShirtName)
 				weld.Parent = new
 				new.Anchored = false
 				new.Parent = Model
+				new.Massless = true
 			end
 		end
 	end

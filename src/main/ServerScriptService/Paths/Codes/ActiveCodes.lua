@@ -71,6 +71,13 @@ local Active = {
 		Amount = 50;
 		ReturnText = "+50 Gems!"
 	};
+
+	["GELDIHAT"] = {
+		RewardType = "Accessory";
+		AccessoryType = "Accessory";
+		AccessoryName = "Bucket Hat";
+		ReturnText = "Accessory Received!"
+	};
 }
 
 return Active

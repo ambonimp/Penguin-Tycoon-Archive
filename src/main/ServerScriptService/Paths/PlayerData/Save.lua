@@ -76,6 +76,12 @@ game.Players.PlayerRemoving:Connect(function(Player)
 	if workspace:FindFirstChild(Player.Name) then
 		workspace[Player.Name]:Destroy()
 	end
+
+	if Player:GetAttribute("isAFKFishing") then
+		Modules.PlayerData.sessionData[Player.Name]["WasFishing"] = os.time()
+	else
+		Modules.PlayerData.sessionData[Player.Name]["WasFishing"] = nil
+	end
 	
 	Modules.Ownership:UnclaimTycoon(Player:GetAttribute("Tycoon"))
 	

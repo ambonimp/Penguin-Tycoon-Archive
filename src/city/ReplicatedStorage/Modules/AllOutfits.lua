@@ -58,6 +58,7 @@ Outfits.All = {
 	["Scientist"] = {Rarity = "Rare", IsForSale = true};
 	["Farmer"] = {Rarity = "Rare", IsForSale = true};
 	["Nurse"] = {Rarity = "Rare", IsForSale = true};
+	["Paramedic"] = {Rarity = "Rare", IsForSale = true};
 
 	-- Epics
 	["Engineer"] = {Rarity = "Epic", IsForSale = true};

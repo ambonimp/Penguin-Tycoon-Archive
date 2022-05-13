@@ -94,6 +94,12 @@ Accessories.All = {
 	["Adventurer Hat"] = {Rarity = "Free", IsForSale = false};
 	["Witch Hat"] = {Rarity = "Free", IsForSale = false};
 	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false};
+	["Bowl Hat"] = {Rarity = "Free", IsForSale = false};
+
+	--Fish Rewards
+	["Boot Hat"] = {Rarity = "Free", IsForSale = false};
+	["Bottle Hat"] = {Rarity = "Free", IsForSale = false};
+	["Seaweed Hat"] = {Rarity = "Free", IsForSale = false};
 
 	--- Purchaseable Hats ---
 	-- Rares

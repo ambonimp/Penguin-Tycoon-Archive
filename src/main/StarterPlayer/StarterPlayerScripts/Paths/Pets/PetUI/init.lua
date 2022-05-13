@@ -921,7 +921,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 	local PetModel = Pet[1]
 	local PetStats = Paths.UI.Center.PetStats
 	local interacting = false
-	
+	local justclosed = false
 	local petData = {}
 	if PetData == nil then
 		PetUI.UpdatePetData()
@@ -1000,7 +1000,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 	local lastOpened = tick()-10
 	
 	local function openInteract()
-		print(tick()-lastOpened)
+		if justclosed then return end
 		if tick()-lastOpened < 4.8 then return end
 		lastOpened = tick()
 		ScriptModules.Buttons:UIOn(PetUI.Interact,false,.1)
@@ -1042,19 +1042,25 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 	end)
 	
 	PetUI.Interact.Close.MouseButton1Click:Connect(function()
+		justclosed = true
 		ScriptModules.Buttons:UIOff(PetUI.Interact,false,.1)
-		wait(.1)
+		task.wait(.1)
 		lastOpened = tick()-5
+		task.wait(.2)
+		justclosed = false
 	end)
 	
 	PetStats.Exit.MouseButton1Down:Connect(function()
+		justclosed = true
 		lastOpened = tick()-5
+		task.wait(.2)
+		justclosed = false
 	end)
 
 	PetUI.Interact.Trick.MouseButton1Click:Connect(function()
 		if (Character:FindFirstChild("Humanoid"):GetState() ~= Enum.HumanoidStateType.Swimming) and Pet[11].IsPlaying == false and playerInBoat() == false then
 			local s,m = pcall(function()
-				spawn(function()
+				task.spawn(function()
 					if Pet[12].IsPlaying then
 						Pet[12]:Stop()
 					end
@@ -1062,7 +1068,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 					Pet[13] = Pet[14].TrickCFrame
 					Pet[5]:Stop(.15)
 					Pet[11]:Play()
-					wait(Pet[11].Length*.95)
+					task.wait(Pet[11].Length*.95)
 					Pet[11]:Stop(.25)
 					Pet[5]:Play()
 					Pet[13] = CFrame.Angles(0,0,0)
@@ -1078,7 +1084,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 				warn(m)
 			end
 			if Pet and Pet[11] then
-				wait(Pet[11].Length)
+				task.wait(Pet[11].Length)
 			end
 			interacting = false
 		end
@@ -1091,8 +1097,8 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 		fed = true
 		interacting = true
 		ScriptModules.Buttons:UIOff(PetUI.Interact,false,.1)
-		spawn(function()
-			wait(6.5)
+		task.spawn(function()
+			task.wait(6.5)
 			ReplicatedStorage.Remotes.ResetPetAnimation:FireServer()
 		end)
 		local food,amount = Remotes.FeedPet:InvokeServer()
@@ -1102,7 +1108,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 		if s == false then
 			warn(m)
 		end
-		repeat wait(.1) until game.Players.LocalPlayer.Character == nil or game.Players.LocalPlayer.Character:GetAttribute("PetAnimation") == "none"
+		repeat task.wait(.1) until game.Players.LocalPlayer.Character == nil or game.Players.LocalPlayer.Character:GetAttribute("PetAnimation") == "none"
 		interacting = false
 		fed = false
 	end)
@@ -1121,7 +1127,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 			if s == false then
 				warn(m)
 			end
-			repeat wait(.1) until game.Players.LocalPlayer.Character == nil or game.Players.LocalPlayer.Character:GetAttribute("PetAnimation") == "none"
+			repeat task.wait(.1) until game.Players.LocalPlayer.Character == nil or game.Players.LocalPlayer.Character:GetAttribute("PetAnimation") == "none"
 			interacting = false
 			threw = false
 		end
@@ -1131,6 +1137,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 	local lastTurnedOn = tick()
 	table.insert(Connections,UserInputService.InputBegan:Connect(function(Input,GPE)
 		if GPE then return end
+		if justclosed then return end
 		if Mouse.Target and interacting == false then
 			if Input.UserInputType == Enum.UserInputType.Touch then
 				if Mouse.Target:IsDescendantOf(PetModel) and PetUI.Interact.Visible == false then
@@ -1139,21 +1146,22 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 			end
 		end
 	end))
+	local lastInput = tick()
+	table.insert(Connections,UserInputService.InputChanged:Connect(function()
+		lastInput = tick()
+	end))
 	RunService:BindToRenderStep("PetInteractUI",Enum.RenderPriority.Last.Value,function()
-		local Input = UserInputService:GetLastInputType()
+		local Input = justclosed or UserInputService:GetLastInputType()
+		if tick()-lastInput>.15 then return end
 		if Mouse.Target and interacting == false and PetStats.Visible == false then
-			if Input == Enum.UserInputType.Touch then
-				if Mouse.Target:IsDescendantOf(PetModel) and PetUI.Interact.Visible == false then
-					openInteract()
-				end
-			else
+			if Input ~= Enum.UserInputType.Touch then
 				if Mouse.Target:IsDescendantOf(PetModel) and PetUI.Interact.Visible == false then
 					interacting = false
 					PetClick.Enabled = true
 					lastTurnedOn = tick()
 				else
 					if tick()-lastTurnedOn < 1 then
-						wait(.35)
+						task.wait(.35)
 					end
 					if Mouse.Target and Mouse.Target:IsDescendantOf(PetModel) == false and PetUI and PetUI:FindFirstChild("Interact") and PetUI.Interact.Visible == false then
 						PetClick.Enabled = false

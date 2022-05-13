@@ -16,7 +16,7 @@ for i, v in pairs(workspace.Template.Buttons:GetChildren()) do
 	Info.Price.Text = "$ "..format(v:GetAttribute("Price"))
 	Info.ItemName.Text = string.split(v:GetAttribute("Object"), "#")[1] 
 	
-	if v:GetAttribute("CurrencyType") == "Robux" then
+	if v:GetAttribute("CurrencyType") == "Robux" or v:GetAttribute("CurrencyType") == "Gamepass" then
 		Info.Price.Text = "ROBUX"
 	end
 end

@@ -425,13 +425,8 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	-- Check Gamepasses
 	Modules.Gamepasses:CheckGamepasses(Player)
-	print("WAS FISHING",Player, PlayerData.sessionData[Player.Name]["WasFishing"] )
-	if  PlayerData.sessionData[Player.Name]["WasFishing"] then
-		print(os.time()-PlayerData.sessionData[Player.Name]["WasFishing"])
-	end
-	if PlayerData.sessionData[Player.Name]["WasFishing"] and (os.time()-PlayerData.sessionData[Player.Name]["WasFishing"] < 400) then
-		
-		spawn(function()
+	if PlayerData.sessionData[Player.Name]["WasFishing"] and (os.time()-PlayerData.sessionData[Player.Name]["WasFishing"] < 60) then
+		task.spawn(function()
 			local Tycoon = Paths.Modules.Ownership:GetPlayerTycoon(Player)
 			repeat task.wait(.25) print("WAITING FOR BOAT1") until Player == nil or (Tycoon.Tycoon:FindFirstChild("Boat#1") and Player.Character and Player.Character:IsDescendantOf(workspace))
 			local boat = Tycoon.Tycoon:FindFirstChild("Boat#1")

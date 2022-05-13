@@ -25,6 +25,76 @@ local itemTypes = config.ItemType
 local Fishing = {}
 local RewardQueue = {}
 
+local awards = {
+	["Common"] = 40,
+	["Rare"] = 50,
+	["Epic"] = 75,
+	["Legendary"] = 100,
+	["Mythic"] = 200,
+}
+local RarityAmount = {}
+local FishCategories = {
+	["Common"] = {},
+	["Rare"] = {},
+	["Epic"] = {},
+	["Legendary"] = {},
+	["Mythic"] = {},
+}
+
+for i,v in pairs (config.ItemList) do
+	if v.Rarity and FishCategories[v.Rarity] then
+		table.insert(FishCategories[v.Rarity],i)
+	end
+end
+for i,v in pairs (FishCategories) do
+	RarityAmount[i] = #v
+end
+
+function checkFishRewards(Player)
+	local sessionData = modules.PlayerData.sessionData[Player.Name]
+	if sessionData then
+		if modules.PlayerData.sessionData[Player.Name]["Fish Rewards"] == nil then
+			modules.PlayerData.sessionData[Player.Name]["Fish Rewards"] = {}
+		end
+		local CaughtFish = sessionData["Fish Found"]
+		local CaughtJunk = sessionData["Junk Found"]
+		local ownedRarity = {
+			["Common"] = 0,
+			["Rare"] = 0,
+			["Epic"] = 0,
+			["Legendary"] = 0,
+			["Mythic"] = 0,
+		}
+		for ID,fishData in pairs (config.ItemList) do
+			if fishData.Rarity and CaughtFish[tostring(ID)] and CaughtFish[tostring(ID)] >= 1 and ownedRarity[fishData.Rarity] then
+				ownedRarity[fishData.Rarity] += 1
+			end
+		end
+		for rarity,amount in pairs (ownedRarity) do
+			if amount >= RarityAmount[rarity] and sessionData["Fish Rewards"][rarity] == nil then
+				modules.PlayerData.sessionData[Player.Name]["Fish Rewards"][rarity] = true
+				modules.Income:AddGems(Player, awards[rarity], "Fish Reward")
+				remotes.FishRewards:FireClient(Player,rarity,awards[rarity])
+			end
+		end
+
+		if CaughtJunk then
+			if CaughtJunk["51"] and CaughtJunk["51"] >= 200 and sessionData["Accessories"]["Boot Hat"] == nil then --boot
+				modules.Accessories:ItemAcquired(Player, "Boot Hat", "Accessory")
+				remotes.FishRewards:FireClient(Player,"Boot Hat")
+			end
+			if CaughtJunk["52"] and CaughtJunk["52"] >= 200 and sessionData["Accessories"]["Bottle Hat"] == nil then
+				modules.Accessories:ItemAcquired(Player, "Bottle Hat", "Accessory")
+				remotes.FishRewards:FireClient(Player,"Bottle Hat")
+			end
+			if CaughtJunk["53"] and CaughtJunk["53"] >= 200 and sessionData["Accessories"]["Seaweed Hat"] == nil then
+				modules.Accessories:ItemAcquired(Player, "Seaweed Hat", "Accessory")
+				remotes.FishRewards:FireClient(Player,"Seaweed Hat")
+			end
+		end
+	end
+end
+
 function Fishing.GetRandomId(chanceTable)
 	if not chanceTable then
 		return
@@ -194,6 +264,18 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 			-- no need to save junk to index, just give money
 		elseif lootInfo.Type == itemTypes.Junk then
 			--if not AFKFishing then
+			if sessionData[player.Name]["Junk Found"] == nil then
+				sessionData[player.Name]["Junk Found"] = {
+					["51"] = 0,
+					["52"] = 0,
+					["53"] = 0,
+				}
+			end
+			
+			if lootInfo.Id then
+				sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)] += 1
+			end
+
 			modules.Income:AddMoney(player, returnData.Worth)
 			--end
 
@@ -224,6 +306,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 				end
 			end
 		end
+		checkFishRewards(player)
 	end
 end
 
@@ -231,9 +314,14 @@ function Main(player, hitPosition, reroll, AFKFishing)
 	if not reroll and not GetPlayerRequest(player) then
 		return
 	end
+	task.defer(function()
+		if math.random(1,100) <= 7 then
+			paths.Modules.PoolSpawner.createCustom(player,hitPosition + Vector3.new(math.random(-10,10),0,math.random(-10,10)))
+		end
+	end)
 	local multiplier = 1
 	if AFKFishing then
-		multiplier = 0.25
+		multiplier = 0.25 
 	end
 	local playerIncome = player:GetAttribute("Income") or 0
 
@@ -258,11 +346,12 @@ end
 
 reelFish.OnServerInvoke = Main
 
+local last = {}
+
 FishingRemote.OnServerEvent:Connect(function(player, handlingType, data)
 	if handlingType == "Delete" and data then
 		return
 	end
-
 	FishingRemote:FireAllClients(player, handlingType, data)
 end)
 

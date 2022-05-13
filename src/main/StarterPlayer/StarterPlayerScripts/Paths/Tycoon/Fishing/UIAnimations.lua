@@ -104,7 +104,7 @@ function UIAnimations.GemsRetrievedAnimation(result)
 		gemsCaught.Position = UDim2.new(0.5, 0, 1, 0)
 		
 		-- Set texts
-		gemsCaught.GemReward.Text = result.LootInfo.Gems
+		gemsCaught.GemReward.Text = "+ "..result.LootInfo.Gems
 
 		-- Play animation
 		gemsCaught.Visible = true

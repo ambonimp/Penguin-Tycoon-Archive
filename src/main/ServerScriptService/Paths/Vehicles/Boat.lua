@@ -101,16 +101,19 @@ function Boat:Setup(Model)
 				
 			-- if occupant is nil (aka player just left the boat) then
 			else
-				Model.MainPart.Anchored = true
-				Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, 0, 0)
-				Model.MainPart.BodyForce.Force = Vector3.new(0,0,0)
-				for i,v in pairs (Model:GetDescendants()) do
-					if v:IsA("BasePart") then
-						v.AssemblyLinearVelocity = Vector3.new(0,0,0)
-						v.AssemblyAngularVelocity = Vector3.new(0,0,0)
+				task.wait(2)
+				if Seat.Occupant == nil then
+					Model.MainPart.Anchored = true
+					Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, 0, 0)
+					Model.MainPart.BodyForce.Force = Vector3.new(0,0,0)
+					for i,v in pairs (Model:GetDescendants()) do
+						if v:IsA("BasePart") then
+							v.AssemblyLinearVelocity = Vector3.new(0,0,0)
+							v.AssemblyAngularVelocity = Vector3.new(0,0,0)
+						end
 					end
+					Prompt.Enabled = true
 				end
-				Prompt.Enabled = true
 			end
 		end
 	end)

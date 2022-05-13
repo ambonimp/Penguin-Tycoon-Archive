@@ -75,7 +75,7 @@ end
 function FallingTiles:StartEvent()
 	local Map = workspace.Event["Event Map"]
 	
-	
+	local allPlayers = {}
 	-- Activate Event
 	Map.Active.Value = true
 	Map.Spawns:Destroy()
@@ -86,8 +86,9 @@ function FallingTiles:StartEvent()
 	for index, playerName in pairs(Participants:GetChildren()) do
 		local player = game.Players:FindFirstChild(playerName.Name)
 		if player and player.Character and player.Character:FindFirstChild("Humanoid") then
+			table.insert(allPlayers,player)
 			player.Character.Humanoid.WalkSpeed = 18
-			Modules.Income:AddGems(game.Players[player.Name], 2, "Falling Tiles")
+			Modules.Income:AddGems(game.Players[player.Name], 5, "Falling Tiles")
 		end
 	end
 
@@ -106,7 +107,7 @@ function FallingTiles:StartEvent()
 	Map.KillingFloor.Touched:Connect(function(Part)
 		if Part.Name == "HumanoidRootPart" and Part.Parent:FindFirstChild("Humanoid") and game.Players:FindFirstChild(Part.Parent.Name) and not TouchDb[Part.Parent] then
 			TouchDb[Part] = true
-
+		
 			Part.Parent.Humanoid.Health = 0
 			
 			task.wait(1)
@@ -122,13 +123,14 @@ function FallingTiles:StartEvent()
 		
 		
 	until #Participants:GetChildren() <= 1 or tick() > FinishTime
-
+	local n = ""
 	if #Participants:GetChildren() == 1 then
 		for i, v in pairs(Participants:GetChildren()) do
 			if game.Players:FindFirstChild(v.Name) and rewardValid then
+				Paths.Remotes.ClientNotif:FireClient(game.Players[v.Name],"You did great, you earned  <font color=\"rgb(62, 210, 255)\">15 gems</font>!",Color3.new(0.184313, 0.752941, 0.792156),6.5)
 				Modules.Income:AddGems(game.Players[v.Name],15, "Falling Tiles")
 				local data = Modules.PlayerData.sessionData[v.Name] 
-				
+				n = v.Name
 				if data then
 					print(data["Stats"])
 					if data["Stats"]["Falling Tiles"] then
@@ -137,11 +139,19 @@ function FallingTiles:StartEvent()
 						data["Stats"]["Falling Tiles"] =  1
 					end
 				end
+			else
+				
 			end
-			
+			for i,v in pairs (allPlayers) do
+				if v and v.Name ~= n then
+					Paths.Remotes.ClientNotif:FireClient(v,"You did great, you earned  <font color=\"rgb(62, 210, 255)\">5 gems</font>!",Color3.new(0.184313, 0.752941, 0.792156),6.5)
+				end
+			end
 			return {v.Name}
 		end
 	end
+
+	
 
 	return false
 end

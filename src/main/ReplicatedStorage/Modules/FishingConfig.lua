@@ -364,33 +364,191 @@ Config.ItemList = {
 	[56] = {
 		Name = "Any Hat",
 		Type = Config.ItemType.Hat
-	}
+	},
+
+	[57] = {
+		Name = "Slowfie",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[58] = {
+		Name = "Tommy",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[59] = {
+		Name = "Troy",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[60] = {
+		Name = "Sally",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+	[61] = {
+		Name = "Diana",
+		IncomeMultiplier = 1,
+		Rarity = Config.Rarity.Common,
+		Type = Config.ItemType.Fish
+	},
+
+	[62] = {
+		Name = "Empress",
+		IncomeMultiplier = 3,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[63] = {
+		Name = "Cara",
+		IncomeMultiplier = 3,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[64] = {
+		Name = "Benedict",
+		IncomeMultiplier = 3,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[65] = {
+		Name = "Zee",
+		IncomeMultiplier = 3,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+	[66] = {
+		Name = "Flower",
+		IncomeMultiplier = 3,
+		Rarity = Config.Rarity.Rare,
+		Type = Config.ItemType.Fish
+	},
+
+	[67] = {
+		Name = "Rainbow",
+		IncomeMultiplier = 10,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[68] = {
+		Name = "Kai",
+		IncomeMultiplier = 10,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[69] = {
+		Name = "Scarlett",
+		IncomeMultiplier = 10,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[70] = {
+		Name = "Cory",
+		IncomeMultiplier = 10,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	[71] = {
+		Name = "Pinocchio",
+		IncomeMultiplier = 10,
+		Rarity = Config.Rarity.Epic,
+		Type = Config.ItemType.Fish
+	},
+	---
+	[72] = {
+		Name = "Snippers",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[73] = {
+		Name = "Wally",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[74] = {
+		Name = "Blade",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[75] = {
+		Name = "King",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	[76] = {
+		Name = "Cutie",
+		IncomeMultiplier = 25,
+		Rarity = Config.Rarity.Legendary,
+		Type = Config.ItemType.Fish
+	},
+	---
+	[77] = {
+		Name = "Danger",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[78] = {
+		Name = "Diago",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[79] = {
+		Name = "Jacques",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[80] = {
+		Name = "Squidney",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	[81] = {
+		Name = "Spike",
+		IncomeMultiplier = 50,
+		Rarity = Config.Rarity.Mythic,
+		Type = Config.ItemType.Fish
+	},
+	---
 }
 
 Config.ChanceTable = {
 	OpenSea = {
 		
 		-- Common (50%)
-		{ Id = 13, Percentage = 0.05 },
-		{ Id = 15, Percentage = 0.10 },
-		{ Id = 8, Percentage = 0.15 },
-		{ Id = 3, Percentage = 0.20 },
-		{ Id = 38, Percentage = 0.25 },
-		{ Id = 24, Percentage = 0.30 },
-		{ Id = 46, Percentage = 0.35 },
-		{ Id = 17, Percentage = 0.40 },
-		{ Id = 27, Percentage = 0.45 },
-		{ Id = 11, Percentage = 0.50 },
+		{ Id = 13, Percentage = 0.045454545454545456 },
+		{ Id = 15, Percentage = 0.09090909090909091 },
+		{ Id = 8, Percentage = 0.13636363636363635 },
+		{ Id = 3, Percentage = 0.18181818181818182 },
+		{ Id = 38, Percentage = 0.2272727272727273 },
+		{ Id = 24, Percentage =  0.27272727272727276 },
+		{ Id = 46, Percentage = 0.31818181818181823 },
+		{ Id = 17, Percentage = 0.3636363636363637 },
+		{ Id = 27, Percentage = 0.40909090909090917 },
+		{ Id = 11, Percentage = 0.45454545454545464 },
+		{ Id = 61, Percentage = 0.50 },
 		
 		-- Rare (25%)
-		{ Id = 23, Percentage = 0.53125 },
-		{ Id = 37, Percentage = 0.5625 },
-		{ Id = 29, Percentage = 0.59375 },
-		{ Id = 16, Percentage = 0.625 },
-		{ Id = 22, Percentage = 0.65625 },
-		{ Id = 20, Percentage = 0.6875 },
-		{ Id = 10, Percentage = 0.71875 },
-		{ Id = 49, Percentage = 0.75 },
+		{ Id = 23, Percentage = 0.5278 },
+		{ Id = 37, Percentage = 0.5556000000000001 },
+		{ Id = 29, Percentage = 0.5834000000000001 },
+		{ Id = 16, Percentage = 0.6112000000000002 },
+		{ Id = 22, Percentage = 0.6390000000000002 },
+		{ Id = 20, Percentage = 0.6668000000000003 },
+		{ Id = 10, Percentage = 0.6946000000000003 },
+		{ Id = 49, Percentage = 0.7224000000000004 },
+		{ Id = 66, Percentage = 0.75 },
 		
 		-- Junk (10%)
 		{ Id = 51, Percentage = 0.78333333 },
@@ -398,12 +556,13 @@ Config.ChanceTable = {
 		{ Id = 53, Percentage = 0.85 },
 		
 		-- Epic (9.789%)
-		{ Id = 39, Percentage = 0.869578 },
-		{ Id = 1, Percentage = 0.889156 },
-		{ Id = 18, Percentage = 0.908734 },
-		{ Id = 44, Percentage = 0.928312 },
-		{ Id = 50, Percentage = 0.94789 },
-		
+		{ Id = 39, Percentage = 0.866 },
+		{ Id = 1, Percentage = 0.882 },
+		{ Id = 18, Percentage = 0.898 },
+		{ Id = 44, Percentage = 0.914 },
+		{ Id = 50, Percentage = 0.93 },
+		{ Id = 71, Percentage = 0.94789 },
+
 		-- Regular Gem (5%)
 		{ Id = 54, Percentage = 0.99789 },
 		
@@ -411,24 +570,28 @@ Config.ChanceTable = {
 		{ Id = 55, Percentage = 0.99889 },
 		
 		-- legendary (0.1%)
-		{ Id = 35, Percentage = 0.99914 },
-		{ Id = 5, Percentage = 0.99939 },
-		{ Id = 21, Percentage = 0.99964 },
-		{ Id = 36, Percentage = 0.99989 },
+		{ Id = 35, Percentage = 0.99908 },
+		{ Id = 5, Percentage = 0.99927 },
+		{ Id = 21, Percentage = 0.99946 },
+		{ Id = 36, Percentage = 0.99965 },
+		{ Id = 76, Percentage = 0.99989 },
 		
 		-- mythic (0.01%)
-		{ Id = 28, Percentage = 0.999923333333333333 },
-		{ Id = 4, Percentage = 0.999956666666666666 },
-		{ Id = 34, Percentage = 0.99999 },
-		
+		{ Id = 28, Percentage = 0.9999418333333334 },
+		{ Id = 4, Percentage = 0.9999603333333335 },
+		{ Id = 34, Percentage = 0.9999788333333335 },
+		{ Id = 81, Percentage = 0.99999 },
+
 		-- random hat (0.001%)
 		{ Id = 56, Percentage = 1.000 }
 	},
 	GrassyLand = {
 		-- common (50%)
+		{ Id = 57, Percentage = 0.25 },
 		{ Id = 31, Percentage = 0.5 },
 		
 		-- rare (25%)
+		{ Id = 62, Percentage = 0.625 },
 		{ Id = 6, Percentage = 0.75 },
 		
 		-- Junk (10%)
@@ -437,6 +600,7 @@ Config.ChanceTable = {
 		{ Id = 53, Percentage = 0.85 },
 		
 		-- Epic (9.789%)
+		{ Id = 67, Percentage = 0.898945 },
 		{ Id = 32, Percentage = 0.94789 },
 		
 		-- Regular Gem (5%)
@@ -446,9 +610,11 @@ Config.ChanceTable = {
 		{ Id = 55, Percentage = 0.99889 },
 		
 		-- Legendary (0.1%)
+		{ Id = 72, Percentage = 0.99939 },
 		{ Id = 41, Percentage = 0.99989 },
 		
 		-- Mythic (0.01%)
+		{ Id = 77, Percentage = 0.99994 },
 		{ Id = 47, Percentage = 0.99999 },
 		
 		-- random hat (0.001%)
@@ -456,9 +622,11 @@ Config.ChanceTable = {
 	},
 	Swamp = {
 		-- common (50%)
+		{ Id = 59, Percentage = 0.25 },
 		{ Id = 2, Percentage = 0.5 },
 
 		-- rare (25%)
+		{ Id = 64, Percentage = 0.625 },
 		{ Id = 25, Percentage = 0.75 },
 
 		-- Junk (10%)
@@ -467,6 +635,7 @@ Config.ChanceTable = {
 		{ Id = 53, Percentage = 0.85 },
 
 		-- Epic (9.789%)
+		{ Id = 69, Percentage = 0.898945 },
 		{ Id = 40, Percentage = 0.94789 },
 
 		-- Regular Gem (5%)
@@ -476,9 +645,11 @@ Config.ChanceTable = {
 		{ Id = 55, Percentage = 0.99889 },
 
 		-- Legendary (0.1%)
+		{ Id = 74, Percentage = 0.99939 },
 		{ Id = 30, Percentage = 0.99989 },
 
 		-- Mythic (0.01%)
+		{ Id = 79, Percentage = 0.99994 },
 		{ Id = 14, Percentage = 0.99999 },
 
 		-- random hat (0.001%)
@@ -486,9 +657,11 @@ Config.ChanceTable = {
 	},
 	SandIsland = {
 		-- common (50%)
+		{ Id = 60, Percentage = 0.25 },
 		{ Id = 26, Percentage = 0.5 },
 
 		-- rare (25%)
+		{ Id = 65, Percentage = 0.625 },
 		{ Id = 12, Percentage = 0.75 },
 
 		-- Junk (10%)
@@ -497,6 +670,7 @@ Config.ChanceTable = {
 		{ Id = 53, Percentage = 0.85 },
 
 		-- Epic (9.789%)
+		{ Id = 70, Percentage = 0.898945 },
 		{ Id = 45, Percentage = 0.94789 },
 
 		-- Regular Gem (5%)
@@ -506,9 +680,11 @@ Config.ChanceTable = {
 		{ Id = 55, Percentage = 0.99889 },
 
 		-- Legendary (0.1%)
+		{ Id = 75, Percentage = 0.99939 },
 		{ Id = 7, Percentage = 0.99989 },
 
 		-- Mythic (0.01%)
+		{ Id = 80, Percentage = 0.99994 },
 		{ Id = 33, Percentage = 0.99999 },
 
 		-- random hat (0.001%)
@@ -516,9 +692,11 @@ Config.ChanceTable = {
 	},
 	TreasureBeach = {
 		-- common (50%)
+		{ Id = 58, Percentage = 0.25 },
 		{ Id = 48, Percentage = 0.5 },
 
 		-- rare (25%)
+		{ Id = 63, Percentage = 0.625 },
 		{ Id = 19, Percentage = 0.75 },
 
 		-- Junk (10%)
@@ -527,6 +705,7 @@ Config.ChanceTable = {
 		{ Id = 53, Percentage = 0.85 },
 
 		-- Epic (9.789%)
+		{ Id = 68, Percentage = 0.898945 },
 		{ Id = 42, Percentage = 0.94789 },
 
 		-- Regular Gem (5%)
@@ -536,10 +715,15 @@ Config.ChanceTable = {
 		{ Id = 55, Percentage = 0.99889 },
 
 		-- Legendary (0.1%)
+		{ Id = 73, Percentage = 0.99939 },
 		{ Id = 9, Percentage = 0.99989 },
 
 		-- Mythic (0.01%)
+		{ Id = 78, Percentage = 0.99994 },
 		{ Id = 43, Percentage = 0.99999 },
+
+		--Random hat
+		{ Id = 56, Percentage = 1.000 }
 	}
 }
 

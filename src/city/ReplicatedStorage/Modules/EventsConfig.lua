@@ -1,7 +1,7 @@
 local EventsConfig = {}
 
 
-EventsConfig.Events = {"Falling Tiles","Skate Race","Soccer","Egg Hunt"}
+EventsConfig.Events = {"Falling Tiles","Skate Race","Soccer","Candy Rush"}--,"Egg Hunt"}
 
 
 EventsConfig.INTERMISSION_INTERVAL = 30
@@ -37,6 +37,16 @@ EventsConfig["Soccer"] = {
 	MaxGoals = 10,
 	ImageID = 9287829535,
 	["Display Name"] = "Soccer",
+	--["Tutorial"] = "Reach the end to win!",
+}
+
+
+EventsConfig["Candy Rush"] = {
+	MinPlayers = 2,
+	MaxPlayers = 20,
+	Duration = 120,
+	ImageID = 9617829253,
+	["Display Name"] = "Candy Rush",
 	--["Tutorial"] = "Reach the end to win!",
 }
 

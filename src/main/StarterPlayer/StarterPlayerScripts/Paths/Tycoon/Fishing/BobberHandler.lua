@@ -24,6 +24,8 @@ local fishingModule = nil
 
 local localPlayer = game.Players.LocalPlayer
 
+local CurrentBobberData = {}
+local hasBobber = {}
 local BobberHandler = {}
 
 function BobberHandler.InitFishingModule(fishing)
@@ -31,25 +33,41 @@ function BobberHandler.InitFishingModule(fishing)
 end
 
 function BobberHandler.CreateBopper(character)
-	local hrp = character:FindFirstChild("HumanoidRootPart")
-
-	if not hrp:FindFirstChild("Attachment") then
-		local attachment = Instance.new("Attachment")
-		attachment.Position = Vector3.new(0, 2, 0)
-		attachment.Name = "PlayerAttachment"
-		attachment.Parent = hrp
+	local player = game.Players:GetPlayerFromCharacter(character)
+	local bpd = CurrentBobberData[player.UserId]
+	if hasBobber[character] and os.time()-hasBobber[character] < 1 then 
+		return 
+	elseif bpd and hasBobber[character] and bpd.Bobber and os.time()-hasBobber[character] >= 1 then
+		hasBobber[character] = nil
+		bpd.Bobber:Destroy()
+		bpd.Bobber = nil
 	end
+	if player and player:GetAttribute("Tool") == "Fishing Rod" or  player:GetAttribute("Tool") == "Gold Fishing Rod" then
+		hasBobber[character] = os.time()
+		local hrp = character:FindFirstChild("HumanoidRootPart")
 
-	local tool = character:WaitForChild("Tool")
-	local tip = tool:FindFirstChild("Tip")
-	if not tip then return false end
-	
-	local bobber = replicatedStorage.Bobber:Clone()
-	bobber.Parent = workspace
-	bobber:PivotTo(CFrame.new(hrp.Position + Vector3.new(0, 7, 0)))
-	bobber.PrimaryPart:FindFirstChild("Rope").Attachment1 = tip.Attachment
-	
-	return bobber
+		if not hrp:FindFirstChild("Attachment") then
+			local attachment = Instance.new("Attachment")
+			attachment.Position = Vector3.new(0, 2, 0)
+			attachment.Name = "PlayerAttachment"
+			attachment.Parent = hrp
+		end
+		if workspace.Bobbers:FindFirstChild(character.Name) then
+			workspace.Bobbers:FindFirstChild(character.Name):Destroy()
+		end
+		local tool = character:WaitForChild("Tool")
+		local tip = tool:FindFirstChild("Tip")
+		if not tip then return false end
+		
+		local bobber = replicatedStorage.Bobber:Clone()
+		bobber.Name = character.Name
+		bobber.Parent = workspace.Bobbers
+		bobber:PivotTo(CFrame.new(hrp.Position + Vector3.new(0, 7, 0)))
+		bobber.PrimaryPart:FindFirstChild("Rope").Attachment1 = tip.Attachment
+		
+		return bobber
+	end
+	return nil
 end
 
 function BobberHandler.GetLocation()
@@ -120,12 +138,14 @@ function BobberHandler.MoveFrom(character, bobber, isPlayer)
 	end
 end
 
-local CurrentBobberData = {}
-
 function DestroyBobber(userId)
 	if not CurrentBobberData[userId] or not CurrentBobberData[userId]["Bobber"] then return end
 	
 	CurrentBobberData[userId].Bobber:Destroy()
+	local player = game.Players:GetPlayerByUserId(userId)
+	if player and player.Character then
+		hasBobber[player.Character] = nil
+	end
 	CurrentBobberData[userId] = {}
 end
 
@@ -216,6 +236,11 @@ FishingRemote.OnClientEvent:Connect(function(player: Player, handlingType: strin
 	local bpd = CurrentBobberData[player.UserId]
 	
 	if handlingType == 'Create' then
+		if hasBobber[character] and bpd.Bobber and os.time()-hasBobber[character] >= 1 then
+			hasBobber[character] = nil
+			bpd.Bobber:Destroy()
+			bpd.Bobber = nil
+		end
 		bpd['Bobber'] = BobberHandler.CreateBopper(character)
 		
 		if not bpd['Bobber'] then return end
@@ -226,11 +251,17 @@ FishingRemote.OnClientEvent:Connect(function(player: Player, handlingType: strin
 		if typeof(bpd.Bobber) == "Instance" then
 			bpd.Bobber:Destroy()
 			bpd.Bobber = nil
+			if character then
+				hasBobber[character] = nil
+			end
 		end
 	elseif handlingType == 'Cancel' and bpd.Bobber then
 		if typeof(bpd.Bobber) == "Instance" then
 			bpd.Bobber:Destroy()
 			bpd.Bobber = nil
+			if character then
+				hasBobber[character] = nil
+			end
 		end
 	end
 end)

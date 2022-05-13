@@ -7,6 +7,8 @@ local rand = Random.new()
 local raycastParams = RaycastParams.new()
 raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
 
+local PlayerPools = {}
+local PlayerPoolCount = 0
 local config = {
 	MaxPools = 15,
 	Lifespan = 3 * 60, -- seconds
@@ -68,8 +70,8 @@ function PoolSpawner.GetPosition()
 	end
 end
 
-function PoolSpawner.GetModel()
-	local position = PoolSpawner.GetPosition()
+function PoolSpawner.GetModel(pos)
+	local position = pos or PoolSpawner.GetPosition()
 	local y_rotation = (os.clock() * 18) % 360
 	local offset = Vector3.new(0, -3.3, 0)
 	
@@ -78,6 +80,38 @@ function PoolSpawner.GetModel()
 	model.Name = "Pool-" .. rand:NextInteger(1, 250)
 	model.Parent = config.SpawnFolder
 	return model
+end
+
+function PoolSpawner.createCustom(Player,pos)
+	if PlayerPools[Player.Name] then
+		return
+	end
+	local n = Player.Name
+	PlayerPoolCount += 1
+	local randomNumber = rand:NextInteger(3, 10)
+	
+	local model = PoolSpawner.GetModel(pos)
+	model:SetAttribute("CreatedTime", os.clock())
+	model:SetAttribute("OffsetTime", randomNumber)
+	for i,v in pairs (model.Fish:GetChildren()) do
+		local anim = v.Animation
+		local con = v.AnimationController
+		local p = con:LoadAnimation(anim)
+		p:Play()
+	end
+	PlayerPools[n] = model
+	model.Catch.CatchArea.Timer.Enabled = true
+	model.Catch.Fire.Shiny.Enabled = true
+	for i = 29,0,-1 do
+		if game.Players:FindFirstChild(n) == nil then
+			break
+		end
+		model.Catch.CatchArea.Timer.TextLabel.Text = i
+		task.wait(1)
+	end
+	model:Destroy() 
+	PlayerPoolCount -= 1
+	PlayerPools[n] = nil
 end
 
 function PoolSpawner.Init()
@@ -90,7 +124,7 @@ function PoolSpawner.Init()
 	buffer.Debounce = true
 	task.wait(randomNumber)
 	
-	warn("[+] Created Pool: " .. randomNumber .. "s (WaitTime)")
+	--warn("[+] Created Pool: " .. randomNumber .. "s (WaitTime)")
 	buffer.Debounce = false
 end
 
@@ -99,7 +133,7 @@ function PoolSpawner.Dispose(model)
 	local offset = model:GetAttribute("OffsetTime")
 	
 	if (createdTime and offset) and (os.clock() > createdTime + (config.Lifespan - offset)) then
-		warn("[-] Removed Pool")
+		--warn("[-] Removed Pool")
 		model:Destroy()
 	end
 end
@@ -120,7 +154,7 @@ end
 runService.Heartbeat:Connect(function()
 	buffer.Pools = workspace.ActivePools:GetChildren()
 	
-	if #buffer.Pools < config.MaxPools and not buffer.Debounce then
+	if #buffer.Pools < config.MaxPools+PlayerPoolCount and not buffer.Debounce then
 		coroutine.wrap(function() PoolSpawner.Init() end)()
 	end
 	

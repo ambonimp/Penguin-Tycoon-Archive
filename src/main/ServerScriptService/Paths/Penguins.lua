@@ -7,6 +7,7 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
+local MoneyProducts = {1224873708, 1224873843, 1224873847, 1224873846, 1224873844, 1224873842}
 
 --- Initializing ---
 function Penguins:PenguinPurchased(Player, PenguinName)
@@ -296,6 +297,19 @@ Penguins["Upgrade"] = function(Player, Penguin, IsSuper)
 				
 				return Penguins:UpgradePenguin(Player, Penguin)
 			else
+				local prompted = false
+				for i = 1,6 do
+					local id = MoneyProducts[i]
+					local Reward = Modules.GameFunctions:GetMoneyProductReward(id, Player:GetAttribute("Income"))
+					if Reward+PlayerMoney >= UpgradePrice then
+						prompted = true
+						Services.MPService:PromptProductPurchase(Player, id)
+						break
+					end
+				end
+				if prompted == false then
+					Services.MPService:PromptProductPurchase(Player, MoneyProducts[6])
+				end
 				return false, "Not Enough Money"
 			end
 		else
@@ -316,6 +330,19 @@ Penguins["Upgrade"] = function(Player, Penguin, IsSuper)
 
 			return Penguins:UpgradePenguin(Player, Penguin)
 		else
+			local prompted = false
+			for i = 1,6 do
+				local id = MoneyProducts[i]
+				local Reward = Modules.GameFunctions:GetMoneyProductReward(id, Player:GetAttribute("Income"))
+				if Reward+PlayerMoney >= UpgradePrice then
+					prompted = true
+					Services.MPService:PromptProductPurchase(Player, id)
+					break
+				end
+			end
+			if prompted == false then
+				Services.MPService:PromptProductPurchase(Player, MoneyProducts[6])
+			end
 			return false, "Not Enough Money"
 		end
 	end

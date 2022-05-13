@@ -8,6 +8,20 @@ local compassUnlocked = false
 game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
 game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
 
+local NotifExample = Paths.UI.Main.Notifications.Example
+
+function Setup:Notification(text,color,time)
+    if Paths.Audio.Notif.IsPlaying == false then
+        Paths.Audio.Notif:Play()
+    end
+    local notif = NotifExample:Clone()
+    notif.Text = text
+    notif.BackgroundColor3 = color or Color3.new(0.776470, 0.850980, 0.501960)
+    notif.Parent = Paths.UI.Main.Notifications
+    notif.Visible = true
+    game:GetService("Debris"):AddItem(notif,time or 3)
+end
+
 function GetAngle(vector1, vector2)
 	return math.acos(math.clamp(vector1.Unit:Dot(vector2.Unit), -1, 1))
 end
