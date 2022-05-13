@@ -274,6 +274,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 			
 			if lootInfo.Id then
 				sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)] += 1
+				returnData.Amount = sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)]
 			end
 
 			modules.Income:AddMoney(player, returnData.Worth)

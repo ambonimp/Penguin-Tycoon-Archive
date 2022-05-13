@@ -76,7 +76,13 @@ function UIAnimations.JunkRetrievedAnimation(result)
 	coroutine.wrap(function()
 		-- Reset positions and sizes
 		junkCaught.Position = UDim2.new(0.5, 0, 1, 0)
-
+		print(result)
+		if result.Amount and result.Amount <= 200 then
+			junkCaught.Amount.Text = result.Amount.."/200"
+			junkCaught.Amount.Visible = true
+		else
+			junkCaught.Amount.Visible = false
+		end
 		-- Setup info
 		junkCaught.FishName.Text = result.LootInfo.Name
 		junkCaught.FishRarity.Text = "Junk"

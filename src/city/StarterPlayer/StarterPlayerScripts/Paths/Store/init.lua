@@ -67,6 +67,10 @@ UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Dow
 	ButtonClicked(Store.Buttons.Accessories,Store)
 end)
 
+UI.BLCorner.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
+	ButtonClicked(Store.Buttons.Money,Store)
+end)
+
 for i, Button in pairs(UI.Center.Clothing.Buttons:GetChildren()) do
 	Button.MouseButton1Down:Connect(function()
 		ButtonClicked(Button,UI.Center.Clothing)
