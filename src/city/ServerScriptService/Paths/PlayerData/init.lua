@@ -198,6 +198,10 @@ local function SetupNewStats(Player)
 		Data["Twitter Verification"] = false
 	end
 
+	if not Data["Discord Verification"] then
+		Data["Discord Verification"] = false
+	end
+
 	if not Data["Event"] then
 		Data["Event"] = {
 			[1] = "Egg Hunt", -- event name

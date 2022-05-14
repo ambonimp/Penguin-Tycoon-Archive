@@ -59,6 +59,7 @@ function Paths.Initiliaze()
 	Paths.Modules.GroupReward = require(script.GroupReward)
 	Paths.Modules.Lighting = require(script.Lighting)
 	Paths.Modules.Verification = require(script.Verification)
+	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
 	
 	-- Event Modules
 	Paths.Modules.EventsConfig = require(Paths.Services.RStorage.Modules.EventsConfig)
