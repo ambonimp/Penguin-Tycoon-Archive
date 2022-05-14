@@ -65,6 +65,7 @@ function Paths.Initiliaze()
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Verification = require(script.Verification)
+	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
 	
 	-- Tool Modules
 	Paths.Modules.Tools = require(script.Tools);

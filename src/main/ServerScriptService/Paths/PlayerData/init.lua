@@ -227,6 +227,9 @@ local function SetupNewStats(Player)
 	if not Data["Twitter Verification"] then
 		Data["Twitter Verification"] = false
 	end
+	if not Data["Discord Verification"] then
+		Data["Discord Verification"] = false
+	end
 	if not Data["Emotes"] then
 		Data["Emotes"] = {
 			["Sit"] = true;
