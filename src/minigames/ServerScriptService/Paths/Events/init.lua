@@ -7,6 +7,7 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local previousEvent = nil
+local Workspace = game:GetService("Workspace")
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
 
 local EventModules = {}
@@ -23,7 +24,7 @@ local TotalVotes = Services.RStorage.Modules.EventsConfig.Votes
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local AllEvents = require(Services.RStorage.Modules.EventsConfig).Events
 
-local ChosenEvent = nil
+local ChosenEvent = AllEvents[game.PlaceId]
 local PlayerVotes = {}
 
 
@@ -33,7 +34,8 @@ local function ResetEvent()
 	EventValues.CurrentEvent.Value = "None"
 	Participants:ClearAllChildren()
 	workspace.Event:ClearAllChildren()
-	ChosenEvent = nil
+
+	--[[ 	ChosenEvent = nil
 	PlayerVotes = {}
 	Voted = {}
 	for i, v in pairs(TotalVotes:GetChildren()) do
@@ -41,7 +43,8 @@ local function ResetEvent()
 	end
 	for i,value in pairs (EventValues.Voting:GetChildren()) do
 		value.Value = 0
-	end
+	end *]]
+
 end
 
 
@@ -198,6 +201,7 @@ local function EventLoop()
 		
 		-- Intermission
 		Intermission()
+		--[[
 		--Voting:
 		
 		-- Choose 3 Events to vote from
@@ -219,11 +223,12 @@ local function EventLoop()
 			nextEvent = AllEvents[pEvent]
 		end
 		
-		ChosenEvent = nextEvent--]]
+		ChosenEvent = nextEvent
 		previousEvent = ChosenEvent
 		
-		EventValues.CurrentEvent.Value = ChosenEvent
+		]]--
 		
+		EventValues.CurrentEvent.Value = ChosenEvent
 
 		-- Invite all players to join
 		SendInvites(ChosenEvent)

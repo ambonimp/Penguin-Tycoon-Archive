@@ -107,7 +107,7 @@ end)
 
 -- Different teleport locations/buttonns
 TeleportButton.MouseButton1Down:Connect(function()
-	Teleporting:OpenConfirmation("Penguin Tycoon")
+	Teleporting:OpenConfirmation("Penguin City")
 end)
 
 

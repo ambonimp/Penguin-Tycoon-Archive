@@ -50,6 +50,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Settings = require(script.Settings)
 	Paths.Modules.Teleporting = require(script.Teleporting)
 	Paths.Modules.EventsConfig = require(Paths.Services.RStorage.Modules.EventsConfig)
+	Paths.Modules.Events = require(script.Events)
 	Paths.Modules.Collisions = require(script.Collisions)
 
 	-- Chat Modules

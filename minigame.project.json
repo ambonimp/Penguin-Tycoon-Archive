@@ -1,0 +1,35 @@
+{
+    "name": "Penguin Minigames",
+    "servePlaceIds": [
+      9170899192
+    ],
+    "tree": {
+      "$className": "DataModel",
+  
+      "ReplicatedStorage": {
+        "$className": "ReplicatedStorage",
+        "$ignoreUnknownInstances": true,
+        "$path": "src/minigames/ReplicatedStorage"
+      },
+      "ServerScriptService": {
+        "$className": "ServerScriptService",
+        "$ignoreUnknownInstances": true,
+        "$path": "src/minigames/ServerScriptService"
+      },
+      "ServerStorage": {
+        "$className": "ServerStorage",
+        "$ignoreUnknownInstances": true,
+        "$path": "src/minigames/ServerStorage"
+      },
+  
+      "StarterPlayer": {
+        "$className": "StarterPlayer",
+        "StarterPlayerScripts": {
+          "$className": "StarterPlayerScripts",
+          "$ignoreUnknownInstances": true,
+          "$path": "src/minigames/StarterPlayer/StarterPlayerScripts"
+        },
+        "$ignoreUnknownInstances": true
+      }
+    }
+  }
