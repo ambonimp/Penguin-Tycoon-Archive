@@ -1,11 +1,14 @@
+local RStorage = game:GetService("ReplicatedStorage")
+local PlaceIds =  require(RStorage.Modules.PlaceIds)
+
+
 local EventsConfig = {}
 
-
 EventsConfig.Events = {
-	[9648022475] = "Falling Tiles",
-	[9647517478] = "Skate Race",
-	[9648024554] = "Soccer",
-	[9648025781] = "Candy Rush"
+	[PlaceIds["Falling Tiles"]] = "Falling Tiles",
+	[PlaceIds["Skate Race"]] = "Skate Race",
+	[PlaceIds["Soccer"]] = "Soccer",
+	[PlaceIds["Candy Rush"]] = "Candy Rush"
 } --,"Egg Hunt"}
 
 
@@ -64,11 +67,10 @@ EventsConfig["Egg Hunt"] = {
 	--["Tutorial"] = "Reach the end to win!",
 }
 
-
-if game.PlaceId == 9170899192 then -- night skating test
+if game.PlaceId == 9647797909 then -- Minigame test
+	EventsConfig.Events[9647797909] = "Candy Rush"
 	EventsConfig.INTERMISSION_INTERVAL = 10
 	EventsConfig.ACCEPT_TIMER = 10
 end
-
 
 return EventsConfig

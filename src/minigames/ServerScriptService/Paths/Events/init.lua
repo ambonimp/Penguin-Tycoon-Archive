@@ -7,7 +7,6 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local previousEvent = nil
-local Workspace = game:GetService("Workspace")
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
 
 local EventModules = {}
@@ -52,13 +51,13 @@ local function Intermission()
 	Events.CurrentState = "Intermission"
 	for i = Modules.EventsConfig.INTERMISSION_INTERVAL, 0, -1 do
 		EventValues.TextToDisplay.Value = "Intermission: "..i
-		wait(1)
+		task.wait(1)
 	end
 end
 
 
 local function ChooseEvents()
-	
+
 	local AllEvents = {}
 	for i, v in pairs(Modules.EventsConfig.Events) do table.insert(AllEvents, v) end
 	if previousEvent and table.find(AllEvents,previousEvent) then
@@ -76,7 +75,7 @@ local function ChooseEvents()
 		["Option2"] = {},
 		["Option3"] = {},
 	}
-	
+
 	return Options
 end
 
@@ -146,13 +145,44 @@ local function StartingCountdown(ChosenEvent)
 	local s,m = pcall(function()
 		EventModules[ChosenEvent]:InitiateEvent(ChosenEvent)
 	end)
-	
+
 	if s == false then
 		warn(m)
 	end
 
+
 	-- Spawn Players in
 	EventModules[ChosenEvent]:SpawnPlayers()
+
+
+	-- Move spectator box above map
+	local SpectatorBox = workspace.SpectatorBox
+	-- Get offsets from box
+	-- Then offsets to seamlessly move to their new positions relative to box new position above map
+	local Offsets = {}
+	-- Moving characters in box
+	for _, Player in ipairs(game.Players:GetPlayers()) do
+		if not Participants:FindFirstChild(Player.Name) then
+			local Character = Player.Character
+
+			if Character then
+				local Hrp = Character.PrimaryPart
+				Offsets[Hrp] = SpectatorBox.PrimaryPart.CFrame:ToObjectSpace(Hrp.CFrame)
+			end
+		end
+	end
+
+	for _, SpawnLocation in ipairs(workspace.Spawns:GetChildren()) do
+		Offsets[SpawnLocation] = SpectatorBox.PrimaryPart.CFrame:ToObjectSpace(SpawnLocation.CFrame)
+	end
+
+	local NewCFrame = Map.SpectatorBox.CFrame
+	SpectatorBox:SetPrimaryPartCFrame(NewCFrame)
+
+	for BasePart, Offset in pairs(Offsets) do
+		BasePart.CFrame = NewCFrame:ToWorldSpace(Offset)
+	end
+
 
 	-- Starting Counter
 	for i = 3, 1, -1 do
@@ -173,7 +203,7 @@ local function StartEvent(ChosenEvent)
 	if #Participants:GetChildren() >= Modules.EventsConfig[ChosenEvent].MinPlayers then
 		-- Start the event
 		Events.CurrentState = "Started"
-		
+
 		for _, participant in pairs(Participants:GetChildren()) do
 			-- Fires a bindable event to notify server that this event has occured with given data
 			-- Used normally to integrate with Game Analytics / Dive / Playfab
@@ -183,12 +213,12 @@ local function StartEvent(ChosenEvent)
 					minigame = ChosenEvent
 				})
 			end)
-		end	
-		
+		end
+
 		-- Start it
 		Winners, DisplayText = EventModules[ChosenEvent]:StartEvent(ChosenEvent)
 	end
-	
+
 	return Winners, DisplayText
 end
 
@@ -197,21 +227,21 @@ local function EventLoop()
 	while true do
 		-- Reset Previous Event Completely
 		ResetEvent()
-		
-		
+
+
 		-- Intermission
 		Intermission()
 		--[[
 		--Voting:
-		
+
 		-- Choose 3 Events to vote from
 		local Options = ChooseEvents()
-		
+
 
 		-- Initiate voting for everyone
 		InitiateVoting(Options)
-		
-		
+
+
 		-- Get chosen event
 		ChosenEvent = GetChosenEvent(Options)--]]
 
@@ -222,32 +252,32 @@ local function EventLoop()
 			pEvent = 1
 			nextEvent = AllEvents[pEvent]
 		end
-		
+
 		ChosenEvent = nextEvent
 		previousEvent = ChosenEvent
-		
+
 		]]--
-		
+
 		EventValues.CurrentEvent.Value = ChosenEvent
 
 		-- Invite all players to join
 		SendInvites(ChosenEvent)
-		
+
 
 		-- Start the event if the min amount of players is met
 		if #Participants:GetChildren() >= Modules.EventsConfig[ChosenEvent].MinPlayers and #Participants:GetChildren() <= Modules.EventsConfig[ChosenEvent].MaxPlayers then
 			workspace:SetAttribute("Minigame",true)
 			StartingCountdown(ChosenEvent)
-			
+
 			local Winners, DisplayText = nil,nil
-			
+
 			local s,m = pcall(function()
 				Winners, DisplayText = StartEvent(ChosenEvent)
 			end)
 			if s == false then
 				warn(m)
 			end
-			
+
 			local s,m = pcall(function()
 				if Winners then
 					for _, winner in pairs(Winners) do
@@ -259,8 +289,8 @@ local function EventLoop()
 								minigame = ChosenEvent
 							})
 						end)
-					end	
-					
+					end
+
 					local WinnersText = ""
 					for i, v in pairs(Winners) do
 						if i == #Winners then
@@ -276,19 +306,19 @@ local function EventLoop()
 						EventValues.TextToDisplay.Value = "Winner(s): "..WinnersText.."!"
 					end
 
-					wait(2) -- Give time to flex n stuff
+					task.wait(2) -- Give time to flex n stuff
 				elseif DisplayText then
 					EventValues.TextToDisplay.Value = DisplayText
 				else
 					EventValues.TextToDisplay.Value = "Nobody Wins!"
 				end
-				
+
 				if ChosenEvent == "Soccer" then
-					wait(4)
+					task.wait(4)
 				else
-					wait(2)
+					task.wait(2)
 				end
-				
+
 				Remotes.Events:FireAllClients("Event Ended",ChosenEvent)
 				for i,player in pairs (game.Players:GetPlayers()) do
 					player:SetAttribute("Minigame","none")
@@ -301,9 +331,9 @@ local function EventLoop()
 						Modules.Character:Spawn(player)
 					end
 				end
-				
+
 			end)
-			
+
 			if s == false then
 				warn(m)
 			end
