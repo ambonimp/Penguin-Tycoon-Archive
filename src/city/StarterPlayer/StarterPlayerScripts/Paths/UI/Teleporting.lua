@@ -12,45 +12,46 @@ local UI = Paths.UI
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 local EventsConfig =  require(Services.RStorage.Modules.EventsConfig)
+local PlaceIds =  require(Services.RStorage.Modules.PlaceIds)
+
 
 --- Variables ---
 local TeleportButton = UI.Left.Buttons.Teleport
 local Confirmation = UI.Center.TeleportConfirmation
 
 local TeleportDB = false
-local GameId = game.GameId
 
 
 local Locations = {
 	["Penguin Tycoon"] = {
-		PlaceId = nil,
+		PlaceId = PlaceIds["Penguin Tycoon"],
 		Alias = "Tycoon",
 		Description = "Build your islands, customize your Penguins and earn money!",
 		Thumbnail = "rbxassetid://8455934474"
 	},
 	["Penguin City"] = {
-		PlaceId = nil,
+		PlaceId = PlaceIds["Penguin City"],
 		Alias = "City",
 		Description = "Play Minigames, Visit your Friends, and Roleplay",
 		Thumbnail = "rbxassetid://8455934474"
 	},
 	["Falling Tiles"] = {
-		PlaceId = nil,
+		PlaceId = PlaceIds["Falling Tiles"],
 		Description = "Be the last man standing",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Falling Tiles"].ImageID,
 	},
 	["Skate Race"] = {
-		PlaceId = nil,
+		PlaceId = PlaceIds["Skate Race"],
 		Description = "Race on skates",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Skate Race"].ImageID,
 	},
 	["Soccer"] = {
-		PlaceId = nil,
+		PlaceId = PlaceIds["Soccer"],
 		Description = "Score as many goals",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Soccer"].ImageID,
 	},
 	["Candy Rush"] = {
-		PlaceId = nil,
+		PlaceId = PlaceIds["Candy Rush"],
 		Description = "Something",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Candy Rush"].ImageID,
 	}
@@ -238,34 +239,11 @@ function Teleporting:RefreshFriends()
 	end)
 
 	if not Success then
-		wait(3)
+		task.wait(3)
 		Teleporting:RefreshFriends()
 	end
 end
 
-
-
-
-if GameId == 3073627998 then -- To live game places
-	InitializeLocationIds({
-		["Penguin Tycoon"] = 7951464846,
-		["Penguin City"] = 7967681044,
-	})
-elseif GameId == 3425588324 then -- To testing Places
-	InitializeLocationIds({
-		["Penguin Tycoon"] = 7951464846,
-		["Penguin City"] = 9118436978,
-		["Falling Tiles"] = 9648022475,
-		["Skate Race"] = 9647517478,
-		["Soccer"] = 9648024554,
-		["Candy Rush"] = 9648025781
-	})
-else -- To QA Places
-	InitializeLocationIds({
-		["Penguin Tycoon"] = 9118461324,
-		["Penguin City"] = 9170919040
-	})
-end
 
 local Portals = Workspace:FindFirstChild("Portals")
 if workspace:FindFirstChild("Portals") then
