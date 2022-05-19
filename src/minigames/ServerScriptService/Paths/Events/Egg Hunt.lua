@@ -28,7 +28,6 @@ local itemList  = {
 --- Event Variables ---
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
-local Votes = Services.RStorage.Modules.EventsConfig.Votes
 
 function addGems(player,amount)
 	Modules.Income:AddGems(player, amount, "Egg Hunt")

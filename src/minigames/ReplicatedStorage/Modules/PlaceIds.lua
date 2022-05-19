@@ -12,6 +12,7 @@ elseif GameId == 3425588324 then
     Ids["Skate Race"] = 9647517478
     Ids["Candy Rush"] = 9648025781
     Ids["Soccer"] = 9648024554
+    Ids["Ice Cream Extravaganza"] = 9656094271
 else
     Ids["Penguin Tycoon"] = 9118461324
 	Ids["Penguin City"] = 9170919040

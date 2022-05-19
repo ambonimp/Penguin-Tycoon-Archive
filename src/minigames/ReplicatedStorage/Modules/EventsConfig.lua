@@ -4,12 +4,12 @@ local PlaceIds =  require(RStorage.Modules.PlaceIds)
 
 local EventsConfig = {}
 
-EventsConfig.Events = {
+EventsConfig.Names = {
 	[PlaceIds["Falling Tiles"]] = "Falling Tiles",
 	[PlaceIds["Skate Race"]] = "Skate Race",
 	[PlaceIds["Soccer"]] = "Soccer",
 	[PlaceIds["Candy Rush"]] = "Candy Rush",
-	[PlaceIds["Ice Cream Extravaganz"]] = "Ice Cream Extravaganz"
+	[PlaceIds["Ice Cream Extravaganza"]] = "Ice Cream Extravaganza"
 } --,"Egg Hunt"}
 
 
@@ -59,10 +59,12 @@ EventsConfig["Candy Rush"] = {
 	--["Tutorial"] = "Reach the end to win!",
 }
 
-EventsConfig["Ice Cream Extravaganz"] = {
+EventsConfig["Ice Cream Extravaganza"] = {
 	MinPlayers = 2,
 	MaxPlayers = 20,
 	Duration = 120,
+	DropVelocity = 5,
+	DropRate = 0.05,
 	ImageID = 9617829253,
 	["Display Name"] = "Ice Cream Extravaganza",
 	--["Tutorial"] = "Reach the end to win!",
@@ -78,8 +80,8 @@ EventsConfig["Egg Hunt"] = {
 	--["Tutorial"] = "Reach the end to win!",
 }
 
-if game.PlaceId == 9647797909 then -- Minigame test
-	EventsConfig.Events[9647797909] = "Candy Rush"
+if game.GameId == 3425588324 then -- Testing
+	EventsConfig.Names[9647797909] = "Candy Rush"
 	EventsConfig.INTERMISSION_INTERVAL = 10
 	EventsConfig.ACCEPT_TIMER = 10
 end

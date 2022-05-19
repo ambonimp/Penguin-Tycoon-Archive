@@ -23,6 +23,8 @@ function Paths.Initiliaze()
 --- Initializing UI ---
 	local PlayerGui = game.Players.LocalPlayer.PlayerGui
 	Paths.UI.Main = PlayerGui:WaitForChild("Main")
+	Paths.UI.SpecialEffects = PlayerGui:WaitForChild("SpecialEffects")
+
 	Paths.UI.Left = Paths.UI.Main:WaitForChild("Left")
 	Paths.UI.Right = Paths.UI.Main:WaitForChild("Right")
 	Paths.UI.Center = Paths.UI.Main:WaitForChild("Center")
@@ -30,7 +32,6 @@ function Paths.Initiliaze()
 	Paths.UI.Top = Paths.UI.Main:WaitForChild("Top")
 	Paths.UI.Full = Paths.UI.Main:WaitForChild("Full")
 	Paths.UI.BLCorner = Paths.UI.Main:WaitForChild("BLCorner")
-	
 	
 --- Initializing Remotes ---
 	Paths.Remotes = Paths.Services.RStorage.Remotes;
@@ -63,8 +64,6 @@ function Paths.Initiliaze()
 	
 	-- Event Modules
 	Paths.Modules.EventsConfig = require(Paths.Services.RStorage.Modules.EventsConfig)
-	Paths.Modules.Events = require(script.Events)
-	Paths.Modules.Spectate = require(script.Events.Spectate)
 	
 	-- Character Modules
 	Paths.Modules.DoubleJump = require(script.Character.DoubleJump);
@@ -76,6 +75,7 @@ function Paths.Initiliaze()
 	Paths.Modules.UIAnimations = require(script.UI.Animations)
 	Paths.Modules.Buttons = require(script.UI.Buttons)
 	Paths.Modules.Teleporting = require(script.UI.Teleporting)
+	Paths.Modules.Portaling = require(script.UI.Portaling)
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
 	Paths.Modules.UI = require(script.UI)
 

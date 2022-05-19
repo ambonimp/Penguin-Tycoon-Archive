@@ -37,22 +37,22 @@ local Locations = {
 	},
 	["Falling Tiles"] = {
 		PlaceId = PlaceIds["Falling Tiles"],
-		Description = "Be the last man standing",
+		Description = "Survive the falling tiles!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Falling Tiles"].ImageID,
 	},
 	["Skate Race"] = {
 		PlaceId = PlaceIds["Skate Race"],
-		Description = "Race on skates",
+		Description = "Race around the ice track!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Skate Race"].ImageID,
 	},
 	["Soccer"] = {
 		PlaceId = PlaceIds["Soccer"],
-		Description = "Score as many goals",
+		Description = "Score goals against the other team!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Soccer"].ImageID,
 	},
 	["Candy Rush"] = {
 		PlaceId = PlaceIds["Candy Rush"],
-		Description = "Something",
+		Description = "Collect all of the candy!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Candy Rush"].ImageID,
 	}
 }

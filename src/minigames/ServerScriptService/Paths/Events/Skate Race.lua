@@ -13,7 +13,6 @@ local Remotes = Paths.Remotes
 --- Event Variables ---
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
-local Votes = Services.RStorage.Modules.EventsConfig.Votes
 
 
 

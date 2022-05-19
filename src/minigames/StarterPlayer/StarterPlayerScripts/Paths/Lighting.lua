@@ -44,6 +44,4 @@ end)
 
 -- Initiate Little World Lighting
 
-
-
 return Lighting

@@ -13,7 +13,6 @@ local UI = Paths.UI
 --- Spectate Variables ---
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
-local Votes = Services.RStorage.Modules.EventsConfig.Votes
 
 local EventInfoUI = Paths.UI.Top.EventInfo
 local EventVotingUI = Paths.UI.Top.EventVoting

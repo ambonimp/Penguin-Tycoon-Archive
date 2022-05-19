@@ -8,8 +8,6 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
-local Participants = Services.RStorage.Modules.EventsConfig.Participants
-local Votes = Services.RStorage.Modules.EventsConfig.Votes
 
 local EventInfoUI = Paths.UI.Top.EventInfo
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
