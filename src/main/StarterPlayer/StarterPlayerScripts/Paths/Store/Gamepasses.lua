@@ -16,7 +16,7 @@ local Store = UI.Center.Store
 
 --- Gamepass Variables ---
 local AllGamepasses = {
-	{25313170,"Earn more money!"},	 -- x2 Income
+	{25313170,"Earn double money!"},	 -- x2 Income
 	{26268187,"Run faster!"}, -- Faster Speed
 	{26268229,"Jump twice!"}, -- Double Jump
 	{26269102,"VIP Tag and Golden Hearts!"}, -- VIP
@@ -24,6 +24,7 @@ local AllGamepasses = {
 	{41205566,"Luxury Boat that drives faster!"}, -- Luxury Boat
 	{41205759,"Super Glider that flies faster!"}, -- Super Glider
 	{43183311,"x2 income per chopped tree!"}, -- Gold Axe
+	{45764173,"Jet plane that flies faster!"}, -- Gold Axe
 }
 
 

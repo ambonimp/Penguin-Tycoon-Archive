@@ -315,6 +315,24 @@ local function SetupNewStats(Player)
 			},
 		}
 	end
+
+	if not Data["PlaneUnlocked"] then
+		Data["PlaneUnlocked"] = {
+			[1] = false,
+			[2] = {
+				["Wheel 1"] = false,
+				["Wheel 2"] = false,
+				["Propeller"] = false,
+				["Landing Gear"] = false,
+				["Body"] = false,
+				["Seat"] = false,
+				["Wing 1"] = false,
+				["Wing 2"] = false,
+				["Stabilizer 1"] = false,
+				["Stabilizer 2"] = false,
+			},
+		}
+	end
 	
 end
 

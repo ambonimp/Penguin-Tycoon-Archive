@@ -29,7 +29,11 @@ for i, Product in pairs(MoneyProducts) do
 		Template.Purchase.TheText.Text = Modules.Format:FormatComma(Info["PriceInRobux"])
 		Template.LayoutOrder = Info["PriceInRobux"]
 		Template.Name = Product
-		
+		if Product == 1224873844 then
+			Template.MostPopular.Visible = true
+		elseif Product == 1224873842 then
+			Template.BestValue.Visible = true
+		end
 		Template.Purchase.MouseButton1Down:Connect(function()
 			Services.MPService:PromptProductPurchase(Paths.Player, Product)
 		end)

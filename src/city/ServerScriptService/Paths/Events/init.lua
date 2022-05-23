@@ -14,8 +14,6 @@ for i, v in pairs(script:GetChildren()) do
 	EventModules[v.Name] = require(v)
 end
 
-
-
 --- Variables ---
 Events.CurrentState = "Intermission"
 local Participants = Services.RStorage.Modules.EventsConfig.Participants

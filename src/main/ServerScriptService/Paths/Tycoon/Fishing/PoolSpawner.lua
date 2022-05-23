@@ -86,6 +86,12 @@ function PoolSpawner.createCustom(Player,pos)
 	if PlayerPools[Player.Name] then
 		return
 	end
+	for i,pool in pairs (buffer.Pools) do
+		local pos1 = pool:GetPivot().Position
+		if (pos-pos1).Magnitude <= 15 then
+			return
+		end
+	end
 	local n = Player.Name
 	PlayerPoolCount += 1
 	local randomNumber = rand:NextInteger(3, 10)

@@ -57,19 +57,16 @@ function Character.CharacterAdded(Character)
 
 		Humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
 			if Humanoid.SeatPart and Humanoid.SeatPart.Parent:FindFirstChild("MainPart") then
-				print("is In boat")
 				last = Humanoid.SeatPart
 			elseif last and Humanoid.SeatPart == nil then
-				print("left boat")
 				local Model = last.Parent
-				Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, 0, 0)
-				Model.MainPart.BodyForce.Force = Vector3.new(0,0,0)
-				for i,v in pairs (Model:GetDescendants()) do
-					if v:IsA("BasePart") then
-						v.AssemblyLinearVelocity = Vector3.new(0,0,0)
-						v.AssemblyAngularVelocity = Vector3.new(0,0,0)
-					end
+				if Model.MainPart:FindFirstChild("AngularVelocity") then
+					Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, 0, 0)
+					Model.MainPart.BodyForce.Force = Vector3.new(0,0,0)
 				end
+				Model.MainPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+				Model.MainPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
+
 				last = nil
 			end
 		end)
@@ -90,6 +87,13 @@ function Character.CharacterAdded(Character)
 				
 				AlignPos.Attachment0 = A1
 				AlignPos.Enabled = false
+
+				local AlignPos2 = RootPart:FindFirstChild("PlanePower") or Instance.new("AlignPosition", RootPart)
+				AlignPos2.Mode = Enum.PositionAlignmentMode.OneAttachment
+				AlignPos2.Name = "PlanePower"
+				AlignPos2.MaxForce = 5000
+				AlignPos2.Attachment0 = A1
+				AlignPos2.Enabled = false
 			end
 		end
 	end
