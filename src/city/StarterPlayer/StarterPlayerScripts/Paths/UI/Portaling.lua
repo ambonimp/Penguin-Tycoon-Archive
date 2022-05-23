@@ -85,7 +85,7 @@ function Portals:ToPlace(Portal, PlaceId)
 
 end
 
-for _, Portal in ipairs(workspace.MinigamePortals:GetChildren()) do
+--[[ for _, Portal in ipairs(workspace.MinigamePortals:GetChildren()) do
     local Sensor = Portal.Sensor
 
     local Con
@@ -96,7 +96,7 @@ for _, Portal in ipairs(workspace.MinigamePortals:GetChildren()) do
         end
     end)
 
-end
+end *]]
 
 return Portals
 

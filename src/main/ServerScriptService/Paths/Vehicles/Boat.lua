@@ -37,10 +37,26 @@ function Boat:Setup(Model)
 
 		-- Change steerangle if going backwards
 		local SteerAngle = -1
-		if Seat.Throttle < 0 then
-			SteerAngle = 1
+		if Seat.Throttle <= 0 then
+			if Model:FindFirstChild("BoatBehind") then
+				for i,v in pairs (Model.BoatBehind:GetChildren()) do
+					if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+						v.Enabled = false
+					end
+				end
+			end
+			if Seat.Throttle < 0 then
+				SteerAngle = 1
+			end
+		else
+			if Model:FindFirstChild("BoatBehind") then
+				for i,v in pairs (Model.BoatBehind:GetChildren()) do
+					if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+						v.Enabled = true
+					end
+				end
+			end
 		end
-
 		-- Apply forces
 		Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, SteerAngle * Seat.Steer, 0)
 		Model.MainPart.BodyForce.Force = Seat.CFrame.LookVector * Power * Seat.Throttle

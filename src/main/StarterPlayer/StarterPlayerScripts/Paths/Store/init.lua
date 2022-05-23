@@ -59,6 +59,10 @@ UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.Mou
 	ButtonClicked(Store.Buttons.Accessories,Store)
 end)
 
+UI.Left.Buttons.Store.MouseButton1Down:Connect(function()
+	ButtonClicked(Store.Buttons.Gamepasses,Store)
+end)
+
 UI.Left.Customization.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButton1Down:Connect(function()
 	ButtonClicked(UI.Center.Clothing.Buttons.Outfits,UI.Center.Clothing)
 end)

@@ -76,10 +76,12 @@ function UIAnimations.JunkRetrievedAnimation(result)
 	coroutine.wrap(function()
 		-- Reset positions and sizes
 		junkCaught.Position = UDim2.new(0.5, 0, 1, 0)
-		print(result)
 		if result.Amount and result.Amount <= 200 then
 			junkCaught.Amount.Text = result.Amount.."/200"
 			junkCaught.Amount.Visible = true
+			if result.Amount == 1 then
+				paths.Modules.Setup:Notification("Collect 200 "..result.LootInfo.Name.." for the "..result.LootInfo.Name.." hat!",Color3.new(1, 0.760784, 0.4),8.5)
+			end
 		else
 			junkCaught.Amount.Visible = false
 		end
@@ -100,7 +102,7 @@ function UIAnimations.JunkRetrievedAnimation(result)
 
 		wait(0.6)
 
-		junkCaught.Visible = false
+	 	junkCaught.Visible = false
 	end)()
 end
 

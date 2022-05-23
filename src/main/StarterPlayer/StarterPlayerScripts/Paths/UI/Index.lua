@@ -203,6 +203,9 @@ local function LoadAllFish()
 		Template.LayoutOrder = -3
 		if playerJunk[tostring(id)] then
 			Template.FishAmount.Text = "x"..playerJunk[tostring(id)]
+			if playerJunk[tostring(id)] >= 200 then
+				Template.FishIcon.ImageColor3 = Color3.new(1,1,1)
+			end
 		else
 			Template.FishAmount.Text = "x0"
 		end

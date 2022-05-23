@@ -44,6 +44,8 @@ function Placement:GetRelativePos(Tycoon, Item, IsButton)
 	local Button = Paths.Template.Buttons:FindFirstChild(Item)
 	if Item == "Sailboat#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
+	elseif Item == "Plane#1" then
+		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
 	end
 	if not Button then return end
 	
@@ -76,6 +78,8 @@ function Placement:NewItem(Player, Item, IsAnimated)
 	-- Variables
 	local Button = Paths.Template.Buttons:FindFirstChild(Item)
 	if Item == "Sailboat#1" then
+		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
+	elseif Item == "Plane#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
 	end
 	if not Button then return end
@@ -129,6 +133,7 @@ function Placement:NewItem(Player, Item, IsAnimated)
 	task.defer(function()
 		if Item == "Dock#2" then
 			Modules.Vehicles:SetUpSailboatBuild(Player)
+			Modules.Vehicles:SetUpPlaneBuild(Player)
 		end
 	end)
 end

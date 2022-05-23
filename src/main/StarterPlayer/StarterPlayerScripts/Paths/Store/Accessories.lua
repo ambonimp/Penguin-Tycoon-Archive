@@ -28,6 +28,10 @@ local ClothingSections = UI.Center.Clothing.Sections
 
 local NewItemUI = UI.Full.NewItem
 
+local UnlockItems = {
+	"Bunny Ears","Feather Hat","Pirate Captain Hat","Straw Hat"
+}
+
 local RarityColors = {
 	["Free"] = Color3.fromRGB(240, 240, 240);
 	["Regular"] = Color3.fromRGB(0, 200, 255);
@@ -63,6 +67,9 @@ function addModelToViewport(Model,Template)
 end
 
 function Accessories:NewItem(Item, ItemType)
+	if table.find(UnlockItems,Item) and workspace["Collectable Accessories"]:FindFirstChild(Item) then
+		workspace["Collectable Accessories"]:FindFirstChild(Item):Destroy()
+	end
 	local StoreSectionUI = nil
 	local ClothesSectionUI = nil
 	if ItemType ~= "Outfits" then

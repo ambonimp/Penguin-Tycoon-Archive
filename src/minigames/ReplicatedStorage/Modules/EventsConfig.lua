@@ -13,7 +13,7 @@ EventsConfig.Names = {
 } --,"Egg Hunt"}
 
 
-EventsConfig.INTERMISSION_INTERVAL = 30
+EventsConfig.INTERMISSION_INTERVAL = 10
 EventsConfig.VOTE_TIMER = 10
 EventsConfig.ACCEPT_TIMER = 10
 
@@ -60,16 +60,15 @@ EventsConfig["Candy Rush"] = {
 }
 
 EventsConfig["Ice Cream Extravaganza"] = {
-	MinPlayers = 2,
-	MaxPlayers = 20,
-	Duration = 120,
-	DropVelocity = 5,
-	DropRate = 0.05,
+	MinPlayers = 1,
+	MaxPlayers = 12,
+	Duration = 5,
+	DropVelocity = 10,
+	DropRate = 0.5,
 	ImageID = 9617829253,
 	["Display Name"] = "Ice Cream Extravaganza",
 	--["Tutorial"] = "Reach the end to win!",
 }
-
 
 EventsConfig["Egg Hunt"] = {
 	MinPlayers = 2,
@@ -81,7 +80,7 @@ EventsConfig["Egg Hunt"] = {
 }
 
 if game.GameId == 3425588324 then -- Testing
-	EventsConfig.Names[9647797909] = "Candy Rush"
+	EventsConfig.Names[9647797909] = "Ice Cream Extravaganza"
 	EventsConfig.INTERMISSION_INTERVAL = 10
 	EventsConfig.ACCEPT_TIMER = 10
 end

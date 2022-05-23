@@ -37,7 +37,7 @@ function Character:Spawned(Player, Character, OldChar)
 	-- Spawn at the tycoon location
 	if workspace.Tycoons:FindFirstChild(Tycoon) then
 		local SpawnLocation = workspace.Tycoons[Tycoon].Spawn
-		Character:MoveTo(SpawnLocation.Position)
+		Character:MoveTo(SpawnLocation.Position + Vector3.new(0,20,0))
 	end
 end
 
@@ -132,7 +132,7 @@ function Character:Spawn(Player, Type)
 	-- Make sure the penguin doesn't fall into unloaded parts
 	Penguin.HumanoidRootPart.Anchored = true
 	coroutine.wrap(function()
-		task.wait(2)
+		task.wait(.5)
 		if Penguin:FindFirstChild("HumanoidRootPart") then
 			Penguin.HumanoidRootPart.Anchored = false
 		end

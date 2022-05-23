@@ -21,14 +21,16 @@ local AllGamepasses = {
 	28927736, -- Gold Fishing Rod
 	41205566, -- Luxury Boat
 	41205759, -- Powered Glider
-	43183311 -- Gold Axe
+	43183311, -- Gold Axe
+	45764173 -- Jet
 }
 
 local GamepassButtons = {
 	[28927736] = "Gold Fishing Rod#1",
 	[41205566] = "Luxury Boat#1",
 	[41205759] = "Powered Glider#1",
-	[43183311] = "Gold Axe#1"
+	[43183311] = "Gold Axe#1",
+	[45764173] = "Jet Plane#1"
 }
 
 
