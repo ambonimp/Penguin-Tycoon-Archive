@@ -37,32 +37,25 @@ local Locations = {
 	},
 	["Falling Tiles"] = {
 		PlaceId = PlaceIds["Falling Tiles"],
-		Description = "Survive the falling tiles!",
+		Description = "Be the last man standing",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Falling Tiles"].ImageID,
 	},
 	["Skate Race"] = {
 		PlaceId = PlaceIds["Skate Race"],
-		Description = "Race around the ice track!",
+		Description = "Race on skates",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Skate Race"].ImageID,
 	},
 	["Soccer"] = {
 		PlaceId = PlaceIds["Soccer"],
-		Description = "Score goals against the other team!",
+		Description = "Score as many goals",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Soccer"].ImageID,
 	},
 	["Candy Rush"] = {
 		PlaceId = PlaceIds["Candy Rush"],
-		Description = "Collect all of the candy!",
+		Description = "Something",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Candy Rush"].ImageID,
 	}
 }
-
-local function InitializeLocationIds(Ids)
-	for Name, Id in pairs(Ids) do
-		Locations[Name].PlaceId = Id
-	end
-end
-
 
 --- Functions ---
 function Teleporting:TeleportTo(PlaceId)
@@ -108,7 +101,7 @@ end)
 
 -- Different teleport locations/buttonns
 TeleportButton.MouseButton1Down:Connect(function()
-	Teleporting:OpenConfirmation("Penguin Tycoon")
+	Teleporting:OpenConfirmation("Penguin City")
 end)
 
 

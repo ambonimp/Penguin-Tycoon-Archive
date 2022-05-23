@@ -4,15 +4,16 @@ local PlaceIds =  require(RStorage.Modules.PlaceIds)
 
 local EventsConfig = {}
 
-EventsConfig.Events = {
+EventsConfig.Names = {
 	[PlaceIds["Falling Tiles"]] = "Falling Tiles",
 	[PlaceIds["Skate Race"]] = "Skate Race",
 	[PlaceIds["Soccer"]] = "Soccer",
-	[PlaceIds["Candy Rush"]] = "Candy Rush"
+	[PlaceIds["Candy Rush"]] = "Candy Rush",
+	[PlaceIds["Ice Cream Extravaganza"]] = "Ice Cream Extravaganza"
 } --,"Egg Hunt"}
 
 
-EventsConfig.INTERMISSION_INTERVAL = 10--30
+EventsConfig.INTERMISSION_INTERVAL = 10
 EventsConfig.VOTE_TIMER = 10
 EventsConfig.ACCEPT_TIMER = 10
 
@@ -50,11 +51,22 @@ EventsConfig["Soccer"] = {
 
 
 EventsConfig["Candy Rush"] = {
-	MinPlayers = 0,
+	MinPlayers = 2,
 	MaxPlayers = 20,
 	Duration = 120,
 	ImageID = 9617829253,
 	["Display Name"] = "Candy Rush",
+	--["Tutorial"] = "Reach the end to win!",
+}
+
+EventsConfig["Ice Cream Extravaganza"] = {
+	MinPlayers = 1,
+	MaxPlayers = 12,
+	Duration = 5,
+	DropVelocity = 10,
+	DropRate = 0.5,
+	ImageID = 9617829253,
+	["Display Name"] = "Ice Cream Extravaganza",
 	--["Tutorial"] = "Reach the end to win!",
 }
 
@@ -67,11 +79,10 @@ EventsConfig["Egg Hunt"] = {
 	--["Tutorial"] = "Reach the end to win!",
 }
 
-
-if game.PlaceId == 9170899192 then -- night skating test
+if game.GameId == 3425588324 then -- Testing
+	EventsConfig.Names[9647797909] = "Ice Cream Extravaganza"
 	EventsConfig.INTERMISSION_INTERVAL = 10
 	EventsConfig.ACCEPT_TIMER = 10
 end
-
 
 return EventsConfig

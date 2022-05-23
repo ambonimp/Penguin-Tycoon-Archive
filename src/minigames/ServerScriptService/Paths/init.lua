@@ -50,6 +50,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Settings = require(script.Settings)
 	Paths.Modules.Teleporting = require(script.Teleporting)
 	Paths.Modules.EventsConfig = require(Paths.Services.RStorage.Modules.EventsConfig)
+	Paths.Modules.Events = require(script.Events)
 	Paths.Modules.Collisions = require(script.Collisions)
 
 	-- Chat Modules
@@ -62,7 +63,6 @@ function Paths.Initiliaze()
 	Paths.Modules.Save = require(script.PlayerData.Save)
 	Paths.Modules.PlayerData = require(script.PlayerData);
 	Paths.Modules.Income = require(script.PlayerData.Income)
-	Paths.Modules.Leaderboards = require(script.Leaderboards)
 	
 	-- Store Modules
 	Paths.Modules.Store = require(script.Store)
