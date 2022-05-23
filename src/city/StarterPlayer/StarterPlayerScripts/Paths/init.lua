@@ -75,7 +75,7 @@ function Paths.Initiliaze()
 	Paths.Modules.UIAnimations = require(script.UI.Animations)
 	Paths.Modules.Buttons = require(script.UI.Buttons)
 	Paths.Modules.Teleporting = require(script.UI.Teleporting)
-	Paths.Modules.Portaling = require(script.UI.Portaling)
+	Paths.Modules.Map = require(script.UI.Map)
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
 	Paths.Modules.UI = require(script.UI)
 
