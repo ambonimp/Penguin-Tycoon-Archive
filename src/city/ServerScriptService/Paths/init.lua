@@ -43,6 +43,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
+	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
 	Paths.Modules.ActiveCodes = require(script.Codes.ActiveCodes)
@@ -50,13 +51,18 @@ function Paths.Initiliaze()
 	Paths.Modules.Settings = require(script.Settings)
 	Paths.Modules.Teleporting = require(script.Teleporting)
 	Paths.Modules.EventsConfig = require(Paths.Services.RStorage.Modules.EventsConfig)
+	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Collisions = require(script.Collisions)
+	Paths.Modules.Zones = require(script.Zones)
 
 	-- Chat Modules
 	Paths.Modules.Chat = require(script.Chat)
 
 	-- Emote Server Modules
 	Paths.Modules.Emotes = require(script.Emotes)
+
+	-- Tool Modules
+	Paths.Modules.Tools = require(script.Tools)
 	
 	-- Data Modules
 	Paths.Modules.Save = require(script.PlayerData.Save)
@@ -79,7 +85,8 @@ function Paths.Initiliaze()
 	-- Pets
 	Paths.Modules.Pets = require(script.Pets)
 	
-	
+	Paths.Modules.Fishing = require(script.Fishing)
+	Paths.Modules.PoolSpawner = require(script.Fishing.PoolSpawner)
 --- Other Variables ---
 	Paths.Initialized = true
 end

@@ -125,17 +125,13 @@ end
 
 function Vehicles:SetUpPlaneBuild(Player)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	print("SET UP PLANE BUILD")
 	if Data then
 		if Data["Tycoon"]["Dock#2"] then
-			print("HAS DOCK 2")
 			local unlocked = Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][1]
-			print("UNLOCKED PLANE:",unlocked)
 			if unlocked == false then
 				local items = {}
 				local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
 				for i,Model in pairs (game.ReplicatedStorage.PlaneBuildParts:GetChildren()) do
-					print("ADD PLANE PART",Model.Name,Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][2][Model.Name])
 					if Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][2][Model.Name] == false then
 						if Model:GetAttribute("InTycoon") then
 							local CenterPos = Paths.Template.Center.Position

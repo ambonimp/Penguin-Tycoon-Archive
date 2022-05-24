@@ -399,6 +399,15 @@ end)()]]
 if workspace:FindFirstChild("Clothing") then
 	ProximityPrompt = workspace.Clothing.ProximityPart.Value:WaitForChild("ProximityPrompt")
 	ProximityPrompt2 = workspace.Clothing.ProximityPart2.Value:WaitForChild("ProximityPrompt")
+	local Prompts = workspace.Clothing.ClothingParts:GetChildren()
+	for i,v in pairs (Prompts) do
+		local ProximityPrompt = v.ProximityPrompt
+		ProximityPrompt.Triggered:Connect(function(player)
+			if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
+				Paths.Modules.Buttons:UIOn(Paths.UI.Center.Clothing,true)
+			end
+		end)
+	end
 end
 
 if ProximityPrompt then

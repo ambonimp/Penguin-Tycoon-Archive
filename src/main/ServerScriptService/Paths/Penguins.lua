@@ -300,7 +300,7 @@ Penguins["Upgrade"] = function(Player, Penguin, IsSuper)
 				local prompted = false
 				for i = 1,6 do
 					local id = MoneyProducts[i]
-					local Reward = Modules.GameFunctions:GetMoneyProductReward(id, Player:GetAttribute("Income"))
+					local Reward = Modules.GameFunctions:GetMoneyProductReward(id, Player:GetAttribute("Income"),Player)
 					if Reward+PlayerMoney >= UpgradePrice then
 						prompted = true
 						Services.MPService:PromptProductPurchase(Player, id)
@@ -333,7 +333,7 @@ Penguins["Upgrade"] = function(Player, Penguin, IsSuper)
 			local prompted = false
 			for i = 1,6 do
 				local id = MoneyProducts[i]
-				local Reward = Modules.GameFunctions:GetMoneyProductReward(id, Player:GetAttribute("Income"))
+				local Reward = Modules.GameFunctions:GetMoneyProductReward(id, Player:GetAttribute("Income"),Player)
 				if Reward+PlayerMoney >= UpgradePrice then
 					prompted = true
 					Services.MPService:PromptProductPurchase(Player, id)

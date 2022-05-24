@@ -4,12 +4,15 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Paths = require(script.Parent)
 local ScriptModules = Paths.Modules
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 local PathfindingService = game:GetService("PathfindingService")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Modules = ReplicatedStorage:WaitForChild("Modules")
 local Assets = ReplicatedStorage:WaitForChild("Assets")
+local Mouse = Paths.Player:GetMouse()
 
+local WorldPets = workspace:WaitForChild("WorldPets")
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 local PetsFolder = workspace:WaitForChild("Pets")
@@ -113,6 +116,116 @@ local function IsBehind(Part1,Part2)
 	return not (mag1 <= mag2)
 end
 
+function HandleServerPet(PetModel)
+	local interacting = false
+	local PetUI1 = Paths.Dependency.PetUI.PetUI:Clone()
+	PetUI1.Parent =  Paths.Player.PlayerGui
+	PetUI1.Adornee = PetModel.PrimaryPart
+	PetUI1.Interact.Stats.Lock.Visible = true
+	PetUI1.Interact.Catch.Lock.Visible = true
+	local emote = Paths.Dependency.PetUI.Emote:Clone()
+	emote.Parent =  Paths.Player.PlayerGui
+	emote.Adornee = PetModel.PrimaryPart
+
+	local PetClick = Paths.Dependency.PetUI.PetClick:Clone()
+	PetClick.Parent =  Paths.Player.PlayerGui
+	PetClick.Adornee = PetModel.PrimaryPart
+	local lastOpened = tick()-10
+	
+	local function openInteract()
+		if tick()-lastOpened < 4.8 then return end
+		lastOpened = tick()
+		ScriptModules.Buttons:UIOn(PetUI1.Interact,false,.1)
+		PetClick.Enabled = false
+		task.wait(3)
+		if PetUI1 and PetUI1:FindFirstChild("Interact") and PetUI1.Interact.Visible and tick()-lastOpened >= 4.8 then
+			ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
+		end
+	end
+
+	local ButtonClick = ScriptModules.Audio:GetSound(ScriptModules.Audio.BUTTON_CLICKED, Paths.Player.PlayerScripts:WaitForChild("Audio"), 0.2)
+	
+	for i, v in pairs(PetClick:GetDescendants()) do
+		if string.match(v.ClassName, "Button") then
+			v.MouseButton1Down:Connect(function()
+				ButtonClick:Play()
+			end)
+		end
+	end
+	for i, v in pairs(PetUI1:GetDescendants()) do
+		if string.match(v.ClassName, "Button") then
+			v.MouseButton1Down:Connect(function()
+				ButtonClick:Play()
+			end)
+		end
+	end
+
+	PetClick.Interact.MouseButton1Click:Connect(function()
+		openInteract()
+	end)
+
+	PetUI1.Interact.Close.MouseButton1Click:Connect(function()
+		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
+		wait(.1)
+		lastOpened = tick()-5
+	end)
+
+	PetUI1.Interact.Catch.MouseButton1Down:Connect(function()
+		PetUI.LoadEgg("Egg1",Paths)
+		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
+		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
+		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
+	end)
+
+	PetUI1.Interact.Stats.MouseButton1Down:Connect(function()
+		PetUI.LoadEgg("Egg1",Paths)
+		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
+		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
+		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
+	end)
+
+	local lastTurnedOn = tick()
+	UserInputService.InputBegan:Connect(function(Input,GPE)
+		if GPE then return end
+		if Mouse.Target and interacting == false then
+			if Input.UserInputType == Enum.UserInputType.Touch then
+				if Mouse.Target:IsDescendantOf(PetModel) and PetUI1.Interact.Visible == false then
+					openInteract()
+				end
+			end
+		end
+	end)
+	RunService:BindToRenderStep("PetInteractUIServer",Enum.RenderPriority.Last.Value,function()
+		local Input = UserInputService:GetLastInputType()
+		if Mouse.Target and interacting == false then
+			if Input == Enum.UserInputType.Touch then
+				if Mouse.Target:IsDescendantOf(PetModel) and PetUI1.Interact.Visible == false then
+					openInteract()
+				end
+			else
+				if Mouse.Target:IsDescendantOf(PetModel) and PetUI1.Interact.Visible == false then
+					interacting = false
+					PetClick.Enabled = true
+					lastTurnedOn = tick()
+				else
+					if tick()-lastTurnedOn < 1 then
+						wait(.35)
+					end
+					if Mouse.Target and Mouse.Target:IsDescendantOf(PetModel) == false and PetUI1 and PetUI1:FindFirstChild("Interact") and PetUI1.Interact.Visible == false then
+						PetClick.Enabled = false
+					end
+				end
+			end
+		end
+		if interacting then
+			PetClick.Enabled = false
+		end
+	end)
+end
+
+for i,pet in pairs (WorldPets:GetChildren()) do
+	HandleServerPet(pet)
+end
 
 --Handles pet removing and equipping 
 function Pets.addPetToPlayer(Player)
@@ -757,7 +870,7 @@ RunService:BindToRenderStep("PetHandling",Enum.RenderPriority.Character.Value,fu
 					PetModel:SetPrimaryPartCFrame(Pet[3].CFrame)
 				elseif continu and PetModel and PetModel.PrimaryPart and game:GetService("Players").LocalPlayer.Character and (PetModel.PrimaryPart.Position-game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position).magnitude < RenderDistance then
 					--move towards player
-					if Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid"):GetState() == Enum.HumanoidStateType.Seated then
+					if Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid"):GetState() == Enum.HumanoidStateType.Seated and Character.Humanoid.SeatPart then
 						--player is sitting
 						if Pet[17] == nil then
 							-- if not already sitting, find valid position around player to sit at
@@ -779,7 +892,7 @@ RunService:BindToRenderStep("PetHandling",Enum.RenderPriority.Character.Value,fu
 									end
 								end
 							end
-							if Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid"):GetState() == Enum.HumanoidStateType.Seated then
+							if Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid"):GetState() == Enum.HumanoidStateType.Seated and Character.Humanoid.SeatPart then
 								local height = spawnPos.Position.Y + PetModel:GetExtentsSize().Y/2
 								if string.find(Character.Humanoid.SeatPart.Parent.Name,"Bench") == nil then
 									Pet[1]:SetPrimaryPartCFrame( CFrame.new(Vector3.new(spawnPos.Position.X ,height,spawnPos.Position.Z))  * Pet[14].SitCFrame * CFrame.Angles(0,math.rad(Character.PrimaryPart.Orientation.Y),0))

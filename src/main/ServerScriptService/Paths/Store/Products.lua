@@ -61,7 +61,7 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 		-- Money Products
 		if MoneyProducts[product] then
 			local PlayerIncome = Modules.PlayerData.sessionData[Player.Name]["Income"]
-			local Reward = Modules.GameFunctions:GetMoneyProductReward(product, PlayerIncome)
+			local Reward = Modules.GameFunctions:GetMoneyProductReward(product, PlayerIncome,Player)
 			Modules.Income:AddMoney(Player, Reward)
 			
 			

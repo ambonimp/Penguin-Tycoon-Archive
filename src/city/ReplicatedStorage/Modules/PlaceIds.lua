@@ -5,7 +5,7 @@ local GameId = game.GameId
 if GameId == 3073627998 then
     Ids["Penguin Tycoon"] = 7951464846
     Ids["Penguin City"] = 7967681044
-elseif GameId == 3425588324 then
+elseif GameId == 3425588324 or GameId == 3601814281 then
     Ids["Penguin Tycoon"] = 9118436978
     Ids["Penguin City"] = 9170899192
     Ids["Falling Tiles"] = 9648022475
