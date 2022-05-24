@@ -10,10 +10,14 @@ local Remotes = Paths.Remotes
 local Camera = workspace.CurrentCamera
 
 local IsInvisible = false
+local CurrentCharacter = false
 
+local LoadedAnimations = {}
+local PreviousToolAnimation = nil
 --- Character Functions ---
 function Character.CharacterAdded(Character)
 	IsInvisible = false
+	LoadedAnimations = {}
 
 	Modules.DoubleJump:NewCharacter(Character)
 	Modules.Emotes:NewCharacter(Character)
@@ -27,6 +31,7 @@ function Character.CharacterAdded(Character)
 	local Humanoid = Character:WaitForChild("Humanoid", 5)
 	
 	if Humanoid then
+		CurrentCharacter = Character
 		Modules.Camera:ResetToCharacter()
 
 		Humanoid.Died:Connect(function()
@@ -38,9 +43,58 @@ function Character.CharacterAdded(Character)
 					v.CanCollide = true
 				end
 			end
-			wait(1)
+			task.wait(1)
 			Modules.CharacterSelect:Respawn()
 		end)
+
+		local hockeyAnim = Services.RStorage.Animations.Hockey
+		local loaded = Humanoid:WaitForChild("Animator"):LoadAnimation(hockeyAnim)
+
+		Character.ChildAdded:Connect(function(Child)
+			local n = Child.Name 
+			if n == "Hockey Stick" then
+				loaded:Play()
+			end
+		end)
+
+		Character.ChildRemoved:Connect(function(Child)
+			local n = Child.Name 
+			if n == "Hockey Stick" then
+				loaded:Stop()
+			end
+		end)
+	end
+
+	
+end
+
+function Character:PlayToolAnimation(Animation)
+	--Animation = "Glider Up"
+	if not CurrentCharacter or not Paths.Services.RStorage.Animations:FindFirstChild(Animation) then return end
+	local Humanoid = CurrentCharacter:WaitForChild("Humanoid", 3)
+
+	if PreviousToolAnimation and not LoadedAnimations[Animation] then 
+		Character:StopToolAnimation()
+	elseif PreviousToolAnimation and LoadedAnimations[Animation] and not (LoadedAnimations[Animation] == PreviousToolAnimation) then
+		Character:StopToolAnimation()
+	end
+	
+	if Humanoid and Humanoid.Health > 0 and not PreviousToolAnimation then
+		if not LoadedAnimations[Animation] then
+			local Track = Humanoid:LoadAnimation(Paths.Services.RStorage.Animations[Animation])
+			Track.Priority = Enum.AnimationPriority.Action
+			LoadedAnimations[Animation] = Track
+		end
+		
+		LoadedAnimations[Animation]:Play()
+		PreviousToolAnimation = LoadedAnimations[Animation]
+	end
+end
+
+function Character:StopToolAnimation()
+	if PreviousToolAnimation then
+		PreviousToolAnimation:Stop()
+		PreviousToolAnimation = nil
 	end
 end
 

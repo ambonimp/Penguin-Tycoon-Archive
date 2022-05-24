@@ -52,6 +52,10 @@ local leaderboards = {
 		DataStore = Services.DataStoreService:GetOrderedDataStore("Falling Tiles_v-RELEASE"),
 		Leaderboard = workspace.Leaderboards["Falling Tiles"];
 		smallestFirst = false;};
+	["Candy Rush"] = {
+		DataStore = Services.DataStoreService:GetOrderedDataStore("Candy Rush_v-RELEASE"),
+		Leaderboard = workspace.Leaderboards["Candy Rush"];
+		smallestFirst = false;};
 }
 
 local function LoadPenguin(userId, penguin)

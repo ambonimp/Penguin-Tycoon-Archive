@@ -180,6 +180,12 @@ function CandyRush:StartEvent()
 		local tbl = EggsCollected[i]
 		if tbl and game.Players:FindFirstChild(tbl[1]) then
 			if i == 1 then
+				local data = Modules.PlayerData.sessionData[tbl[1].Name] 
+				if data and data["Stats"]["Candy Rush"] then
+					data["Stats"]["Candy Rush"] = data["Stats"]["Candy Rush"] + 1
+				elseif data then
+					data["Stats"]["Candy Rush"] =  1
+				end
 				addGems(game.Players:FindFirstChild(tbl[1]),7)
 			elseif i == 2 then
 				addGems(game.Players:FindFirstChild(tbl[1]),5)

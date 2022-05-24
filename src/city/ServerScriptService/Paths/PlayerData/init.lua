@@ -325,7 +325,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	Player:SetAttribute("Income", PlayerData.sessionData[Player.Name]["Income"])
 	Player:SetAttribute("Hearts", PlayerData.sessionData[Player.Name]["Hearts"])
 	Player:SetAttribute("Level", PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
-	
+	Player:SetAttribute("Tool", "None")
 	
 	Player:SetAttribute("Next5Gems", PlayerData.sessionData[Player.Name]["NextGemReward"])
 	Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "city"
