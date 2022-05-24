@@ -5,6 +5,9 @@ local Modules = game:GetService("ReplicatedStorage").Modules
 local PetPositions = workspace:WaitForChild("WorldPetsPosition")
 local WorldPets = workspace:WaitForChild("WorldPets")
 local TweenService = game:GetService("TweenService")
+local PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
+
+
 
 local Colors = {
     ["Panda"] = {"rbxassetid://9229750551","rbxassetid://9179182059","rbxassetid://9179195508"},
@@ -17,14 +20,29 @@ local Colors = {
 
 local nextAction = {}
 
-function doAction(PetModel,action)
-    
+function doAction(PetModel,action,Anims)
+    if action == "Eat" then
+        PetModel.PrimaryPart.ParticleEmitter:Emit(10)
+        PetModel.PrimaryPart.Eat:Play()
+        Anims["Jump"]:Play()
+        task.wait(Anims["Jump"].Length*1.8)
+        Anims["Jump"]:Stop()
+    elseif action == "Trick" then
+        PetModel.PrimaryPart.Trick:Play()
+        Anims["Trick"]:Play()
+        task.wait(Anims["Trick"].Length*.95)
+        Anims["Trick"]:Stop()
+    end
+    nextAction[PetModel] = nil
 end
 
-function addAction()
-
-end
-
+Paths.Services.RStorage.Remotes.WorldPet.OnServerEvent:Connect(function(player,petmodel,kind)
+    if nextAction[petmodel] then
+        return
+    else
+        nextAction[petmodel] = kind
+    end
+end)
 
 for i,Pet in pairs (PetPositions:GetChildren()) do
     local PetPart = Pet:FindFirstChild(Pet.Name)
@@ -44,6 +62,12 @@ for i,Pet in pairs (PetPositions:GetChildren()) do
         v.Transparency = 1
     end
     PetModel.PrimaryPart.TextureID = Colors[Pet.Name][math.random(1,3)]
+    for i,sound in pairs (Paths.Services.RStorage.ClientDependency.Pets.PetSounds:GetChildren()) do
+        local new = sound:Clone()
+        new.Parent = PetModel.PrimaryPart
+    end
+    Paths.Services.RStorage.Assets.Hearts.ParticleEmitter:Clone().Parent = PetModel.PrimaryPart
+    PetModel.PrimaryPart.Trick.SoundId = PetDetails[PetModel.Name].TrickSound
     task.spawn(function()
         while running do
             local n = 1
@@ -53,7 +77,7 @@ for i,Pet in pairs (PetPositions:GetChildren()) do
             end
             for i = n,Max do
                 if nextAction[PetModel] then
-                    doAction(PetModel,nextAction[PetModel])
+                    doAction(PetModel,nextAction[PetModel],Anims)
                 end
                 local timeDiff = math.random(2,15)/50
                 local Action = Nodes:FindFirstChild(i)

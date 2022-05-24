@@ -164,6 +164,16 @@ function HandleServerPet(PetModel)
 		openInteract()
 	end)
 
+	PetUI1.Interact.Feed.MouseButton1Click:Connect(function()
+		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
+		ReplicatedStorage.Remotes.WorldPet:FireServer(PetModel,"Eat")
+	end)
+
+	PetUI1.Interact.Trick.MouseButton1Click:Connect(function()
+		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
+		ReplicatedStorage.Remotes.WorldPet:FireServer(PetModel,"Trick")
+	end)
+
 	PetUI1.Interact.Close.MouseButton1Click:Connect(function()
 		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
 		wait(.1)
