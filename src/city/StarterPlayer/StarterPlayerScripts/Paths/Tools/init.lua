@@ -202,12 +202,11 @@ for name,exception in pairs (ToolExeptions) do
 		table.remove(tbl,table.find(tbl,exception))
 	end
 end
-
+--[[
 for i, Tool in ipairs(tbl) do
-	if Tool == "Fishing Rod" or Tool == "Gold Fishing Rod" then
-		--Tools.AddTool(Tool)
-	end
-end
+	Tools.AddTool(Tool)
+end]]
+
 
 
 return Tools

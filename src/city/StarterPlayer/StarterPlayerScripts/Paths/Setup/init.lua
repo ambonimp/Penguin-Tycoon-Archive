@@ -15,7 +15,10 @@ function Setup:Notification(text,color,time)
     notif.UIStroke.Color = color or Color3.new(0.776470, 0.850980, 0.501960)
     notif.Parent = Paths.UI.Main.Notifications2
     notif.Visible = true
-    game:GetService("Debris"):AddItem(notif,time or 3)
+    task.wait(time or 3)
+    notif:TweenSize(UDim2.new(0,0,0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.25)
+    task.wait(.25)
+    notif:Destroy()
 end
 
 Paths.Remotes.ClientNotif.OnClientEvent:Connect(function(text,color,time)

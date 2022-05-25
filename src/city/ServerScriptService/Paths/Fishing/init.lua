@@ -118,7 +118,12 @@ function Fishing.GetRandomId(chanceTable)
 end
 
 function Fishing.FindNearestIsland(playerPosition)
-	return "OpenSea"--[[
+	local items = {"OpenSea"}
+	for island, data in pairs(config.IslandsData) do
+		table.insert(items,island)
+	end
+
+	return items[math.random(1,#items)]--[[
 	local dataTable = {}
 
 	for island, data in pairs(config.IslandsData) do
@@ -316,12 +321,12 @@ end
 function Main(player, hitPosition, reroll, AFKFishing)
 	if not reroll and not GetPlayerRequest(player) then
 		return
-	end
+	end--[[
 	task.defer(function()
-		if math.random(1,100) <= 7 then
+		if math.random(1,100) <= 2 then
 			paths.Modules.PoolSpawner.createCustom(player,hitPosition + Vector3.new(math.random(-10,10),0,math.random(-10,10)))
 		end
-	end)
+	end)]]
 	local multiplier = 1
 	if AFKFishing then
 		multiplier = 0.25 

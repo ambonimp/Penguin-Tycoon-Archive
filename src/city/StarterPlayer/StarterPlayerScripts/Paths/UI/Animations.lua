@@ -1,3 +1,4 @@
+local TweenService = game:GetService("TweenService")
 local Animations = {}
 
 
@@ -27,6 +28,40 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 local TrickleTI = TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local PreviousTotalTween = false
+
+function Animations:SnowSplat()
+	local imgs = {"rbxassetid://9723073686","rbxassetid://9723074115","rbxassetid://9723073998","rbxassetid://9723073870"}
+	local am = math.random(1,2)
+	Paths.Audio.Splat:Play()
+	for i = 1,am do
+		local new = UI.Full.Snow:Clone()
+		local s = math.random(4,6.7)/10
+		new.Size = UDim2.fromScale(0,0) 
+		new.Rotation = math.random(0,359)
+		new.Image = imgs[math.random(1,#imgs)]
+		new.Position = UDim2.fromScale(math.random(3,7)/10,math.random(3,7)/10)
+		new.Visible = true
+		new.Parent = UI.Full
+		new:TweenSize(UDim2.fromScale(s,s),Enum.EasingDirection.Out,Enum.EasingStyle.Exponential,.2)
+		local tweenInfo = TweenInfo.new(math.random(10,15)/10)
+		local tween = TweenService:Create(new,tweenInfo,{ImageTransparency = .75,Position = new.Position + UDim2.fromScale(0,.2)})
+		
+		task.spawn(function()
+			task.wait(1)
+			tween:Play()
+			task.wait(tweenInfo.Time)
+			new:Destroy()
+		end)
+	end
+end
+
+function Remotes.GetSnowball.OnClientInvoke(k)
+	if k == "Hit" then
+		Paths.Audio.Hit:Play()
+	elseif k == "Splat" then
+		Animations:SnowSplat()
+	end
+end
 
 
 --- Updating Functions ---

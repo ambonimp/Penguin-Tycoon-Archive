@@ -11,7 +11,8 @@ local Camera = workspace.CurrentCamera
 
 local IsInvisible = false
 local CurrentCharacter = false
-
+local Mouse = Paths.Player:GetMouse()
+local snowballInput = nil
 local LoadedAnimations = {}
 local PreviousToolAnimation = nil
 --- Character Functions ---
@@ -48,12 +49,67 @@ function Character.CharacterAdded(Character)
 		end)
 
 		local hockeyAnim = Services.RStorage.Animations.Hockey
+		local ThrowAnim = Services.RStorage.Animations.ThrowToy
 		local loaded = Humanoid:WaitForChild("Animator"):LoadAnimation(hockeyAnim)
+		local throwloaded = Humanoid:WaitForChild("Animator"):LoadAnimation(ThrowAnim)
+		if snowballInput then
+			snowballInput:Disconnect()
+		end
+
+		local camera = workspace.CurrentCamera
+
+		local params = RaycastParams.new()
+		params.FilterDescendantsInstances = {CurrentCharacter,workspace.Zones.Snowball.Part}
+		params.FilterType = Enum.RaycastFilterType.Blacklist 
+
+		local function rayResult(x, y)
+			local unitRay = camera:ScreenPointToRay(x, y) -- :ViewportPointToRay() is another choice
+			return workspace:Raycast(unitRay.Origin, unitRay.Direction * 300, params)
+		end
+		local throwing = false
+		local pos = nil
+		throwloaded:GetMarkerReachedSignal("THROW"):Connect(function()
+			Paths.Audio.Throw:Play()
+			local snowball = Remotes.GetSnowball:InvokeServer()
+			if snowball and pos then
+				Character.Snowball.Handle.Transparency = 1
+				local currentpos = rayResult(pos.X,pos.Y)
+				if currentpos then
+					local dis = ((Character.Main.CFrame * Vector3.new(0, 3, -3))-currentpos.Position).magnitude
+					local t = dis/20
+					if dis > 30 then
+						t = .75
+					else
+						t = .4
+					end
+					local g = Vector3.new(0, -workspace.Gravity, 0);
+					local x0 = Character.Main.CFrame * Vector3.new(0, 3, -3)
+					local v0 = (currentpos.Position - x0 - 0.5*g*t*t)/t;
+					snowball.CFrame = Character.Main.CFrame * CFrame.new(0,3,-3)
+					snowball.Velocity = v0
+				else
+					snowball.CFrame = Character.Main.CFrame * CFrame.new(0,0,-3)
+					snowball.Velocity = (camera.CFrame.LookVector+Vector3.new(0,.75,0)) * 90
+				end
+				task.wait(1.75)
+				throwing = false
+				Character.Snowball.Handle.Transparency = 0
+			end
+		end)
 
 		Character.ChildAdded:Connect(function(Child)
 			local n = Child.Name 
 			if n == "Hockey Stick" then
 				loaded:Play()
+			elseif n == "Snowball" then
+				snowballInput = game:GetService("UserInputService").InputBegan:Connect(function(input,gpe)
+					if gpe then return end
+					if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch or input.KeyCode == Enum.KeyCode.ButtonR2) and not throwing then
+						throwing = true
+						pos = game:GetService("UserInputService"):GetMouseLocation()
+						throwloaded:Play(.2,nil,1.75)
+					end
+				end)
 			end
 		end)
 
@@ -61,6 +117,10 @@ function Character.CharacterAdded(Character)
 			local n = Child.Name 
 			if n == "Hockey Stick" then
 				loaded:Stop()
+			elseif n == "Snowball" then
+				if snowballInput then
+					snowballInput:Disconnect()
+				end
 			end
 		end)
 	end

@@ -47,6 +47,7 @@ local zoneFunctions = {
 					elseif data["Fishing Rod"] then
 						Modules.Tools.EquipTool(plr,"Fishing Rod")
 					end
+					Paths.Remotes.ClientNotif:FireClient(plr,"Click on water to start fishing!",Color3.new(0.184313, 0.752941, 0.792156),3.5)
 				end
 			end
 		end,
@@ -69,7 +70,9 @@ local zoneFunctions = {
 					db[plr] = true
 					local skate = char and char:FindFirstChild("LeftSkate")
 					if not skate then
-						Paths.Services.SStorage.Tools["Hockey Stick"]:Clone().Parent = char
+						local stick = Paths.Services.SStorage.Tools["Hockey Stick"]:Clone()
+						stick.Parent = workspace
+						char.Humanoid:AddAccessory(stick)
 						Character:AddSkates(plr)
 					end
 				end
@@ -103,11 +106,40 @@ local zoneFunctions = {
 		end,
 		["Exit"] = function(p)
 		end,
-	}
+	},
+	["Snowball"] = {
+		["Enter"] = function(p)
+			if p and p.Parent then
+				local plr = game.Players:FindFirstChild(p.Parent.Name)
+				if plr and db[plr] == nil then
+					local char = plr.Character
+					db[plr] = true
+					local stick = Paths.Services.SStorage.Tools["Snowball"]:Clone()
+					stick.Parent = workspace
+					plr:SetAttribute("Snowball",true)
+					char.Humanoid:AddAccessory(stick)
+					Paths.Remotes.ClientNotif:FireClient(plr,"Click to start throwing snowballs!",Color3.new(0.184313, 0.752941, 0.792156),3.5)
+				end
+			end
+		end,
+		["Exit"] = function(p)
+			if p and p.Parent and p.Name ~= "Handle" then
+				local plr = game.Players:FindFirstChild(p.Parent.Name)
+				if plr and db[plr] then
+					local char = plr.Character
+					plr:SetAttribute("Snowball",nil)
+					if char and char:FindFirstChild("Snowball") then
+						char:FindFirstChild("Snowball"):Destroy()
+					end
+					db[plr] = nil
+				end 
+			end
+		end
+	},
 }
 
 task.spawn(function()
-	repeat task.wait(1) until #workspace.Zones:GetChildren() == 6
+	repeat task.wait(1) until #workspace.Zones:GetChildren() == 7
 	for i,v in pairs (workspace.Zones:GetChildren()) do
 		if v:IsA("Folder") then
 			local container = v

@@ -218,4 +218,35 @@ for i,SlidePart in pairs (workspace.SlideParts:GetChildren()) do
 	end)
 end
 
+local SnowballDB = {}
+function Remotes.GetSnowball.OnServerInvoke(Player)
+	local n = Player.Name
+	if SnowballDB[n] or Player.Character == nil then return nil end
+	if Player:GetAttribute("Snowball") then
+		SnowballDB[n] = true
+		local snowball = Services.SStorage.Tools.Snowball.Handle:Clone()
+		snowball.Parent = Player.Character
+		local hits = {}
+		snowball.Touched:Connect(function(hit)
+			if hit.Parent:FindFirstChild("Humanoid") and hit.Parent ~= Player.Character and game.Players:GetPlayerFromCharacter(hit.Parent) and table.find(hits,hit.Parent) == nil then
+				table.insert(hits,hit.Parent)
+				Remotes.GetSnowball:InvokeClient(game.Players:GetPlayerFromCharacter(hit.Parent),"Splat")
+				Remotes.GetSnowball:InvokeClient(Player,"Hit")
+			end
+		end)
+		snowball:SetNetworkOwner(Player)
+		task.spawn(function()
+			task.wait(.4)
+			snowball.CanCollide = true
+			task.wait(1.35)
+			SnowballDB[n] = nil
+			task.wait(.5)
+			snowball:Destroy()
+		end)
+		return snowball
+	else 
+		return nil
+	end
+end
+
 return Character

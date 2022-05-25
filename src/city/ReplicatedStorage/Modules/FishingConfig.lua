@@ -729,7 +729,7 @@ Config.ChanceTable = {
 
 
 Config.IslandsData = {
-	--[[GrassyLand = {
+	GrassyLand = {
 		CenterPosition = Vector3.new(22.2, 22.06, -3341.3)
 	},
 	Swamp = {
@@ -740,7 +740,7 @@ Config.IslandsData = {
 	},
 	TreasureBeach = {
 		CenterPosition = Vector3.new(-1540.914, 9.402, -1160.668)
-	}]]
+	}
 }
 
 
