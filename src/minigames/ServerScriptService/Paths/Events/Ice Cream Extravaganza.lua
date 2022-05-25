@@ -15,6 +15,16 @@ local EVENT_NAME = script.Name
 local WINNER_REWARDS = {7, 5, 3}
 local PARTICIPATION_REWARD = 1
 
+local CONE_GRAB_ANIMATION = Instance.new("Animation")
+CONE_GRAB_ANIMATION.AnimationId = "rbxassetid://9725354929"
+
+local DROP_CHANCES = {
+	Invicible = 2,
+	Double = 10,
+	Obstacle = 28,
+	Regular = 60,
+}
+
 local Config = Modules.EventsConfig[ EVENT_NAME]
 
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
@@ -26,9 +36,23 @@ local Assets = Services.RStorage.Assets[EVENT_NAME]
 local Map
 local SpawnPoints
 
+local Scores
+
+
 
 local function addGems(player,amount)
 	Modules.Income:AddGems(player, amount, EVENT_NAME)
+end
+
+
+local function TableClone(t)
+	local clone = {}
+
+	for i, v in pairs(t) do
+		clone[i] = v -- Need it simple
+	end
+
+	return clone
 end
 
 local function DictLength(t)
@@ -38,6 +62,41 @@ local function DictLength(t)
     end
 
     return length
+end
+
+local function SortScores()
+	local Sorted = {}
+
+	local Clone = TableClone(Scores)
+	for i = 1, DictLength(Clone) do
+		local HighestScoringPlayer
+		local HighestScore = -1
+
+		for Player, Score in pairs(Clone) do
+			if Score > HighestScore then
+				HighestScoringPlayer = Player
+				HighestScore = Score
+			end
+		end
+
+		Clone[HighestScoringPlayer] = nil
+		table.insert(Sorted, {PlayerName = HighestScoringPlayer.Name, Score = HighestScore})
+	end
+
+	return Sorted
+end
+
+-- Randomly selects a drop based on DROP_CHANCES
+local function GetDropType()
+	local rng = math.random(1, 100)
+	for Type, Probability in pairs(DROP_CHANCES) do
+		if rng <= Probability then
+			return Type
+		else
+			rng -= Probability
+		end
+	end
+
 end
 
 --- Event Functions ---
@@ -63,20 +122,21 @@ function IceCreamExtravaganza:SpawnPlayers(ChosenBugName, ChosenBugNum)
 
 			local Hrp = Character.HumanoidRootPart
 
-
             -- Give player cone that scoops land into
             local IceCream = Assets.IceCream:Clone()
             local Cone = IceCream.PrimaryPart
 
-            IceCream:SetPrimaryPartCFrame(Hrp.CFrame * CFrame.new(0, 0, -(2 + Cone.Size.Z / 2)))
+            IceCream:SetPrimaryPartCFrame(Hrp.CFrame * CFrame.new(0, 0, -(1 + Cone.Size.Z / 2)))
             IceCream.Parent = Character
 
             local weld = Instance.new("WeldConstraint")
-            weld.Part0 = Hrp
+            weld.Part0 = Character.Main
             weld.Part1 = Cone
             weld.Parent = Cone
 
-            -- TODO: Add hold animation
+            local track = Hum:LoadAnimation(CONE_GRAB_ANIMATION)
+            track:Play()
+
 		end
 
 	end
@@ -97,7 +157,7 @@ function IceCreamExtravaganza:StartEvent()
 
     local Active = true
 
-	local Scores = {}
+	Scores = {}
 	local Scoops = {}
 	local Identifier = 1 -- Used to generate id's that help identify which scoops were collected on the client
 
@@ -111,10 +171,13 @@ function IceCreamExtravaganza:StartEvent()
 
 			Scores[Player] = 0
 		end
+
 	end
 
     EventValues.TextToDisplay.Value = "Collect the scoops!"
 	Remotes.Events:FireAllClients("Event Started",  EVENT_NAME)
+    -- Update scoreboards on client to display zeroes and participants
+	Remotes.IceCreamExtravaganza:FireAllClients("Update", SortScores())
 	task.wait(1)
 
 
@@ -123,26 +186,32 @@ function IceCreamExtravaganza:StartEvent()
     -- Start scoop spawning
     task.spawn(function()
         while Active do
-            local Id = Identifier
             Identifier += 1
 
-			local RGN = math.random(1, 10)
+            local Id = Identifier
+			local Position = DropSpawns[math.random(1, #DropSpawns)].Position
+			local Type = GetDropType()
 
-            local Scoop = {
-                Position = DropSpawns[math.random(1, #DropSpawns)].Position,
-                TimeOfDrop = os.clock(),
-				-- Bad: 30%, Gold: 10%, Default: 60%
-                Type =  if RGN <= 3 then "Bad" else (if RGN == 4 then "Gold" else "Regular")
+			local Models = Assets.Drops[Type]:GetChildren()
+			local Model = Models[math.random(1, #Models)]
+
+            Scoops[Id] = {
+                Position = Position,
+                Type = Type,
+                Model = Model
             }
 
-            Scoops[Id] = Scoop
-            Remotes.IceCreamExtravaganza:FireAllClients("DropCreated", Id, Scoop.Position, Scoop.Type)
-
+            Remotes.IceCreamExtravaganza:FireAllClients("DropCreated", Id, Position, Model)
             task.wait(Config.DropRate)
+
         end
+
     end)
 
+
     -- Start scoop collecting
+    local InviciblePlayers = {}
+
     local Connection
     Connection = Remotes.IceCreamExtravaganza.OnServerEvent:Connect(function(Player, Event, Id)
         if Event == "ScoopCollected" then
@@ -150,45 +219,79 @@ function IceCreamExtravaganza:StartEvent()
         	if not Character then return end
 
         	local IceCream = Character:FindFirstChild("IceCream")
-        	if not IceCream then return end
+
 
         	local Scoop = Scoops[Id]
         	Scoops[Id] = nil
-
 
         	local oldScore = Scores[Player]
         	local newScore
 
         	local Type = Scoop.Type
-        	if Type == "Bad" then
-        		newScore =  math.max(0, oldScore - 3)
+			if Type == "Obstacle" then
+				if not InviciblePlayers[Player] then
+					newScore =  math.max(0, oldScore - 1)
 
-        		for i = oldScore, newScore + 1, -1 do
-        			IceCream:FindFirstChild(i):Destroy()
-        		end
+					for i = oldScore, newScore + 1, -1 do
+						IceCream:FindFirstChild(i):Destroy()
+					end
+				end
+			elseif Type == "Invicible" then
+				if not InviciblePlayers[Player] then
+					local Character = Player.Character
+					if not Character then return end
 
-        	elseif Type == "Regular" then
-        		newScore = oldScore + 1
+					-- Debounce
+					InviciblePlayers[Player] = true
 
+					-- Make opaque
+					local PreviousProperties = {}
+					for _, BasePart in ipairs(Character:GetDescendants()) do
+						if BasePart:IsA("BasePart") and BasePart.Transparency == 0 then
+							PreviousProperties[BasePart] = {Color = BasePart.Color, Material = BasePart.Material}
+
+							BasePart.Material = Enum.Material.ForceField
+							BasePart.Color = Color3.fromRGB(255, 255, 255)
+						end
+					end
+
+					-- Revert
+					task.delay(Config.InvicibilityLength, function()
+						if Character.Parent then -- Character hasn't died
+							for Changed, Props in pairs(PreviousProperties) do
+								Changed.Material = Props.Material
+								Changed.Color = Props.Color
+							end
+						end
+
+						InviciblePlayers[Player] = nil
+					end)
+				end
+
+			else
         		local Cone = IceCream.PrimaryPart
 
-        		local scoop = Assets.Scoops.Regular:Clone()
-        		scoop.CanTouch = false
-        		scoop.Name = newScore
-        		scoop.CFrame = Cone.CFrame * CFrame.new(0, (Cone.Size.Y / 2) + (scoop.Size.Y / 2) * (newScore - 1), 0)
-        		scoop.Anchored = false
-        		scoop.Parent = IceCream
+				newScore = oldScore
+				for i = 1, (Type == "Regular" and 1 or 2) do
+					newScore += 1
+	        		local Scoop = Scoop.Model:Clone()
+	        		local _, ScoopSize = Scoop:GetBoundingBox()
 
-        		local weld = Instance.new("WeldConstraint")
-        		weld.Part0 = scoop
-        		weld.Part1 = Cone
-        		weld.Parent = Cone
+	        		Scoop.Name = newScore
+	        		Scoop:SetPrimaryPartCFrame(Cone.CFrame * CFrame.new(0, (Cone.Size.Y / 2) + (ScoopSize.Y / 2) * (newScore - 1), 0))
+	        		Scoop.PrimaryPart.Anchored = false
+	        		Scoop.Parent = IceCream
 
-			elseif Type == "Gold" then
-        	   newScore = oldScore
+	        		local weld = Instance.new("WeldConstraint")
+	        		weld.Part0 = Scoop.PrimaryPart
+	        		weld.Part1 = Cone
+	        		weld.Parent = Cone
+
+	        	end
+
         	end
 
-        	Scores[Player] = newScore
+        	Scores[Player] = newScore or oldScore
 
         end
 
@@ -197,9 +300,9 @@ function IceCreamExtravaganza:StartEvent()
     -- Countdown
     repeat
 		local TimeLeft = math.floor((FinishTime - tick()))
-		EventValues.TextToDisplay.Value = "Collect Scoops-"..TimeLeft
+		EventValues.IceCreamTimer.Value = TimeLeft
 		-- Updates scores. Done here to reduce network traffic
-        Remotes.IceCreamExtravaganza:FireAllClients("Update", Scores)
+        Remotes.IceCreamExtravaganza:FireAllClients("Update", SortScores())
 
 		task.wait(.25)
 	until tick() > FinishTime or #Participants:GetChildren() == 0
@@ -213,22 +316,7 @@ function IceCreamExtravaganza:StartEvent()
 
 
 	-- Get scoreboard rankings
-	local ScoreBoard = {}
-	for i = 1, DictLength(Scores) do
-		local HighestScoringPlayer
-		local HighestScore = -1
-
-		for Player, Score in pairs(Scores) do
-			if Score > HighestScore then
-				HighestScoringPlayer = Player
-				HighestScore = Score
-			end
-		end
-
-		Scores[HighestScoringPlayer] = nil
-		table.insert(ScoreBoard, {PlayerName = HighestScoringPlayer.Name, Score = HighestScore})
-	end
-
+	local ScoreBoard = SortScores()
 
 	-- Display scoreboard
 	Remotes.IceCreamExtravaganza:FireAllClients("Finished", ScoreBoard)
@@ -238,6 +326,21 @@ function IceCreamExtravaganza:StartEvent()
 	for i, Ranked in ipairs(ScoreBoard) do
 		local PlayerName = Ranked.PlayerName
 		local Player = game.Players:FindFirstChild(PlayerName)
+
+
+		if i == 1 then
+			local Data = Modules.PlayerData.sessionData[PlayerName]
+			if Data then
+				local Stats = Data["Stats"]
+
+				if Stats[EVENT_NAME] then
+					Stats[EVENT_NAME] += 1
+				else
+					Stats[EVENT_NAME] = 1
+				end
+
+			end
+		end
 
 		if i <= 3 then
 			table.insert(Winners, PlayerName)

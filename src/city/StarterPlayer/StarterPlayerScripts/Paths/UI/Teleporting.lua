@@ -254,7 +254,7 @@ if workspace:FindFirstChild("Portals") then
 		ProximityPrompt.HoldDuration = 0.25
 		ProximityPrompt.MaxActivationDistance = 10
 		ProximityPrompt.RequiresLineOfSight = false
-		ProximityPrompt.ActionText = Location
+		ProximityPrompt.ActionText = "Teleport"
 		ProximityPrompt.Parent = Portal.PrimaryPart
 
 		ProximityPrompt.Triggered:Connect(function(player)

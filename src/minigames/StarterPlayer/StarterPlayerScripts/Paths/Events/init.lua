@@ -46,7 +46,10 @@ local function ChangeDisplayText(Text)
 	if string.match(Text, "Starting in") then-- or Text == "GO!!" then
 		if Participants:FindFirstChild(Paths.Player.Name) then
 			if not StartingTextOn then
-				Paths.UI.Left.Visible = false
+				Paths.UI.Left.Customization.Visible = false
+				Paths.UI.Left.GemDisplay.Visible = false
+				Paths.UI.Left.Buttons.Visible = false
+
 				Paths.UI.Bottom.Visible = false
 				Paths.UI.BLCorner.Visible = false
 				
@@ -119,13 +122,17 @@ local function JoinedEvent(Event)
 end
 
 local function EventStarted()
-	Paths.UI.Left.Visible = false
+	Paths.UI.Left.GemDisplay.Visible = false
+	Paths.UI.Left.Buttons.Visible = false
+
 	Paths.UI.Bottom.Visible = false
 	Paths.UI.BLCorner.Visible = false
 end
 
 local function LeftEvent()
-	Paths.UI.Left.Visible = true
+	Paths.UI.Left.GemDisplay.Visible = true
+	Paths.UI.Left.Buttons.Visible = true
+
 	Paths.UI.Bottom.Visible = true
 	Paths.UI.BLCorner.Visible = true
 	
