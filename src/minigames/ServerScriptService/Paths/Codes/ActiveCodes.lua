@@ -21,7 +21,12 @@ local Active = {
 		ReturnText = "Accessory Received!"
 	};
 
-
+	["KOSHKALANA"] = {
+		RewardType = "Accessory";
+		AccessoryType = "Accessory";
+		AccessoryName = "Cat Ears";
+		ReturnText = "Accessory Received!"
+	};
 	["CUSTOMIZATION"] = {
 		RewardType = "Money";
 		Amount = 5000;

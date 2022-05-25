@@ -109,7 +109,7 @@ Accessories.All = {
 	["Party Hat"] = {Rarity = "Rare", IsForSale = true};
 	["Pink Sunhat"] = {Rarity = "Rare", IsForSale = true};
 	["Robin Hood"] = {Rarity = "Rare", IsForSale = true};
-	
+	["Cat Ears"] = {Rarity = "Rare", IsForSale = true};
 	["Cowboy"] = {Rarity = "Rare", IsForSale = true};
 	["Spiky Top Hat"] = {Rarity = "Rare", IsForSale = true};
 	["Hair Headband"] = {Rarity = "Rare", IsForSale = true};
