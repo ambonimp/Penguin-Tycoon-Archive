@@ -14,6 +14,8 @@ local HOVER_SCALE = 1.25
 
 local TeleportLocations = workspace.MapTeleportPoints
 
+local MainButton =UI.Left.Buttons.Map
+
 local Frame = UI.Center.Map
 local Locations = Frame.Locations
 local Tooltip = Frame.Tooltip
@@ -34,7 +36,6 @@ local function OpenMap()
 	Paths.UI.Left.Visible = false
 	Paths.UI.Bottom.Visible = false
 	Paths.UI.BLCorner.Visible = false
-
 end
 
 local function CloseMap()
@@ -102,7 +103,7 @@ end
 
 
 -- Toggle other parts of the Interface
-UI.Left.Buttons.Map.MouseButton1Down:Connect(OpenMap)
+MainButton.MouseButton1Down:Connect(OpenMap)
 Frame.Exit.MouseButton1Down:Connect(CloseMap)
 
 for _, Location in ipairs(Locations:GetChildren()) do
@@ -137,6 +138,24 @@ for _, Location in ipairs(Locations:GetChildren()) do
     Location.MouseLeave:Connect(function()
         OnLocationHoverEnded(Location)
     end)
+
+
+    local MapBoard = workspace.World:FindFirstChild("Map Board")
+    if MapBoard then
+		local ProximityPrompt = Instance.new("ProximityPrompt")
+		ProximityPrompt.HoldDuration = 0.25
+		ProximityPrompt.MaxActivationDistance = 10
+		ProximityPrompt.RequiresLineOfSight = false
+		ProximityPrompt.ActionText = "Open Map"
+		ProximityPrompt.Parent = MapBoard.PrimaryPart
+
+		ProximityPrompt.Triggered:Connect(function(player)
+		    -- Closes any previously opened frames and opens map frame
+		    Modules.Buttons:OnMainButtonClicked(MainButton)
+            OpenMap()
+		end)
+
+    end
 
 end
 

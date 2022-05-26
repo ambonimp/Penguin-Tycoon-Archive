@@ -66,7 +66,7 @@ EventsConfig["Ice Cream Extravaganza"] = {
 	DropVelocity = 10,
 	DropRate = 0.4,
 	InvicibilityLength = 5,
-	ImageID = 9727903441,
+	ImageID = 9727955878,
 	["Display Name"] = "Ice Cream Extravaganza",
 	--["Tutorial"] = "Reach the end to win!",
 }
