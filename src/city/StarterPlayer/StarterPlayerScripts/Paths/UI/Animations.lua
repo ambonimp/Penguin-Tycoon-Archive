@@ -30,7 +30,7 @@ local TrickleTI = TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirectio
 local PreviousTotalTween = false
 
 function Animations:SnowSplat()
-	local imgs = {"rbxassetid://9723073686","rbxassetid://9723074115","rbxassetid://9723073998","rbxassetid://9723073870"}
+	local imgs = {"rbxassetid://9730537323","rbxassetid://9730537169","rbxassetid://9730536976"}
 	local am = math.random(1,2)
 	Paths.Audio.Splat:Play()
 	for i = 1,am do
