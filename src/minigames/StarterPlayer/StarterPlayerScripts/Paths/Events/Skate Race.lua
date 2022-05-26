@@ -19,6 +19,29 @@ local EventUIs = Paths.UI.Right.EventUIs
 local EventUI = EventUIs["Skate Race"]
 local FinishedUI = Paths.UI.Center.GeneralEventFinished
 
+local toText = {
+	[1] = "1ST",
+	[2] = "2ND",
+	[3] = "3RD",
+	[4] = "4TH",
+	[5] = "5TH",
+	[6] = "6TH",
+	[7] = "7TH",
+	[8] = "8TH",
+	[9] = "9TH",
+	[10] = "10TH",
+	[11] = "11TH",
+	[12] = "12TH",
+	[13] = "13TH",
+	[14] = "14TH",
+	[15] = "15TH",
+	[16] = "16TH",
+	[17] = "17TH",
+	[18] = "18TH",
+	[19] = "19TH",
+	[20] = "20TH",
+}
+
 --- Event Functions ---
 function SkateRace:EventStarted()
 	if Participants:FindFirstChild(Paths.Player.Name) then
@@ -28,7 +51,6 @@ function SkateRace:EventStarted()
 		EventUI.Visible = true
 	end
 end
-
 
 function SkateRace.InitiateEvent()
 	

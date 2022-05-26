@@ -116,6 +116,7 @@ Remotes.CandyRush.OnClientEvent:Connect(function(kind,tab)
 			EventUI.Number.Text = score
 		end
 	elseif kind == "Collected" then
+		print(tab)
 		if tab then
 			if tab:FindFirstChild("Collected") == nil then
 				Paths.Audio.Collected:Clone().Parent = tab

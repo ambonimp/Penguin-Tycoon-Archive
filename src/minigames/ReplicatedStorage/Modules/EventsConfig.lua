@@ -60,12 +60,13 @@ EventsConfig["Candy Rush"] = {
 }
 
 EventsConfig["Ice Cream Extravaganza"] = {
-	MinPlayers = 1,
+	MinPlayers = 2,
 	MaxPlayers = 12,
-	Duration = 5,
+	Duration = 60,
 	DropVelocity = 10,
-	DropRate = 0.5,
-	ImageID = 9617829253,
+	DropRate = 0.4,
+	InvicibilityLength = 5,
+	ImageID = 9727903441,
 	["Display Name"] = "Ice Cream Extravaganza",
 	--["Tutorial"] = "Reach the end to win!",
 }
@@ -81,6 +82,9 @@ EventsConfig["Egg Hunt"] = {
 
 if game.GameId == 3425588324 then -- Testing
 	EventsConfig.Names[9647797909] = "Ice Cream Extravaganza"
+	-- EventsConfig[EventsConfig.Names[9647797909]].Duration = 10
+	EventsConfig[EventsConfig.Names[9647797909]].MinPlayers = 1
+
 	EventsConfig.INTERMISSION_INTERVAL = 10
 	EventsConfig.ACCEPT_TIMER = 10
 end
