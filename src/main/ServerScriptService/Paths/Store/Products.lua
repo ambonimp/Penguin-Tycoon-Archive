@@ -14,7 +14,9 @@ local Remotes = Paths.Remotes
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
 
 --- Product Variables ---
+local BoostsProducts = {[1266980995] = "Coins",[1266981097] = "Super",[1266981160] = "Ultra",[1266981422] = "Bundle"}
 local MoneyProducts = {[1224873708] = true, [1224873843] = true, [1224873847] = true, [1224873846] = true, [1224873844] = true, [1224873842] = true}
+local GemProducts = {[1266975588] = 100, [1266975627] = 275, [1266975643] = 725, [1266975658] = 1500, [1266975679] = 2400, [1266975715] = 4250}
 local AccessoryProducts = {[1231222251] = true, [1231222252] = true, [1231222253] = true}
 local OutfitProducts = {[1259048717] = true, [1259048739] = true, [1259048664] = true}
 local EyesProducts = {[1232615468] = true}
@@ -58,19 +60,23 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 	local Player = game.Players:GetPlayerByUserId(PlayerID)
 
 	if Modules.PlayerData.sessionData[Player.Name] then
+		--Gem Products
+		if GemProducts[product] then
+			Modules.Income:AddGems(Player,GemProducts[product],"Bought")
+		elseif BoostsProducts[product] then
+			print("bought boost", BoostsProducts[product])
+
 		-- Money Products
-		if MoneyProducts[product] then
+		elseif MoneyProducts[product] then
 			local PlayerIncome = Modules.PlayerData.sessionData[Player.Name]["Income"]
 			local Reward = Modules.GameFunctions:GetMoneyProductReward(product, PlayerIncome,Player)
-			Modules.Income:AddMoney(Player, Reward)
-			
-			
+			Modules.Income:AddMoney(Player, Reward,true)
+
 		-- Tycoon Products
 		elseif TycoonProducts[product] then
 			local ButtonName = TycoonProducts[product]
 			Modules.Purchasing:ItemPurchased(Player, ButtonName, true)
-			
-			
+
 		-- Accessory Products
 		elseif AccessoryProducts[product] then
 			Modules.Accessories:AccessoryPurchased(Player)
