@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local Teleporting = {}
 
 
@@ -60,7 +59,7 @@ local Locations = {
 	["Ice Cream Extravaganza"] = {
 		PlaceId = PlaceIds["Ice Cream Extravaganza"],
 		Description = "Collect all of the ice cream!",
-		Thumbnail = "rbxassetid://" .. EventsConfig["Candy Rush"].ImageID,
+		Thumbnail = "rbxassetid://" .. EventsConfig["Ice Cream Extravaganza"].ImageID,
 	}
 }
 
@@ -248,8 +247,8 @@ function Teleporting:RefreshFriends()
 end
 
 
-local Portals = Workspace:FindFirstChild("Portals")
-if workspace:FindFirstChild("Portals") then
+local Portals = workspace:FindFirstChild("Portals")
+if Portals then
 	for _, Portal in ipairs(Portals:GetChildren()) do
 		local Location = Portal.Name
 

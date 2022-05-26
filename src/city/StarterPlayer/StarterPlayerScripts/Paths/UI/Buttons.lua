@@ -113,7 +113,7 @@ function Buttons.addButton(Button,Frame,Blur,DoWait,tbl)
 end
 
 
-function ButtonClicked(button)
+function Buttons:OnMainButtonClicked(button)
 	if Debounce then return end
 	
 	-- Specific for store (buy money button) to not close it if money tab isn't open
@@ -248,7 +248,7 @@ end)
 --- Initializing ---
 for i, v in pairs(MainButtons) do
 	v.MouseButton1Down:Connect(function()
-		ButtonClicked(v)
+		Buttons:OnMainButtonClicked(v)
 	end)
 end
 
