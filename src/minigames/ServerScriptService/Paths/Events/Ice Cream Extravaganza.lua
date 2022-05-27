@@ -19,10 +19,10 @@ local CONE_GRAB_ANIMATION = Instance.new("Animation")
 CONE_GRAB_ANIMATION.AnimationId = "rbxassetid://9725354929"
 
 local DROP_CHANCES = {
-	Invicible = 2,
+	Invicible = 5,
 	Double = 10,
 	Obstacle = 28,
-	Regular = 60,
+	Regular = 57,
 }
 
 local Config = Modules.EventsConfig[ EVENT_NAME]
@@ -43,7 +43,6 @@ local Scores
 local function addGems(player,amount)
 	Modules.Income:AddGems(player, amount, EVENT_NAME)
 end
-
 
 local function TableClone(t)
 	local clone = {}
@@ -114,7 +113,6 @@ function IceCreamExtravaganza:SpawnPlayers(ChosenBugName, ChosenBugNum)
 			Modules.Collisions.SetCollision(Character, false)
 
 			local Hum = Character.Humanoid
-			Hum.JumpPower = 0
 			Hum.WalkSpeed = 0
 			Hum.Died:Connect(function()
 				Player:Destroy()
@@ -163,15 +161,23 @@ function IceCreamExtravaganza:StartEvent()
 
 
     -- Activate Event
-    for i, PlayerName in pairs(Participants:GetChildren()) do
+    for _, PlayerName in pairs(Participants:GetChildren()) do
 		local Player = game.Players:FindFirstChild(PlayerName.Name)
-		if Player and Player.Character and Player.Character:FindFirstChild("Humanoid") then
-			Player.Character.Humanoid.WalkSpeed = 35
-			Player.Character.Humanoid.JumpPower = 0
 
-			Scores[Player] = 0
+		if Player then
+			local Character = Player.Character
+			if Character then
+				local Humanoid = Character:FindFirstChild("Humanoid")
+				if Humanoid then
+					Humanoid.WalkSpeed = 35
+					Scores[Player] = 0
+
+					continue
+				end
+			end
 		end
 
+		PlayerName:Destroy()
 	end
 
     EventValues.TextToDisplay.Value = "Collect the scoops!"
@@ -219,79 +225,80 @@ function IceCreamExtravaganza:StartEvent()
         	if not Character then return end
 
         	local IceCream = Character:FindFirstChild("IceCream")
-
-
         	local Scoop = Scoops[Id]
-        	Scoops[Id] = nil
 
-        	local oldScore = Scores[Player]
-        	local newScore
+        	if IceCream and Scoop then
+	        	Scoops[Id] = nil
 
-        	local Type = Scoop.Type
-			if Type == "Obstacle" then
-				if not InviciblePlayers[Player] then
-					newScore =  math.max(0, oldScore - 1)
+	        	local oldScore = Scores[Player]
+	        	local newScore
 
-					for i = oldScore, newScore + 1, -1 do
-						IceCream:FindFirstChild(i):Destroy()
-					end
-				end
-			elseif Type == "Invicible" then
-				if not InviciblePlayers[Player] then
-					local Character = Player.Character
-					if not Character then return end
+	        	local Type = Scoop.Type
+				if Type == "Obstacle" then
+					if not InviciblePlayers[Player] then
+						newScore =  math.max(0, oldScore - 1)
 
-					-- Debounce
-					InviciblePlayers[Player] = true
-
-					-- Make opaque
-					local PreviousProperties = {}
-					for _, BasePart in ipairs(Character:GetDescendants()) do
-						if BasePart:IsA("BasePart") and BasePart.Transparency == 0 then
-							PreviousProperties[BasePart] = {Color = BasePart.Color, Material = BasePart.Material}
-
-							BasePart.Material = Enum.Material.ForceField
-							BasePart.Color = Color3.fromRGB(255, 255, 255)
+						for i = oldScore, newScore + 1, -1 do
+							IceCream:FindFirstChild(i):Destroy()
 						end
 					end
+				elseif Type == "Invicible" then
+					if not InviciblePlayers[Player] then
+						local Character = Player.Character
+						if not Character then return end
 
-					-- Revert
-					task.delay(Config.InvicibilityLength, function()
-						if Character.Parent then -- Character hasn't died
-							for Changed, Props in pairs(PreviousProperties) do
-								Changed.Material = Props.Material
-								Changed.Color = Props.Color
+						-- Debounce
+						InviciblePlayers[Player] = true
+
+						-- Make opaque
+						local PreviousProperties = {}
+						for _, BasePart in ipairs(Character:GetDescendants()) do
+							if BasePart:IsA("BasePart") and BasePart.Transparency == 0 then
+								PreviousProperties[BasePart] = {Color = BasePart.Color, Material = BasePart.Material}
+
+								BasePart.Material = Enum.Material.ForceField
+								BasePart.Color = Color3.fromRGB(255, 255, 255)
 							end
 						end
 
-						InviciblePlayers[Player] = nil
-					end)
-				end
+						-- Revert
+						task.delay(Config.InvicibilityLength, function()
+							if Character.Parent then -- Character hasn't died
+								for Changed, Props in pairs(PreviousProperties) do
+									Changed.Material = Props.Material
+									Changed.Color = Props.Color
+								end
+							end
 
-			else
-        		local Cone = IceCream.PrimaryPart
+							InviciblePlayers[Player] = nil
+						end)
+					end
 
-				newScore = oldScore
-				for i = 1, (Type == "Regular" and 1 or 2) do
-					newScore += 1
-	        		local Scoop = Scoop.Model:Clone()
-	        		local _, ScoopSize = Scoop:GetBoundingBox()
+				else
+	        		local Cone = IceCream.PrimaryPart
 
-	        		Scoop.Name = newScore
-	        		Scoop:SetPrimaryPartCFrame(Cone.CFrame * CFrame.new(0, (Cone.Size.Y / 2) + (ScoopSize.Y / 2) * (newScore - 1), 0))
-	        		Scoop.PrimaryPart.Anchored = false
-	        		Scoop.Parent = IceCream
+					newScore = oldScore
+					for i = 1, (Type == "Regular" and 1 or 2) do
+						newScore += 1
+		        		local Scoop = Scoop.Model:Clone()
+		        		local _, ScoopSize = Scoop:GetBoundingBox()
 
-	        		local weld = Instance.new("WeldConstraint")
-	        		weld.Part0 = Scoop.PrimaryPart
-	        		weld.Part1 = Cone
-	        		weld.Parent = Cone
+		        		Scoop.Name = newScore
+		        		Scoop:SetPrimaryPartCFrame(Cone.CFrame * CFrame.new(0, (Cone.Size.Y / 2) + (ScoopSize.Y / 2) * (newScore - 1), 0))
+		        		Scoop.PrimaryPart.Anchored = false
+		        		Scoop.Parent = IceCream
+
+		        		local weld = Instance.new("WeldConstraint")
+		        		weld.Part0 = Scoop.PrimaryPart
+		        		weld.Part1 = Cone
+		        		weld.Parent = Cone
+
+		        	end
 
 	        	end
 
-        	end
-
-        	Scores[Player] = newScore or oldScore
+	        	Scores[Player] = newScore or oldScore
+	        end
 
         end
 
@@ -327,7 +334,6 @@ function IceCreamExtravaganza:StartEvent()
 		local PlayerName = Ranked.PlayerName
 		local Player = game.Players:FindFirstChild(PlayerName)
 
-
 		if i == 1 then
 			local Data = Modules.PlayerData.sessionData[PlayerName]
 			if Data then
@@ -349,7 +355,6 @@ function IceCreamExtravaganza:StartEvent()
 			addGems(Player, PARTICIPATION_REWARD)
 		end
 	end
-
 
 	return #Winners > 0 and Winners or nil
 end

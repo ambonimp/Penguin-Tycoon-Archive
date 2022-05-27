@@ -94,16 +94,10 @@ Confirmation.InfoHolder.Confirm.MouseButton1Down:Connect(function()
 	Teleporting:TeleportTo(tonumber(Confirmation.PlaceId.Value))
 end)
 
---Confirmation.Cancel.MouseButton1Down:Connect(function()
---	Confirmation.Visible = false
---end)
-
-
 -- Different teleport locations/buttonns
 TeleportButton.MouseButton1Down:Connect(function()
 	Teleporting:OpenConfirmation("Penguin City")
 end)
-
 
 --- Switching between tabs ---
 Confirmation.InfoHolder.Friends.MouseButton1Down:Connect(function()

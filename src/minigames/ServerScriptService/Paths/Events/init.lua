@@ -17,7 +17,6 @@ local ChosenEvent = Modules.EventsConfig.Names[game.PlaceId]
 local EventModule = require(script:FindFirstChild(ChosenEvent))
 local EventConfig = Modules.EventsConfig[ChosenEvent]
 
-local CurrentState = "Intermission"
 local Map
 
 
@@ -28,16 +27,47 @@ local function ResetEvent()
 end
 
 local function Intermission()
-	CurrentState = "Intermission"
 	for i = Modules.EventsConfig.INTERMISSION_INTERVAL, 0, -1 do
 		EventValues.TextToDisplay.Value = "Intermission: "..i
 		task.wait(1)
 	end
 end
 
-local function StartingCountdown(ChosenEvent)
-	CurrentState = "Countdown"
+local function WaitForPlayers()
+	local PlayerReq = EventConfig.MinPlayers
+	local Ready = #Players:GetPlayers() >= PlayerReq
 
+	if not Ready then
+		local function UpdateWait()
+			local PlayerCount = #Players:GetPlayers()
+			if PlayerCount < PlayerReq then
+				EventValues.TextToDisplay.Value = string.format("Waiting for %s more player(s)", PlayerReq - PlayerCount)
+			else
+				Ready = true
+			end
+		end
+
+		local Conn1, Conn2
+		Conn1 = Players.PlayerAdded:Connect(function()
+			UpdateWait()
+		end)
+		Conn2 = Players.PlayerRemoving:Connect(function()
+			UpdateWait()
+		end)
+
+		UpdateWait()
+		repeat
+			task.wait(1)
+		until Ready
+
+		Conn1:Disconnect()
+		Conn2:Disconnect()
+
+	end
+
+end
+
+local function StartingCountdown(ChosenEvent)
 	for _, Value in pairs(Participants:GetChildren()) do
 		local Player = game.Players:FindFirstChild(Value.Name)
 		if Player and Player.Character and Player.Character:FindFirstChild("Humanoid") then
@@ -64,12 +94,14 @@ local function StartingCountdown(ChosenEvent)
 	for i = 3, 1, -1 do
 		EventValues.TextToDisplay.Value = "Starting in: "..i
 
-		if #Participants:GetChildren() <= 0 then
-			break
+		if #Participants:GetChildren() < EventConfig.MinPlayers then
+			return false
 		end
+
 		task.wait(1)
 	end
 
+	return true
 end
 
 
@@ -79,7 +111,6 @@ local function StartEvent()
 
 	if #Participants:GetChildren() >= EventConfig.MinPlayers then
 		-- Start the event
-		CurrentState = "Started"
 
 		for _, participant in pairs(Participants:GetChildren()) do
 			-- Fires a bindable event to notify server that this event has occured with given data
@@ -107,6 +138,9 @@ local function EventLoop()
 		-- Reset Previous Event Completely
 		ResetEvent()
 
+		-- Wait for players
+		WaitForPlayers()
+
 		-- Intermission
 		Intermission()
 
@@ -122,16 +156,18 @@ local function EventLoop()
 		-- Start the event if the min amount of players is met
 		if #Participants:GetChildren() >= EventConfig.MinPlayers and #Participants:GetChildren() <= EventConfig.MaxPlayers then
 			workspace:SetAttribute("Minigame",true)
-			StartingCountdown(ChosenEvent)
-
 			local Winners, DisplayText
 
-			local s,m = pcall(function()
-				Winners, DisplayText = StartEvent()
-			end)
+			if StartingCountdown(ChosenEvent) then
+				-- Player did not leave mid countdown and you still have enough participants  to play the match
+				local s,m = pcall(function()
+					Winners, DisplayText = StartEvent()
+				end)
 
-			if s == false then
-				warn(m)
+				if s == false then
+					warn(m)
+				end
+
 			end
 
 			local s,m = pcall(function()
@@ -176,7 +212,7 @@ local function EventLoop()
 				end
 
 				-- End event
-				Remotes.Events:FireAllClients("Event Ended",ChosenEvent)
+				Remotes.Events:FireAllClients("Event Ended", ChosenEvent)
 				for _, Player in pairs (game.Players:GetPlayers()) do
 					Player:SetAttribute("Minigame","none")
 				end
@@ -203,16 +239,6 @@ local function EventLoop()
 
 end
 
--- Players accepting - joining the event (only while it's starting)
-Remotes.Events.OnServerEvent:Connect(function(player, task, info)
-	if task == "Exit Event" and Participants:FindFirstChild(player.Name) then
-		Participants[player.Name]:Destroy()
-		if CurrentState == "Started" or CurrentState == "Countdown" then
-			Modules.Character:Spawn(player)
-		end
-	end
-end)
-
 -- If player leaves and is in the participants, remove them
 game.Players.PlayerRemoving:Connect(function(player)
 	if Participants:FindFirstChild(player.Name) then
@@ -220,7 +246,8 @@ game.Players.PlayerRemoving:Connect(function(player)
 	end
 end)
 
-coroutine.wrap(function()
+-- coroutine.wrap(function()
+task.spawn(function()
 	-- Load map
 	Map = Services.SStorage.EventMaps[ChosenEvent]:Clone()
 	Map.Name = "Event Map"
@@ -244,6 +271,6 @@ coroutine.wrap(function()
 	-- Start loop
 	EventLoop()
 
-end)()
+end)
 
 return Events
