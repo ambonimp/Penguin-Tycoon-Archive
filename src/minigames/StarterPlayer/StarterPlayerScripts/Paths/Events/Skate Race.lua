@@ -45,9 +45,6 @@ local toText = {
 --- Event Functions ---
 function SkateRace:EventStarted()
 	if Participants:FindFirstChild(Paths.Player.Name) then
-		local Map = workspace.Event["Event Map"]
-
-		EventInfoUI.ExitEvent.Visible = true
 		EventUI.Visible = true
 	end
 end
@@ -121,8 +118,8 @@ Remotes.Events.OnClientEvent:Connect(function(Action, CF,data)
 				break
 			end
 		end
-		
 	end
+
 end)
 
 

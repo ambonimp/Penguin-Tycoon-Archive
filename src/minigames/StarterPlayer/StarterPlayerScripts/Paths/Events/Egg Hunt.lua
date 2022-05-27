@@ -184,9 +184,7 @@ function EggHunt:EventStarted()
 	if Participants:FindFirstChild(Paths.Player.Name) then
 		Paths.Modules.Buttons:UIOff(Paths.UI.Center.EggHunt,true)
 		workspace.Gravity = 160
-		local Map = workspace.Event["Event Map"]
 
-		EventInfoUI.ExitEvent.Visible = true
 		EventUI.Visible = true
 	end
 end

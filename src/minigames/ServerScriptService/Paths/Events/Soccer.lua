@@ -10,7 +10,9 @@ local Remotes = Paths.Remotes
 
 
 
---- Event Variables ---
+--- Event Variables -
+local EVENT_NAME = "Soccer"
+
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
@@ -20,12 +22,12 @@ local redteam = {}
 function addGems(red,blue)
 	for i,player in pairs (blueteam) do
 		if game.Players:FindFirstChild(player) then
-			Modules.Income:AddGems(game.Players:FindFirstChild(player), blue, "Soccer")
+			Modules.Income:AddGems(game.Players:FindFirstChild(player), blue, EVENT_NAME)
 		end
 	end
 	for i,player in pairs (redteam) do
 		if game.Players:FindFirstChild(player) then
-			Modules.Income:AddGems(game.Players:FindFirstChild(player), red, "Soccer")
+			Modules.Income:AddGems(game.Players:FindFirstChild(player), red, EVENT_NAME)
 		end
 	end
 end
@@ -49,7 +51,7 @@ function Soccer:SpawnPlayers(ChosenBugName, ChosenBugNum)
 		if game.Players:FindFirstChild(player) and game.Players:FindFirstChild(player).Character then
 			local player = game.Players:FindFirstChild(player)
 			local SpawnPos = Map.BlueSpawns:FindFirstChild(i).CFrame
-			Remotes.Lighting:FireClient(player, "Soccer")
+			Remotes.Lighting:FireClient(player, EVENT_NAME)
 			local Character = Modules.Character:Spawn(player, SpawnPos)
 			Character.Humanoid.WalkSpeed = 0
 
@@ -62,7 +64,7 @@ function Soccer:SpawnPlayers(ChosenBugName, ChosenBugNum)
 		if game.Players:FindFirstChild(player) and game.Players:FindFirstChild(player).Character then
 			local player = game.Players:FindFirstChild(player)
 			local SpawnPos = Map.RedSpawns:FindFirstChild(i).CFrame
-			Remotes.Lighting:FireClient(player, "Soccer")
+			Remotes.Lighting:FireClient(player, EVENT_NAME)
 			local Character = Modules.Character:Spawn(player, SpawnPos)
 			Character.Humanoid.WalkSpeed = 0
 			
@@ -92,6 +94,12 @@ end
 
 function Soccer:InitiateEvent(Event)
 	local Map = workspace.Event["Event Map"]
+	Map:Destroy()
+
+	Map = Services.SStorage.EventMaps[EVENT_NAME]:Clone()
+	Map.Name = "Event Map"
+	Map.Parent = workspace.Event
+
 
 	EventValues.TextToDisplay.Value = "Initiating Soccer..."
 
@@ -106,10 +114,10 @@ function Soccer:StartEvent()
 	local redscore = 0
 	local velocity = 50
 	local startCFrame = Map.PrimaryPart.Position+Vector3.new(0,16,0)
-	Remotes.Events:FireAllClients("Event Started", "Soccer")
+	Remotes.Events:FireAllClients("Event Started", EVENT_NAME)
 	local playerGoals = {}
 	local StartTime = tick()
-	local FinishTime = StartTime + Modules.EventsConfig["Soccer"].Duration
+	local FinishTime = StartTime + Modules.EventsConfig[EVENT_NAME].Duration
 	EventValues.SoccerTime.Value = "03:00"
 	EventValues.TextToDisplay.Value = "GO!!"
 	wait(1)
@@ -168,10 +176,10 @@ function Soccer:StartEvent()
 			if ball.LastTouched.Value then
 				local data = Modules.PlayerData.sessionData[ball.LastTouched.Value.Name] 
 				if data and ball.LastTouched.Value:GetAttribute("Team") == team then
-					if data["Stats"]["Soccer"] then
-						data["Stats"]["Soccer"] = data["Stats"]["Soccer"] + ball:GetAttribute("Score")
+					if data["Stats"][EVENT_NAME] then
+						data["Stats"][EVENT_NAME] = data["Stats"][EVENT_NAME] + ball:GetAttribute("Score")
 					else
-						data["Stats"]["Soccer"] =  ball:GetAttribute("Score")
+						data["Stats"][EVENT_NAME] =  ball:GetAttribute("Score")
 					end
 				end
 			end
@@ -341,7 +349,7 @@ function Soccer:StartEvent()
 		addGems(5,5)
 	end
 
-	Remotes.Events:FireAllClients("Event Ended","Soccer")
+	Remotes.Events:FireAllClients("Event Ended",EVENT_NAME)
 	if Map:FindFirstChild("Winners") then
 		Map.Winners.Champion.Trophy.Cheering:Play()
 		for i, Participant in pairs(Participants:GetChildren()) do

@@ -87,13 +87,14 @@ local function JoinedEvent()
 end
 
 local function LeftEvent()
+	EventInfoUI.ExitEvent.Visible = true
+
 	Paths.UI.Left.GemDisplay.Visible = true
 	Paths.UI.Left.Buttons.Visible = true
 
 	Paths.UI.Bottom.Visible = true
 	Paths.UI.BLCorner.Visible = true
 	
-	EventInfoUI.ExitEvent.Visible = true
 
 	for i, v in pairs(Paths.UI.Left.EventUIs:GetChildren()) do
 		v.Visible = false
