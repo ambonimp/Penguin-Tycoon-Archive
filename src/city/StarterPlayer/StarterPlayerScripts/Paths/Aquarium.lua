@@ -19,7 +19,6 @@ repeat task.wait(.1) until #FishFolder:GetChildren() >= 22
 local OwnedFish = Remotes.GetStat:InvokeServer("Fish Found")
 
 function loadFish(ID,Part)
-	Part.Transparency = 1
 	ID = tonumber(ID)
 	local fishPart = Services.RStorage.Assets.Fishes:FindFirstChild(FishingConfig.ItemList[ID].Name)
 	if fishPart then
@@ -77,8 +76,24 @@ task.spawn(function()
 		table.insert(toLoadFish,i)
 		totalFish += 1
 	end
-	
+
+	if totalFish == 0 then
+		toLoadFish = {
+			[1] = "1",
+			[2] = "2",
+			[3] = "3",
+			[4] = "4",
+			[5] = "5",
+			[6] = "6",
+			[7] = "7",
+			[8] = "8",
+			[9] = "9",
+			[10] = "10",
+		}
+	end
 	for i = 1,fishAmount do
+		local Part = FishFolder:GetChildren()[i]
+		Part.Transparency = 1
 		local r = math.random(1,totalFish)
 		local fishID = toLoadFish[r]
 		fishID = tonumber(fishID)
@@ -92,7 +107,7 @@ task.spawn(function()
 				task.wait()
 			end
 		end
-		loadFish(fishID,FishFolder:GetChildren()[i])
+		loadFish(fishID,Part)
 		totalFish -= 1
 	end
 end)

@@ -400,10 +400,12 @@ coroutine.wrap(function()
 		task.wait(1)
 	end
 end)()]]
+local prompts = nil
 
 if workspace:FindFirstChild("Clothing") then
 	ProximityPrompt = workspace.Clothing.ProximityPart.Value:WaitForChild("ProximityPrompt")
 	ProximityPrompt2 = workspace.Clothing.ProximityPart2.Value:WaitForChild("ProximityPrompt")
+	prompts = workspace.Clothing.ClothingParts:GetChildren()
 end
 
 if ProximityPrompt then
@@ -412,6 +414,16 @@ if ProximityPrompt then
 			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Clothing,true)
 		end
 	end)
+end
+
+if prompts then
+	for i,v in pairs (prompts) do
+		v.ProximityPrompt.Triggered:Connect(function(player)
+			if player == game.Players.LocalPlayer then
+				Paths.Modules.Buttons:UIOn(Paths.UI.Center.Clothing,true)
+			end
+		end)
+	end
 end
 
 if ProximityPrompt2 then
