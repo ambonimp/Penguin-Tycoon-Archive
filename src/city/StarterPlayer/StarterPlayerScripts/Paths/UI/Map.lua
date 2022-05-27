@@ -100,7 +100,7 @@ end
 
 
 function ownsGamepass()
-    return Modules.Gamepasses.Owned[47438595]
+    return true--Modules.Gamepasses.Owned[47438595]
 end
 
 
