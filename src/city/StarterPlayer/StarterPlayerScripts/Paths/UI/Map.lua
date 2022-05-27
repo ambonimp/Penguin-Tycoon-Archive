@@ -36,12 +36,14 @@ local function OpenMap()
 	Paths.UI.Left.Visible = false
 	Paths.UI.Bottom.Visible = false
 	Paths.UI.BLCorner.Visible = false
+    Paths.UI.Top.Visible = false
 end
 
 local function CloseMap()
 	Paths.UI.Left.Visible = true
 	Paths.UI.Bottom.Visible = true
 	Paths.UI.BLCorner.Visible = true
+    Paths.UI.Top.Visible = true
 end
 
 local function Transition(OnHalfPoint)
