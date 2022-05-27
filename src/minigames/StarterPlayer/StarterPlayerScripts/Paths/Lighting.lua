@@ -18,6 +18,9 @@ Lighting.CurrentLocation = "Night Skating"
 
 --- Functions ---
 function Lighting:ChangeLighting(Preset)
+	-- Module is loaded after this one, so not a garuantee that it exists in Modules when this event is fired
+	repeat task.wait() until Modules.AudioHandler
+
 	if not Presets:FindFirstChild(Preset) or Preset == Lighting.CurrentLocation then return end
 	Lighting.CurrentLocation = Preset
 	Modules.AudioHandler:LocationChanged(Preset)
@@ -37,8 +40,6 @@ function Lighting:ChangeLighting(Preset)
 end
 
 Remotes.Lighting.OnClientEvent:Connect(function(Location)
-	-- Module is loaded after this one, so not a garuantee that it exists in Modules when this event is fired
-	repeat task.wait() until Modules.AudioHandler
 	Lighting:ChangeLighting(Location)
 
 end)

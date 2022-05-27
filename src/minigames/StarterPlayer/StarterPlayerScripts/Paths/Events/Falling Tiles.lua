@@ -18,11 +18,6 @@ local EventInfoUI = Paths.UI.Top.EventInfo
 
 --- Event Functions ---
 function FallingTiles:EventStarted()
-	if Participants:FindFirstChild(Paths.Player.Name) then
-		local Map = workspace.Event["Event Map"]
-
-		EventInfoUI.ExitEvent.Visible = true
-	end
 end
 
 function FallingTiles:EventEnded()

@@ -79,7 +79,6 @@ function findTbl(playerName)
 end
 
 function CandyRush:InitiateEvent(Event)
-
 	local Map = workspace.Event["Event Map"]
 	Map:Destroy()
 
