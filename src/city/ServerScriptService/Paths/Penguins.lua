@@ -23,8 +23,44 @@ function Penguins:PenguinPurchased(Player, PenguinName)
 	end
 end
 
+local function scaleModel(model, scale)
+	local PrimaryPart = model.PrimaryPart
+	local PrimaryPartCFrame = model:GetPrimaryPartCFrame()
+	
+	--Destroy welds
+	for _,object in pairs(model:GetDescendants()) do
+		if object:IsA('BasePart') then
+			for _,object in pairs(object:GetDescendants()) do
+				if object:IsA('Weld') or object:IsA('ManualWeld') or object:IsA('WeldConstraint') then
+					pcall(function()
+						object.Part0.Anchored = true
+						object.Part1.Anchored = true
+					end)
+					object:Destroy()
+				end
+			end
+		end
+	end
+	
+	--Scale BaseParts
+	for _,object in pairs(model:GetDescendants()) do
+		if object:IsA('BasePart') then	
+			object.Size = object.Size*scale
+			
+			local distance = (object.Position - PrimaryPartCFrame.p)
+			local rotation = (object.CFrame - object.Position)
+			object.CFrame = (CFrame.new(PrimaryPartCFrame.p + distance*scale) * rotation)
+		end
+	end
+end
 
 function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoadColor,Player)
+	local scale = nil
+	if DontLoadHat == "SCALE" then
+		scale = DontLoadEyes
+		DontLoadHat = nil
+		DontLoadEyes = nil
+	end
 	-- Load penguin appearance
 	if Info["BodyColor"] ~= "Default" and not DontLoadColor then
 		local Color = Color3.new(Info["BodyColor"]["R"], Info["BodyColor"]["G"], Info["BodyColor"]["B"])
@@ -77,6 +113,13 @@ function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoad
 			Model.Name = "Customization_Eyes"
 			Humanoid:AddAccessory(Model)
 		end
+	end
+
+	if scale then
+		task.spawn(function()
+			task.wait(.25)
+			scaleModel(Penguin,scale)
+		end)
 	end
 end
 

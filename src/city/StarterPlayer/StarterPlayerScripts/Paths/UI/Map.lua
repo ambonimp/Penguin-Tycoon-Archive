@@ -144,7 +144,7 @@ for _, Location in ipairs(Locations:GetChildren()) do
     if MapBoard then
 		local ProximityPrompt = Instance.new("ProximityPrompt")
 		ProximityPrompt.HoldDuration = 0.25
-		ProximityPrompt.MaxActivationDistance = 10
+		ProximityPrompt.MaxActivationDistance = 17
 		ProximityPrompt.RequiresLineOfSight = false
 		ProximityPrompt.ActionText = "Open Map"
 		ProximityPrompt.Parent = MapBoard.PrimaryPart

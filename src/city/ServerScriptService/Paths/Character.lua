@@ -89,7 +89,7 @@ function Character:MoveTo(Player, SpecificLocation)
 	end
 end
 
-function Character:EquipShirt(Character,ShirtName)
+function Character:EquipShirt(Character,ShirtName,scale)
 	if Character == nil then return end
 	if Character:FindFirstChild("Shirt") then
 		Character:FindFirstChild("Shirt"):Destroy()
@@ -141,7 +141,7 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 		local SpawnLocation = Spawns[Random.new():NextInteger(1, #Spawns)]
 		Penguin:MoveTo(SpawnLocation.Position)
 		
-		Remotes.Lighting:FireClient(Player, "Night Skating")
+		Remotes.Lighting:FireClient(Player, "Penguin City")
 	end
 	
 	-- Set up new character
@@ -149,6 +149,8 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 	Penguin:SetAttribute("PetAnimation","none")
 	if Data["Settings"]["Faster Speed"] then
 		Penguin.Humanoid.WalkSpeed *= Data["Walkspeed Multiplier"]
+	else
+		--Penguin.Humanoid.WalkSpeed = 36
 	end
 	local lastChange = os.time()
 	Penguin:GetAttributeChangedSignal("PetAnimation"):Connect(function()
@@ -232,16 +234,17 @@ function Remotes.GetSnowball.OnServerInvoke(Player)
 				table.insert(hits,hit.Parent)
 				Remotes.GetSnowball:InvokeClient(game.Players:GetPlayerFromCharacter(hit.Parent),"Splat")
 				Remotes.GetSnowball:InvokeClient(Player,"Hit")
+				snowball:Destroy()
 			end
 		end)
 		snowball:SetNetworkOwner(Player)
 		task.spawn(function()
-			task.wait(.4)
-			snowball.CanCollide = true
-			task.wait(1.35)
+			task.wait(.85)
 			SnowballDB[n] = nil
 			task.wait(.5)
-			snowball:Destroy()
+			if snowball then
+				snowball:Destroy()
+			end
 		end)
 		return snowball
 	else 
