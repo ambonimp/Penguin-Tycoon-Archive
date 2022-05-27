@@ -324,7 +324,7 @@ function PetUI.Inventory(Paths)
 			if Paths.Tycoon then
 				Player.Character:MoveTo(Paths.Tycoon:WaitForChild("BuyEgg"):WaitForChild("Hitbox").Position)
 			elseif workspace:FindFirstChild("PetShop") then
-				Player.Character:MoveTo(workspace:FindFirstChild("PetShop"):WaitForChild("BuyEgg"):WaitForChild("Hitbox").Position)
+				Player.Character:MoveTo(workspace:FindFirstChild("MapTeleportPoints"):WaitForChild("Pet Shop").Position)
 			end
 		end)
 		
