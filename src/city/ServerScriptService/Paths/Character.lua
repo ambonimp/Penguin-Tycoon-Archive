@@ -30,6 +30,47 @@ end
 
 local Spawns = workspace.Spawns:GetChildren()
 
+function Character:AddSkates(Player)
+	if  Player.Character:FindFirstChild("RightSkate") or Player.Character:FindFirstChild("LeftSkate") then return end
+	local LeftSkate = Services.RStorage.Assets.Skate:Clone()
+	local RightSkate = Services.RStorage.Assets.Skate:Clone()
+
+	LeftSkate:SetPrimaryPartCFrame(Player.Character["Leg L"].CFrame)
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = LeftSkate.PrimaryPart
+	weld.Part1 = Player.Character["Leg L"]
+	weld.Parent = LeftSkate.PrimaryPart
+	LeftSkate.Name = "LeftSkate"
+	LeftSkate.Parent = Player.Character
+
+	--Player.Character["Leg L"].Transparency = 1
+
+	RightSkate:SetPrimaryPartCFrame(Player.Character["Leg R"].CFrame)
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = RightSkate.PrimaryPart
+	weld.Part1 = Player.Character["Leg R"]
+	weld.Parent = RightSkate.PrimaryPart
+	RightSkate.Name = "RightSkate"
+	RightSkate.Parent = Player.Character
+
+	--Player.Character["Leg R"].Transparency = 1
+
+	Player.Character.Humanoid.HipHeight = 2
+end
+
+function Character:RemoveSkates(Player)
+	if Player.Character:FindFirstChild("LeftSkate") then
+		Player.Character:FindFirstChild("LeftSkate"):Destroy()
+	end
+	if Player.Character:FindFirstChild("RightSkate") then
+		Player.Character:FindFirstChild("RightSkate"):Destroy()
+	end
+	Player.Character["Leg L"].Transparency = 0
+	Player.Character["Leg R"].Transparency = 0
+
+	Player.Character.Humanoid.HipHeight = 1.7
+end
+
 function Character:MoveTo(Player, SpecificLocation)
 	if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") and Player.Character:FindFirstChild("Humanoid") then
 		local Character = Player.Character
@@ -48,7 +89,7 @@ function Character:MoveTo(Player, SpecificLocation)
 	end
 end
 
-function Character:EquipShirt(Character,ShirtName)
+function Character:EquipShirt(Character,ShirtName,scale)
 	if Character == nil then return end
 	if Character:FindFirstChild("Shirt") then
 		Character:FindFirstChild("Shirt"):Destroy()
@@ -100,7 +141,7 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 		local SpawnLocation = Spawns[Random.new():NextInteger(1, #Spawns)]
 		Penguin:MoveTo(SpawnLocation.Position)
 		
-		Remotes.Lighting:FireClient(Player, "Night Skating")
+		Remotes.Lighting:FireClient(Player, "Penguin City")
 	end
 	
 	-- Set up new character
@@ -108,6 +149,8 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 	Penguin:SetAttribute("PetAnimation","none")
 	if Data["Settings"]["Faster Speed"] then
 		Penguin.Humanoid.WalkSpeed *= Data["Walkspeed Multiplier"]
+	else
+		--Penguin.Humanoid.WalkSpeed = 36
 	end
 	local lastChange = os.time()
 	Penguin:GetAttributeChangedSignal("PetAnimation"):Connect(function()
@@ -158,9 +201,55 @@ Remotes.SpawnCharacter.OnServerEvent:Connect(function(Player, Type)
 	
 	Character:Spawn(Player)
 	
-	wait(1.5)
+	task.wait(1.5)
 	SpawnDB[Player.Name] = false
 end)
 
+for i,SlidePart in pairs (workspace.SlideParts:GetChildren()) do
+	SlidePart.Transparency = 1
+	local db = {}
+	SlidePart.Touched:Connect(function(p)
+		local humanoid = p.Parent:FindFirstChild("Humanoid")
+		if humanoid and db[humanoid] == nil then
+			db[humanoid] = true
+			humanoid.Sit = true
+			humanoid.Parent.PrimaryPart.Velocity = SlidePart.CFrame.LookVector * 150
+			task.wait(.5)
+			db[humanoid] = nil
+		end 
+	end)
+end
+
+local SnowballDB = {}
+function Remotes.GetSnowball.OnServerInvoke(Player)
+	local n = Player.Name
+	if SnowballDB[n] or Player.Character == nil then return nil end
+	if Player:GetAttribute("Snowball") then
+		SnowballDB[n] = true
+		local snowball = Services.SStorage.Tools.Snowball.Handle:Clone()
+		snowball.Parent = Player.Character
+		local hits = {}
+		snowball.Touched:Connect(function(hit)
+			if hit.Parent:FindFirstChild("Humanoid") and hit.Parent ~= Player.Character and game.Players:GetPlayerFromCharacter(hit.Parent) and table.find(hits,hit.Parent) == nil then
+				table.insert(hits,hit.Parent)
+				Remotes.GetSnowball:InvokeClient(game.Players:GetPlayerFromCharacter(hit.Parent),"Splat")
+				Remotes.GetSnowball:InvokeClient(Player,"Hit")
+				snowball:Destroy()
+			end
+		end)
+		snowball:SetNetworkOwner(Player)
+		task.spawn(function()
+			task.wait(.85)
+			SnowballDB[n] = nil
+			task.wait(.5)
+			if snowball then
+				snowball:Destroy()
+			end
+		end)
+		return snowball
+	else 
+		return nil
+	end
+end
 
 return Character

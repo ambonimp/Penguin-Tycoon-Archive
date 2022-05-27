@@ -32,6 +32,7 @@ function Paths.Initiliaze()
 	Paths.UI.Top = Paths.UI.Main:WaitForChild("Top")
 	Paths.UI.Full = Paths.UI.Main:WaitForChild("Full")
 	Paths.UI.BLCorner = Paths.UI.Main:WaitForChild("BLCorner")
+	Paths.UI.Tools = Paths.UI.Bottom.Tools
 	
 --- Initializing Remotes ---
 	Paths.Remotes = Paths.Services.RStorage.Remotes;
@@ -55,10 +56,11 @@ function Paths.Initiliaze()
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.AllEmotes = require(Paths.Services.RStorage.Modules.AllEmotes)
+	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
+	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Settings = require(script.Settings)
 	Paths.Modules.Emotes = require(script.Emotes)	
 	Paths.Modules.GroupReward = require(script.GroupReward)
-	Paths.Modules.Lighting = require(script.Lighting)
 	Paths.Modules.Verification = require(script.Verification)
 	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
 	
@@ -75,9 +77,10 @@ function Paths.Initiliaze()
 	Paths.Modules.UIAnimations = require(script.UI.Animations)
 	Paths.Modules.Buttons = require(script.UI.Buttons)
 	Paths.Modules.Teleporting = require(script.UI.Teleporting)
-	Paths.Modules.Portaling = require(script.UI.Portaling)
+	Paths.Modules.Map = require(script.UI.Map)
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
 	Paths.Modules.UI = require(script.UI)
+	Paths.Modules.Index = require(script.UI.Index)
 
 	-- Hearts Modules
 	Paths.Modules.Hearts = require(script.Hearts);
@@ -86,6 +89,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Store = require(script.Store)
 	Paths.Modules.Gamepasses = require(script.Store.Gamepasses)
 	Paths.Modules.Money = require(script.Store.Money)
+	Paths.Modules.Gems = require(script.Store.Gems)
 	Paths.Modules.Accessories = require(script.Store.Accessories)
 	
 	-- Penguin Modules
@@ -98,8 +102,9 @@ function Paths.Initiliaze()
 	Paths.Modules.AudioHandler = require(script.AudioHandler)
 	
 	-- Other Modules (That have to be required after)
-
-
+	Paths.Modules.Aquarium = require(script.Aquarium)
+	Paths.Modules.Fishing = require(script.Fishing)
+	Paths.Modules.Tools = require(script.Tools)
 	--- Load Version ---
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
 	

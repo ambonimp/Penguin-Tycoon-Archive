@@ -8,32 +8,27 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
+local ReplicatedStorage = Services.RStorage
+local Zone = require(ReplicatedStorage.Modules:WaitForChild("Zone"))
 
 --- Audio Variables ---
 local AllAudio = Paths.Player.PlayerScripts:WaitForChild("Audio")
 
-local CurrentSong = 0
-
+local CurrentLocation = "Penguin City"
 
 --- Audio Functions ---
 
 -- Playing all main tracks on loop
 local function UpdateSong()
-	if Modules.Lighting.CurrentLocation == "Night Skating" then
-		if CurrentSong == 4 then CurrentSong = 0 end
-		CurrentSong += 1
-
-		local Source = Modules.Audio:PlayMusic(AllAudio, tostring(CurrentSong))
-		wait(Source.TimeLength - 5)
-
-	elseif Modules.Audio.Music[Modules.Lighting.CurrentLocation] then
-		local Source = Modules.Audio:PlayMusic(AllAudio, Modules.Lighting.CurrentLocation)
-		wait(Source.TimeLength - 5)
+	if Modules.Audio.Music[CurrentLocation] then
+		local Source = Modules.Audio:PlayMusic(AllAudio, CurrentLocation)
+		task.wait(Source.TimeLength - 2.5)
 	end
 end
 
 
 function AudioHandler:LocationChanged(Location)
+	CurrentLocation = Location
 	coroutine.wrap(function()
 		UpdateSong()
 	end)()
@@ -65,6 +60,55 @@ for i, v in pairs(Paths.Player.PlayerGui:GetDescendants()) do
 		end)
 	end
 end
+
+
+Remotes.Lighting.OnClientEvent:Connect(function(Location)
+	AudioHandler:LocationChanged(Location)
+end)
+
+
+task.spawn(function()
+	repeat task.wait(1) until #workspace.MusicZones:GetChildren() == 4
+	task.wait(1)
+	for i,v in pairs (workspace.MusicZones:GetChildren()) do
+		if v:IsA("Folder") then
+			local container = v
+			for i,v in pairs (container:GetChildren()) do
+				v.Transparency = 1
+			end
+			local zone = Zone.new(container)
+			local db = false
+			zone.partEntered:Connect(function(p)
+				if p and p.Parent then
+					local plr = game.Players:FindFirstChild(p.Parent.Name)
+					if plr == game.Players.LocalPlayer then
+						if db then return end
+						db = true
+						if v.Name ~= CurrentLocation then
+							AudioHandler:LocationChanged(v.Name)
+						end
+						task.wait(.2)
+						db = false
+					end
+				end
+			end)
+			
+			zone.partExited:Connect(function(p)
+				if p and p.Parent then
+					local plr = game.Players:FindFirstChild(p.Parent.Name)
+					if plr == game.Players.LocalPlayer then
+						if db then return end
+						db = true
+						AudioHandler:LocationChanged("Penguin City")
+						task.wait(.2)
+						db = false
+					end
+				end
+			end)
+		end
+	end
+end)
+
 
 
 return AudioHandler

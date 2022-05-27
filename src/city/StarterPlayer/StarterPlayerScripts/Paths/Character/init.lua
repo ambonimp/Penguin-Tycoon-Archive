@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 local Character = {}
 
 --- Main Variables ---
@@ -10,10 +11,15 @@ local Remotes = Paths.Remotes
 local Camera = workspace.CurrentCamera
 
 local IsInvisible = false
-
+local CurrentCharacter = false
+local Mouse = Paths.Player:GetMouse()
+local snowballInput = nil
+local LoadedAnimations = {}
+local PreviousToolAnimation = nil
 --- Character Functions ---
 function Character.CharacterAdded(Character)
 	IsInvisible = false
+	LoadedAnimations = {}
 
 	Modules.DoubleJump:NewCharacter(Character)
 	Modules.Emotes:NewCharacter(Character)
@@ -27,6 +33,7 @@ function Character.CharacterAdded(Character)
 	local Humanoid = Character:WaitForChild("Humanoid", 5)
 	
 	if Humanoid then
+		CurrentCharacter = Character
 		Modules.Camera:ResetToCharacter()
 
 		Humanoid.Died:Connect(function()
@@ -38,9 +45,117 @@ function Character.CharacterAdded(Character)
 					v.CanCollide = true
 				end
 			end
-			wait(1)
+			task.wait(1)
 			Modules.CharacterSelect:Respawn()
 		end)
+
+		local hockeyAnim = Services.RStorage.Animations.Hockey
+		local ThrowAnim = Services.RStorage.Animations.ThrowToy
+		local loaded = Humanoid:WaitForChild("Animator"):LoadAnimation(hockeyAnim)
+		local throwloaded = Humanoid:WaitForChild("Animator"):LoadAnimation(ThrowAnim)
+		if snowballInput then
+			snowballInput:Disconnect()
+		end
+
+		local camera = workspace.CurrentCamera
+
+		local params = RaycastParams.new()
+		params.FilterDescendantsInstances = {CurrentCharacter,workspace.Zones.Snowball.Part}
+		params.FilterType = Enum.RaycastFilterType.Blacklist 
+
+		local function rayResult(x, y)
+			local unitRay = camera:ScreenPointToRay(x, y) -- :ViewportPointToRay() is another choice
+			return workspace:Raycast(unitRay.Origin, unitRay.Direction * 300, params)
+		end
+		local throwing = false
+		local pos = nil
+		throwloaded:GetMarkerReachedSignal("THROW"):Connect(function()
+			Paths.Audio.Throw:Play()
+			local snowball = Remotes.GetSnowball:InvokeServer()
+			if snowball and pos then
+				Character.Snowball.Handle.Transparency = 1
+				local currentpos = rayResult(pos.X,pos.Y)
+				if currentpos then
+					local dis = ((Character.Main.CFrame * Vector3.new(0, 3, -3))-currentpos.Position).magnitude
+					local t = dis/20
+					if dis > 30 then
+						t = .45
+					else
+						t = dis/65
+					end
+					local g = Vector3.new(0, -workspace.Gravity, 0);
+					local x0 = Character.Main.CFrame * Vector3.new(0, 3, -3)
+					local v0 = (currentpos.Position - x0 - 0.5*g*t*t)/t;
+					snowball.CFrame = Character.Main.CFrame * CFrame.new(0,3,-3)
+					snowball.Velocity = v0
+				else
+					snowball.CFrame = Character.Main.CFrame * CFrame.new(0,0,-3)
+					snowball.Velocity = (camera.CFrame.LookVector+Vector3.new(0,.75,0)) * 90
+				end
+				task.wait(.95)
+				throwing = false
+				Character.Snowball.Handle.Transparency = 0
+			end
+		end)
+
+		Character.ChildAdded:Connect(function(Child)
+			local n = Child.Name 
+			if n == "Hockey Stick" then
+				loaded:Play()
+			elseif n == "Snowball" then
+				snowballInput = game:GetService("UserInputService").InputBegan:Connect(function(input,gpe)
+					if gpe then return end
+					if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch or input.KeyCode == Enum.KeyCode.ButtonR2) and not throwing then
+						throwing = true
+						pos = game:GetService("UserInputService"):GetMouseLocation()
+						throwloaded:Play(.2,nil,1.75)
+					end
+				end)
+			end
+		end)
+
+		Character.ChildRemoved:Connect(function(Child)
+			local n = Child.Name 
+			if n == "Hockey Stick" then
+				loaded:Stop()
+			elseif n == "Snowball" then
+				if snowballInput then
+					snowballInput:Disconnect()
+				end
+			end
+		end)
+	end
+
+	
+end
+
+function Character:PlayToolAnimation(Animation)
+	--Animation = "Glider Up"
+	if not CurrentCharacter or not Paths.Services.RStorage.Animations:FindFirstChild(Animation) then return end
+	local Humanoid = CurrentCharacter:WaitForChild("Humanoid", 3)
+
+	if PreviousToolAnimation and not LoadedAnimations[Animation] then 
+		Character:StopToolAnimation()
+	elseif PreviousToolAnimation and LoadedAnimations[Animation] and not (LoadedAnimations[Animation] == PreviousToolAnimation) then
+		Character:StopToolAnimation()
+	end
+	
+	if Humanoid and Humanoid.Health > 0 and not PreviousToolAnimation then
+		if not LoadedAnimations[Animation] then
+			local Track = Humanoid:LoadAnimation(Paths.Services.RStorage.Animations[Animation])
+			Track.Priority = Enum.AnimationPriority.Action
+			LoadedAnimations[Animation] = Track
+		end
+		
+		LoadedAnimations[Animation]:Play()
+		PreviousToolAnimation = LoadedAnimations[Animation]
+	end
+end
+
+function Character:StopToolAnimation()
+	if PreviousToolAnimation then
+		PreviousToolAnimation:Stop()
+		PreviousToolAnimation = nil
 	end
 end
 
@@ -107,5 +222,34 @@ Paths.Player.CharacterAdded:Connect(Character.CharacterAdded)
 if Paths.Player.Character then
 	Character.CharacterAdded(Paths.Player.Character)
 end
+local firstChange = true
+
+RunService:BindToRenderStep("WalkSound",Enum.RenderPriority.Character.Value,function()
+	if CurrentCharacter and CurrentCharacter.PrimaryPart and CurrentCharacter.PrimaryPart:FindFirstChild("Running") then
+		--rbxasset://sounds/action_footsteps_plastic.mp3
+		--rbxassetid://9731611240
+		local params = RaycastParams.new()
+		params.FilterDescendantsInstances = {CurrentCharacter}
+		params.FilterType = Enum.RaycastFilterType.Blacklist 
+
+		
+		local result = workspace:Raycast(CurrentCharacter.PrimaryPart.Position+Vector3.new(0,3,0), Vector3.new(0,-10,0), params)
+		if result and result.Instance then
+			if result.Instance:GetAttribute("WaterEffect") then
+				if firstChange and CurrentCharacter.Humanoid.Sit then
+					CurrentCharacter.PrimaryPart.WaterSplash:Play()
+				end
+				firstChange = false
+				CurrentCharacter.PrimaryPart.Running.SoundId = "rbxassetid://9731611240"
+			else
+				firstChange = true
+				CurrentCharacter.PrimaryPart.Running.SoundId = "rbxasset://sounds/action_footsteps_plastic.mp3"
+			end
+		else
+			firstChange = true
+			CurrentCharacter.PrimaryPart.Running.SoundId = "rbxasset://sounds/action_footsteps_plastic.mp3"
+		end
+	end
+end)
 
 return Character

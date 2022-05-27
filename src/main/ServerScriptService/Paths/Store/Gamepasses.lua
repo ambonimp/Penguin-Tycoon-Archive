@@ -22,7 +22,10 @@ local AllGamepasses = {
 	41205566, -- Luxury Boat
 	41205759, -- Powered Glider
 	43183311, -- Gold Axe
-	45764173 -- Jet
+	45764173, -- Jet,
+	47438416, --rainbow fishing rod,
+	47438471, -- x2 gems
+	47438595 -- map teleport
 }
 
 local GamepassButtons = {
@@ -30,7 +33,8 @@ local GamepassButtons = {
 	[41205566] = "Luxury Boat#1",
 	[41205759] = "Powered Glider#1",
 	[43183311] = "Gold Axe#1",
-	[45764173] = "Jet Plane#1"
+	[45764173] = "Jet Plane#1",
+	[47438416] = "Rainbow Fishing Rod#1"
 }
 
 
@@ -49,9 +53,11 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 		if not AppliedPasses[tostring(gamepass)] then
 			Data["Applied Gamepasses"][tostring(gamepass)] = true
 			Remotes.Store:FireClient(Player, "Gamepass", gamepass, true)
-			
-			-- x2 Income
-			if gamepass == 25313170 then
+			--x2 gems
+			if gamepass == 47438471 then
+				Data["Gem Multiplier"] *= 2
+				--x2 income
+			elseif gamepass == 25313170 then
 				Data["Income Multiplier"] *= 2
 				
 			-- Faster Speed
@@ -71,6 +77,8 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 			-- Gold Fishing Rod
 			elseif gamepass == 28927736 then
 				Modules.Tools.AddTool(Player, "Gold Fishing Rod")
+			elseif gamepass == 47438416 then
+				Modules.Tools.AddTool(Player, "Rainbow Fishing Rod")
 			end
 		end
 		

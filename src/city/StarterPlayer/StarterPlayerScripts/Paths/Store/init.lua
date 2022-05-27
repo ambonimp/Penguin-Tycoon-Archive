@@ -50,9 +50,11 @@ local function ButtonClicked(button,Store)
 end
 
 for i, Button in pairs(Store.Buttons:GetChildren()) do
-	Button.MouseButton1Down:Connect(function()
-		ButtonClicked(Button,Store)
-	end)
+	if Button:IsA("ImageButton") then
+		Button.MouseButton1Down:Connect(function()
+			ButtonClicked(Button,Store)
+		end)
+	end
 end
 
 UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()

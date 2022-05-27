@@ -324,7 +324,7 @@ function PetUI.Inventory(Paths)
 			if Paths.Tycoon then
 				Player.Character:MoveTo(Paths.Tycoon:WaitForChild("BuyEgg"):WaitForChild("Hitbox").Position)
 			elseif workspace:FindFirstChild("PetShop") then
-				Player.Character:MoveTo(workspace:FindFirstChild("PetShop"):WaitForChild("BuyEgg"):WaitForChild("Hitbox").Position)
+				Player.Character:MoveTo(workspace:FindFirstChild("MapTeleportPoints"):WaitForChild("Pet Shop").Position)
 			end
 		end)
 		
@@ -916,6 +916,15 @@ end
 
 --Pet Interaction UI handling
 function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunction,sitPet,playerInBoat)
+	if type(Pet) == "userdata" then
+		local m = Pet
+		Pet = {
+			m,
+			game.Players.LocalPlayer.Character,
+			workspace.WorldPetsPosition:FindFirstChild(m.Name):FindFirstChild(m.Name)
+		}
+	end
+	local isWorld = Pet.Parent == workspace.WorldPets
 	Mouse.TargetFilter = Pet[3] -- filter in the mouse the part used to control the pet's movement
 	local Character = Pet[2]
 	local PetModel = Pet[1]
@@ -932,29 +941,29 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 			break
 		end
 	end
-	
-	PetStats.Certificate.MouseButton1Click:Connect(function()
-		local petData = {}
-		if PetData == nil then
-			PetUI.UpdatePetData()
-		end
-		for i,v in pairs (PetData.PetsOwned) do
-			if v.ID == Player:GetAttribute("PetID") then
-				petData = v
-				break
+	if not isWorld then
+		PetStats.Certificate.MouseButton1Click:Connect(function()
+			local petData = {}
+			if PetData == nil then
+				PetUI.UpdatePetData()
 			end
-		end
-		Paths.UI.Center.Certificate.Last.Value = PetStats
-		Paths.Modules.Buttons:UIOff(PetStats,false)
-		PetUI.OpenPetCertificate(petData,Paths)
-	end)
-	
-	PetStats.Gender.Image = petData.Gender == "Male" and "rbxassetid://9184801717" or "rbxassetid://9184801545"
-	PetStats.Gender.ImageColor3 = petData.Gender == "Male" and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(255, 85, 255)
-	PetStats.PetName.Text = Player:GetAttribute("PetName")
-	
-	addPetToViewport(PetModel,PetStats.PetFrame.ViewportFrame)
-	
+			for i,v in pairs (PetData.PetsOwned) do
+				if v.ID == Player:GetAttribute("PetID") then
+					petData = v
+					break
+				end
+			end
+			Paths.UI.Center.Certificate.Last.Value = PetStats
+			Paths.Modules.Buttons:UIOff(PetStats,false)
+			PetUI.OpenPetCertificate(petData,Paths)
+		end)
+		
+		PetStats.Gender.Image = petData.Gender == "Male" and "rbxassetid://9184801717" or "rbxassetid://9184801545"
+		PetStats.Gender.ImageColor3 = petData.Gender == "Male" and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(255, 85, 255)
+		PetStats.PetName.Text = Player:GetAttribute("PetName")
+		
+		addPetToViewport(PetModel,PetStats.PetFrame.ViewportFrame)
+	end
 	local function changeHappinessIcon()
 		local icons = {
 			[6] = {"rbxassetid://9184554398",90},
@@ -1035,11 +1044,13 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 	end)
 	
 	--ScriptModules.Buttons.addButton(PetClick.Interact,PetUI.Interact,false,.1)
-
-	PetUI.Interact.Stats.MouseButton1Click:Connect(function()
-		ScriptModules.Buttons:UIOn(PetStats,true)
-		ScriptModules.Buttons:UIOff(PetUI.Interact,false,.1)
-	end)
+	if not isWorld then
+		PetUI.Interact.Stats.MouseButton1Click:Connect(function()
+			ScriptModules.Buttons:UIOn(PetStats,true)
+			ScriptModules.Buttons:UIOff(PetUI.Interact,false,.1)
+		end)
+	end
+	
 	
 	PetUI.Interact.Close.MouseButton1Click:Connect(function()
 		ScriptModules.Buttons:UIOff(PetUI.Interact,false,.1)

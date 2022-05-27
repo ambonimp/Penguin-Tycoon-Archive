@@ -37,7 +37,6 @@ function Help:EnablePointerBeam()
 				if v:FindFirstChild("Hitbox") then
 					local Price = v:GetAttribute("Price")
 					local Type = v:GetAttribute("CurrencyType")
-					print(Type,PlayerMoney,Price,Type == "Robux")
 					if Type ~= "Robux" and Type ~= "Gamepass" then
 						if PlayerMoney >= Price and Type ~= "Robux" then
 							table.insert(AffordableItems, v)

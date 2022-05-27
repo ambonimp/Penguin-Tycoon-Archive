@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local Teleporting = {}
 
 
@@ -15,7 +14,9 @@ local EventsConfig =  require(Services.RStorage.Modules.EventsConfig)
 local PlaceIds =  require(Services.RStorage.Modules.PlaceIds)
 
 
---- Variables ---
+--- Variables --
+local Frame = Paths.UI.Center.TeleportConfirmation
+
 local TeleportButton = UI.Left.Buttons.Teleport
 local Confirmation = UI.Center.TeleportConfirmation
 
@@ -54,6 +55,11 @@ local Locations = {
 		PlaceId = PlaceIds["Candy Rush"],
 		Description = "Collect all of the candy!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Candy Rush"].ImageID,
+	},
+	["Ice Cream Extravaganza"] = {
+		PlaceId = PlaceIds["Ice Cream Extravaganza"],
+		Description = "Collect all of the ice cream!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Ice Cream Extravaganza"].ImageID,
 	}
 }
 
@@ -81,17 +87,13 @@ end
 
 
 function Teleporting:OpenConfirmation(Location)
-	local LocationInfo = Locations[Location]
+	local LocationInfo = assert(Locations[Location], string.format("Location: %s does not exist", Location))
 
-	if LocationInfo then
-		Confirmation.InfoHolder.Thumbnail.Image = LocationInfo.Thumbnail
-		Confirmation.InfoHolder.Description.Text = LocationInfo.Description
-		Confirmation.InfoHolder.TeleportingTo.Text = "Teleporting To: " .. Location
+	Confirmation.InfoHolder.Thumbnail.Image = LocationInfo.Thumbnail
+	Confirmation.InfoHolder.Description.Text = LocationInfo.Description
+	Confirmation.InfoHolder.TeleportingTo.Text = "Teleporting To: " .. Location
 
-		Confirmation.PlaceId.Value = LocationInfo.PlaceId
-	else
-		warn(Location, debug.traceback())
-	end
+	Confirmation.PlaceId.Value = LocationInfo.PlaceId
 
 end
 
@@ -245,8 +247,8 @@ function Teleporting:RefreshFriends()
 end
 
 
-local Portals = Workspace:FindFirstChild("Portals")
-if workspace:FindFirstChild("Portals") then
+local Portals = workspace:FindFirstChild("Portals")
+if Portals then
 	for _, Portal in ipairs(Portals:GetChildren()) do
 		local Location = Portal.Name
 
@@ -258,9 +260,9 @@ if workspace:FindFirstChild("Portals") then
 		ProximityPrompt.Parent = Portal.PrimaryPart
 
 		ProximityPrompt.Triggered:Connect(function(player)
-			if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
+			if player == game.Players.LocalPlayer and Frame.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
 				Teleporting:OpenConfirmation(Location)
-				Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
+				Modules.Buttons:UIOn(Frame,true)
 			end
 
 		end)

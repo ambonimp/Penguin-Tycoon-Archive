@@ -60,7 +60,6 @@ function Purchasing:ItemPurchased(Player, Item, IsAnimated)
 	if not Button then return end
 	local Item2 = Button:GetAttribute("Object2")
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	print(Button,Item,Item2)
 	-- Add income
 	Data["Income"] += Button:GetAttribute("Income")
 	Player:SetAttribute("Income", Data["Income"])

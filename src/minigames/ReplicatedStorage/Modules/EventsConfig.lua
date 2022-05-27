@@ -1,7 +1,6 @@
 local RStorage = game:GetService("ReplicatedStorage")
 local PlaceIds =  require(RStorage.Modules.PlaceIds)
 
-
 local EventsConfig = {}
 
 EventsConfig.Names = {
@@ -10,7 +9,7 @@ EventsConfig.Names = {
 	[PlaceIds["Soccer"]] = "Soccer",
 	[PlaceIds["Candy Rush"]] = "Candy Rush",
 	[PlaceIds["Ice Cream Extravaganza"]] = "Ice Cream Extravaganza"
-} --,"Egg Hunt"}
+}
 
 
 EventsConfig.INTERMISSION_INTERVAL = 10

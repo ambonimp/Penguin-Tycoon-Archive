@@ -202,6 +202,18 @@ local function SetupNewStats(Player)
 		Data["Discord Verification"] = false
 	end
 
+	if not Data["Gem Multiplier"] then
+		Data["Gem Multiplier"] = 1
+	end
+
+	if not Data["Boosts"] then
+		Data["Boosts"] = { --[1]owned, [2]time left in current boost
+			["Fishing Super Luck"] = {0,0}, 
+			["Fishing Ultra Luck"] = {0,0},
+			["x3 Coins"] = {0,0},
+		}
+	end
+
 	if not Data["Event"] then
 		Data["Event"] = {
 			[1] = "Egg Hunt", -- event name
@@ -325,7 +337,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	Player:SetAttribute("Income", PlayerData.sessionData[Player.Name]["Income"])
 	Player:SetAttribute("Hearts", PlayerData.sessionData[Player.Name]["Hearts"])
 	Player:SetAttribute("Level", PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
-	
+	Player:SetAttribute("Tool", "None")
 	
 	Player:SetAttribute("Next5Gems", PlayerData.sessionData[Player.Name]["NextGemReward"])
 	Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "city"

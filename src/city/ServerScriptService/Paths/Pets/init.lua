@@ -18,6 +18,7 @@ local EquipPetRemote = Remotes:WaitForChild("EquipPet")
 local UnequipPetRemote = Remotes:WaitForChild("UnequipPet")
 local BuyPetRemote = Remotes:WaitForChild("BuyPet")
 
+local ServerPets = require(script:WaitForChild("ServerPets"))
 local Personalitys = require(script:WaitForChild("Traits"))
 local Badges = {
 	["Cat"] = 2125745835,

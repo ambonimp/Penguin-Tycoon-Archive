@@ -10,6 +10,15 @@ local MoneyProducts = {
 	[1224873844] = {["Base"] = 41.630, ["Bonus"] = 1.40},  -- R$ 999
 	[1224873842] = {["Base"] = 104.13, ["Bonus"] = 1.60}	-- R$ 2499
 }
+local PerProductTotal = {
+	[1224873708] = 1,
+	[1224873843] = 3,
+	[1224873847] = 5,
+	[1224873846] = 8,
+	[1224873844] = 11,
+	[1224873842] = 20
+}
+
 local BASE_INCOME_REWARD = 30 -- The amount of seconds of progress for R$ 24 worth of robux (Base = 1)
 
 
@@ -22,7 +31,7 @@ function GameFunctions:GetRequiredMoneyProduct(Player, MoneyRequired)
 	local ProductAmount = 1000000000000
 	
 	for Product, Info in pairs(MoneyProducts) do
-		local RewardAmount = GameFunctions:GetMoneyProductReward(Product, PlayerIncome)
+		local RewardAmount = GameFunctions:GetMoneyProductReward(Product, PlayerIncome,Player)
 		
 		if PlayerMoney + RewardAmount >= MoneyRequired and RewardAmount < ProductAmount then
 			ProductAmount = RewardAmount
@@ -33,14 +42,58 @@ function GameFunctions:GetRequiredMoneyProduct(Player, MoneyRequired)
 	return ProductChosen
 end
 
+function round(number)
+	local nums = {
+		1,10,100,1000,10000,100000,1000000,10000000,100000000,1000000000,10000000000,100000000000,1000000000000,10000000000000,100000000000000,1000000000000000,10000000000000000,100000000000000000
+	}
+	if number > 100000 then
+		for i = 1,#nums do
+			if number < nums[i] and nums[i-4] then
+				local num = math.floor(number/(nums[i-4]))*(nums[i-4])
+				return num
+			end
+		end
+	else
+		number = math.floor(number/100)*100
+	end
+	return number
+end
 
-function GameFunctions:GetMoneyProductReward(Product, Income)
+function GameFunctions:GetMoneyProductReward(Product, Income,Player)
 	Product = tonumber(Product)
 	
 	local Base1Reward = 500 + (Income+1)/3 * BASE_INCOME_REWARD
 	local BaseReward = Base1Reward * MoneyProducts[Product]["Base"]
 	local TotalReward = BaseReward * MoneyProducts[Product]["Bonus"]
-	
+	local items = nil
+	if game:GetService("RunService"):IsServer() then
+		items = game:GetService("ReplicatedStorage").MoneyProduct:Invoke(Player)
+	elseif game:GetService("RunService"):IsClient() then
+		items = game:GetService("ReplicatedStorage").Remotes.MoneyProduct:InvokeServer()
+	end
+
+	local set = false
+	if items then
+		table.sort(items,function(a,b)
+			return a.Price < b.Price
+		end)
+		local total = 0
+		for i = 1,PerProductTotal[Product] do
+			if items[i] then
+				local v = items[i]
+				total += v.Price
+			end
+		end
+
+		if TotalReward < total then
+			set = true
+			print("Was Less",TotalReward,total,TotalReward + (total-TotalReward))
+			TotalReward = TotalReward + (total-TotalReward)
+		end
+	end
+	if set == false then
+		TotalReward = round(TotalReward)
+	end
 	return math.ceil(TotalReward)
 end
 

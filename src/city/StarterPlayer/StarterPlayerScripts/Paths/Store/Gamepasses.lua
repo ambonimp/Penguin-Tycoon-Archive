@@ -18,9 +18,13 @@ local AllGamepasses = {
 	26268187, -- Faster Speed
 	26268229, -- Double Jump
 	26269102, -- VIP
+	28927736, -- Gold Fishing Rod
+	47438416, -- rainbow fishing rod,
+	47438471, -- x2 gems
+	47438595, -- map teleport
 }
 
-
+Gamepasses.Owned = {}
 
 --- Functions ---
 
@@ -30,6 +34,7 @@ function Gamepasses:SetOwned(Template)
 	Template.Background.UIStroke.Color = Color3.fromRGB(96, 240, 255)
 	Template.Purchase.Visible = false
 	Template.Owned.Visible = true
+	Gamepasses.Owned[tonumber(Template.Name)] = true
 end
 
 Services.MPService.PromptGamePassPurchaseFinished:Connect(function(player, gamepass, purchased)
@@ -48,6 +53,9 @@ Remotes.Store.OnClientEvent:Connect(function(PurchaseType, gamepass, purchased)
 		
 		if gamepass == 26269102 then
 			Modules.Hearts:AcquiredVIP()
+		end
+		if gamepass == 28927736 then
+			workspace.GoldRodPad:Destroy()
 		end
 	end
 end)
@@ -71,6 +79,9 @@ coroutine.wrap(function()
 			
 			if OwnedPasses[tostring(Gamepass)] then
 				Gamepasses:SetOwned(Template)
+				if Gamepass == 28927736 and workspace:FindFirstChild("GoldRodPad") then
+					workspace.GoldRodPad:Destroy()
+				end
 			end
 
 			Template.Parent = Store.Sections.Gamepasses.Holder
@@ -82,6 +93,20 @@ coroutine.wrap(function()
 			end)
 		end
 	end
+
+	if not OwnedPasses[tostring(28927736)] and workspace:FindFirstChild("GoldRodPad") then
+		local db = false
+		workspace.GoldRodPad.Hitbox.Touched:Connect(function(hit)
+			if db then return end
+			if hit.Parent == Paths.Player.Character then
+				db = true
+				Services.MPService:PromptGamePassPurchase(Paths.Player, 28927736)
+				task.wait(2)
+				db = false
+			end
+		end)
+	end
+	
 end)()
 
 

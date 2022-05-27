@@ -30,7 +30,6 @@ function DoubleJump:NewCharacter(Character)
 	Animation = Humanoid:LoadAnimation(Character:WaitForChild("Animations"):WaitForChild("Double Jump"))
 	
 	Humanoid.StateChanged:Connect(function(old,new)
-		if blackListedJumpLocations[Modules.Lighting.CurrentLocation] then Humanoid.JumpPower = 0 return end
 		
 		State = new.Name
 		if State == "Landed" or State == "Running" or State == "RunningNoPhysics" then
@@ -50,7 +49,7 @@ end
 
 
 Services.InputService.JumpRequest:Connect(function()
-	if SettingsUI["Double Jump"].Locked.Visible == false and SettingsUI["Double Jump"].Toggle.IsToggled.Value == true and not blackListedDoubleJumpLocations[Modules.Lighting.CurrentLocation] then
+	if SettingsUI["Double Jump"].Locked.Visible == false and SettingsUI["Double Jump"].Toggle.IsToggled.Value == true then
 		if State == "Freefall" or State == "Jumping" then
 			if candj and not jump1 then
 				candj = false
@@ -61,11 +60,7 @@ Services.InputService.JumpRequest:Connect(function()
 			end
 		end
 	end
-	
-	if Modules.Lighting.CurrentLocation == "Night Skating" and Humanoid.JumpPower < 50 then
-		Humanoid.JumpPower = 60
-		Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-	end
+	Humanoid.JumpPower = 60
 end)
 
 
