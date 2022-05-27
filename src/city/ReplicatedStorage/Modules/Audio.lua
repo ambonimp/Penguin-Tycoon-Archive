@@ -5,6 +5,7 @@ Audio.Music = {
 	["School"] = "rbxassetid://9733753368",
 	["Diner"] = "rbxassetid://9733754139",
 	["Penguin City"] = {"rbxassetid://9283373303","rbxassetid://9062549990","rbxassetid://9062555894","rbxassetid://9062575526","rbxassetid://9062580741"};
+	["Nightclub"] = {"rbxassetid://9738072675","rbxassetid://9738071306","rbxassetid://9738070672","rbxassetid://9738070355","rbxassetid://9738069435"};
 }
 
 Audio.NEW_PURCHASE = "rbxassetid://8192378886"
@@ -13,7 +14,8 @@ Audio.HEART_RECEIVED = "rbxassetid://8192378647"
 Audio.ITEM_COLLECTED = "rbxassetid://8192378776"
 
 local Current = {
-	["Penguin City"] = 0
+	["Penguin City"] = math.random(1,#Audio.Music["Penguin City"])-1,
+	["Nightclub"] = math.random(1,#Audio.Music["Nightclub"])-1
 }
 
 function getRandomSong(Music)

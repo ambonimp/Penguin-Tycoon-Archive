@@ -68,7 +68,7 @@ end)
 
 
 task.spawn(function()
-	repeat task.wait(1) until #workspace.MusicZones:GetChildren() == 3
+	repeat task.wait(1) until #workspace.MusicZones:GetChildren() == 4
 	task.wait(1)
 	for i,v in pairs (workspace.MusicZones:GetChildren()) do
 		if v:IsA("Folder") then

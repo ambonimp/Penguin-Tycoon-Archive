@@ -25,8 +25,15 @@ function loadFish(ID,Part)
 	if fishPart then
 		fishPart = fishPart:Clone()
 		fishPart.CFrame = Part.CFrame * CFrame.Angles(0,math.rad(-90),0)
+		fishPart.Size = fishPart.Size * math.random(950,1300)/1000
 		fishPart.Anchored = true
 		local attachments = nil
+		if math.random(1,100) <= 10 then
+			local glow = Services.RStorage.Assets.Glow
+			for i,v in pairs (glow:GetChildren()) do
+				v:Clone().Parent = fishPart
+			end
+		end
 		if Part:FindFirstChildOfClass("Attachment") then
 			attachments = {}
 			for i = 1,#Part:GetChildren() do
@@ -35,19 +42,22 @@ function loadFish(ID,Part)
 		end
 		fishPart.Parent = Part
 		if attachments then
+			fishPart.CFrame = attachments[1].WorldCFrame
 			task.spawn(function()
 				while true do
-					for i = 1,#attachments do
-						local next1 = attachments[i+1]
-						if next1 == nil then
-							next1 = attachments[1]
+					if Paths.Player:DistanceFromCharacter(fishPart.Position) < 500 then
+						for i = 1,#attachments do
+							local prev1 = attachments[i-1]
+							if prev1 == nil then
+								prev1 = attachments[#attachments]
+							end
+							local worldcf = attachments[i].WorldCFrame
+							local time1 = ((prev1.WorldCFrame.Position-attachments[i].WorldCFrame.Position).magnitude/3) * math.random(900,1100)/1000
+							local Info = TweenInfo.new(time1)
+							local tween = TweenService:Create(fishPart,Info,{CFrame = worldcf * CFrame.Angles(0,math.rad(-90),0)})
+							tween:Play()
+							task.wait(Info.Time*.85)
 						end
-						local worldcf = attachments[i].WorldCFrame
-						local time1 = (next1.WorldPosition-attachments[i].WorldPosition).magnitude/3
-						local Info = TweenInfo.new(time1)
-						local tween = TweenService:Create(fishPart,Info,{CFrame = worldcf * CFrame.Angles(0,math.rad(-90),0)})
-						tween:Play()
-						task.wait(Info.Time*.85)
 					end
 					task.wait()
 				end
