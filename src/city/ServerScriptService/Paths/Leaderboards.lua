@@ -62,15 +62,49 @@ local leaderboards = {
 		smallestFirst = false;};
 }
 
-local function LoadPenguin(userId, penguin)
+local function LoadPenguin(userId, penguin,scale)
 	coroutine.wrap(function()
 		local success, data = Modules.PlayerData.getData(userId)
 
 		if success and data then
 			local PenguinInfo = data["My Penguin"]
-			Modules.Penguins:LoadPenguin(penguin, PenguinInfo)
+			if scale then
+				Modules.Penguins:LoadPenguin(penguin, PenguinInfo,"SCALE",scale)
+			else
+				Modules.Penguins:LoadPenguin(penguin, PenguinInfo)
+			end
 		end
 	end)()
+end
+
+local last = nil
+
+function CheckGreastest()
+	local highest = {}
+	for i,v in pairs (game.Players:GetPlayers()) do
+		if v:FindFirstChild("leaderstats") and v:FindFirstChild("leaderstats"):FindFirstChild("Networth") then
+			local va = v:FindFirstChild("leaderstats"):FindFirstChild("Networth").Value
+			if highest[1] == nil then
+				highest = {va,v}
+			elseif va >= highest[1] then
+				highest = {va,v}
+			end
+		end
+	end
+	if highest[1] and highest[2] then	
+		if last == nil or (last and last.Name ~= highest[2].Name) then
+			if last then
+				last:Destroy()
+			end
+			local character = Services.SStorage.Leader:Clone()
+			character.Parent = workspace.KingPenguin
+			character.Name = highest[2].Name
+			LoadPenguin(highest[2].UserId, character,8.45540498)
+			character:SetPrimaryPartCFrame(workspace.KingPenguin.CF.CFrame)
+			workspace.KingPenguin.PlayerName.SurfaceGui.TextLabel.Text = highest[2].Name
+			last = character
+		end
+	end
 end
 
 --- Functions ---
@@ -165,10 +199,17 @@ function Leaderboards:beginLeaderboardUpdate()
 		wait(LOOP_INTERVAL*4)
 	end
 end
-
+task.spawn(function()
+	task.wait(8)
+	while true do
+		CheckGreastest()
+		task.wait(20)
+	end
+end)
 coroutine.wrap(function()
 	Leaderboards:beginLeaderboardUpdate()
 end)()
+
 
 
 return Leaderboards

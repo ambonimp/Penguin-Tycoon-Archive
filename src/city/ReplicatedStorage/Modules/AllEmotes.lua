@@ -178,7 +178,7 @@ Emotes.All = {
 			local cf = player.Character:GetPrimaryPartCFrame() 
 
 			track:Play()
-			local rayOrigin = cf.Position
+			--[[local rayOrigin = cf.Position
 			local rayDirection = player.Character:GetPrimaryPartCFrame().LookVector * 8
 
 			local raycastParams = RaycastParams.new()
@@ -210,7 +210,7 @@ Emotes.All = {
 						end
 					end
 				end
-			end
+			end--]]
 			track.Stopped:wait()
 			game.ReplicatedStorage.Remotes.PropEmote:FireClient(player,"Stop")
 		end,

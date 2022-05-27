@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 local Character = {}
 
 --- Main Variables ---
@@ -78,9 +79,9 @@ function Character.CharacterAdded(Character)
 					local dis = ((Character.Main.CFrame * Vector3.new(0, 3, -3))-currentpos.Position).magnitude
 					local t = dis/20
 					if dis > 30 then
-						t = .75
+						t = .45
 					else
-						t = .4
+						t = dis/65
 					end
 					local g = Vector3.new(0, -workspace.Gravity, 0);
 					local x0 = Character.Main.CFrame * Vector3.new(0, 3, -3)
@@ -91,7 +92,7 @@ function Character.CharacterAdded(Character)
 					snowball.CFrame = Character.Main.CFrame * CFrame.new(0,0,-3)
 					snowball.Velocity = (camera.CFrame.LookVector+Vector3.new(0,.75,0)) * 90
 				end
-				task.wait(1.75)
+				task.wait(.95)
 				throwing = false
 				Character.Snowball.Handle.Transparency = 0
 			end
@@ -221,5 +222,34 @@ Paths.Player.CharacterAdded:Connect(Character.CharacterAdded)
 if Paths.Player.Character then
 	Character.CharacterAdded(Paths.Player.Character)
 end
+local firstChange = true
+
+RunService:BindToRenderStep("WalkSound",Enum.RenderPriority.Character.Value,function()
+	if CurrentCharacter and CurrentCharacter.PrimaryPart and CurrentCharacter.PrimaryPart:FindFirstChild("Running") then
+		--rbxasset://sounds/action_footsteps_plastic.mp3
+		--rbxassetid://9731611240
+		local params = RaycastParams.new()
+		params.FilterDescendantsInstances = {CurrentCharacter}
+		params.FilterType = Enum.RaycastFilterType.Blacklist 
+
+		
+		local result = workspace:Raycast(CurrentCharacter.PrimaryPart.Position+Vector3.new(0,3,0), Vector3.new(0,-10,0), params)
+		if result and result.Instance then
+			if result.Instance:GetAttribute("WaterEffect") then
+				if firstChange and CurrentCharacter.Humanoid.Sit then
+					CurrentCharacter.PrimaryPart.WaterSplash:Play()
+				end
+				firstChange = false
+				CurrentCharacter.PrimaryPart.Running.SoundId = "rbxassetid://9731611240"
+			else
+				firstChange = true
+				CurrentCharacter.PrimaryPart.Running.SoundId = "rbxasset://sounds/action_footsteps_plastic.mp3"
+			end
+		else
+			firstChange = true
+			CurrentCharacter.PrimaryPart.Running.SoundId = "rbxasset://sounds/action_footsteps_plastic.mp3"
+		end
+	end
+end)
 
 return Character

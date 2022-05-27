@@ -1,16 +1,10 @@
 local Audio = {}
 
 Audio.Music = {
-	["Egg Hunt"] = "rbxassetid://9351398981";
-	["Soccer"] = "rbxassetid://9281853936";
-	["Skate Race"] = "rbxassetid://9281859168";
-	["Falling Tiles"] = "rbxassetid://9281853936"; 
-	["Candy Rush"] = "rbxassetid://9619732364";
-	["1"] = "rbxassetid://9283373303";
-	["2"] = "rbxassetid://9062549990"; 
-	["3"] = "rbxassetid://9062555894"; 
-	["4"] = "rbxassetid://9062575526"; 
-	["5"] = "rbxassetid://9062580741";  
+	["Coffee Shop"] = "rbxassetid://9733752764",
+	["School"] = "rbxassetid://9733753368",
+	["Diner"] = "rbxassetid://9733754139",
+	["Penguin City"] = {"rbxassetid://9283373303","rbxassetid://9062549990","rbxassetid://9062555894","rbxassetid://9062575526","rbxassetid://9062580741"};
 }
 
 Audio.NEW_PURCHASE = "rbxassetid://8192378886"
@@ -18,20 +12,35 @@ Audio.BUTTON_CLICKED = "rbxassetid://8192378506"
 Audio.HEART_RECEIVED = "rbxassetid://8192378647"
 Audio.ITEM_COLLECTED = "rbxassetid://8192378776"
 
-Audio.SkateRaceLap = "rbxassetid://8680469472"
-Audio.SkateRaceCountdown = "rbxassetid://8680468629"
+local Current = {
+	["Penguin City"] = 0
+}
 
+function getRandomSong(Music)
+	if type(Audio.Music[Music]) == "string" then
+		return Audio.Music[Music]
+	elseif type(Audio.Music[Music]) == "table" then
+		local total = #Audio.Music[Music]
+		if Current[Music] then
+			Current[Music] += 1
+			if Current[Music] > total then
+				Current[Music] = 1
+			end
+		end
+		return Audio.Music[Music][Current[Music]]
+	end
+end
 
 function Audio:PlayMusic(Source, Music)
-	if Source:FindFirstChild("Music") and Source.Music.SoundId ~= Audio.Music[Music] then
+	if Source:FindFirstChild("Music") then
 		for i = 0.2, 0, -0.02 do
 			Source.Music.Volume = i
 			task.wait()
 		end
-
+		local getId = getRandomSong(Music)
 		Source.Music.Volume = 0
 		Source.Music.TimePosition = 0
-		Source.Music.SoundId = Audio.Music[Music]
+		Source.Music.SoundId = getId
 		Source.Music:Play()
 
 		for i = 0, 0.2, 0.01 do
@@ -40,11 +49,12 @@ function Audio:PlayMusic(Source, Music)
 		end
 		
 	elseif not Source:FindFirstChild("Music") then
+		local getId = getRandomSong(Music)
 		local Sound = Instance.new("Sound")
 		Sound.Volume = 0
 		Sound.Looped = true
 		Sound.Name = "Music"
-		Sound.SoundId = Audio.Music[Music]
+		Sound.SoundId = getId
 		Sound.Parent = Source
 		Sound:Play()
 

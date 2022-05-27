@@ -61,7 +61,6 @@ function Paths.Initiliaze()
 	Paths.Modules.Settings = require(script.Settings)
 	Paths.Modules.Emotes = require(script.Emotes)	
 	Paths.Modules.GroupReward = require(script.GroupReward)
-	Paths.Modules.Lighting = require(script.Lighting)
 	Paths.Modules.Verification = require(script.Verification)
 	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
 	
@@ -102,7 +101,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AudioHandler = require(script.AudioHandler)
 	
 	-- Other Modules (That have to be required after)
-
+	Paths.Modules.Aquarium = require(script.Aquarium)
 	Paths.Modules.Fishing = require(script.Fishing)
 	Paths.Modules.Tools = require(script.Tools)
 	--- Load Version ---

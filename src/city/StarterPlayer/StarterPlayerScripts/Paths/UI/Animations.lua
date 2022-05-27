@@ -35,7 +35,7 @@ function Animations:SnowSplat()
 	Paths.Audio.Splat:Play()
 	for i = 1,am do
 		local new = UI.Full.Snow:Clone()
-		local s = math.random(4,6.7)/10
+		local s = math.random(5.5,7.5)/10
 		new.Size = UDim2.fromScale(0,0) 
 		new.Rotation = math.random(0,359)
 		new.Image = imgs[math.random(1,#imgs)]
