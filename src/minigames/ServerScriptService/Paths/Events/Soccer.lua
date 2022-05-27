@@ -352,6 +352,15 @@ function Soccer:StartEvent()
 			end
 		end
 	end
+
+	task.spawn(function()
+		local Winners = Map:FindFirstChild("Winners")
+		if Winners then
+			task.wait(10)
+			Map.Winners:Destroy()
+		end
+	end)
+
 	return winners,text
 end
 

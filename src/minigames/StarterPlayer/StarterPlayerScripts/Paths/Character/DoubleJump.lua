@@ -21,8 +21,19 @@ local candj = false
 local jump1 = false
 local State = ""
 
-local blackListedDoubleJumpLocations = {["Skate Race"] = true, ["Falling Tiles"] = true,["Soccer"] = true,["Egg Hunt"] = true,["Candy Rush"] = true}
-local blackListedJumpLocations = {["Skate Race"] = true}
+local blackListedDoubleJumpLocations = {
+	["Skate Race"] = true,
+	["Falling Tiles"] = true,
+	["Soccer"] = true,
+	["Egg Hunt"] = true,
+	["Candy Rush"] = true,
+	["Ice Cream Extravaganza"] = true,
+}
+
+local blackListedJumpLocations = {
+	["Skate Race"] = true,
+	["Ice Cream Extravaganza"] = true,
+}
 
 function DoubleJump:NewCharacter(Character)
 	Character = Character

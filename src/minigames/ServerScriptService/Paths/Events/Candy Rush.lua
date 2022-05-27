@@ -1,6 +1,8 @@
 local CandyRush = {}
 
 --- Main Variables ---
+local EVENT_NAME = "Candy Rush"
+
 local Paths = require(script.Parent.Parent)
 
 local Services = Paths.Services
@@ -22,7 +24,7 @@ local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
 function addGems(player,amount)
-	Modules.Income:AddGems(player, amount, "Candy Rush")
+	Modules.Income:AddGems(player, amount, EVENT_NAME)
 end
 
 --- Event Functions ---
@@ -32,7 +34,7 @@ function CandyRush:SpawnPlayers(ChosenBugName, ChosenBugNum)
 		if game.Players:FindFirstChild(playerName.Name) and game.Players:FindFirstChild(playerName.Name).Character then
 			local player = game.Players:FindFirstChild(playerName.Name)
 			local SpawnPos = Map.Spawns:GetChildren()[i].CFrame
-			Remotes.Lighting:FireClient(player, "Candy Rush")
+			Remotes.Lighting:FireClient(player, EVENT_NAME)
 			local Character = Modules.Character:Spawn(player, SpawnPos,true)
 			Character.Humanoid.WalkSpeed = 0
 			
@@ -48,7 +50,7 @@ function CandyRush:SpawnPlayers(ChosenBugName, ChosenBugNum)
 				["Green"] = 0,
 				["Blue"] = 0,}
 			})
-			player:SetAttribute("Minigame","Candy Rush")
+			player:SetAttribute("Minigame",EVENT_NAME)
 		end
 	end
 end
@@ -77,9 +79,15 @@ function findTbl(playerName)
 end
 
 function CandyRush:InitiateEvent(Event)
-	EggsCollected = {}
-	local Map = workspace.Event["Event Map"]
 
+	local Map = workspace.Event["Event Map"]
+	Map:Destroy()
+
+	Map = Services.SStorage.EventMaps[EVENT_NAME]:Clone()
+	Map.Name = "Event Map"
+	Map.Parent = workspace.Event
+
+	EggsCollected = {}
 	for i,spawn in pairs (Map.EggSpawns:GetChildren()) do
 		spawn.Transparency = 1
 		local addEgg = nil
@@ -147,7 +155,7 @@ function CandyRush:StartEvent()
 	local Map = workspace.Event["Event Map"]
 	-- Activate Event
 	local StartTime = tick()+1
-	local FinishTime = StartTime + Modules.EventsConfig["Candy Rush"].Duration
+	local FinishTime = StartTime + Modules.EventsConfig[EVENT_NAME].Duration
 
 	for index, playerName in pairs(Participants:GetChildren()) do
 		local player = game.Players:FindFirstChild(playerName.Name)
@@ -159,7 +167,7 @@ function CandyRush:StartEvent()
 	Map.Active.Value = true
 	local winners, text = nil,"Candy Rush has finished!"
 	EventValues.TextToDisplay.Value = "Get the candy!"
-	Remotes.Events:FireAllClients("Event Started", "Candy Rush")
+	Remotes.Events:FireAllClients("Event Started", EVENT_NAME)
 	task.wait(1)
 	repeat 
 		local TimeLeft = math.floor((FinishTime - tick()))
@@ -181,10 +189,10 @@ function CandyRush:StartEvent()
 		if tbl and game.Players:FindFirstChild(tbl[1]) then
 			if i == 1 then
 				local data = Modules.PlayerData.sessionData[tbl[1].Name] 
-				if data and data["Stats"]["Candy Rush"] then
-					data["Stats"]["Candy Rush"] = data["Stats"]["Candy Rush"] + 1
+				if data and data["Stats"][EVENT_NAME] then
+					data["Stats"][EVENT_NAME] = data["Stats"][EVENT_NAME] + 1
 				elseif data then
-					data["Stats"]["Candy Rush"] =  1
+					data["Stats"][EVENT_NAME] =  1
 				end
 				addGems(game.Players:FindFirstChild(tbl[1]),7)
 			elseif i == 2 then

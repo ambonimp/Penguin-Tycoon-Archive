@@ -37,7 +37,10 @@ function Lighting:ChangeLighting(Preset)
 end
 
 Remotes.Lighting.OnClientEvent:Connect(function(Location)
+	-- Module is loaded after this one, so not a garuantee that it exists in Modules when this event is fired
+	repeat task.wait() until Modules.AudioHandler
 	Lighting:ChangeLighting(Location)
+
 end)
 
 
