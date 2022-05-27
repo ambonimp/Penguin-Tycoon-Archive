@@ -89,6 +89,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Store = require(script.Store)
 	Paths.Modules.Gamepasses = require(script.Store.Gamepasses)
 	Paths.Modules.Money = require(script.Store.Money)
+	Paths.Modules.Gems = require(script.Store.Gems)
 	Paths.Modules.Accessories = require(script.Store.Accessories)
 	
 	-- Penguin Modules

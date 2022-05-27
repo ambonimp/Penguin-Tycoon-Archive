@@ -41,8 +41,6 @@ local RarityColors = {
 	["Event"] = Color3.fromRGB(220, 55, 55);
 }
 
--- Timer variables
-local RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
 
 
 --- Load and Setup Accessories ---
@@ -73,11 +71,11 @@ function Accessories:NewItem(Item, ItemType)
 	local StoreSectionUI = nil
 	local ClothesSectionUI = nil
 	if ItemType ~= "Outfits" then
-		StoreSectionUI = StoreSections[ItemType].Holder
+		StoreSectionUI = StoreSections.Accessory.Holder[ItemType]
 	end
 	ClothesSectionUI = ClothingSections[ItemType].Holder
 	local CustomizationSection = CustomizationUI.Customization.Sections[ItemType].Holder
-	-- If the accessory is already in the ui, don't clone it
+	-- If the accessory is already in the u         i, don't clone it
 	if CustomizationSection:FindFirstChild(Item) then return end
 	
 	-- Update UI in the store
@@ -189,8 +187,8 @@ Remotes.Store.OnClientEvent:Connect(function(ActionType, Accessory, Purchased)
 		Accessories:AnimateNewItem(Accessory, ActionType)
 		
 	elseif ActionType == "Store Rotated" then
-		RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
-		Accessories:LoadStore()
+		--RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
+		--Accessories:LoadStore()
 	end
 end)
 
@@ -237,7 +235,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories")
 	PlayerOutfits = Remotes.GetStat:InvokeServer("Outfits")
 	PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
-	if PlayerOutfits["Bunny Suit"] and ProximityPrompt2 then
+	if PlayerOutfits["Police Officer"] and ProximityPrompt2 then
 		ProximityPrompt2.Enabled = false
 	end
 end
@@ -300,11 +298,11 @@ local function NewStoreTemplate(Item, ItemType)
 	end
 	local Template2 = Template:Clone()
 	if ItemType ~= "Outfits" then
-		Template.Parent = StoreSections[ItemType].Holder
+		Template.Parent = StoreSections.Accessory.Holder[ItemType]
 
-		local scrollingFrame =StoreSections[ItemType].Holder
-		local uiGridLayout = StoreSections[ItemType].Holder.UIGridLayout
-		local NewSize = Vector2.new(.325,.165*3.15) * scrollingFrame.AbsoluteSize
+		local scrollingFrame =StoreSections.Accessory.Holder[ItemType]
+		local uiGridLayout = StoreSections.Accessory.Holder[ItemType].UIGridLayout
+		local NewSize = Vector2.new(.32,.165*2.85) * scrollingFrame.AbsoluteSize
 		uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
 		scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 	end
@@ -417,12 +415,12 @@ if ProximityPrompt then
 end
 
 if ProximityPrompt2 then
-	if PlayerOutfits["Bunny Suit"] then
+	if PlayerOutfits["Police Officer"] then
 		ProximityPrompt2.Enabled = false
 	end
 	ProximityPrompt2.Triggered:Connect(function(player)
 		if player == game.Players.LocalPlayer then
-			Remotes.Store:FireServer("Buy Item", "Bunny Suit", "Outfits", "Robux")
+			Remotes.Store:FireServer("Buy Item", "Police Officer", "Outfits", "Robux")
 		end
 	end)
 end

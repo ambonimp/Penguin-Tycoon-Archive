@@ -127,7 +127,7 @@ function Fishing.Main()
 	localPlayer.Character:FindFirstChild("Main").CanCollide = false
 	
 	local toolAttribute = localPlayer:GetAttribute("Tool")
-	if toolAttribute == "Fishing Rod" or toolAttribute == "Gold Fishing Rod" then	
+	if toolAttribute == "Fishing Rod" or toolAttribute == "Gold Fishing Rod" or toolAttribute == "Rainbow Fishing Rod" then	
 		animationService.ThrowAnimation(localPlayer, Fishing,LastUpdate.isAFKFishing)
 	else
 		LastUpdate.RunningMain = false
@@ -197,7 +197,7 @@ end
 -- if fish has been in water for x seconds
 function VerifyFishTimer()
 	local debounce 
-	if LastUpdate.EquippedTool and LastUpdate.EquippedTool == 'Gold Fishing Rod' then
+	if LastUpdate.EquippedTool and (LastUpdate.EquippedTool == 'Gold Fishing Rod' or LastUpdate.EquippedTool == 'Rainbow Fishing Rod') then
 		debounce = 1.5
 	else
 		debounce = 3
@@ -251,7 +251,9 @@ function GameLoop()
 			localPlayer:SetAttribute("AFKFishing",true)
 			if localPlayer:GetAttribute("Tool") == "None" or localPlayer:GetAttribute("Tool") == "Glider" or localPlayer:GetAttribute("Tool") == "Powered Glider" then
 				Fishing.LastUpdate.RunningMain = true
-				if paths.UI.Tools:FindFirstChild("Gold Fishing Rod") then
+				if paths.UI.Tools:FindFirstChild("Rainbow Fishing Rod") then
+					paths.Remotes.Tools:FireServer("Equip Tool", "Rainbow Fishing Rod")
+				elseif paths.UI.Tools:FindFirstChild("Gold Fishing Rod") then
 					paths.Remotes.Tools:FireServer("Equip Tool", "Gold Fishing Rod")
 				else
 					paths.Remotes.Tools:FireServer("Equip Tool", "Fishing Rod")

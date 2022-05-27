@@ -32,10 +32,13 @@ end
 
 
 --- Income Function ---
-function Income:AddMoney(Player, Amount)
+function Income:AddMoney(Player, Amount,isBought)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 
 	if Data then
+		if isBought == nil then
+			Amount = Amount*Mult
+		end
 		Data["Stats"]["Total Money"] += Amount
 
 		Data["Money"] += Amount
@@ -52,8 +55,8 @@ function Income:AddGems(Player, Amount, Source)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 
 	if Data then
-		if Amount > 0 then
-			Amount = Amount * Mult 
+		if Amount > 0 and Source ~= "Bought" then
+			Amount = Amount * Mult * Data["Gem Multiplier"]
 		end
 		Data["Stats"]["Total Gems"] += Amount 
 
@@ -82,7 +85,7 @@ function Income:IncomeLoop()
 				
 				if PlayerIncome > 0 then
 					-- Add Money
-					Income:AddMoney(Player, PlayerIncome*Mult)
+					Income:AddMoney(Player, PlayerIncome)
 				end
 				
 				-- Add to total playtime
