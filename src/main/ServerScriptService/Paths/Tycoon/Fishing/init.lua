@@ -162,7 +162,7 @@ function GetDebounceSeconds(player)
 	local rod = player:GetAttribute("Tool")
 	local debounce
 
-	if rod and rod == "Gold Fishing Rod" then
+	if rod and (rod == "Gold Fishing Rod" or rod == "Rainbow Fishing Rod") then
 		debounce = 1
 	else
 		debounce = 3
@@ -206,7 +206,8 @@ function GiveHat(player, playerData)
 	return receivedHat
 end
 
-function GetEnchantState(position)
+function GetEnchantState(position,player)
+	local rod = player:GetAttribute("Tool")
 	local decimalChance = 0.01
 
 	for _, pool in pairs(workspace.ActivePools:GetChildren()) do
@@ -215,7 +216,9 @@ function GetEnchantState(position)
 			decimalChance = 0.1
 		end
 	end
-
+	if rod == "Rainbow Fishing Rod" then
+		decimalChance += .15
+	end
 	return rand:NextNumber(0, 1) <= decimalChance
 end
 
@@ -284,7 +287,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 		else
 			local fishFound = sessionData[player.Name]["Fish Found"]
 			local enchantedFishFound = sessionData[player.Name]["Enchanted Fish Found"]
-			returnData.Enchanted = GetEnchantState(hitPosition)
+			returnData.Enchanted = GetEnchantState(hitPosition,player)
 			if returnData.Enchanted then
 				returnData.Worth *= 10
 			end

@@ -235,7 +235,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories")
 	PlayerOutfits = Remotes.GetStat:InvokeServer("Outfits")
 	PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
-	if PlayerOutfits["Bunny Suit"] and ProximityPrompt2 then
+	if PlayerOutfits["Police Officer"] and ProximityPrompt2 then
 		ProximityPrompt2.Enabled = false
 	end
 end
@@ -302,7 +302,7 @@ local function NewStoreTemplate(Item, ItemType)
 
 		local scrollingFrame =StoreSections.Accessory.Holder[ItemType]
 		local uiGridLayout = StoreSections.Accessory.Holder[ItemType].UIGridLayout
-		local NewSize = Vector2.new(.32,.165*2.15) * scrollingFrame.AbsoluteSize
+		local NewSize = Vector2.new(.32,.165*2.85) * scrollingFrame.AbsoluteSize
 		uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
 		scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 	end
@@ -415,12 +415,12 @@ if ProximityPrompt then
 end
 
 if ProximityPrompt2 then
-	if PlayerOutfits["Bunny Suit"] then
+	if PlayerOutfits["Police Officer"] then
 		ProximityPrompt2.Enabled = false
 	end
 	ProximityPrompt2.Triggered:Connect(function(player)
 		if player == game.Players.LocalPlayer then
-			Remotes.Store:FireServer("Buy Item", "Bunny Suit", "Outfits", "Robux")
+			Remotes.Store:FireServer("Buy Item", "Police Officer", "Outfits", "Robux")
 		end
 	end)
 end

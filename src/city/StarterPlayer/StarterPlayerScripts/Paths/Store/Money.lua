@@ -33,7 +33,7 @@ for i, Product in pairs(MoneyProducts) do
 			Services.MPService:PromptProductPurchase(Paths.Player, Product)
 		end)
 		
-		Template.Parent = Store.Sections.Money.Holder
+		Template.Parent = Store.Sections.Money.Holder.Money
 	end)
 end
 
@@ -41,8 +41,8 @@ end
 function Money:UpdateMoneyRewards() -- Connected in UI.Updating
 	local Income = Paths.Player:GetAttribute("Income")
 	
-	for i, Template in pairs(Store.Sections.Money.Holder:GetChildren()) do
-		if Template:IsA("Frame") then
+	for i, Template in pairs(Store.Sections.Money.Holder.Money:GetChildren()) do
+		if Template:IsA("Frame") and tonumber(Template.Name) then
 			local Reward = Modules.GameFunctions:GetMoneyProductReward(Template.Name, Income)
 			Template.ProductName.TheText.Text = "+ $ "..Modules.Format:FormatComma(Reward)
 		end

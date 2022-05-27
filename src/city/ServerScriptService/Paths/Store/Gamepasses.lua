@@ -11,11 +11,18 @@ local Remotes = Paths.Remotes
 
 --- Gamepass Variables ---
 local AllGamepasses = {
-	25313170,	 -- x2 Income
+	25313170, -- x2 Income
 	26268187, -- Faster Speed
 	26268229, -- Double Jump
 	26269102, -- VIP
 	28927736, -- Gold Fishing Rod
+	41205566, -- Luxury Boat
+	41205759, -- Powered Glider
+	43183311, -- Gold Axe
+	45764173, -- Jet,
+	47438416, --rainbow fishing rod,
+	47438471, -- x2 gems
+	47438595 -- map teleport
 }
 
 
@@ -32,11 +39,12 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 		if not AppliedPasses[tostring(gamepass)] then
 			Data["Applied Gamepasses"][tostring(gamepass)] = true
 			Remotes.Store:FireClient(Player, "Gamepass", gamepass, true)
-			
-			-- x2 Income
-			if gamepass == 25313170 then
+			--x2 gems
+			if gamepass == 47438471 then
+				Data["Gem Multiplier"] *= 2
+				--x2 income
+			elseif gamepass == 25313170 then
 				Data["Income Multiplier"] *= 2
-				
 			-- Faster Speed
 			elseif gamepass == 26268187 then
 				Data["Walkspeed Multiplier"] *= 1.6
@@ -49,6 +57,12 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 			elseif gamepass == 28927736 then
 				Data["Tycoon"]["Gold Fishing Rod#1"] = true
 				Data["Tools"]["Gold Fishing Rod"] = true
+				if Player:GetAttribute("Tool") ~= "None" then
+					Modules.Tools.EquipTool(Player,"Gold Fishing Rod")
+				end
+			elseif gamepass == 47438416 then
+				Data["Tycoon"]["Rainbow Fishing Rod#1"] = true
+				Data["Tools"]["Rainbow Fishing Rod"] = true
 				if Player:GetAttribute("Tool") ~= "None" then
 					Modules.Tools.EquipTool(Player,"Gold Fishing Rod")
 				end

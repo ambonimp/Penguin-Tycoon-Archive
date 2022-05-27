@@ -19,9 +19,12 @@ local AllGamepasses = {
 	26268229, -- Double Jump
 	26269102, -- VIP
 	28927736, -- Gold Fishing Rod
+	47438416, -- rainbow fishing rod,
+	47438471, -- x2 gems
+	47438595, -- map teleport
 }
 
-
+Gamepasses.Owned = {}
 
 --- Functions ---
 
@@ -31,6 +34,7 @@ function Gamepasses:SetOwned(Template)
 	Template.Background.UIStroke.Color = Color3.fromRGB(96, 240, 255)
 	Template.Purchase.Visible = false
 	Template.Owned.Visible = true
+	Gamepasses.Owned[tonumber(Template.Name)] = true
 end
 
 Services.MPService.PromptGamePassPurchaseFinished:Connect(function(player, gamepass, purchased)

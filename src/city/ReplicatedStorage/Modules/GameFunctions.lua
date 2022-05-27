@@ -16,7 +16,6 @@ local BASE_INCOME_REWARD = 30 -- The amount of seconds of progress for R$ 24 wor
 --- Functions ---
 function GameFunctions:GetMoneyProductReward(Product, Income)
 	Product = tonumber(Product)
-	
 	local Base1Reward = 500 + (Income+1)/3 * BASE_INCOME_REWARD
 	local BaseReward = Base1Reward * MoneyProducts[Product]["Base"]
 	local TotalReward = BaseReward * MoneyProducts[Product]["Bonus"]

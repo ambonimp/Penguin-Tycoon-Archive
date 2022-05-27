@@ -94,7 +94,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Gamepasses = require(script.Store.Gamepasses)
 	Paths.Modules.Money = require(script.Store.Money)
 	Paths.Modules.Gems = require(script.Store.Gems)
-	Paths.Modules.Boosts = require(script.Store.Boosts)
+	--Paths.Modules.Boosts = require(script.Store.Boosts)
 	Paths.Modules.Accessories = require(script.Store.Accessories)
 	
 	print("penguin modules")

@@ -42,7 +42,9 @@ local zoneFunctions = {
 				if plr and db[plr] == nil then
 					db[plr] = true
 					local data = Modules.PlayerData.sessionData[plr.Name].Tools
-					if data["Gold Fishing Rod"] then
+					if data["Rainbow Fishing Rod"] then
+						Modules.Tools.EquipTool(plr,"Rainbow Fishing Rod")
+					elseif data["Gold Fishing Rod"] then
 						Modules.Tools.EquipTool(plr,"Gold Fishing Rod")
 					elseif data["Fishing Rod"] then
 						Modules.Tools.EquipTool(plr,"Fishing Rod")

@@ -46,7 +46,7 @@ function BobberHandler.CreateBopper(character)
 		bpd.Bobber:Destroy()
 		bpd.Bobber = nil
 	end
-	if player and player:GetAttribute("Tool") == "Fishing Rod" or  player:GetAttribute("Tool") == "Gold Fishing Rod" then
+	if player and player:GetAttribute("Tool") == "Fishing Rod" or  player:GetAttribute("Tool") == "Gold Fishing Rod" or  player:GetAttribute("Tool") == "Rainbow Fishing Rod" then
 		hasBobber[character] = os.time()
 		local hrp = character:FindFirstChild("HumanoidRootPart")
 

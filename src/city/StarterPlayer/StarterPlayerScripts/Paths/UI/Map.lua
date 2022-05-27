@@ -99,7 +99,9 @@ function OnLocationHoverEnded(Location)
 end
 
 
-
+function ownsGamepass()
+    return Modules.Gamepasses.Owned[47438595]
+end
 
 
 -- Toggle other parts of the Interface
@@ -115,20 +117,23 @@ for _, Location in ipairs(Locations:GetChildren()) do
     Scale.Parent = Location
 
     Location.MouseButton1Down:Connect(function()
-        Transition(function()
-            local Character = Player.Character
-            if Character then
-                local NewCFrame = TeleportLocations[Location.Name].CFrame + Vector3.new(0, 5, 0)
-                Character:SetPrimaryPartCFrame(NewCFrame)
-                -- Make camera look at destination
-                Camera.CFrame = CFrame.new(Camera.CFrame.Position) * NewCFrame.Rotation -- CFrame.fromEulerAnglesYXZ(math.rad(12), 0, 0)
-
-            end
-
-            Modules.Buttons:UIOff(Frame, true)
-            CloseMap()
-        end)
-
+        if ownsGamepass() then
+            Transition(function()
+                local Character = Player.Character
+                if Character then
+                    local NewCFrame = TeleportLocations[Location.Name].CFrame + Vector3.new(0, 5, 0)
+                    Character:SetPrimaryPartCFrame(NewCFrame)
+                    -- Make camera look at destination
+                    Camera.CFrame = CFrame.new(Camera.CFrame.Position) * NewCFrame.Rotation -- CFrame.fromEulerAnglesYXZ(math.rad(12), 0, 0)
+    
+                end
+    
+                Modules.Buttons:UIOff(Frame, true)
+                CloseMap()
+            end)
+        else
+            Services.MPService:PromptGamePassPurchase(Paths.Player, 47438595)
+        end
     end)
 
     Location.MouseEnter:Connect(function()

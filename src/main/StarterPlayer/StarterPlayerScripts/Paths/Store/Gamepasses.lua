@@ -13,6 +13,7 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 local Store = UI.Center.Store
 
+Gamepasses.Owned = {}
 
 --- Gamepass Variables ---
 local AllGamepasses = {
@@ -24,7 +25,10 @@ local AllGamepasses = {
 	{41205566,"Luxury Boat that drives faster!"}, -- Luxury Boat
 	{41205759,"Super Glider that flies faster!"}, -- Super Glider
 	{43183311,"x2 income per chopped tree!"}, -- Gold Axe
-	{45764173,"Jet plane that flies faster!"}, -- Gold Axe
+	{45764173,"Jet plane that flies faster!"}, -- Jet Plane
+	{47438416,"15% increased chance of rainbow fish!"}, -- rainbow fishing rod,
+	{47438471,"Double gems from everything!"}, -- x2 gems
+	{47438595,"Ability to use the map in Penguin City!"}, -- map teleport
 }
 
 
@@ -37,6 +41,7 @@ function Gamepasses:SetOwned(Template)
 	Template.Background.UIStroke.Color = Color3.fromRGB(96, 240, 255)
 	Template.Purchase.Visible = false
 	Template.Owned.Visible = true
+	Gamepasses.Owned[tonumber(Template.Name)] = true
 end
 
 Services.MPService.PromptGamePassPurchaseFinished:Connect(function(player, gamepass, purchased)

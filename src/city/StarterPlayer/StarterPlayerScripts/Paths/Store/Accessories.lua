@@ -28,6 +28,10 @@ local ClothingSections = UI.Center.Clothing.Sections
 
 local NewItemUI = UI.Full.NewItem
 
+local UnlockItems = {
+	"Bunny Ears","Feather Hat","Pirate Captain Hat","Straw Hat"
+}
+
 local RarityColors = {
 	["Free"] = Color3.fromRGB(240, 240, 240);
 	["Regular"] = Color3.fromRGB(0, 200, 255);
@@ -37,8 +41,6 @@ local RarityColors = {
 	["Event"] = Color3.fromRGB(220, 55, 55);
 }
 
--- Timer variables
-local RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
 
 
 --- Load and Setup Accessories ---
@@ -63,14 +65,17 @@ function addModelToViewport(Model,Template)
 end
 
 function Accessories:NewItem(Item, ItemType)
+	if table.find(UnlockItems,Item) and workspace["Collectable Accessories"]:FindFirstChild(Item) then
+		workspace["Collectable Accessories"]:FindFirstChild(Item):Destroy()
+	end
 	local StoreSectionUI = nil
 	local ClothesSectionUI = nil
 	if ItemType ~= "Outfits" then
-		StoreSectionUI = StoreSections[ItemType].Holder
+		StoreSectionUI = StoreSections.Accessory.Holder[ItemType]
 	end
 	ClothesSectionUI = ClothingSections[ItemType].Holder
 	local CustomizationSection = CustomizationUI.Customization.Sections[ItemType].Holder
-	-- If the accessory is already in the ui, don't clone it
+	-- If the accessory is already in the u         i, don't clone it
 	if CustomizationSection:FindFirstChild(Item) then return end
 	
 	-- Update UI in the store
@@ -182,8 +187,8 @@ Remotes.Store.OnClientEvent:Connect(function(ActionType, Accessory, Purchased)
 		Accessories:AnimateNewItem(Accessory, ActionType)
 		
 	elseif ActionType == "Store Rotated" then
-		RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
-		Accessories:LoadStore()
+		--RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
+		--Accessories:LoadStore()
 	end
 end)
 
@@ -293,11 +298,11 @@ local function NewStoreTemplate(Item, ItemType)
 	end
 	local Template2 = Template:Clone()
 	if ItemType ~= "Outfits" then
-		Template.Parent = StoreSections[ItemType].Holder
+		Template.Parent = StoreSections.Accessory.Holder[ItemType]
 
-		local scrollingFrame =StoreSections[ItemType].Holder
-		local uiGridLayout = StoreSections[ItemType].Holder.UIGridLayout
-		local NewSize = Vector2.new(.325,.165*3.15) * scrollingFrame.AbsoluteSize
+		local scrollingFrame =StoreSections.Accessory.Holder[ItemType]
+		local uiGridLayout = StoreSections.Accessory.Holder[ItemType].UIGridLayout
+		local NewSize = Vector2.new(.32,.165*2.85) * scrollingFrame.AbsoluteSize
 		uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
 		scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 	end
@@ -399,15 +404,6 @@ end)()]]
 if workspace:FindFirstChild("Clothing") then
 	ProximityPrompt = workspace.Clothing.ProximityPart.Value:WaitForChild("ProximityPrompt")
 	ProximityPrompt2 = workspace.Clothing.ProximityPart2.Value:WaitForChild("ProximityPrompt")
-	local Prompts = workspace.Clothing.ClothingParts:GetChildren()
-	for i,v in pairs (Prompts) do
-		local ProximityPrompt = v.ProximityPrompt
-		ProximityPrompt.Triggered:Connect(function(player)
-			if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
-				Paths.Modules.Buttons:UIOn(Paths.UI.Center.Clothing,true)
-			end
-		end)
-	end
 end
 
 if ProximityPrompt then
