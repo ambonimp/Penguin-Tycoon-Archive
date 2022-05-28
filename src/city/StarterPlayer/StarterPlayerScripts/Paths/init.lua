@@ -110,6 +110,7 @@ function Paths.Initiliaze()
 	
 	-- Pets
 	Paths.Modules.Pets = require(script.Pets)
+	Paths.Modules.Zones = require(script.Zones)
 end
 
 return Paths

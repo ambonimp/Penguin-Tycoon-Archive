@@ -55,7 +55,7 @@ function Income:AddGems(Player, Amount, Source)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 
 	if Data then
-		if Amount > 0 and Source ~= "Bought" then
+		if Amount > 0 and Source ~= "Bought" and Source ~= "Code" then
 			Amount = Amount * Mult * Data["Gem Multiplier"]
 		end
 		Data["Stats"]["Total Gems"] += Amount 

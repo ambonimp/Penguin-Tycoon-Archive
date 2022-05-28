@@ -79,7 +79,7 @@ task.spawn(function()
 			local zone = Zone.new(container)
 			local db = false
 			zone.partEntered:Connect(function(p)
-				if p and p.Parent then
+				if p and p.Parent and p.Name == "HumanoidRootPart" then
 					local plr = game.Players:FindFirstChild(p.Parent.Name)
 					if plr == game.Players.LocalPlayer then
 						if db then return end
@@ -94,7 +94,7 @@ task.spawn(function()
 			end)
 			
 			zone.partExited:Connect(function(p)
-				if p and p.Parent then
+				if p and p.Parent and p.Name == "HumanoidRootPart" then
 					local plr = game.Players:FindFirstChild(p.Parent.Name)
 					if plr == game.Players.LocalPlayer then
 						if db then return end
