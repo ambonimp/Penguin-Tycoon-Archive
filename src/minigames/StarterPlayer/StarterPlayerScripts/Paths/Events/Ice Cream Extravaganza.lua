@@ -17,8 +17,9 @@ local SHAODW_TRANSPARENCY = 0.75
 
 local Config = Modules.EventsConfig[EVENT_NAME]
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
+local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
-local EventInfoUI = Paths.UI.Top.EventInfo
+
 local Timer =  Paths.UI.Top[EVENT_NAME]
 
 local Scoreboard =  Paths.UI.Left.EventUIs[EVENT_NAME]
@@ -112,7 +113,7 @@ local function TweenModel(model, tweenInfo, goal, onStep) -- cframe
 	return tween
 end
 
-local function EmitScoreParticle(Particle)
+local function ScoreChangedParticle(Particle)
 	if not Particle then return end
 
 	local InitSize = Particle.Size
@@ -160,38 +161,36 @@ end
 function IceCreamExtravaganza:EventStarted()
 	EventFinished = false
 
-	-- Change countdown ui
-	--EventInfoUI.Visible = false
-	Timer.Visible = true
-	Scoreboard.Visible = true
-	ScoreDisplay.Visible = true
-
-	for _, ListItem in ipairs(Scoreboard.PlayerList:GetChildren()) do
-		if ListItem:IsA("TextLabel") then
-			ListItem.Visible = false
-		end
-	end
-
-
 	DropShadows = {}
 
-	CollectSounds = {}
-	for _, Sound in ipairs(Assets.CollectSounds:GetChildren()) do
-		Sound = Sound:Clone()
-		Sound.Parent = Players.LocalPlayer.Character
+	-- Incase player resets during countdown
+	if Participants:FindFirstChild(Player.Name) then
 
-		CollectSounds[Sound.Name] = Sound
+		-- Change countdown ui
+		Timer.Visible = true
+		Scoreboard.Visible = true
+		ScoreDisplay.Visible = true
+
+		for _, ListItem in ipairs(Scoreboard.PlayerList:GetChildren()) do
+			if ListItem:IsA("TextLabel") then
+				ListItem.Visible = false
+			end
+		end
+
+		CollectSounds = {}
+		for _, Sound in ipairs(Assets.CollectSounds:GetChildren()) do
+			Sound = Sound:Clone()
+			Sound.Parent = Players.LocalPlayer.Character
+
+			CollectSounds[Sound.Name] = Sound
+		end
+
 	end
 
-
 end
 
-function IceCreamExtravaganza.InitiateEvent()
-end
-
-function IceCreamExtravaganza.EventEnded()
+function IceCreamExtravaganza:LeftEvent()
 	-- Change countdown ui
-	--EventInfoUI.Visible = false
 	Timer.Visible = false
 
 	Scoreboard.Visible = false
@@ -234,6 +233,9 @@ Remotes.IceCreamExtravaganza.OnClientEvent:Connect(function(Event, ...)
 		Shadow.Position = Vector3.new(Position.X, FloorPosition.Y, Position.Z) + Shadow.Size * Vector3.new(0, 0.5, 0)
 		Shadow.Parent = Workspace
 
+
+		-- Nessecary for when you join the server and event starts, but has been fired by the time client finishes loading and starts listening
+		DropShadows = DropShadows or {}
 
 		-- Create a queue of shadows at this position. Only the first is visible and it's size is updated
 		local ShadowSize = Vector3.new(Size.X, 0.1, Size.X) + Vector3.new(2, 0, 2)
@@ -284,7 +286,7 @@ Remotes.IceCreamExtravaganza.OnClientEvent:Connect(function(Event, ...)
 					if Type == "Regular" then
 						Particle.TextColor3 = Model.PrimaryPart.Color
 					end
-					EmitScoreParticle(Particle)
+					ScoreChangedParticle(Particle)
 
 					-- Notify server
 					Remotes.IceCreamExtravaganza:FireServer("ScoopCollected", Id)

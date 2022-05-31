@@ -81,7 +81,7 @@ EventsConfig["Egg Hunt"] = {
 
 if game.PlaceId == 9647797909 then -- Testing
 	EventsConfig.Names[9647797909] = "Candy Rush"
-	-- EventsConfig[EventsConfig.Names[9647797909]].Duration = 20
+	EventsConfig[EventsConfig.Names[9647797909]].Duration = 20
 	EventsConfig[EventsConfig.Names[9647797909]].MinPlayers = 1
 end
 

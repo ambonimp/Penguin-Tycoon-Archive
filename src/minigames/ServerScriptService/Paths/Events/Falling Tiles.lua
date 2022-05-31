@@ -44,7 +44,7 @@ function FallingTiles:SpawnPlayers(ChosenBugName, ChosenBugNum)
 	end
 end
 
-function FallingTiles:InitiateEvent(Event)
+function FallingTiles:InitiateEvent()
 	local Map = workspace.Event["Event Map"]
 	Map:Destroy()
 
@@ -70,12 +70,16 @@ function FallingTiles:InitiateEvent(Event)
 							Tile:Destroy()
 						end))
 					end
+
 				end
+
 			end)
+
 		end
+
 	end
 	
-	Remotes.Events:FireAllClients("Initiate Event", Event)
+	Remotes.Events:FireAllClients("Initiate Event")
 end
 
 function FallingTiles:StartEvent()
@@ -98,7 +102,7 @@ function FallingTiles:StartEvent()
 		end
 	end
 
-	Remotes.Events:FireAllClients("Event Started", EVENT_NAME)
+	Remotes.Events:FireAllClients("Event Started")
 	
 	local StartTime = tick()
 	local FinishTime = StartTime + Modules.EventsConfig[EVENT_NAME].Duration

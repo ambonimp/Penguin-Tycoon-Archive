@@ -1,3 +1,5 @@
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
 local GroupReward = {}
 
 
@@ -8,17 +10,11 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local funcLib = Paths.Modules.FuncLib
-local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 local PlaceIds =  require(Services.RStorage.Modules.PlaceIds)
 
-
-local EventModules = {}
-for i, v in pairs(script:GetChildren()) do
-	if v.Name ~= "Spectate" then
-		EventModules[v.Name] = require(v)
-	end
-end
+local ChosenEvent = Modules.EventsConfig.Names[game.PlaceId]
+local EventModule = require(script[ChosenEvent])
 
 
 
@@ -31,22 +27,21 @@ local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
 local EventInfoUI = Paths.UI.Top.EventInfo
-local EventVotingUI = Paths.UI.Top.EventVoting
-local EventPromptUI = Paths.UI.Top.EventPrompt
-local EventUIs = Paths.UI.Right.EventUIs
-
 
 local StartingTextOn = false
 
+local Player = Players.LocalPlayer
 
 
 --- Events UI Functions ---
 local function ChangeDisplayText(Text)
-	if Participants:FindFirstChild(Paths.Player.Name) == nil then
-		Paths.UI.Top.Soccer.Visible = false
+	if workspace:GetAttribute("Minigame") and not Participants:FindFirstChild(Player.Name) then
+		Text = "Minigame in progress"
 	end
 
+
 	EventInfoUI.EventInfoText.Text = Text
+
 	if Text == "Starting in: 3" then
 		Paths.Audio.Countdown:Play()
 	end
@@ -58,23 +53,16 @@ local function ChangeDisplayText(Text)
 				EventInfoUI.ExitEvent.Visible = false
 				EventInfoUI.EventInfoText:TweenSizeAndPosition(UDim2.new(1, 0, 0.7, 0), UDim2.new(0, 0, 1, 0), "In", "Quart", 0.5, true)
 			end
-			--Top.EventInfo.EventInfoText.Size = 
-			--Top.EventInfo.EventInfoText.Position = 
-
-			--EventInfoUI.EventInfoText.EventTutorial.Text = Modules.EventsConfig[CurrentEvent]["Tutorial"]
 		end
+
 	else
 		if StartingTextOn then
 			StartingTextOn = false
 			EventInfoUI.EventInfoText:TweenSizeAndPosition(UDim2.new(1, 0, 0.35, 0), UDim2.new(0, 0, 0, 0), "In", "Quart", 0.5, true)
 		end
-		--Top.EventInfo.EventInfoText.Size = UDim2.new(1, 0, 0.35, 0)
-		--Top.EventInfo.EventInfoText.Position = UDim2.new(0, 0, 0, 0)
-
-		--EventInfoUI.EventInfoText.EventTutorial.Text = ""
 	end
-end
 
+end
 
 local function JoinedEvent()
 	EventInfoUI.ExitEvent.Visible = false
@@ -84,9 +72,11 @@ local function JoinedEvent()
 
 	Paths.UI.Bottom.Visible = false
 	Paths.UI.BLCorner.Visible = false
+
 end
 
 local function LeftEvent()
+	-- EventInfoUI.Visible = true
 	EventInfoUI.ExitEvent.Visible = true
 
 	Paths.UI.Left.GemDisplay.Visible = true
@@ -96,20 +86,21 @@ local function LeftEvent()
 	Paths.UI.BLCorner.Visible = true
 	
 
-	for i, v in pairs(Paths.UI.Left.EventUIs:GetChildren()) do
+	for _, v in pairs(Paths.UI.Left.EventUIs:GetChildren()) do
 		v.Visible = false
 	end
 
-	for i, v in pairs(Paths.UI.Right.EventUIs:GetChildren()) do
+	for _, v in pairs(Paths.UI.Right.EventUIs:GetChildren()) do
 		v.Visible = false
 	end
+
 
 end
 
 
+ChangeDisplayText(EventValues.TextToDisplay.Value)
 
 --- Connecting Functions ---
-ChangeDisplayText(EventValues.TextToDisplay.Value)
 EventValues.TextToDisplay.Changed:Connect(function(Text)
 	ChangeDisplayText(Text)
 end)
@@ -122,31 +113,51 @@ end)
 
 Participants.ChildRemoved:Connect(function(Participant)
 	if Participant.Name == Paths.Player.Name then
+		local handler = EventModule.LeftEvent -- By dying or reseting
+		if handler then
+			handler()
+		end
+
+		if workspace:GetAttribute("Minigame") then
+			ChangeDisplayText()
+			Modules.Spectate.EventStarted()
+		end
+
 		LeftEvent()
 	end
+
 end)
 
-EventInfoUI.ExitEvent.MouseButton1Down:Connect(function()
-	Remotes.Teleport:InvokeServer(PlaceIds["Penguin City"])
-end)
-
-Remotes.Events.OnClientEvent:Connect(function(Action, Info, Info2)
+Remotes.Events.OnClientEvent:Connect(function(Action, Info2)
 	if Action == "Initiate Event" then
-		EventModules[Info].InitiateEvent()
+		local handler = EventModule.InitiateEvent
+		if handler then
+			handler()
+		end
 		
 	elseif Action == "Event Started" then
-		EventModules[Info]:EventStarted()
+		local handler = EventModule.EventStarted
+		if handler then
+			handler()
+		end
 		Modules.Spectate.EventStarted()
 		
 	elseif Action == "Update Event" then
-		EventModules[Info]:UpdateEvent(Info2)
-		
+		local handler = EventModule.UpdateEvent
+		if handler then
+			handler(Info2)
+		end
 	elseif Action == "Event Ended" then
-		EventModules[Info]:EventEnded()
-		Modules.Spectate.EventEnded()
-	end
-end)
+		local handler = EventModule.EventEnded
+		if handler then
+			handler()
+		end
 
+		Modules.Spectate.EventEnded()
+
+	end
+
+end)
 
 
 announcementRemote.OnClientEvent:Connect(function(player, item)
@@ -156,11 +167,20 @@ announcementRemote.OnClientEvent:Connect(function(player, item)
 	end
 	if item.Type == "Poofie" then
 		funcLib.SendMessage(
-			item.Name.." just hatched an ultra rarity "..item.RealName.."!", 
+			item.Name.." just hatched an ultra rarity "..item.RealName.."!",
 			Color3.new(0.917647, 0.0862745, 0.027451)
 		)
 	end
+
 end)
+
+
+
+EventInfoUI.ExitEvent.MouseButton1Down:Connect(function()
+	Remotes.Teleport:InvokeServer(PlaceIds["Penguin City"])
+end)
+
+
 
 
 return GroupReward

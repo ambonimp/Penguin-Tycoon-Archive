@@ -85,7 +85,7 @@ function SkateRace:StartEvent()
 		end
 	end
 
-	Remotes.Events:FireAllClients("Event Started", "Skate Race")
+	Remotes.Events:FireAllClients("Event Started")
 	
 	local StartTime = tick()
 	local FinishTime = StartTime + Modules.EventsConfig["Skate Race"].Duration
@@ -247,13 +247,13 @@ function SkateRace:StartEvent()
 			end
 			
 			SortPlayerPositions(Rankings, Winners)
-			Remotes.Events:FireAllClients("Update Event", "Skate Race", Rankings)
+			Remotes.Events:FireAllClients("Update Event", Rankings)
 		end
 		
 	until #Participants:GetChildren() == 0 or #Participants:GetChildren() == #Winners or tick() > FinishTime
 
 	SortPlayerPositions(Rankings, Winners)
-	Remotes.Events:FireAllClients("Update Event", "Skate Race", Rankings)
+	Remotes.Events:FireAllClients("Update Event", Rankings)
 	
 	if #Winners > 0 then
 		local Top3 = {"", "", ""}

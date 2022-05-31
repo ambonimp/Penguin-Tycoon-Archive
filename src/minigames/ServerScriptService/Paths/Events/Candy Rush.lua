@@ -146,7 +146,7 @@ function CandyRush:InitiateEvent(Event)
 
 	EventValues.TextToDisplay.Value = "Initiating Candy Rush..."
 
-	Remotes.Events:FireAllClients("Initiate Event", Event)
+	Remotes.Events:FireAllClients("Initiate Event")
 end
 
 
@@ -166,7 +166,7 @@ function CandyRush:StartEvent()
 	Map.Active.Value = true
 	local winners, text = nil,"Candy Rush has finished!"
 	EventValues.TextToDisplay.Value = "Get the candy!"
-	Remotes.Events:FireAllClients("Event Started", EVENT_NAME)
+	Remotes.Events:FireAllClients("Event Started")
 	task.wait(1)
 	repeat 
 		local TimeLeft = math.floor((FinishTime - tick()))
@@ -185,24 +185,29 @@ function CandyRush:StartEvent()
 	Remotes.CandyRush:FireAllClients("Finished",EggsCollected)
 	for i = 1,#EggsCollected do
 		local tbl = EggsCollected[i]
-		if tbl and game.Players:FindFirstChild(tbl[1]) then
+
+		local player = game.Players:FindFirstChild(tbl[1])
+		if tbl and player then
 			if i == 1 then
-				local data = Modules.PlayerData.sessionData[tbl[1].Name] 
+				local data = Modules.PlayerData.sessionData[tbl[1]]
 				if data and data["Stats"][EVENT_NAME] then
 					data["Stats"][EVENT_NAME] = data["Stats"][EVENT_NAME] + 1
 				elseif data then
 					data["Stats"][EVENT_NAME] =  1
 				end
-				addGems(game.Players:FindFirstChild(tbl[1]),7)
+				addGems(player, 7)
 			elseif i == 2 then
-				addGems(game.Players:FindFirstChild(tbl[1]),5)
+				addGems(player, 5)
 			elseif i == 3 then
-				addGems(game.Players:FindFirstChild(tbl[1]),3)
+				addGems(player, 3)
 			else
-				addGems(game.Players:FindFirstChild(tbl[1]),1)
+				addGems(player, 1)
 			end
+
 		end
+
 	end
+
 	return {EggsCollected[1][1],EggsCollected[2] and EggsCollected[2][1] or nil,EggsCollected[3] and EggsCollected[3][1] or nil}
 end
 

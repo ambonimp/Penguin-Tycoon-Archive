@@ -204,7 +204,7 @@ function EggHunt:InitiateEvent(Event)
 
 	EventValues.TextToDisplay.Value = "Initiating Egg Hunt..."
 
-	Remotes.Events:FireAllClients("Initiate Event", Event)
+	Remotes.Events:FireAllClients("Initiate Event")
 end
 
 
@@ -224,7 +224,7 @@ function EggHunt:StartEvent()
 	Map.Active.Value = true
 	local winners, text = nil,"Egg Hunt has finished!"
 	EventValues.TextToDisplay.Value = "Get those eggs!"
-	Remotes.Events:FireAllClients("Event Started", "Egg Hunt")
+	Remotes.Events:FireAllClients("Event Started")
 	task.wait(1)
 	repeat 
 		local TimeLeft = math.floor((FinishTime - tick()))

@@ -98,7 +98,7 @@ local function GetDropType()
 
 end
 
-local function FireEventRemote(...)
+local function RelayToParticipants(...)
 	for _, PlayerName in ipairs(Participants:GetChildren()) do
 		local Player = game.Players:FindFirstChild(PlayerName.Name)
 		if Player then
@@ -150,12 +150,12 @@ function IceCreamExtravaganza:SpawnPlayers(ChosenBugName, ChosenBugNum)
 
 end
 
-function IceCreamExtravaganza:InitiateEvent(Event)
+function IceCreamExtravaganza:InitiateEvent()
 	Map = workspace.Event["Event Map"]
 	SpawnPoints = Map.PlayerSpawns:GetChildren()
 
 	EventValues.TextToDisplay.Value = "Initiating Ice Cream..."
-	Remotes.Events:FireAllClients("Initiate Event", Event)
+	Remotes.Events:FireAllClients("Initiate Event")
 end
 
 function IceCreamExtravaganza:StartEvent()
@@ -190,9 +190,9 @@ function IceCreamExtravaganza:StartEvent()
 	end
 
     EventValues.TextToDisplay.Value = "Collect the scoops!"
-	Remotes.Events:FireAllClients("Event Started",  EVENT_NAME)
+	Remotes.Events:FireAllClients("Event Started")
     -- Update scoreboards on client to display zeroes and participants
-	FireEventRemote("Update", SortScores())
+	RelayToParticipants("Update", SortScores())
 	task.wait(1)
 
 
@@ -216,7 +216,7 @@ function IceCreamExtravaganza:StartEvent()
                 Model = Model
             }
 
-			FireEventRemote("DropCreated", Id, Position, Model)
+			Remotes.IceCreamExtravaganza:FireAllClients("DropCreated", Id, Position, Model)
             task.wait(Config.DropRate)
 
         end
@@ -253,9 +253,6 @@ function IceCreamExtravaganza:StartEvent()
 					end
 				elseif Type == "Invicible" then
 					if not InviciblePlayers[Player] then
-						local Character = Player.Character
-						if not Character then return end
-
 						-- Debounce
 						InviciblePlayers[Player] = true
 
@@ -307,6 +304,7 @@ function IceCreamExtravaganza:StartEvent()
 	        	end
 
 	        	Scores[Player] = newScore or oldScore
+
 	        end
 
         end
@@ -318,7 +316,7 @@ function IceCreamExtravaganza:StartEvent()
 		local TimeLeft = math.floor((FinishTime - tick()))
 		EventValues.IceCreamTimer.Value = TimeLeft
 		-- Updates scores. Done here to reduce network traffic
-		FireEventRemote("Update", SortScores())
+		RelayToParticipants("Update", SortScores())
 
 		task.wait(.25)
 	until tick() > FinishTime or #Participants:GetChildren() == 0
@@ -335,7 +333,7 @@ function IceCreamExtravaganza:StartEvent()
 	local ScoreBoard = SortScores()
 
 	-- Display scoreboard
-	FireEventRemote("Finished", ScoreBoard)
+	RelayToParticipants("Finished", ScoreBoard)
 
 
 	local Winners = {}

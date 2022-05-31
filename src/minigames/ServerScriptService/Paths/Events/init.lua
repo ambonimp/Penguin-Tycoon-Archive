@@ -21,11 +21,6 @@ local Map
 
 
 --- Functions ---
-local function ResetEvent()
-	EventValues.CurrentEvent.Value = "None"
-	Participants:ClearAllChildren()
-end
-
 local function Intermission()
 	for i = Modules.EventsConfig.INTERMISSION_INTERVAL, 0, -1 do
 		EventValues.TextToDisplay.Value = "Intermission: "..i
@@ -135,9 +130,6 @@ end
 
 local function EventLoop()
 	while true do
-		-- Reset Previous Event Completely
-		ResetEvent()
-
 		-- Wait for players
 		WaitForPlayers()
 
@@ -155,7 +147,7 @@ local function EventLoop()
 
 		-- Start the event if the min amount of players is met
 		if #Participants:GetChildren() >= EventConfig.MinPlayers and #Participants:GetChildren() <= EventConfig.MaxPlayers then
-			workspace:SetAttribute("Minigame",true)
+			workspace:SetAttribute("Minigame", true)
 			local Winners, DisplayText
 
 			if StartingCountdown(ChosenEvent) then
@@ -212,20 +204,23 @@ local function EventLoop()
 				end
 
 				-- End event
-				Remotes.Events:FireAllClients("Event Ended", ChosenEvent)
-				for _, Player in pairs (game.Players:GetPlayers()) do
-					Player:SetAttribute("Minigame","none")
-				end
-
+				EventValues.CurrentEvent.Value = "None"
 				workspace:SetAttribute("Minigame",false)
 
-				-- Back to lobby
-				for _, Value in pairs(Participants:GetChildren()) do
-					local Player = game.Players:FindFirstChild(Value.Name)
-					if Player then
+				for _, Player in pairs (game.Players:GetPlayers()) do
+					Player:SetAttribute("Minigame","none")
+
+					-- Back to lobby
+					local Partipated = Participants:FindFirstChild(Player.Name)
+					if Partipated then
 						Modules.Character:Spawn(Player)
 					end
+
 				end
+
+				Participants:ClearAllChildren()
+
+				Remotes.Events:FireAllClients("Event Ended")
 
 			end)
 
