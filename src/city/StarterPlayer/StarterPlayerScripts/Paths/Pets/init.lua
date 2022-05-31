@@ -131,14 +131,14 @@ function HandleServerPet(PetModel)
 	PetClick.Parent =  Paths.Player.PlayerGui
 	PetClick.Adornee = PetModel.PrimaryPart
 	local lastOpened = tick()-10
-	
+	local justclosed = false
 	local function openInteract()
 		if tick()-lastOpened < 4.8 then return end
 		lastOpened = tick()
 		ScriptModules.Buttons:UIOn(PetUI1.Interact,false,.1)
 		PetClick.Enabled = false
 		task.wait(3)
-		if PetUI1 and PetUI1:FindFirstChild("Interact") and PetUI1.Interact.Visible and tick()-lastOpened >= 4.8 then
+		if PetUI1 and PetUI1:FindFirstChild("Interact") and PetUI1.Interact.Visible and tick()-lastOpened >= 2.8 then
 			ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
 		end
 	end
@@ -205,25 +205,17 @@ function HandleServerPet(PetModel)
 			end
 		end
 	end)
-	RunService:BindToRenderStep("PetInteractUIServer",Enum.RenderPriority.Last.Value,function()
-		local Input = UserInputService:GetLastInputType()
+	local lastInput = tick()
+	RunService:BindToRenderStep("PetInteractUIServer"..PetModel.Name,Enum.RenderPriority.Last.Value,function()
+		local Input = justclosed or UserInputService:GetLastInputType()
+		if tick()-lastInput<.15 then return end
 		if Mouse.Target and interacting == false then
-			if Input == Enum.UserInputType.Touch then
-				if Mouse.Target:IsDescendantOf(PetModel) and PetUI1.Interact.Visible == false then
-					openInteract()
-				end
-			else
-				if Mouse.Target:IsDescendantOf(PetModel) and PetUI1.Interact.Visible == false then
+			if Input ~= Enum.UserInputType.Touch then
+				if Mouse.Target:IsDescendantOf(PetModel) then
 					interacting = false
 					PetClick.Enabled = true
-					lastTurnedOn = tick()
 				else
-					if tick()-lastTurnedOn < 1 then
-						wait(.35)
-					end
-					if Mouse.Target and Mouse.Target:IsDescendantOf(PetModel) == false and PetUI1 and PetUI1:FindFirstChild("Interact") and PetUI1.Interact.Visible == false then
-						PetClick.Enabled = false
-					end
+					PetClick.Enabled = false
 				end
 			end
 		end
@@ -231,6 +223,7 @@ function HandleServerPet(PetModel)
 			PetClick.Enabled = false
 		end
 	end)
+
 end
 
 for i,pet in pairs (WorldPets:GetChildren()) do

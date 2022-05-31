@@ -79,9 +79,11 @@ coroutine.wrap(function()
 			
 			if OwnedPasses[tostring(Gamepass)] then
 				Gamepasses:SetOwned(Template)
-				if Gamepass == 28927736 and workspace:FindFirstChild("GoldRodPad") then
-					workspace.GoldRodPad:Destroy()
-				end
+				pcall(function()
+					if Gamepass == 28927736 and workspace:FindFirstChild("GoldRodPad") then
+						workspace.GoldRodPad:Destroy()
+					end
+				end)
 			end
 
 			Template.Parent = Store.Sections.Gamepasses.Holder

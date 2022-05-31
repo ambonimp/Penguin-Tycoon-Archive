@@ -11,6 +11,7 @@ local Remotes = Paths.Remotes
 
 
 --- Event Variables ---
+local EVENT_NAME = "Falling Tiles"
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
@@ -26,7 +27,7 @@ function FallingTiles:SpawnPlayers(ChosenBugName, ChosenBugNum)
 		local SpawnPos = Spawns["Spawn"..index].CFrame * CFrame.new(0, 3, 0)
 		
 		if player then
-			Remotes.Lighting:FireClient(player, "Falling Tiles")
+			Remotes.Lighting:FireClient(player, EVENT_NAME)
 			
 			local Character = Modules.Character:Spawn(player, SpawnPos)
 			Character.Humanoid.JumpPower = 0
@@ -38,13 +39,19 @@ function FallingTiles:SpawnPlayers(ChosenBugName, ChosenBugNum)
 				playerName:Destroy()
 			end)
 
-			player:SetAttribute("Minigame","Falling Tiles")
+			player:SetAttribute("Minigame",EVENT_NAME)
 		end
 	end
 end
 
 function FallingTiles:InitiateEvent(Event)
 	local Map = workspace.Event["Event Map"]
+	Map:Destroy()
+
+	Map = Services.SStorage.EventMaps[EVENT_NAME]:Clone()
+	Map.Name = "Event Map"
+	Map.Parent = workspace.Event
+
 
 	EventValues.TextToDisplay.Value = "Initiating Tiles..."
 	-- Initiate Tiles
@@ -73,7 +80,7 @@ end
 
 function FallingTiles:StartEvent()
 	local Map = workspace.Event["Event Map"]
-	
+
 	local allPlayers = {}
 	-- Activate Event
 	Map.Active.Value = true
@@ -87,14 +94,14 @@ function FallingTiles:StartEvent()
 		if player and player.Character and player.Character:FindFirstChild("Humanoid") then
 			table.insert(allPlayers,player)
 			player.Character.Humanoid.WalkSpeed = 18
-			Modules.Income:AddGems(game.Players[player.Name], 5, "Falling Tiles")
+			Modules.Income:AddGems(game.Players[player.Name], 5, EVENT_NAME)
 		end
 	end
 
-	Remotes.Events:FireAllClients("Event Started", "Falling Tiles")
+	Remotes.Events:FireAllClients("Event Started", EVENT_NAME)
 	
 	local StartTime = tick()
-	local FinishTime = StartTime + Modules.EventsConfig["Falling Tiles"].Duration
+	local FinishTime = StartTime + Modules.EventsConfig[EVENT_NAME].Duration
 
 	EventValues.TextToDisplay.Value = "GO!!"
 	wait(1)
@@ -127,15 +134,15 @@ function FallingTiles:StartEvent()
 		for i, v in pairs(Participants:GetChildren()) do
 			if game.Players:FindFirstChild(v.Name) and rewardValid then
 				Paths.Remotes.ClientNotif:FireClient(game.Players[v.Name],"You did great, you earned  <font color=\"rgb(62, 210, 255)\">15 gems</font>!",Color3.new(0.184313, 0.752941, 0.792156),6.5)
-				Modules.Income:AddGems(game.Players[v.Name],15, "Falling Tiles")
+				Modules.Income:AddGems(game.Players[v.Name],15, EVENT_NAME)
 				local data = Modules.PlayerData.sessionData[v.Name] 
 				n = v.Name
 				if data then
 					print(data["Stats"])
-					if data["Stats"]["Falling Tiles"] then
-						data["Stats"]["Falling Tiles"] = data["Stats"]["Falling Tiles"] + 1
+					if data["Stats"][EVENT_NAME] then
+						data["Stats"][EVENT_NAME] = data["Stats"][EVENT_NAME] + 1
 					else
-						data["Stats"]["Falling Tiles"] =  1
+						data["Stats"][EVENT_NAME] =  1
 					end
 				end
 			else

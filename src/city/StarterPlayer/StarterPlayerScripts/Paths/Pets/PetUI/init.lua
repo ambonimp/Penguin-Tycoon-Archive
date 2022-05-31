@@ -1007,9 +1007,9 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 	PetUI.Adornee = PetModel.PrimaryPart
 	PetClick.Adornee = PetModel.PrimaryPart
 	local lastOpened = tick()-10
-	
+	local justclosed = false
 	local function openInteract()
-		print(tick()-lastOpened)
+		if justclosed then return end
 		if tick()-lastOpened < 4.8 then return end
 		lastOpened = tick()
 		ScriptModules.Buttons:UIOn(PetUI.Interact,false,.1)
@@ -1142,6 +1142,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 	local lastTurnedOn = tick()
 	table.insert(Connections,UserInputService.InputBegan:Connect(function(Input,GPE)
 		if GPE then return end
+		if justclosed then return end
 		if Mouse.Target and interacting == false then
 			if Input.UserInputType == Enum.UserInputType.Touch then
 				if Mouse.Target:IsDescendantOf(PetModel) and PetUI.Interact.Visible == false then
@@ -1150,21 +1151,22 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 			end
 		end
 	end))
+	local lastInput = tick()
+	table.insert(Connections,UserInputService.InputChanged:Connect(function()
+		lastInput = tick()
+	end))
 	RunService:BindToRenderStep("PetInteractUI",Enum.RenderPriority.Last.Value,function()
-		local Input = UserInputService:GetLastInputType()
+		local Input = justclosed or UserInputService:GetLastInputType()
+		if tick()-lastInput<.15 then return end
 		if Mouse.Target and interacting == false and PetStats.Visible == false then
-			if Input == Enum.UserInputType.Touch then
-				if Mouse.Target:IsDescendantOf(PetModel) and PetUI.Interact.Visible == false then
-					openInteract()
-				end
-			else
+			if Input ~= Enum.UserInputType.Touch then
 				if Mouse.Target:IsDescendantOf(PetModel) and PetUI.Interact.Visible == false then
 					interacting = false
 					PetClick.Enabled = true
 					lastTurnedOn = tick()
 				else
 					if tick()-lastTurnedOn < 1 then
-						wait(.35)
+						task.wait(.35)
 					end
 					if Mouse.Target and Mouse.Target:IsDescendantOf(PetModel) == false and PetUI and PetUI:FindFirstChild("Interact") and PetUI.Interact.Visible == false then
 						PetClick.Enabled = false
@@ -1176,6 +1178,7 @@ function PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunc
 			PetClick.Enabled = false
 		end
 	end)
+	
 	
 	return PetUI, PetClick
 end

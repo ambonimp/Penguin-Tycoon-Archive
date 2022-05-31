@@ -33,14 +33,11 @@ DEFAULT_INFO_POSITION = EventInfoUI.Position
 function Spectate.EventStarted()
 	if not Participants:FindFirstChild(Paths.Player.Name) then
 		EventInfoUI.Spectate.Visible = true
-		EventInfoUI.ExitEvent.Visible = false
 	end
 end
 
 function Spectate.EventEnded()
 	EventInfoUI.Spectate.Visible = false
-	EventInfoUI.ExitEvent.Visible = false
-	
 	Spectate.ExitSpectateMode()
 end
 
@@ -83,6 +80,8 @@ function Spectate.ExitSpectateMode()
 	EventInfoUI.EventInfoText.Visible = true
 	EventInfoUI.StopSpectating.Visible = false
 	EventInfoUI.SpectateInfo.Visible = false
+	EventInfoUI.ExitEvent.Visible = true
+
 	for i, v in pairs(EventUIs:GetChildren()) do v.Visible = false end
 
 	if isSpectating and EventValues.CurrentEvent.Value ~= "None" then
@@ -92,6 +91,7 @@ function Spectate.ExitSpectateMode()
 		Modules.Lighting:ChangeLighting("Night Skating")
 		EventInfoUI.Spectate.Visible = true
 	end
+
 end
 
 function Spectate.UpdatePlayer()

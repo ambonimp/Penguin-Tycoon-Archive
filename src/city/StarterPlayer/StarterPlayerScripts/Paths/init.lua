@@ -81,9 +81,6 @@ function Paths.Initiliaze()
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
 	Paths.Modules.UI = require(script.UI)
 	Paths.Modules.Index = require(script.UI.Index)
-
-	-- Hearts Modules
-	Paths.Modules.Hearts = require(script.Hearts);
 	
 	-- Store Modules
 	Paths.Modules.Store = require(script.Store)
@@ -92,6 +89,9 @@ function Paths.Initiliaze()
 	Paths.Modules.Gems = require(script.Store.Gems)
 	Paths.Modules.Accessories = require(script.Store.Accessories)
 	
+	-- Hearts Modules
+	Paths.Modules.Hearts = require(script.Hearts);
+
 	-- Penguin Modules
 	--Paths.Modules.PenguinsUI = require(script.Penguins.PenguinsUI)
 	Paths.Modules.Penguins = require(script.Penguins)
@@ -110,6 +110,7 @@ function Paths.Initiliaze()
 	
 	-- Pets
 	Paths.Modules.Pets = require(script.Pets)
+	Paths.Modules.Zones = require(script.Zones)
 end
 
 return Paths

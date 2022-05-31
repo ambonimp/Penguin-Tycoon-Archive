@@ -140,25 +140,24 @@ local zoneFunctions = {
 	},
 }
 
+Paths.Remotes.Zone.OnServerEvent:Connect(function(player,zone,typ)
+	zoneFunctions[zone][typ](player.Character.PrimaryPart)
+end)
+
+game.Players.PlayerRemoving:Connect(function(plr)
+	db[plr] = nil
+end)
+
 task.spawn(function()
-	repeat task.wait(1) until #workspace.Zones:GetChildren() == 7
-	for i,v in pairs (workspace.Zones:GetChildren()) do
-		if v:IsA("Folder") then
-			local container = v
-			local zone = Zone.new(container)
-			if zoneFunctions[v.Name]["Enter"] then
-				zone.partEntered:Connect(function(p)
-					zoneFunctions[v.Name]["Enter"](p)
-				end)
-			end
-			
-			if zoneFunctions[v.Name]["Exit"] then
-				zone.partExited:Connect(function(p)
-					zoneFunctions[v.Name]["Exit"](p)
-				end)
-			end
-		end
-	end
+	local container = workspace.Zones.Puck
+	local zone = Zone.new(container)
+	zone.partEntered:Connect(function(p)
+		zoneFunctions["Puck"]["Enter"](p)
+	end)
+	
+	zone.partExited:Connect(function(p)
+		zoneFunctions["Puck"]["Exit"](p)
+	end)
 
 	workspace.Puck:SetNetworkOwner(nil)
 end)

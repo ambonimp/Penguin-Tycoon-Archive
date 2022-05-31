@@ -22,7 +22,6 @@ local Confirmation = UI.Center.TeleportConfirmation
 
 local TeleportDB = false
 
-
 local Locations = {
 	["Penguin Tycoon"] = {
 		PlaceId = PlaceIds["Penguin Tycoon"],
@@ -69,7 +68,6 @@ local function InitializeLocationIds(Ids)
 	end
 end
 
-
 --- Functions ---
 function Teleporting:TeleportTo(PlaceId)
 	if TeleportDB then return end
@@ -77,12 +75,13 @@ function Teleporting:TeleportTo(PlaceId)
 
 	local Success, Error = Remotes.Teleport:InvokeServer(PlaceId)
 
-	if not Success then
+	if not Success and Confirmation.Visible then
 		Confirmation.InfoHolder.Confirm.Error.Visible = true
 		wait(0.8)
 		Confirmation.InfoHolder.Confirm.Error.Visible = false
 	end
 	TeleportDB = false
+	return Success
 end
 
 
@@ -269,6 +268,32 @@ if Portals then
 
 	end
 
+end
+
+local MinigamesUI = Paths.UI.Center.Minigames.Frame
+
+Paths.UI.Top.Minigames.MouseButton1Down:Connect(function()
+	if Paths.UI.Center.Minigames.Visible then
+		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Minigames,true)
+	else
+		Paths.Modules.Buttons:UIOn(Paths.UI.Center.Minigames,true)
+	end
+end)
+
+for i,v in pairs (MinigamesUI:GetChildren()) do
+	local data = Locations[v.Name]
+	if data then
+		v.MinigameName.Text = v.Name
+		v.Description.Text = data.Description
+		v.Thumbnail.Image = data.Thumbnail
+		v.Play.MouseButton1Click:Connect(function()
+			v.Play.TheText.Text = "Teleporting.."
+			local didTp = Teleporting:TeleportTo(data.PlaceId)
+			if didTp == false then
+				v.Play.TheText.Text = "Error.."
+			end
+		end)
+	end
 end
 
 coroutine.wrap(function()

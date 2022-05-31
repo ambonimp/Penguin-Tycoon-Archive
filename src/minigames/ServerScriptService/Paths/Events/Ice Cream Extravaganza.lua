@@ -98,6 +98,15 @@ local function GetDropType()
 
 end
 
+local function FireEventRemote(...)
+	for _, PlayerName in ipairs(Participants:GetChildren()) do
+		local Player = game.Players:FindFirstChild(PlayerName.Name)
+		if Player then
+			Remotes.IceCreamExtravaganza:FireClient(Player, ...)
+		end
+	end
+end
+
 --- Event Functions ---
 function IceCreamExtravaganza:SpawnPlayers(ChosenBugName, ChosenBugNum)
 	for i, Player in pairs(Participants:GetChildren()) do
@@ -183,7 +192,7 @@ function IceCreamExtravaganza:StartEvent()
     EventValues.TextToDisplay.Value = "Collect the scoops!"
 	Remotes.Events:FireAllClients("Event Started",  EVENT_NAME)
     -- Update scoreboards on client to display zeroes and participants
-	Remotes.IceCreamExtravaganza:FireAllClients("Update", SortScores())
+	FireEventRemote("Update", SortScores())
 	task.wait(1)
 
 
@@ -207,7 +216,7 @@ function IceCreamExtravaganza:StartEvent()
                 Model = Model
             }
 
-            Remotes.IceCreamExtravaganza:FireAllClients("DropCreated", Id, Position, Model)
+			FireEventRemote("DropCreated", Id, Position, Model)
             task.wait(Config.DropRate)
 
         end
@@ -309,7 +318,7 @@ function IceCreamExtravaganza:StartEvent()
 		local TimeLeft = math.floor((FinishTime - tick()))
 		EventValues.IceCreamTimer.Value = TimeLeft
 		-- Updates scores. Done here to reduce network traffic
-        Remotes.IceCreamExtravaganza:FireAllClients("Update", SortScores())
+		FireEventRemote("Update", SortScores())
 
 		task.wait(.25)
 	until tick() > FinishTime or #Participants:GetChildren() == 0
@@ -326,7 +335,7 @@ function IceCreamExtravaganza:StartEvent()
 	local ScoreBoard = SortScores()
 
 	-- Display scoreboard
-	Remotes.IceCreamExtravaganza:FireAllClients("Finished", ScoreBoard)
+	FireEventRemote("Finished", ScoreBoard)
 
 
 	local Winners = {}
