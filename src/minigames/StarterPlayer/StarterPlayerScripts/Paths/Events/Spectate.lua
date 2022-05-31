@@ -25,6 +25,7 @@ local CurrentlySpectatingNum = 1
 
 local CurrentCamera = workspace.CurrentCamera
 
+DEFAULT_INFO_POSITION = EventInfoUI.Position
 
 
 --- Spectate Functions ---
@@ -49,38 +50,41 @@ end
 function Spectate.EnterSpectateMode()
 	if not isSpectating and #Participants:GetChildren() > 0 and not Participants:FindFirstChild(Paths.Player.Name) and EventValues.CurrentEvent.Value ~= "None" and workspace:GetAttribute("Minigame") then
 		isSpectating = true
-		
+
 		Modules.Lighting:ChangeLighting(EventValues.CurrentEvent.Value)
-		
+
 		Spectate.UpdatePlayer()
 
 		EventInfoUI.SpectateInfo.Visible = true
 		EventInfoUI.StopSpectating.Visible = true
 		EventInfoUI.Spectate.Visible = false
 		EventInfoUI.ExitEvent.Visible = false
-		
+
 		if EventUIs:FindFirstChild(EventValues.CurrentEvent.Value) then
 			EventUIs[EventValues.CurrentEvent.Value].Visible = true
 		end
 		if EventValues.CurrentEvent.Value == "Soccer" then
 			Paths.UI.Top.Soccer.Visible = true
+
+			EventInfoUI.Position = UDim2.new(UDim.new(0, 0), UDim.new(0.4, -32))
 			EventInfoUI.EventInfoText.Visible = false
-			EventInfoUI.SpectateInfo.Position = UDim2.new(0.5, 0,0.95, 0)
-			EventInfoUI.StopSpectating.Position = UDim2.new(0.5, 0,0.95, 0)
+
 		else
-			EventInfoUI.SpectateInfo.Position = UDim2.new(0.5, 0,0.45, 0)
+			EventInfoUI.Position = DEFAULT_INFO_POSITION
 			EventInfoUI.StopSpectating.Position = UDim2.new(0.5, 0,0.45, 0)
 		end
 	end
 end
 
 function Spectate.ExitSpectateMode()
-	EventInfoUI.EventInfoText.Visible = true
+	EventInfoUI.Position = DEFAULT_INFO_POSITION
 	Paths.UI.Top.Soccer.Visible = false
+
+	EventInfoUI.EventInfoText.Visible = true
 	EventInfoUI.StopSpectating.Visible = false
 	EventInfoUI.SpectateInfo.Visible = false
 	for i, v in pairs(EventUIs:GetChildren()) do v.Visible = false end
-	
+
 	if isSpectating and EventValues.CurrentEvent.Value ~= "None" then
 		isSpectating = false
 		Modules.Camera:ResetToCharacter()
@@ -143,7 +147,7 @@ EventInfoUI.SpectateInfo.Forward.MouseButton1Down:Connect(function()
 	else
 		CurrentlySpectatingNum += 1
 	end
-	
+
 	Spectate.UpdatePlayer()
 end)
 
@@ -153,7 +157,7 @@ EventInfoUI.SpectateInfo.Back.MouseButton1Down:Connect(function()
 	else
 		CurrentlySpectatingNum -= 1
 	end
-	
+
 	Spectate.UpdatePlayer()
 end)
 

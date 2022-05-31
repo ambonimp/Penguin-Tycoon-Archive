@@ -175,24 +175,34 @@ function CandyRush:StartEvent()
 	table.sort(EggsCollected,function(a,b)
 		return a[2] > b[2]
 	end)
+
 	Remotes.CandyRush:FireAllClients("Finished",EggsCollected)
+
 	for i = 1,#EggsCollected do
 		local tbl = EggsCollected[i]
-		if tbl and game.Players:FindFirstChild(tbl[1]) then
+
+		local player =  game.Players:FindFirstChild(tbl[1])
+		if tbl and player then
 			if i == 1 then
-				local data = Modules.PlayerData.sessionData[tbl[1].Name] 
+				local data = Modules.PlayerData.sessionData[tbl[1]]
+
 				if data and data["Stats"]["Candy Rush"] then
 					data["Stats"]["Candy Rush"] = data["Stats"]["Candy Rush"] + 1
 				elseif data then
 					data["Stats"]["Candy Rush"] =  1
 				end
-				addGems(game.Players:FindFirstChild(tbl[1]),7)
+
+				addGems(player, 7)
+
 			elseif i == 2 then
-				addGems(game.Players:FindFirstChild(tbl[1]),5)
+				addGems(player, 5)
+
 			elseif i == 3 then
-				addGems(game.Players:FindFirstChild(tbl[1]),3)
+				addGems(player, 3)
+
 			else
-				addGems(game.Players:FindFirstChild(tbl[1]),1)
+				addGems(player, 1)
+
 			end
 		end
 	end
