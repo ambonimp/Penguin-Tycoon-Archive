@@ -34,6 +34,7 @@ function FallingTiles.InitiateEvent()
 		for i, layer in pairs(Map.Layers:GetChildren()) do
 			for i, tile in pairs(layer:GetChildren()) do
 				if not tile:FindFirstChild("TileHitbox") then break end
+
 				tile.TileHitbox.Touched:Connect(function(part)
 					if not TilesTouched[tile] and string.match(part.Name, "Leg") and Map.Active.Value == true then
 						TilesTouched[tile] = true
@@ -46,24 +47,32 @@ function FallingTiles.InitiateEvent()
 											tile.TopTile.Transparency = i
 											tile.BottomTile.Transparency = i
 										end
-										wait()
+										task.wait()
 									end
 								end))
 							end
-							if tile then
+							if tile.Parent then
 								tile.TopTile.Position = Vector3.new(tile.TopTile.Position.X, tile.TopTile.Position.Y - 0.06, tile.TopTile.Position.Z)
 								tile.BottomTile.Position = Vector3.new(tile.BottomTile.Position.X, tile.BottomTile.Position.Y - 0.06, tile.BottomTile.Position.Z)
-								wait()
-							else break
+								task.wait()
+							else
+								break
 							end
+
 						end
 
 						if tile then tile:Destroy() end
+
 					end
+
 				end)
+
 			end
+
 		end
+
 	end
+
 end
 
 
