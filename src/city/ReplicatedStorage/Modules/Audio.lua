@@ -4,7 +4,7 @@ Audio.Music = {
 	["Coffee Shop"] = "rbxassetid://9733752764",
 	["School"] = "rbxassetid://9733753368",
 	["Diner"] = "rbxassetid://9733754139",
-	["Penguin City"] = {"rbxassetid://9283373303","rbxassetid://9062549990","rbxassetid://9062555894","rbxassetid://9062575526","rbxassetid://9062580741"};
+	["Penguin City"] = {"rbxassetid://9789033755", "rbxassetid://9789029867", "rbxassetid://9789024459", "rbxassetid://9789015804"};
 	["Nightclub"] = {"rbxassetid://9738072675","rbxassetid://9738071306","rbxassetid://9738070672","rbxassetid://9738070355","rbxassetid://9738069435"};
 }
 

@@ -1,10 +1,10 @@
 local Audio = {}
 
 Audio.Music = {
-	["1"] = "rbxassetid://9062549990"; 
-	["2"] = "rbxassetid://9062555894"; 
-	["3"] = "rbxassetid://9062575526"; 
-	["4"] = "rbxassetid://9062580741";  
+	["1"] = "rbxassetid://9789033755";
+	["2"] = "rbxassetid://9789029867";
+	["3"] = "rbxassetid://9789024459";
+	["4"] = "rbxassetid://9789015804";
 }
 
 Audio.NEW_PURCHASE = "rbxassetid://8192378886"
