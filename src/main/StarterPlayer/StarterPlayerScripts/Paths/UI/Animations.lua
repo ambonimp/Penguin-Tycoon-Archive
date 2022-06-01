@@ -59,6 +59,9 @@ function Animations:MoneyChanged(Change, NewMoney)
 	if (Day == "Saturday" or Day == "Sunday") and Change > 0 then
 		add = " (X2 DAY)"
 	end
+	if game.Players.LocalPlayer:GetAttribute("x3MoneyBoost") then
+		add = add.." (x3)"
+	end
 	local Template = Dependency.MoneyChanged:Clone()
 	Template.Position = UDim2.new(0.14, 0, 1.05, 0)
 	Template.Size = UDim2.new(1, 0, 0, 0)
@@ -85,7 +88,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 
 	Template:TweenSize(UDim2.new(1, 0, YSize, 0), "Out", "Quart", 0.25, true)
 
-	wait(0.6)
+	task.wait(0.6)
 
 	-- Change in money tween (+ XX money text)
 	local Goal = {Value = 0}

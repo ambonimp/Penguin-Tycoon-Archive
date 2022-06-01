@@ -306,8 +306,12 @@ local function SetupNewStats(Player)
 		Data["Boosts"] = { --[1]owned, [2]time left in current boost
 			["Fishing Super Luck"] = {0,0}, 
 			["Fishing Ultra Luck"] = {0,0},
-			["x3 Coins"] = {0,0},
+			["x3 Money"] = {0,0},
 		}
+	end
+
+	if not Data["Boosts"]["x3 Money"] then
+		Data["Boosts"]["x3 Money"] = {0,0}
 	end
 
 	if not Data["BoatUnlocked"] then

@@ -39,6 +39,10 @@ function Income:AddMoney(Player, Amount,isBought)
 		if isBought == nil then
 			Amount = Amount*Mult
 		end
+		if Player:GetAttribute("x3MoneyBoost") then
+			Amount = Amount*3
+		end
+
 		Data["Stats"]["Total Money"] += Amount
 
 		Data["Money"] += Amount

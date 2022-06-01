@@ -95,14 +95,22 @@ function checkFishRewards(Player)
 	end
 end
 
-function Fishing.GetRandomId(chanceTable)
+function Fishing.GetRandomId(chanceTable,Player)
 	if not chanceTable then
 		return
 	end
 
 	local randomNumber = rand:NextNumber(0, 1)
 	local previousValue
-
+	if Player:GetAttribute("FishingSuperLuckBoost") then
+		randomNumber += rand:NextNumber(0.09, 0.11)
+	end
+	if Player:GetAttribute("FishingUltraLuckBoost") then
+		randomNumber += rand:NextNumber(0.14, 0.16)
+	end
+	if randomNumber > 1 and (Player:GetAttribute("FishingUltraLuckBoost") or Player:GetAttribute("FishingSuperLuckBoost"))then
+		randomNumber = .99999
+	end
 	for i, entry in ipairs(chanceTable) do
 		if i == 1 then
 			previousValue = 0
@@ -138,14 +146,14 @@ function Fishing.FindNearestIsland(playerPosition)
 	end
 end
 
-function Fishing.GetRandomFish(playerPosition)
+function Fishing.GetRandomFish(playerPosition,Player)
 	local zone = Fishing.FindNearestIsland(playerPosition)
 	if not config.ChanceTable[zone] then
 		return
 	end
 
 	-- gets a random fish ID from the zone
-	local randomId = Fishing.GetRandomId(config.ChanceTable[zone])
+	local randomId = Fishing.GetRandomId(config.ChanceTable[zone],Player)
 
 	local fishInfo = {}
 	fishInfo.Id = randomId
@@ -218,6 +226,9 @@ function GetEnchantState(position,player)
 	end
 	if rod == "Rainbow Fishing Rod" then
 		decimalChance += .15
+	end
+	if decimalChance > 1 then
+		decimalChance = 1
 	end
 	return rand:NextNumber(0, 1) <= decimalChance
 end
@@ -331,7 +342,7 @@ function Main(player, hitPosition, reroll, AFKFishing)
 
 	local data = {}
 	local characterPosition = player.Character:GetPivot().Position
-	data.LootInfo = Fishing.GetRandomFish(player.Character:GetPivot().Position)
+	data.LootInfo = Fishing.GetRandomFish(player.Character:GetPivot().Position,player)
 
 	if data.LootInfo["IncomeMultiplier"] then
 		data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
