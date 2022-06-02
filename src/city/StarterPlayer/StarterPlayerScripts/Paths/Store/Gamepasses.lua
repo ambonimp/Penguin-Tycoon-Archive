@@ -58,6 +58,9 @@ Remotes.Store.OnClientEvent:Connect(function(PurchaseType, gamepass, purchased)
 		if gamepass == 28927736 then
 			workspace.GoldRodPad:Destroy()
 		end
+		if gamepass == 47438416 then
+			workspace.RainbowRodPad:Destroy()
+		end
 	end
 end)
 
@@ -85,6 +88,11 @@ coroutine.wrap(function()
 						workspace.GoldRodPad:Destroy()
 					end
 				end)
+				pcall(function()
+					if Gamepass == 47438416 and workspace:FindFirstChild("RainbowRodPad") then
+						workspace.RainbowRodPad:Destroy()
+					end
+				end)
 			end
 
 			Template.Parent = Store.Sections.Gamepasses.Holder
@@ -109,7 +117,20 @@ coroutine.wrap(function()
 			end
 		end)
 	end
-	
+
+	if not OwnedPasses[tostring(47438416)] and workspace:FindFirstChild("RainbowRodPad") then
+		local db = false
+		workspace.RainbowRodPad.Hitbox.Touched:Connect(function(hit)
+			if db then return end
+			if hit.Parent == Paths.Player.Character then
+				db = true
+				Services.MPService:PromptGamePassPurchase(Paths.Player, 47438416)
+				task.wait(2)
+				db = false
+			end
+		end)
+	end
+
 end)()
 
 

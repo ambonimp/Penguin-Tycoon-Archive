@@ -400,6 +400,8 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	
 
+	Modules.Chat:ApplyChatTag(Player)
+	task.wait(5)
 	-- Setup Chat
 	Modules.Chat:ApplyChatTag(Player)
 end)

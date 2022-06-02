@@ -73,6 +73,10 @@ UI.BLCorner.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Money,Store)
 end)
 
+UI.BLCorner.GemDisplay.BuyMore.MouseButton1Down:Connect(function()
+	ButtonClicked(Store.Buttons.Gems,Store)
+end)
+
 for i,v in pairs (Paths.UI.Top.Boosts:GetChildren()) do
 	if v:IsA("Frame") then
 		v.Button.MouseButton1Down:Connect(function()
