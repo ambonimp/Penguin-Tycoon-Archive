@@ -7,8 +7,6 @@ local WorldPets = workspace:WaitForChild("WorldPets")
 local TweenService = game:GetService("TweenService")
 local PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
 
-
-
 local Colors = {
     ["Panda"] = {"rbxassetid://9229750551","rbxassetid://9179182059","rbxassetid://9179195508"},
     ["Dog"] = {"rbxassetid://9172091357","rbxassetid://9229587298","rbxassetid://9172039791"},
