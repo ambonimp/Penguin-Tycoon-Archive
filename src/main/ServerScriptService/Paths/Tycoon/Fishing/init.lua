@@ -340,23 +340,48 @@ function Main(player, hitPosition, reroll, AFKFishing)
 	end
 	local playerIncome = player:GetAttribute("Income") or 0
 
-	local data = {}
-	local characterPosition = player.Character:GetPivot().Position
-	data.LootInfo = Fishing.GetRandomFish(player.Character:GetPivot().Position,player)
-
-	if data.LootInfo["IncomeMultiplier"] then
-		data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
-		local old = data.Worth
-		if old ~= 0 then
-			data.Worth = math.ceil(data.Worth * multiplier)
+	if player:GetAttribute("ThreeFish") then
+		local data1 = {}
+		for i = 1,3 do
+			local data = {}
+			local characterPosition = player.Character:GetPivot().Position
+			data.LootInfo = Fishing.GetRandomFish(player.Character:GetPivot().Position,player)
+		
+			if data.LootInfo["IncomeMultiplier"] then
+				data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
+				local old = data.Worth
+				if old ~= 0 then
+					data.Worth = math.ceil(data.Worth * multiplier)
+				end
+			end
+		
+			if modules.Income then
+				AddReward(player, data, hitPosition, AFKFishing)
+				announcementRemote:FireAllClients(player, data.LootInfo)
+			end
+			table.insert(data1,data)
+		end
+		return data1
+	else
+		local data = {}
+		local characterPosition = player.Character:GetPivot().Position
+		data.LootInfo = Fishing.GetRandomFish(player.Character:GetPivot().Position,player)
+	
+		if data.LootInfo["IncomeMultiplier"] then
+			data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
+			local old = data.Worth
+			if old ~= 0 then
+				data.Worth = math.ceil(data.Worth * multiplier)
+			end
+		end
+	
+		if modules.Income then
+			AddReward(player, data, hitPosition, AFKFishing)
+			announcementRemote:FireAllClients(player, data.LootInfo)
+			return data
 		end
 	end
-
-	if modules.Income then
-		AddReward(player, data, hitPosition, AFKFishing)
-		announcementRemote:FireAllClients(player, data.LootInfo)
-		return data
-	end
+	
 end
 
 reelFish.OnServerInvoke = Main

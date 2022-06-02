@@ -66,6 +66,7 @@ function Paths.Initiliaze()
 	
 	-- Data Modules
 	Paths.Modules.Save = require(script.PlayerData.Save)
+	Paths.Modules.Boosts = require(script.PlayerData.Boosts);
 	Paths.Modules.PlayerData = require(script.PlayerData);
 	Paths.Modules.Income = require(script.PlayerData.Income)
 	Paths.Modules.Leaderboards = require(script.Leaderboards)

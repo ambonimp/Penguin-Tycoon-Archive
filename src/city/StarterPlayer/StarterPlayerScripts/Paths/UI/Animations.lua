@@ -96,6 +96,9 @@ function Animations:MoneyChanged(Change, NewMoney)
 	if (Day == "Saturday" or Day == "Sunday") and Change > 0 then
 		add = " (X2 DAY)"
 	end
+	if game.Players.LocalPlayer:GetAttribute("x3MoneyBoost") then
+		add = add.." (x3)"
+	end
 	local Template = Dependency.MoneyChanged:Clone()
 	Template.Position = UDim2.new(0.37, 0, 0.9, 0)
 	Template.AnchorPoint = Vector2.new(0, 0.5)

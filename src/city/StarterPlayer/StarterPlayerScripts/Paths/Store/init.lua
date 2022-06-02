@@ -73,6 +73,15 @@ UI.BLCorner.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Money,Store)
 end)
 
+for i,v in pairs (Paths.UI.Top.Boosts:GetChildren()) do
+	if v:IsA("Frame") then
+		v.Button.MouseButton1Down:Connect(function()
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Store,true)
+			ButtonClicked(Store.Buttons.Boosts,Store)
+		end)
+	end
+end
+
 for i, Button in pairs(UI.Center.Clothing.Buttons:GetChildren()) do
 	Button.MouseButton1Down:Connect(function()
 		ButtonClicked(Button,UI.Center.Clothing)

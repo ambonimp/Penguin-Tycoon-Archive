@@ -88,6 +88,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Money = require(script.Store.Money)
 	Paths.Modules.Gems = require(script.Store.Gems)
 	Paths.Modules.Accessories = require(script.Store.Accessories)
+	Paths.Modules.Boosts = require(script.Store.Boosts)
 	
 	-- Hearts Modules
 	Paths.Modules.Hearts = require(script.Hearts);

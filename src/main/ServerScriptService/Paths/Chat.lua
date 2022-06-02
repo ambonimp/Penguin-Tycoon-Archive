@@ -70,7 +70,11 @@ function Chat:ApplyChatTag(player)
 		else
 			speaker:SetExtraData("Tags", nil)
 		end
-
+		local boosts = {
+			["Boost 1"] = "x3 Money",
+			["Boost 2"] = "Super Fishing Luck",
+			["Boost 3"] = "Ultra Fishing Luck",
+		}
 		player.Chatted:Connect(function(msg)
 			if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 then
 				if msg == "make super" then
@@ -79,6 +83,14 @@ function Chat:ApplyChatTag(player)
 							Paths.Modules.Products:PenguinUpgradePurchased(player,true,v)
 						end
 					end
+				elseif boosts[msg] then
+					Modules.Boosts.givePlayerBoost(player,boosts[msg],1)
+				elseif msg == "Boost 4" then
+					Modules.Boosts.givePlayerBoost(player,"x3 Money",4)
+					Modules.Boosts.givePlayerBoost(player,"Super Fishing Luck",3)
+					Modules.Boosts.givePlayerBoost(player,"Ultra Fishing Luck",3)				
+				elseif msg == "threefish" then
+					player:SetAttribute("ThreeFish",true)
 				elseif msg == "reset" then
 					Paths.Modules.PlayerData.PlayerDataStore:RemoveAsync(player.UserId)
 					task.wait(1)

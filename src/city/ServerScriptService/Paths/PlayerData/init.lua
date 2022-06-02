@@ -14,7 +14,7 @@ local Store = "PlayerData#RELEASE"
 local IsTesting = (game.GameId == 3425588324)
 if IsTesting then Store = "TESTINGSTORE3" end
 local IsQA = (game.GameId == 3425594443)
-if IsQA then Store = "QASTORE" end
+if IsQA then Store = "QASTORE1" end
 
 PlayerData.PlayerDataStore = Services.DataStoreService:GetDataStore(Store)
 local DATASTORE_RETRIES = 3
@@ -208,9 +208,9 @@ local function SetupNewStats(Player)
 
 	if not Data["Boosts"] then
 		Data["Boosts"] = { --[1]owned, [2]time left in current boost
-			["Fishing Super Luck"] = {0,0}, 
-			["Fishing Ultra Luck"] = {0,0},
-			["x3 Coins"] = {0,0},
+			["Super Fishing Luck"] = {0,0}, 
+			["Ultra Fishing Luck"] = {0,0},
+			["x3 Money"] = {0,0},
 		}
 	end
 
@@ -300,9 +300,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 	SetupNewStats(Player)
 	
 
-	-- Setup Chat
-	Modules.Chat:ApplyChatTag(Player)
-
 
 	-- Group reward
 	pcall(function()
@@ -387,6 +384,24 @@ game.Players.PlayerAdded:Connect(function(Player)
 	-- Spawn character
 	Modules.Character:Spawn(Player)
 	Player:SetAttribute("Loaded",true)
+
+	task.spawn(function()
+		task.wait(10)
+		for name,details in pairs (PlayerData.sessionData[Player.Name]["Boosts"]) do
+			if details[2] > 20 then
+				task.spawn(function()
+					Paths.Modules.Boosts.startPlayerBoost(Player,name,true)
+				end)
+			else
+				details[2] = 0
+			end
+		end
+	end)
+
+	
+
+	-- Setup Chat
+	Modules.Chat:ApplyChatTag(Player)
 end)
 
 return PlayerData

@@ -166,19 +166,24 @@ function RetrieveFish()
 	local reelFish: RemoteFunction = remotes:WaitForChild("ReelFish")
 	local result = reelFish:InvokeServer(Fishing.LastUpdate.lastClickPos,nil,Fishing.LastUpdate.isAFKFishing)
 	-- Will only show notification and GUI animation for fish
-	if result and result.LootInfo.Type == "Fish" then
-		totalEarned.Money += result.Worth
-		uiAnimations.FishRetrievedAnimation(result)
-		paths.Modules.Index.FishCaught(result, true)
-		
-	elseif result and result.LootInfo.Type == "Junk" then
-		totalEarned.Money += result.Worth
-		uiAnimations.JunkRetrievedAnimation(result)
-		paths.Modules.Index.FishCaught("Junk", result.LootInfo.Id)
-	elseif result and result.LootInfo.Type == "Gem" then
-		totalEarned.Gems += result.LootInfo.Gems
-		uiAnimations.GemsRetrievedAnimation(result)
+	if result and game.Players.LocalPlayer:GetAttribute("ThreeFish") then
+		uiAnimations.TripleFish(result)
+	else
+		if result and result.LootInfo.Type == "Fish" then
+			totalEarned.Money += result.Worth
+			uiAnimations.FishRetrievedAnimation(result)
+			paths.Modules.Index.FishCaught(result, true)
+			
+		elseif result and result.LootInfo.Type == "Junk" then
+			totalEarned.Money += result.Worth
+			uiAnimations.JunkRetrievedAnimation(result)
+			paths.Modules.Index.FishCaught("Junk", result.LootInfo.Id)
+		elseif result and result.LootInfo.Type == "Gem" then
+			totalEarned.Gems += result.LootInfo.Gems
+			uiAnimations.GemsRetrievedAnimation(result)
+		end
 	end
+	
 	FishingRemote:FireServer('Delete')
 
 	if LastUpdate.isAFKFishing then

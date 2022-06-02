@@ -29,6 +29,7 @@ local AllGamepasses = {
 	{47438416,"15% increased chance of rainbow fish!"}, -- rainbow fishing rod,
 	{47438471,"Double gems from everything!"}, -- x2 gems
 	{47438595,"Ability to use the map in Penguin City!"}, -- map teleport
+	{49090546, "Capture 3 fish per cast!"}
 }
 
 
@@ -42,6 +43,7 @@ function Gamepasses:SetOwned(Template)
 	Template.Purchase.Visible = false
 	Template.Owned.Visible = true
 	Gamepasses.Owned[tonumber(Template.Name)] = true
+	Template.LayoutOrder = 999999
 end
 
 Services.MPService.PromptGamePassPurchaseFinished:Connect(function(player, gamepass, purchased)
@@ -66,7 +68,7 @@ end)
 coroutine.wrap(function()
 	task.wait(2)
 	
-	local OwnedPasses = Remotes.GetStat:InvokeServer("Gamepasses")
+	local OwnedPasses = nil
 	repeat OwnedPasses = Remotes.GetStat:InvokeServer("Gamepasses") if not OwnedPasses then wait(1) end until OwnedPasses
 
 	for i, Gamepass in pairs(AllGamepasses) do
@@ -80,7 +82,7 @@ coroutine.wrap(function()
 			Template.Purchase.TheText.Text = Modules.Format:FormatComma(Info["PriceInRobux"])
 			Template.Icon.Image = "rbxassetid://"..Info["IconImageAssetId"]
 			Template.Description.Text = Gamepass[2]
-			if OwnedPasses[tostring(Gamepass)] then
+			if OwnedPasses[tostring(Gamepass[1])] or OwnedPasses[Gamepass[1]]  then
 				Gamepasses:SetOwned(Template)
 			end
 

@@ -25,6 +25,10 @@ function Setup:Notification(text,color,time)
     game:GetService("Debris"):AddItem(notif,time or 3)
 end
 
+Paths.Remotes.ClientNotif.OnClientEvent:Connect(function(text,color,time)
+    Setup:Notification(text,color,time)
+end)
+
 function GetAngle(vector1, vector2)
 	return math.acos(math.clamp(vector1.Unit:Dot(vector2.Unit), -1, 1))
 end

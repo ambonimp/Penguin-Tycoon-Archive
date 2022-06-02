@@ -16,7 +16,7 @@ local Store = "PlayerData#RELEASE"
 local IsTesting = (game.GameId == 3425588324)
 if IsTesting then Store = "TESTINGSTORE3" end
 local IsQA = (game.GameId == 3425594443)
-if IsQA then Store = "QASTORE" end
+if IsQA then Store = "QASTORE1" end
 
 PlayerData.PlayerDataStore = Services.DataStoreService:GetDataStore(Store)
 local DATASTORE_RETRIES = 3
@@ -304,8 +304,8 @@ local function SetupNewStats(Player)
 
 	if not Data["Boosts"] then
 		Data["Boosts"] = { --[1]owned, [2]time left in current boost
-			["Fishing Super Luck"] = {0,0}, 
-			["Fishing Ultra Luck"] = {0,0},
+			["Super Fishing Luck"] = {0,0}, 
+			["Ultra Fishing Luck"] = {0,0},
 			["x3 Money"] = {0,0},
 		}
 	end
@@ -427,7 +427,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Player:SetAttribute("PetEntertainment", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Entertainment)
 		Player:SetAttribute("PetHappiness", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Happiness)
 	end
-	
 	-- Setup Leaderstats
 	local leaderstats = Instance.new("Folder", Player)
 	leaderstats.Name = "leaderstats"
@@ -475,6 +474,19 @@ game.Players.PlayerAdded:Connect(function(Player)
 			end 
 		end)
 	end
+	task.spawn(function()
+		task.wait(10)
+		for name,details in pairs (PlayerData.sessionData[Player.Name]["Boosts"]) do
+			if details[2] > 20 then
+				task.spawn(function()
+					Paths.Modules.Boosts.startPlayerBoost(Player,name,true)
+				end)
+			else
+				details[2] = 0
+			end
+		end
+	end)
+	
 	--Modules.Vehicles:SetUpSailboatBuild(Player)
 	Modules.Chat:ApplyChatTag(Player)
 	task.wait(5)

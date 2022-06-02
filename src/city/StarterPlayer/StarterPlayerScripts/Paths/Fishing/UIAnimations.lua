@@ -20,9 +20,92 @@ local rarityColors = {
 local fishCaught = paths.UI.Bottom.FishCaught
 local gemsCaught = paths.UI.Bottom.GemsCaught
 local junkCaught = paths.UI.Bottom.JunkCaught
+local threeCaught = paths.UI.Bottom.ThreeCaught
 local newFish = paths.UI.Full.NewFish
 
 local isStillPlaying = 1
+
+local config = modules.FishingConfig
+local itemTypes = config.ItemType
+
+function UIAnimations.TripleFish(result)
+	isStillPlaying += 1
+	task.spawn(function()
+		local currentAnim = isStillPlaying
+		threeCaught.Visible = false
+		threeCaught.Position = UDim2.new(0.5, 0, 1.25, 0)
+
+		for i = 1,3 do
+			local result = result[i]
+			local lootInfo = result.LootInfo
+			local fishCaught = threeCaught.Frame:FindFirstChild("Fish"..i)
+			if lootInfo.Type == itemTypes.Hat then
+				fishCaught.Visible = false
+			elseif lootInfo.Type == itemTypes.Gem then
+				fishCaught.Visible = true
+				fishCaught.FishRarity.Visible = false
+				fishCaught.Amount.Visible = false
+				fishCaught.Icon.Image = "rbxassetid://8679117564"
+				fishCaught.FishReward.Text = "+ "..result.LootInfo.Gems
+				fishCaught.FishName.Text = "Gem"
+			elseif lootInfo.Type == itemTypes.Junk then
+				local junkCaught = fishCaught
+				junkCaught.FishRarity.Visible = true
+				junkCaught.Visible = true
+				junkCaught.Amount.Visible = true
+				if result.Amount and result.Amount <= 200 then
+					junkCaught.Amount.Text = result.Amount.."/200"
+					junkCaught.Amount.Visible = true
+					if result.Amount == 1 then
+						paths.Modules.Setup:Notification("Collect 200 "..result.LootInfo.Name.." for the "..result.LootInfo.Name.." hat!",Color3.new(1, 0.760784, 0.4),8.5)
+					end
+				else
+					junkCaught.Amount.Visible = false
+				end
+				-- Setup info
+				junkCaught.FishName.Text = result.LootInfo.Name
+				junkCaught.FishRarity.Text = "Junk"
+				junkCaught.FishReward.Text = "+ $ "..paths.Modules.Format:FormatComma(math.floor(tonumber(result.Worth)))
+				junkCaught.Icon.Image = "rbxgameasset://Images/"..result.LootInfo.Name.."_Junk"
+			else
+				fishCaught.Visible = true
+				fishCaught.FishRarity.Visible = true
+				fishCaught.Amount.Visible = false
+				fishCaught.FishName.Text = result.LootInfo.Name
+				fishCaught.FishRarity.Text = result.LootInfo.Rarity
+				fishCaught.FishReward.Text = "+ $ "..paths.Modules.Format:FormatComma(math.floor(tonumber(result.Worth)))
+				fishCaught.Icon.Image = "rbxgameasset://Images/"..result.LootInfo.Name.."_Fish"
+
+				fishCaught.BackgroundColor3 = rarityColors[result.LootInfo.Rarity]
+				fishCaught.UIStroke.Color = rarityColors[result.LootInfo.Rarity]
+				fishCaught.FishRarity.TextColor3 = rarityColors[result.LootInfo.Rarity]
+				fishCaught.FishRarity.UIStroke.Color = Color3.new(rarityColors[result.LootInfo.Rarity].R/2, rarityColors[result.LootInfo.Rarity].G/2, rarityColors[result.LootInfo.Rarity].B/2)
+
+				if result.Enchanted then
+					fishCaught.FishRarity.Text = result.LootInfo.Rarity--.. " [ENCHANTED]"
+					fishCaught.UIStroke.Color = Color3.fromRGB(255, 255, 255)
+					fishCaught.FishRarity.TextColor3 = Color3.fromRGB(255, 255, 255)
+				end
+
+				fishCaught.UIStroke.Enchanted.Enabled = result.Enchanted
+				fishCaught.FishRarity.Enchanted.Enabled = result.Enchanted
+			end
+		end
+		threeCaught.Visible = true
+		threeCaught:TweenPosition(UDim2.new(0.5, 0, -.150, 0), "Out", "Back", 0.5, true)
+	
+		task.wait(2)
+	
+		threeCaught:TweenPosition(UDim2.new(0.5, 0, 1.25, 0), "In", "Back", 0.5, true)	
+
+		task.wait(0.6)
+
+		if isStillPlaying == currentAnim then
+			threeCaught.Visible = false
+		end
+	end)
+end
+
 
 
 --- Animation Functions ---

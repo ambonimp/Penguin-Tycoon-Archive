@@ -22,7 +22,8 @@ local AllGamepasses = {
 	45764173, -- Jet,
 	47438416, --rainbow fishing rod,
 	47438471, -- x2 gems
-	47438595 -- map teleport
+	47438595, -- map teleport
+	49090546, -- x3 fish capture
 }
 
 
@@ -34,7 +35,9 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 	
 	if Data and Player then
 		local AppliedPasses = Data["Applied Gamepasses"]
-		
+		if gamepass == 49090546 then
+			Player:SetAttribute("ThreeFish",true)
+		end
 		-- If the Gamepass isn't already applied then apply it
 		if not AppliedPasses[tostring(gamepass)] then
 			Data["Applied Gamepasses"][tostring(gamepass)] = true
@@ -96,7 +99,7 @@ function Gamepasses:CheckGamepasses(Player)
 		local AppliedPasses = Data["Applied Gamepasses"]
 
 		for i, Gamepass in pairs(AllGamepasses) do
-			if Gamepasses:PlayerOwnsPass(Player, Gamepass) and not AppliedPasses[tostring(Gamepass)] then
+			if Gamepasses:PlayerOwnsPass(Player, Gamepass) then
 				Gamepasses:AwardGamepass(Player.Name, Gamepass)
 			end
 		end

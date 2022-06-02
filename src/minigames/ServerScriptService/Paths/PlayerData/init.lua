@@ -14,7 +14,7 @@ local Store = "PlayerData#RELEASE"
 local IsTesting = (game.GameId == 3425588324)
 if IsTesting then Store = "TESTINGSTORE3" end
 local IsQA = (game.GameId == 3425594443)
-if IsQA then Store = "QASTORE" end
+if IsQA then Store = "QASTORE1" end
 
 PlayerData.PlayerDataStore = Services.DataStoreService:GetDataStore(Store)
 local DATASTORE_RETRIES = 3
