@@ -139,6 +139,9 @@ function PlayerData:SetupPlayerData(player)
 				["Applied Gamepasses"] = {},
 
 				["Redeemed Codes"] = {},
+
+				["Youtube Minigame Score"] = 0
+
 			}
 		else
 			PlayerData.sessionData[player.Name] = data
@@ -350,6 +353,9 @@ local function SetupNewStats(Player)
 		}
 	end
 	
+	if not Data["Youtube Minigame Score"] then
+		Data["Youtube Minigame Score"] = 0
+	end
 end
 
 -- Send back the player stat that the client requests 
