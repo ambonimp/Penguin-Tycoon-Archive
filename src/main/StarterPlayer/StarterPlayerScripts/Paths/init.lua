@@ -15,6 +15,8 @@ function Paths.Initiliaze()
 	Paths.Services.TextService = game:GetService("TextService");
 	Paths.Services.TeleportService = game:GetService("TeleportService");
 	Paths.Services.ContentProvider = game:GetService("ContentProvider");
+	Paths.Services.ContextActionService = game:GetService("ContextActionService");
+
 	Paths.Services.GuiService = game:GetService("GuiService");
 	
 	Paths.Dependency = Paths.Services.RStorage:WaitForChild("ClientDependency")
@@ -112,6 +114,7 @@ function Paths.Initiliaze()
 	-- Other Modules (That have to be required after)
 	Paths.Modules.Tycoon = require(script.Tycoon)
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
+	Paths.Modules.YoutubeMinigame = require(script.Tycoon.YoutubeMinigame)
 	
 --- Load Version ---
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
