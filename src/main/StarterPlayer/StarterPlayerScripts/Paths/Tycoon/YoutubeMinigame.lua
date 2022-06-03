@@ -92,6 +92,16 @@ local playing
 local timeRemainingInGame
 
 
+local function loop(x, min, max)
+    if x > max then
+        return min
+    elseif x < min then
+        return max
+    else
+        return x
+    end
+end
+
 local function tweenNumber(textLbl, goal, format)
     textLbl.Text = 0
 
@@ -181,8 +191,8 @@ end
     scoreParticle.Position = position
     scoreParticle.Parent = gameScreen
 
-    local scoreTween = services.TweenService:Create(scoreParticle, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
-        TextTransparency = 1,
+    local scoreTween = services.TweenService:Create(scoreParticle, TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+        TextTransparency = 0.8,
         Size = UDim2.fromScale(bubbleSize, bubbleSize),
         Position = position - UDim2.fromScale(0, 0.1)
     })
@@ -422,7 +432,7 @@ function results(editingAccuracy)
 
     local rewardLbl = resultsScreen.Reward
     local gemsEarned = if fishCollected >= 40 then 3 else (if fishCollected >= 25 then 2 else (if fishCollected >= 10 then 1 else 0))
-    rewardLbl.TextLabel.Text = "Gems: " .. gemsEarned
+    rewardLbl.TextLabel.Text = "Gems Won: " .. gemsEarned
 
 
     local subs = editingAccuracy * 100
@@ -443,12 +453,14 @@ function results(editingAccuracy)
     end
 
     local active = true
+
+    local previews = resultsScreen.Preview
     task.spawn(function()
         while active do
-            for i = 1, 3 do
-                resultsScreen.Preview[i].Visible = true
-                resultsScreen.Preview[(i == 1 and 3 or i - 1)].Visible = false
-
+            for i = 0, 2 do
+                previews[loop(1 + i, 1, 3)].ZIndex = 3
+                previews[loop(2 + i, 1, 3)].ZIndex = 2
+                previews[loop(3 + i, 1, 3)].ZIndex = 2
                 task.wait(0.5)
             end
         end
