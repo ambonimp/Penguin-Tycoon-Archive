@@ -517,11 +517,11 @@ end
 local function loadGame()
     local computer = paths.Tycoon.Tycoon["GamingDesk#1"]
 
-    local screen = computer.Screen
-    frame = screen.Upload
+    local screen = computer:WaitForChild("Screen")
+    frame = screen:WaitForChild("Upload")
 
     -- Created on the client so no one else can use it
-    local seat = computer.Seat
+    local seat = computer:WaitForChild("Seat")
 
     proximityPrompt = Instance.new("ProximityPrompt")
     proximityPrompt.HoldDuration = 0.25

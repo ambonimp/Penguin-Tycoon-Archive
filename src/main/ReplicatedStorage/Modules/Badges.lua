@@ -14,6 +14,8 @@ Badges.Purchases = {
 	["Sailboat#1"] = 2126143691;
 	["Plane#1"] = 2126439191;
 
+	["Path#26"] = 2126696346;
+
 	["New Island!#0"] = 2124907090; -- Starter Island (Given immediately, since its not purchased)
 	["New Island!#1"] = 2124907091;
 	["New Island!#2"] = 2124907092;
