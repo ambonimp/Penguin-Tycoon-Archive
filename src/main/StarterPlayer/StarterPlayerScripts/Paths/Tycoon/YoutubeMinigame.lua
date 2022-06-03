@@ -76,8 +76,7 @@ local startScreen = psuedoFrame.Start
 local editingscreen = psuedoFrame.Edit
 local resultsScreen = psuedoFrame.Results
 
-local frame -- Actually shows up on the screen when uploading
-local proximityPrompt
+local proximityPrompts = {}
 
 local fishInstances = gameScreen.Fish:GetChildren()
 
@@ -88,9 +87,22 @@ local highscore
 local jumpingFish = {}
 local jumps = {}
 
+local currentComputer
+local screens = {}
+
 local playing
 local timeRemainingInGame
 
+
+local function loop(x, min, max)
+    if x > max then
+        return min
+    elseif x < min then
+        return max
+    else
+        return x
+    end
+end
 
 local function tweenNumber(textLbl, goal, format)
     textLbl.Text = 0
@@ -117,6 +129,12 @@ local function toggleOtherUI(toggle)
     ui.Right.Visible = toggle
     ui.Top.Visible = toggle
     ui.Bottom.Visible = toggle
+end
+
+local function toggleProximityPrompts(toggle)
+    for _, prompt in ipairs(proximityPrompts) do
+        prompt.Enabled = toggle
+    end
 end
 
 function transitionFrames(old, new, dir, scale)
@@ -181,8 +199,8 @@ end
     scoreParticle.Position = position
     scoreParticle.Parent = gameScreen
 
-    local scoreTween = services.TweenService:Create(scoreParticle, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
-        TextTransparency = 1,
+    local scoreTween = services.TweenService:Create(scoreParticle, TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+        TextTransparency = 0.8,
         Size = UDim2.fromScale(bubbleSize, bubbleSize),
         Position = position - UDim2.fromScale(0, 0.1)
     })
@@ -422,7 +440,7 @@ function results(editingAccuracy)
 
     local rewardLbl = resultsScreen.Reward
     local gemsEarned = if fishCollected >= 40 then 3 else (if fishCollected >= 25 then 2 else (if fishCollected >= 10 then 1 else 0))
-    rewardLbl.TextLabel.Text = "Gems: " .. gemsEarned
+    rewardLbl.TextLabel.Text = "Gems Won: " .. gemsEarned
 
 
     local subs = editingAccuracy * 100
@@ -443,12 +461,14 @@ function results(editingAccuracy)
     end
 
     local active = true
+
+    local previews = resultsScreen.Preview
     task.spawn(function()
         while active do
-            for i = 1, 3 do
-                resultsScreen.Preview[i].Visible = true
-                resultsScreen.Preview[(i == 1 and 3 or i - 1)].Visible = false
-
+            for i = 0, 2 do
+                previews[loop(1 + i, 1, 3)].ZIndex = 30
+                previews[loop(2 + i, 1, 3)].ZIndex = 20
+                previews[loop(3 + i, 1, 3)].ZIndex = 10
                 task.wait(0.5)
             end
         end
@@ -461,15 +481,21 @@ function results(editingAccuracy)
         count1:Cancel()
         count2:Cancel()
 
-        remotes.YoutubeMinigameFinished:FireServer(fishCollected)
+        remotes.YoutubeMinigameFinished:FireServer(currentComputer, fishCollected)
 
-        frame.Enabled = true
-        local progressBar = frame.Progress.Bar
-        progressBar.Size = UDim2.fromScale(0, 1)
-        progressBar:TweenSize(UDim2.fromScale(1, 1), Enum.EasingDirection.In, Enum.EasingStyle.Linear, UPLOAD_COOLDOWN, false, function()
-            proximityPrompt.Enabled = true
-            frame.Enabled = false
-        end)
+        for _, screen in ipairs(screens) do
+            local frame = screen:WaitForChild("Upload")
+
+            frame.Enabled = true
+
+            local progressBar = frame.Progress.Bar
+            progressBar.Size = UDim2.fromScale(0, 1)
+            progressBar:TweenSize(UDim2.fromScale(1, 1), Enum.EasingDirection.In, Enum.EasingStyle.Linear, UPLOAD_COOLDOWN, false, function()
+                toggleProximityPrompts(true)
+                frame.Enabled = false
+            end)
+
+        end
 
         close()
 
@@ -491,6 +517,8 @@ function open()
 end
 
 function close()
+    currentComputer = nil
+
     -- Reset character
     local humanoid = character.Humanoid
     character.PrimaryPart.Anchored = false
@@ -514,24 +542,26 @@ function close()
 
 end
 
-local function loadGame()
-    local computer = paths.Tycoon.Tycoon["GamingDesk#1"]
+local function loadComputer(computer)
+    currentComputer = computer.Name
 
     local screen = computer:WaitForChild("Screen")
-    frame = screen:WaitForChild("Upload")
+    table.insert(screens, screen)
 
     -- Created on the client so no one else can use it
     local seat = computer:WaitForChild("Seat")
 
-    proximityPrompt = Instance.new("ProximityPrompt")
+    local proximityPrompt = Instance.new("ProximityPrompt")
     proximityPrompt.HoldDuration = 0.25
-    proximityPrompt.MaxActivationDistance = 10
+    proximityPrompt.MaxActivationDistance = 7
     proximityPrompt.RequiresLineOfSight = false
     proximityPrompt.ActionText = "Upload video"
     proximityPrompt.Parent = seat
+    proximityPrompts.Enabled = #proximityPrompts > 0 and proximityPrompts[1].Enabled or true
+    table.insert(proximityPrompts, proximityPrompt)
 
     proximityPrompt.Triggered:Connect(function()
-        proximityPrompt.Enabled = false
+        toggleProximityPrompts(false)
 
         character = player.character
         if character then
@@ -577,7 +607,7 @@ startScreen.Buttons.Play.MouseButton1Down:Connect(function()
 end)
 
 startScreen.Buttons.Exit.MouseButton1Down:Connect(function()
-    proximityPrompt.Enabled = true
+    toggleProximityPrompts(true)
     close()
 end)
 
@@ -592,13 +622,25 @@ end
 
 -- open()
 if remotes.GetStat:InvokeServer("Tycoon")["GamingDesk#1"]then
-    loadGame()
+    loadComputer(paths.Tycoon.Tycoon:WaitForChild("GamingDesk#1"))
 else
     local conn
     conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
         if child.Name == "GamingDesk#1" then
             conn:Disconnect()
-            loadGame()
+            loadComputer(child)
+        end
+    end)
+end
+
+if remotes.GetStat:InvokeServer("Tycoon")["GamingDesk#2"]then
+    loadComputer(paths.Tycoon.Tycoon:WaitForChild("GamingDesk#2"))
+else
+    local conn
+    conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
+        if child.Name == "GamingDesk#2" then
+            conn:Disconnect()
+            loadComputer(child)
         end
     end)
 
