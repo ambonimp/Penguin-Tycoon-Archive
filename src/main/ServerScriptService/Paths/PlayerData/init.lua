@@ -317,6 +317,14 @@ local function SetupNewStats(Player)
 		Data["Boosts"]["x3 Money"] = {0,0}
 	end
 
+	if not Data["Boosts"]["Super Fishing Luck"] then
+		Data["Boosts"]["Super Fishing Luck"] = {0,0}
+	end
+
+	if not Data["Boosts"]["Ultra Fishing Luck"] then
+		Data["Boosts"]["Ultra Fishing Luck"] = {0,0}
+	end
+
 	if not Data["BoatUnlocked"] then
 		Data["BoatUnlocked"] = {
 			[1] = false,
