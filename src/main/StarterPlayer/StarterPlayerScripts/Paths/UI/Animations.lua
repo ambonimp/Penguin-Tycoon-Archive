@@ -14,7 +14,7 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 local Day = os.date("%A")
 local Mult = 1
 
-if Day == "Saturday" or Day == "Sunday" then
+if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
 	Mult = 2
 else
 	Mult = 1
@@ -56,7 +56,7 @@ end
 function Animations:MoneyChanged(Change, NewMoney)
 	local Day = os.date("%A")
 	local add = ""
-	if (Day == "Saturday" or Day == "Sunday") and Change > 0 then
+	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday") and Change > 0 then
 		add = " (X2 DAY)"
 	end
 	if game.Players.LocalPlayer:GetAttribute("x3MoneyBoost") then
@@ -133,7 +133,7 @@ end
 function Animations:GemsChanged(Change, NewGems)
 	local Day = os.date("%A")
 	local add = ""
-	if (Day == "Saturday" or Day == "Sunday") and Change > 0 then
+	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday") and Change > 0 then
 		add = " (X2 DAY)"
 	end
 	local Template = Dependency.GemsChanged:Clone()

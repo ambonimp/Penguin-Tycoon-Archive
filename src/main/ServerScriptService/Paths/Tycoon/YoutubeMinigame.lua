@@ -15,7 +15,7 @@ local UPLOAD_COOLDOWN = 60
 Remotes.YoutubeMinigameFinished.OnServerEvent:Connect(function(player, score)
     local data = Modules.PlayerData.sessionData[player.Name]
     if data then
-        if data.Tycoon["GamingDesk#1"] and not debounces[player] then
+        if (data.Tycoon["Gaming Desk#1"] or data.Tycoon["Gaming Desk#2"]) and not debounces[player] then
             debounces[player] = true
 
             if data["Youtube Minigame Score"] < score then

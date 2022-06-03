@@ -46,7 +46,7 @@ function ConnectTree(Tree)
         end
         local Day = os.date("%A")
         local Mult = 1
-        if Day == "Saturday" or Day == "Sunday" then
+        if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
             Mult = 2
         else
             Mult = 1
@@ -144,7 +144,7 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
             local Data = Modules.PlayerData.sessionData[Player.Name]
             local Day = os.date("%A")
             local Mult = 1
-            if Day == "Saturday" or Day == "Sunday" then
+            if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
                 Mult = 2
             else
                 Mult = 1
