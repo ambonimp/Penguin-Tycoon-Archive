@@ -103,13 +103,20 @@ function Fishing.GetRandomId(chanceTable,Player)
 	local randomNumber = rand:NextNumber(0, 1)
 	local previousValue
 	if Player:GetAttribute("FishingSuperLuckBoost") then
-		randomNumber += rand:NextNumber(0.09, 0.11)
+		randomNumber *= rand:NextNumber(1.08, 1.115)
 	end
 	if Player:GetAttribute("FishingUltraLuckBoost") then
-		randomNumber += rand:NextNumber(0.14, 0.16)
+		randomNumber *= rand:NextNumber(1.13, 1.155)
 	end
 	if randomNumber > 1 and (Player:GetAttribute("FishingUltraLuckBoost") or Player:GetAttribute("FishingSuperLuckBoost"))then
-		randomNumber = .99999
+		local n = math.random(1,20)
+		if n >= 18 then
+			randomNumber = .99999
+		elseif n >= 12 and n <= 18 then
+			randomNumber = .99989 * rand:NextNumber(.999, 1)
+		else
+			randomNumber = .94789 * rand:NextNumber(.7, 1)
+		end
 	end
 	for i, entry in ipairs(chanceTable) do
 		if i == 1 then
@@ -225,7 +232,7 @@ function GetEnchantState(position,player)
 		end
 	end
 	if rod == "Rainbow Fishing Rod" then
-		decimalChance += .15
+		decimalChance *= 1.15
 	end
 	if decimalChance > 1 then
 		decimalChance = 1
