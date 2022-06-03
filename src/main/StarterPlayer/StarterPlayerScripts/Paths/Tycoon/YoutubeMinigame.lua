@@ -76,8 +76,7 @@ local startScreen = psuedoFrame.Start
 local editingscreen = psuedoFrame.Edit
 local resultsScreen = psuedoFrame.Results
 
-local frame -- Actually shows up on the screen when uploading
-local proximityPrompt
+local proximityPrompts = {}
 
 local fishInstances = gameScreen.Fish:GetChildren()
 
@@ -87,6 +86,9 @@ local highscore
 
 local jumpingFish = {}
 local jumps = {}
+
+local currentComputer
+local screens = {}
 
 local playing
 local timeRemainingInGame
@@ -127,6 +129,12 @@ local function toggleOtherUI(toggle)
     ui.Right.Visible = toggle
     ui.Top.Visible = toggle
     ui.Bottom.Visible = toggle
+end
+
+local function toggleProximityPrompts(toggle)
+    for _, prompt in ipairs(proximityPrompts) do
+        prompt.Enabled = toggle
+    end
 end
 
 function transitionFrames(old, new, dir, scale)
@@ -458,9 +466,9 @@ function results(editingAccuracy)
     task.spawn(function()
         while active do
             for i = 0, 2 do
-                previews[loop(1 + i, 1, 3)].ZIndex = 3
-                previews[loop(2 + i, 1, 3)].ZIndex = 2
-                previews[loop(3 + i, 1, 3)].ZIndex = 2
+                previews[loop(1 + i, 1, 3)].ZIndex = 30
+                previews[loop(2 + i, 1, 3)].ZIndex = 20
+                previews[loop(3 + i, 1, 3)].ZIndex = 10
                 task.wait(0.5)
             end
         end
@@ -473,15 +481,21 @@ function results(editingAccuracy)
         count1:Cancel()
         count2:Cancel()
 
-        remotes.YoutubeMinigameFinished:FireServer(fishCollected)
+        remotes.YoutubeMinigameFinished:FireServer(currentComputer, fishCollected)
 
-        frame.Enabled = true
-        local progressBar = frame.Progress.Bar
-        progressBar.Size = UDim2.fromScale(0, 1)
-        progressBar:TweenSize(UDim2.fromScale(1, 1), Enum.EasingDirection.In, Enum.EasingStyle.Linear, UPLOAD_COOLDOWN, false, function()
-            proximityPrompt.Enabled = true
-            frame.Enabled = false
-        end)
+        for _, screen in ipairs(screens) do
+            local frame = screen:WaitForChild("Upload")
+
+            frame.Enabled = true
+
+            local progressBar = frame.Progress.Bar
+            progressBar.Size = UDim2.fromScale(0, 1)
+            progressBar:TweenSize(UDim2.fromScale(1, 1), Enum.EasingDirection.In, Enum.EasingStyle.Linear, UPLOAD_COOLDOWN, false, function()
+                toggleProximityPrompts(true)
+                frame.Enabled = false
+            end)
+
+        end
 
         close()
 
@@ -503,6 +517,8 @@ function open()
 end
 
 function close()
+    currentComputer = nil
+
     -- Reset character
     local humanoid = character.Humanoid
     character.PrimaryPart.Anchored = false
@@ -526,126 +542,63 @@ function close()
 
 end
 
-local loaded1 = false
-local loaded2 = false
+local function loadComputer(computer)
+    currentComputer = computer.Name
 
-local function loadGame()
-    do --1
-        if loaded1 == false then
-            loaded1 = true
-            local computer = paths.Tycoon.Tycoon["Gaming Desk#1"]
+    local screen = computer:WaitForChild("Screen")
+    table.insert(screens, screen)
 
-            local screen = computer:WaitForChild("Screen")
-            frame = screen:WaitForChild("Upload")
-        
-            -- Created on the client so no one else can use it
-            local seat = computer:WaitForChild("Seat")
-        
-            proximityPrompt = Instance.new("ProximityPrompt")
-            proximityPrompt.HoldDuration = 0.25
-            proximityPrompt.MaxActivationDistance = 12
-            proximityPrompt.RequiresLineOfSight = false
-            proximityPrompt.ActionText = "Upload video"
-            proximityPrompt.Parent = seat
-        
-            proximityPrompt.Triggered:Connect(function()
-                proximityPrompt.Enabled = false
-        
-                character = player.character
-                if character then
-                    local humanoid = character.Humanoid
-        
-                    seat:Sit(humanoid)
-                    character.PrimaryPart.Anchored = true
-        
-                    -- Let player see their character sit down
-                    task.wait(0.2)
-        
-                    -- Hide character so it doesn't get in the way
-                    for _, basePart in ipairs(character:GetDescendants()) do
-                        if basePart:IsA("BasePart") and basePart.Transparency == 0 then
-                            table.insert(partsMadeInvisible, basePart)
-                            basePart.Transparency = 1
-                        end
-                    end
-        
-                    -- Position camera so can display ui on screen
-                    camera.CameraType = Enum.CameraType.Scriptable
-        
-                    local scale = 1 + (1 - psuedoFrame.Size.Y.Scale)
-                    local screenSize = screen.Size * scale
-                    local deph = (screenSize.Y / 2) / math.tan(math.rad(camera.FieldOfView / 2)) + (screenSize.Z / 2)
-        
-                    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-                    local transition = services.TweenService:Create(camera, tweenInfo, {CFrame = screen.CFrame * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, deph)})
-                    transition.Completed:Connect(function()
-                        open()
-                    end)
-        
-                    transition:Play()
+    -- Created on the client so no one else can use it
+    local seat = computer:WaitForChild("Seat")
+
+    local proximityPrompt = Instance.new("ProximityPrompt")
+    proximityPrompt.HoldDuration = 0.25
+    proximityPrompt.MaxActivationDistance = 7
+    proximityPrompt.RequiresLineOfSight = false
+    proximityPrompt.ActionText = "Upload video"
+    proximityPrompt.Parent = seat
+    proximityPrompts.Enabled = #proximityPrompts > 0 and proximityPrompts[1].Enabled or true
+    table.insert(proximityPrompts, proximityPrompt)
+
+    proximityPrompt.Triggered:Connect(function()
+        toggleProximityPrompts(false)
+
+        character = player.character
+        if character then
+            local humanoid = character.Humanoid
+
+            seat:Sit(humanoid)
+            character.PrimaryPart.Anchored = true
+
+            -- Let player see their character sit down
+            task.wait(0.2)
+
+            -- Hide character so it doesn't get in the way
+            for _, basePart in ipairs(character:GetDescendants()) do
+                if basePart:IsA("BasePart") and basePart.Transparency == 0 then
+                    table.insert(partsMadeInvisible, basePart)
+                    basePart.Transparency = 1
                 end
-        
-            end)
-        end
-    end
-    do --2
-        if loaded2 == false then
-            loaded2 = true
-            local computer = paths.Tycoon.Tycoon["Gaming Desk#2"]
+            end
 
-            local screen = computer:WaitForChild("Screen")
-            frame = screen:WaitForChild("Upload")
-        
-            -- Created on the client so no one else can use it
-            local seat = computer:WaitForChild("Seat")
-        
-            proximityPrompt = Instance.new("ProximityPrompt")
-            proximityPrompt.HoldDuration = 0.25
-            proximityPrompt.MaxActivationDistance = 12
-            proximityPrompt.RequiresLineOfSight = false
-            proximityPrompt.ActionText = "Upload video"
-            proximityPrompt.Parent = seat
-        
-            proximityPrompt.Triggered:Connect(function()
-                proximityPrompt.Enabled = false
-        
-                character = player.character
-                if character then
-                    local humanoid = character.Humanoid
-        
-                    seat:Sit(humanoid)
-                    character.PrimaryPart.Anchored = true
-        
-                    -- Let player see their character sit down
-                    task.wait(0.2)
-        
-                    -- Hide character so it doesn't get in the way
-                    for _, basePart in ipairs(character:GetDescendants()) do
-                        if basePart:IsA("BasePart") and basePart.Transparency == 0 then
-                            table.insert(partsMadeInvisible, basePart)
-                            basePart.Transparency = 1
-                        end
-                    end
-        
-                    -- Position camera so can display ui on screen
-                    camera.CameraType = Enum.CameraType.Scriptable
-        
-                    local scale = 1 + (1 - psuedoFrame.Size.Y.Scale)
-                    local screenSize = screen.Size * scale
-                    local deph = (screenSize.Y / 2) / math.tan(math.rad(camera.FieldOfView / 2)) + (screenSize.Z / 2)
-        
-                    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-                    local transition = services.TweenService:Create(camera, tweenInfo, {CFrame = screen.CFrame * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, deph)})
-                    transition.Completed:Connect(function()
-                        open()
-                    end)
-        
-                    transition:Play()
-                end
-        
+            -- Position camera so can display ui on screen
+            camera.CameraType = Enum.CameraType.Scriptable
+
+            local scale = 1 + (1 - psuedoFrame.Size.Y.Scale)
+            local screenSize = screen.Size * scale
+            local deph = (screenSize.Y / 2) / math.tan(math.rad(camera.FieldOfView / 2)) + (screenSize.Z / 2)
+
+            local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+            local transition = services.TweenService:Create(camera, tweenInfo, {CFrame = screen.CFrame * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, deph)})
+            transition.Completed:Connect(function()
+                open()
             end)
+
+            transition:Play()
         end
-    end
+
+    end)
+
 end
 
 
@@ -654,7 +607,7 @@ startScreen.Buttons.Play.MouseButton1Down:Connect(function()
 end)
 
 startScreen.Buttons.Exit.MouseButton1Down:Connect(function()
-    proximityPrompt.Enabled = true
+    toggleProximityPrompts(true)
     close()
 end)
 
@@ -668,18 +621,26 @@ for i, fish in ipairs(fishInstances) do
 end
 
 -- open()
-local stat = remotes.GetStat:InvokeServer("Tycoon")
-if stat["Gaming Desk#1"] or stat["Gaming Desk#2"] then
-    loadGame()
+if remotes.GetStat:InvokeServer("Tycoon")["GamingDesk#1"]then
+    loadComputer(paths.Tycoon.Tycoon:WaitForChild("GamingDesk#1"))
 else
     local conn
     conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
-        if child.Name == "Gaming Desk#1" or child.Name == "Gaming Desk#2"  then
-            if child.Name == "Gaming Desk#2" then
-                conn:Disconnect()
-            end
-           
-            loadGame()
+        if child.Name == "GamingDesk#1" then
+            conn:Disconnect()
+            loadComputer(child)
+        end
+    end)
+end
+
+if remotes.GetStat:InvokeServer("Tycoon")["GamingDesk#2"]then
+    loadComputer(paths.Tycoon.Tycoon:WaitForChild("GamingDesk#2"))
+else
+    local conn
+    conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
+        if child.Name == "GamingDesk#2" then
+            conn:Disconnect()
+            loadComputer(child)
         end
     end)
 
