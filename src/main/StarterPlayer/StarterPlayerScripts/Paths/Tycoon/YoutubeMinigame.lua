@@ -621,24 +621,24 @@ for i, fish in ipairs(fishInstances) do
 end
 
 -- open()
-if remotes.GetStat:InvokeServer("Tycoon")["GamingDesk#1"]then
-    loadComputer(paths.Tycoon.Tycoon:WaitForChild("GamingDesk#1"))
+if remotes.GetStat:InvokeServer("Tycoon")["Gaming Desk#1"]then
+    loadComputer(paths.Tycoon.Tycoon:WaitForChild("Gaming Desk#1"))
 else
     local conn
     conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
-        if child.Name == "GamingDesk#1" then
+        if child.Name == "Gaming Desk#1" then
             conn:Disconnect()
             loadComputer(child)
         end
     end)
 end
 
-if remotes.GetStat:InvokeServer("Tycoon")["GamingDesk#2"]then
-    loadComputer(paths.Tycoon.Tycoon:WaitForChild("GamingDesk#2"))
+if remotes.GetStat:InvokeServer("Tycoon")["Gaming Desk#2"]then
+    loadComputer(paths.Tycoon.Tycoon:WaitForChild("Gaming Desk#2"))
 else
     local conn
     conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
-        if child.Name == "GamingDesk#2" then
+        if child.Name == "Gaming Desk#2" then
             conn:Disconnect()
             loadComputer(child)
         end
