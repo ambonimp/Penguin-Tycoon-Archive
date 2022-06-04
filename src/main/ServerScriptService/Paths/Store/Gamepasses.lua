@@ -49,9 +49,6 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 	
 	if Data and Player then
 		local AppliedPasses = Data["Applied Gamepasses"]
-		if gamepass == 49090546 then
-			Player:SetAttribute("ThreeFish",true)
-		end
 		-- If the Gamepass isn't already applied then apply it
 		if not AppliedPasses[tostring(gamepass)] then
 			Data["Applied Gamepasses"][tostring(gamepass)] = true
@@ -86,7 +83,7 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 		end
 		
 		-- Gamepass buttons/tycoon item
-		if GamepassButtons[gamepass] and not AppliedPasses[tostring(gamepass)] then
+		if GamepassButtons[gamepass] then
 			local ButtonName = GamepassButtons[gamepass]
 			Modules.Purchasing:ItemPurchased(Player, ButtonName, true)
 		end
@@ -123,7 +120,11 @@ function Gamepasses:CheckGamepasses(Player)
 
 		for i, Gamepass in pairs(AllGamepasses) do
 			if Gamepasses:PlayerOwnsPass(Player, Gamepass)  then
-				Gamepasses:AwardGamepass(Player.Name, Gamepass)
+				if Gamepass == 49090546 then
+					Player:SetAttribute("ThreeFish",true)
+				elseif not AppliedPasses[tostring(Gamepass)]  then
+					Gamepasses:AwardGamepass(Player.Name, Gamepass)
+				end
 			elseif Gamepasses:PlayerOwnsPass(Player, Gamepass) and GamepassButtons[tonumber(Gamepass)] and not Data["Tycoon"][GamepassButtons[tonumber(Gamepass)]] then
 				Data["Tycoon"][GamepassButtons[tonumber(Gamepass)]] = true
 				
