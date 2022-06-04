@@ -551,16 +551,16 @@ local function loadComputer(computer)
     -- Created on the client so no one else can use it
     local seat = computer:WaitForChild("Seat")
 
-    local proximityPrompt = Instance.new("ProximityPrompt")
-    proximityPrompt.HoldDuration = 0.25
-    proximityPrompt.MaxActivationDistance = 7
-    proximityPrompt.RequiresLineOfSight = false
-    proximityPrompt.ActionText = "Upload video"
-    proximityPrompt.Parent = seat
-    proximityPrompts.Enabled = #proximityPrompts > 0 and proximityPrompts[1].Enabled or true
-    table.insert(proximityPrompts, proximityPrompt)
+    local prompt = Instance.new("ProximityPrompt")
+    prompt.HoldDuration = 0.25
+    prompt.MaxActivationDistance = 7
+    prompt.RequiresLineOfSight = false
+    prompt.ActionText = "Upload video"
+    prompt.Parent = seat
+    prompt.Enabled = if #proximityPrompts == 0 then true else proximityPrompts[1].Enabled
+    table.insert(proximityPrompts, prompt)
 
-    proximityPrompt.Triggered:Connect(function()
+    prompt.Triggered:Connect(function()
         toggleProximityPrompts(false)
 
         character = player.character
@@ -621,29 +621,22 @@ for i, fish in ipairs(fishInstances) do
 end
 
 -- open()
-if remotes.GetStat:InvokeServer("Tycoon")["Gaming Desk#1"]then
-    loadComputer(paths.Tycoon.Tycoon:WaitForChild("Gaming Desk#1"))
-else
-    local conn
-    conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
-        if child.Name == "Gaming Desk#1" then
-            conn:Disconnect()
-            loadComputer(child)
-        end
-    end)
-end
+for i = 1, 2 do
+    local name = "Gaming Desk#" .. i
 
-if remotes.GetStat:InvokeServer("Tycoon")["Gaming Desk#2"]then
-    loadComputer(paths.Tycoon.Tycoon:WaitForChild("Gaming Desk#2"))
-else
-    local conn
-    conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
-        if child.Name == "Gaming Desk#2" then
-            conn:Disconnect()
-            loadComputer(child)
-        end
-    end)
+    if remotes.GetStat:InvokeServer("Tycoon")[name]then
+        loadComputer(paths.Tycoon.Tycoon:WaitForChild(name))
+    else
+        local conn
+        conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
+            if child.Name == name then
+                conn:Disconnect()
+                loadComputer(child)
+            end
+        end)
+    end
 
 end
+
 
 return minigame
