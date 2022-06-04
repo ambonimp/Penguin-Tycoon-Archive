@@ -26,7 +26,7 @@ Remotes.YoutubeMinigameFinished.OnServerEvent:Connect(function(player, computer,
             Modules.Income:AddGems(player, gemsEarned, "Youtube Minigame")
 
 
-            task.wait(UPLOAD_COOLDOWN)
+            task.wait(UPLOAD_COOLDOWN * 0.6) -- Shorter to account for latenc
             debounces[player] = false
         end
 
