@@ -61,8 +61,12 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 	local Player = game.Players:GetPlayerByUserId(PlayerID)
 
 	if Modules.PlayerData.sessionData[Player.Name] then
+		--spin the wheel
+		if product == 1271390016 then
+			Modules.PlayerData.sessionData[Player.Name]["Spin"][2] = 1
+			Remotes.SpinTheWheel:InvokeClient(Player,"Bought")
 		--Gem Products
-		if GemProducts[product] then
+		elseif GemProducts[product] then
 			Modules.Income:AddGems(Player,GemProducts[product],"Bought")
 		elseif BoostsProducts[product] then
 			if BoostsProducts[product] == "Bundle" then

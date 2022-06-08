@@ -10,6 +10,7 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
+local PopupPurchase = {}
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
 
 --- Gamepass Variables ---
@@ -157,22 +158,40 @@ function Gamepasses:PlayerOwnsPass(player, passId)
 	end
 end
 
+Remotes.PopupPrompt.OnServerEvent:Connect(function(Player,PassId)
+	PopupPurchase[Player.Name] = true
+	Services.MPService:PromptGamePassPurchase(Player,PassId)
+end)
+
 Services.MPService.PromptGamePassPurchaseFinished:Connect(function(player, gamepass, purchased)
 	if purchased then
 		Gamepasses:AwardGamepass(player.Name, gamepass)
-		
+		local productData = game:GetService("MarketplaceService"):GetProductInfo(gamepass, Enum.InfoType.GamePass)
 		--[[
 			Fires a bindable event to notify server that this event has occured with given data
 			Used normally to integrate with Game Analytics / Dive / Playfab
 		]]--
 		local success, msg = pcall(function()
-			local productData = game:GetService("MarketplaceService"):GetProductInfo(gamepass, Enum.InfoType.GamePass)
+			if PopupPurchase[player.Name] then
+				PopupPurchase[player.Name] = nil
+				EventHandler:Fire("PopupPurchase", player, {
+					productId = gamepass,
+					price = productData.PriceInRobux
+				})
+			end
+		end)
+		local success, msg = pcall(function()
+			
 			EventHandler:Fire("transactionCompleted", player, {
 				productId = gamepass,
 				productDetails = productData,
 				price = productData.PriceInRobux
 			})
 		end)
+	end
+
+	if PopupPurchase[player.Name] then
+		PopupPurchase[player.Name] = nil
 	end
 end)
 

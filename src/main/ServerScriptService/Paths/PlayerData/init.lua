@@ -325,6 +325,10 @@ local function SetupNewStats(Player)
 		Data["Boosts"]["Ultra Fishing Luck"] = {0,0}
 	end
 
+	if not Data["Spin"] then
+		Data["Spin"] = {true,0,os.time()} 
+	end
+
 	if not Data["BoatUnlocked"] then
 		Data["BoatUnlocked"] = {
 			[1] = false,
@@ -440,6 +444,11 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Player:SetAttribute("PetHunger", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Hunger)
 		Player:SetAttribute("PetEntertainment", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Entertainment)
 		Player:SetAttribute("PetHappiness", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Happiness)
+	end
+
+	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] then
+		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+(12*60*60)
+		PlayerData.sessionData[Player.Name]["Spin"][1] = true
 	end
 	-- Setup Leaderstats
 	local leaderstats = Instance.new("Folder", Player)
