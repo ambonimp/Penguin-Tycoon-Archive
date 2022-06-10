@@ -44,6 +44,7 @@ function Paths.Initiliaze()
 	Paths.Modules.GameInfo = require(Paths.Services.RStorage.Modules.GameInfo)
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
+	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
@@ -83,6 +84,8 @@ function Paths.Initiliaze()
 	Paths.Modules.PlayerData = require(script.PlayerData);
 	Paths.Modules.Income = require(script.PlayerData.Income)
 	Paths.Modules.Leaderboards = require(script.Leaderboards)
+
+	Paths.Modules.Quests = require(script.Quests)
 	
 	-- Store Modules
 	Paths.Modules.Store = require(script.Store)
