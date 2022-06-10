@@ -245,13 +245,14 @@ function SkateRace:StartEvent()
 						-- Record setting
 						local Data = Modules.PlayerData.sessionData[PlayerName]
 						if Data then
+							local StatTime = math.floor(Time * 100) / 100
 							local Record =  Data["Stats"]["Skate Race Record"]
 							if Record then
-								if Record > Time then
-									Data["Stats"]["Skate Race Record"] = math.floor(Time)
+								if Record > StatTime then
+									Data["Stats"]["Skate Race Record"] = StatTime
 								end
 							else
-								Data["Stats"]["Skate Race Record"] = math.floor(Time)
+								Data["Stats"]["Skate Race Record"] = StatTime
 							end
 
 						end
@@ -307,12 +308,15 @@ function SkateRace:StartEvent()
 
 			else
 				RewardGems(Player, PARTICIPATION_REWARD)
+
 			end
 
 		end
+	end
 
+	for _, Participant in ipairs(Participants:GetChildren()) do
+		local Player = game.Players:FindFirstChild(Participant.Name)
 		Remotes.SkateRace:FireClient(Player, "Finished", CompletedRace, Map.Winners.CameraAngle.CFrame)
-
 	end
 
 	ToggleGemRewardUI(true)

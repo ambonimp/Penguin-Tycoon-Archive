@@ -62,7 +62,7 @@ local function AddPlacement(Ranking, Info)
     local Placement = Dependency.Placement:Clone()
     Placement.Name = Info.PlayerName
     Placement.PlayerName.Text = Info.PlayerName
-    Placement.Score.Text = string.format("%.1f", Info.Score) .. (SCORE_UNIT[Player:GetAttribute("Minigame")] or "")
+    Placement.Score.Text = if Info.Score then ((Info.Score % 1 == 0 and Info.Score or string.format("%.2f", Info.Score)).. (SCORE_UNIT[Player:GetAttribute("Minigame")] or "")) else ""
     Placement.Medal.Image = MEDALS[Ranking] or ""
     Placement.Parent = FinishedUI.Placement
 
@@ -96,10 +96,6 @@ end
 function Events:EventStarted()
     FinishedUI.Visible = false
     Reset()
-end
-
-function Events:EventEnded()
-    FinishedUI.Exit.Visible = true
 end
 
 -- Resetting

@@ -44,6 +44,10 @@ Codes.GiveReward["Accessory"] = function (Player, CodeData)
 	Modules.Accessories:ItemAcquired(Player, CodeData.AccessoryName, CodeData.AccessoryType)
 end
 
+Codes.GiveReward["Outfit"] = function(Player, CodeData)
+	Modules.Accessories:ItemAcquired(Player, CodeData.AccessoryName, "Outfits")
+end
+
 function Codes.RedeemCode(Player, Code, Rewards)
 	table.insert(Modules.PlayerData.sessionData[Player.Name]["Redeemed Codes"], Code)
 	local CodeData = Rewards

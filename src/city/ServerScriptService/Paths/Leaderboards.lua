@@ -63,7 +63,7 @@ local leaderboards = {
 	["Sled Race"] = {
 		DataStore = Services.DataStoreService:GetOrderedDataStore("Sled Race_v-RELEASE"),
 		Leaderboard = workspace.Leaderboards["Sled Race"];
-		smallestFirst = false;};
+		smallestFirst = true;};
 }
 
 local function LoadPenguin(userId, penguin,scale)

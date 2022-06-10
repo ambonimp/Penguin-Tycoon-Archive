@@ -51,7 +51,7 @@ local AllQuests = {
 		["Collect"] = {
 			{"Minigame","Candy Rush",250,"Collect 250 candy in candy rush"},
 			{"Minigame","Ice Cream Extravaganza",200,"Collect 200 ice cream in ice cream extravanza"},
-			{"Minigame","Soccer",15,"Score 5 goals in soccer"},
+			{"Minigame","Soccer",15,"Score 15 goals in soccer"},
 			{"Woodcutting","Tree",120,"Chop 120 trees"}
 		},
 		

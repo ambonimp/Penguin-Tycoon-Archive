@@ -137,7 +137,6 @@ function FallingTiles:StartEvent()
 
 			table.insert(Rankings, {
 				PlayerName = Name,
-				Score = os.time() - StartTime
 			})
 
 		end
@@ -163,7 +162,6 @@ function FallingTiles:StartEvent()
 	for _, Participant in ipairs(Participants:GetChildren()) do
 		table.insert(Winners, {
 			PlayerName = Participant.Name,
-			Score = Config.Duration,
 		})
 	end
 	if #Winners == 0 then Rankings[#Rankings] = nil end

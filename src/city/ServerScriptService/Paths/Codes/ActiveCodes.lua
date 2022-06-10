@@ -82,6 +82,13 @@ local Active = {
 		AccessoryName = "Bucket Hat";
 		ReturnText = "Accessory Received!"
 	};
+
+	["1544858"] = {
+		RewardType = "Outfit";
+		AccessoryType = "Outfit";
+		AccessoryName = "Wilco Shirt";
+		ReturnText = "Accessory Received!"
+	};
 }
 
 return Active
