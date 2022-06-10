@@ -57,7 +57,6 @@ local function WaitForPlayers()
 
 		Conn1:Disconnect()
 		Conn2:Disconnect()
-
 	end
 
 end
@@ -148,8 +147,8 @@ local function EventLoop()
 		-- Start the event if the min amount of players is met
 		if #Participants:GetChildren() >= EventConfig.MinPlayers and #Participants:GetChildren() <= EventConfig.MaxPlayers then
 			workspace:SetAttribute("Minigame", true)
-			local Winners, DisplayText
 
+			local Winners, DisplayText
 			if StartingCountdown(ChosenEvent) then
 				-- Player did not leave mid countdown and you still have enough participants  to play the match
 				local s,m = pcall(function()
@@ -208,7 +207,7 @@ local function EventLoop()
 				workspace:SetAttribute("Minigame",false)
 
 				for _, Player in pairs (game.Players:GetPlayers()) do
-					Player:SetAttribute("Minigame","none")
+					Player:SetAttribute("Minigame","None")
 
 					-- Back to lobby
 					local Partipated = Participants:FindFirstChild(Player.Name)
@@ -220,6 +219,7 @@ local function EventLoop()
 
 				Participants:ClearAllChildren()
 
+				Remotes.Lighting:FireAllClients("Night Skating")
 				Remotes.Events:FireAllClients("Event Ended")
 
 			end)
@@ -234,10 +234,14 @@ local function EventLoop()
 
 end
 
+game.Players.PlayerAdded:Connect(function(Player)
+	Remotes.Lighting:FireClient(Player, ChosenEvent)
+end)
+
 -- If player leaves and is in the participants, remove them
-game.Players.PlayerRemoving:Connect(function(player)
-	if Participants:FindFirstChild(player.Name) then
-		Participants[player.Name]:Destroy()
+game.Players.PlayerRemoving:Connect(function(Player)
+	if Participants:FindFirstChild(Player.Name) then
+		Participants[Player.Name]:Destroy()
 	end
 end)
 

@@ -11,8 +11,12 @@ local Remotes = Paths.Remotes
 
 
 --- Event Variables ---
+local EVENT_NAME = script.Name
+
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
+local Config = Modules.EventsConfig[EVENT_NAME]
+
 
 
 
@@ -62,11 +66,17 @@ function SkateRace:SpawnPlayers(ChosenBugName, ChosenBugNum)
 			end)
 
 			player:SetAttribute("Minigame","Skate Race")
+
 		end
+
 	end
+
 end
 
 function SkateRace:InitiateEvent(Event)
+	EventValues.Timer.Value = Config.Duration
+	EventValues.Timer:SetAttribute("Enabled", true)
+
 	Remotes.Events:FireAllClients("Initiate Event", Event)
 end
 
@@ -168,10 +178,13 @@ function SkateRace:StartEvent()
 	local lastUpdated = tick()
 	
 	-- Start the event
+	EventValues.TextToDisplay.Value = "Reach the finish line"
 	repeat
 		task.wait()
 		
 		local TimeLeft = math.floor((FinishTime - tick())*10)/10
+		EventValues.Timer.Value = TimeLeft
+
 		if not string.match(tostring(TimeLeft), "%.") then
 			TimeLeft = tostring(TimeLeft)..".0"
 
@@ -183,7 +196,6 @@ function SkateRace:StartEvent()
 			TimeLeft = tostring(TimeLeft).." "
 		end
 		
-		EventValues.TextToDisplay.Value = "In Progress - "..TimeLeft
 		
 		if tick() > lastUpdated + 0.2 then
 			lastUpdated = tick()
@@ -275,9 +287,10 @@ function SkateRace:StartEvent()
 				elseif playerInfo.Rank == 3 then
 					Modules.Income:AddGems(playerInfo.Player, 5, "Skate Race")
 				end
+			else
+				Modules.Income:AddGems(playerInfo.Player, 1, "Skate Race")
 			end
 
-			Modules.Income:AddGems(playerInfo.Player, 2, "Skate Race")
 		end
 		
 		for i, Participant in pairs(Participants:GetChildren()) do

@@ -140,7 +140,11 @@ function PlayerData:SetupPlayerData(player)
 
 				["Redeemed Codes"] = {},
 
-				["Youtube Minigame Score"] = 0
+				["Youtube Minigame Score"] = 0,
+				["YoutubeStats"] = {
+					Likes = 0,
+					Subscribers = 0,
+				}
 
 			}
 		else
@@ -368,6 +372,15 @@ local function SetupNewStats(Player)
 	if not Data["Youtube Minigame Score"] then
 		Data["Youtube Minigame Score"] = 0
 	end
+
+	if not Data["YoutubeStats"] then
+		Data["YoutubeStats"] = {
+			Likes = 0,
+			Subscribers = 0,
+		}
+	end
+
+
 end
 
 -- Send back the player stat that the client requests 

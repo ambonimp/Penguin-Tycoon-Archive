@@ -12,14 +12,16 @@ local Remotes = Paths.Remotes
 
 --- Lighting Variables ---
 local Presets = Services.RStorage.LightingPresets
-Lighting.CurrentLocation = "Night Skating"
 
-
+local Minigame = game.Players.LocalPlayer:GetAttribute("Minigame")
+Lighting.CurrentLocation = Minigame == "None" and "Night Skating" or Minigame
 
 --- Functions ---
 function Lighting:ChangeLighting(Preset)
 	-- Module is loaded after this one, so not a garuantee that it exists in Modules when this event is fired
-	repeat task.wait() until Modules.AudioHandler
+	if not Modules.AudioHandler then
+		repeat task.wait() until Modules.AudioHandler
+	end
 
 	if not Presets:FindFirstChild(Preset) or Preset == Lighting.CurrentLocation then return end
 	Lighting.CurrentLocation = Preset
@@ -41,9 +43,7 @@ end
 
 Remotes.Lighting.OnClientEvent:Connect(function(Location)
 	Lighting:ChangeLighting(Location)
-
 end)
-
 
 
 -- Initiate Little World Lighting

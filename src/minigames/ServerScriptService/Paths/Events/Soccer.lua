@@ -113,7 +113,7 @@ function Soccer:InitiateEvent(Event)
 	Map.Name = "Event Map"
 	Map.Parent = workspace.Event
 
-
+	EventValues.Timer:SetAttribute("Enabled", false)
 	EventValues.TextToDisplay.Value = "Initiating Soccer..."
 
 	Remotes.Events:FireAllClients("Initiate Event", Event)
@@ -322,8 +322,6 @@ function Soccer:StartEvent()
 	local winners,text
 	
 	if redscore > bluescore then --red won
-		warn("RED WON")
-
 		winners = redteam
 		confetti(Map.RedConfetti)
 		text = "Red team won with a score of "..redscore.."!"
@@ -345,8 +343,6 @@ function Soccer:StartEvent()
 		end
 		addGems(15,0)
 	elseif redscore < bluescore then -- blue won
-		warn("BLUE WON")
-
 		winners = blueteam
 		confetti(Map.BlueConfetti)
 		text = "Blue team won with a score of "..bluescore.."!"
@@ -368,8 +364,6 @@ function Soccer:StartEvent()
 		end
 		addGems(0,15)
 	elseif redscore == bluescore then -- tied
-		warn("IS THIS TRUE")
-
 		winners = {unpack(blueteam),unpack(redteam)}
 		text = "Both teams tied at "..redscore.."!"
 		addGems(5,5)

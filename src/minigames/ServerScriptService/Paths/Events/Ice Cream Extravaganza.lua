@@ -1,4 +1,3 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local IceCreamExtravaganza = {}
 
 
@@ -40,34 +39,15 @@ local Scores
 
 
 
-local function addGems(player,amount)
-	Modules.Income:AddGems(player, amount, EVENT_NAME)
-end
-
-local function TableClone(t)
-	local clone = {}
-
-	for i, v in pairs(t) do
-		clone[i] = v -- Need it simple
-	end
-
-	return clone
-end
-
-local function DictLength(t)
-    local length = 0
-    for _, _ in pairs(t) do
-        length+= 1;
-    end
-
-    return length
+local function RewardGems(Player, Amount)
+	Modules.Income:AddGems(Player,  Amount, EVENT_NAME)
 end
 
 local function SortScores()
 	local Sorted = {}
 
-	local Clone = TableClone(Scores)
-	for i = 1, DictLength(Clone) do
+	local Clone = Modules.FuncLib.TableClone(Scores)
+	for i = 1, Modules.FuncLib.DictLength(Clone) do
 		local HighestScoringPlayer
 		local HighestScore = -1
 
@@ -80,6 +60,7 @@ local function SortScores()
 
 		Clone[HighestScoringPlayer] = nil
 		table.insert(Sorted, {PlayerName = HighestScoringPlayer.Name, Score = HighestScore})
+
 	end
 
 	return Sorted
@@ -155,19 +136,22 @@ function IceCreamExtravaganza:InitiateEvent()
 	SpawnPoints = Map.PlayerSpawns:GetChildren()
 
 	EventValues.TextToDisplay.Value = "Initiating Ice Cream..."
+
+	EventValues.Timer.Value = Config.Duration
+	EventValues.Timer:SetAttribute("Enabled", true)
+
 	Remotes.Events:FireAllClients("Initiate Event")
 end
 
 function IceCreamExtravaganza:StartEvent()
-	local StartTime = tick()+1
-	local FinishTime = StartTime + Config.Duration
+	local StartTime = os.time() + 1
+	local TimeLeft = Config.Duration
 
     local Active = true
 
 	Scores = {}
 	local Scoops = {}
 	local Identifier = 1 -- Used to generate id's that help identify which scoops were collected on the client
-
 
     -- Activate Event
     for _, PlayerName in pairs(Participants:GetChildren()) do
@@ -313,13 +297,14 @@ function IceCreamExtravaganza:StartEvent()
 
     -- Countdown
     repeat
-		local TimeLeft = math.floor((FinishTime - tick()))
-		EventValues.IceCreamTimer.Value = TimeLeft
+		TimeLeft = math.floor(TimeLeft - task.wait(1))
+		EventValues.Timer.Value = TimeLeft
+
 		-- Updates scores. Done here to reduce network traffic
 		RelayToParticipants("Update", SortScores())
 
 		task.wait(.25)
-	until tick() > FinishTime or #Participants:GetChildren() == 0
+	until TimeLeft < 0 or #Participants:GetChildren() == 0
 
 	-- Game is over
 	Active = false
@@ -334,7 +319,6 @@ function IceCreamExtravaganza:StartEvent()
 
 	-- Display scoreboard
 	RelayToParticipants("Finished", ScoreBoard)
-
 
 	local Winners = {}
 	for i, Ranked in ipairs(ScoreBoard) do
@@ -357,10 +341,11 @@ function IceCreamExtravaganza:StartEvent()
 
 		if i <= 3 then
 			table.insert(Winners, PlayerName)
-			addGems(Player, WINNER_REWARDS[i])
+			RewardGems(Player, WINNER_REWARDS[i])
 		else
-			addGems(Player, PARTICIPATION_REWARD)
+			RewardGems(Player, PARTICIPATION_REWARD)
 		end
+
 	end
 
 	return #Winners > 0 and Winners or nil

@@ -60,6 +60,10 @@ local leaderboards = {
 		DataStore = Services.DataStoreService:GetOrderedDataStore("Ice Cream Extravaganza_v-RELEASE"),
 		Leaderboard = workspace.Leaderboards["Ice Cream Extravaganza"];
 		smallestFirst = false;};
+	["Sled Race"] = {
+		DataStore = Services.DataStoreService:GetOrderedDataStore("Sled Race_v-RELEASE"),
+		Leaderboard = workspace.Leaderboards["Sled Race"];
+		smallestFirst = false;};
 }
 
 local function LoadPenguin(userId, penguin,scale)
