@@ -196,6 +196,7 @@ function FallingTiles:StartEvent()
 		if table.find(Winners, Player.Name) then
 			RewardGems(Player, WINNER_REWARD)
 			Modules.Quests.GiveQuest(Player,"Win","Minigame","Falling Tiles",1)
+			Modules.Quests.GiveQuest(Player,"Win","Minigame","All",1)
 		else
 			RewardGems(Player, PARTICIPATION_REWARD)
 		end

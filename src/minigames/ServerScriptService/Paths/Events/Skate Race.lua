@@ -282,6 +282,7 @@ function SkateRace:StartEvent()
 				
 				if playerInfo.Rank == 1 and #Winners >= 2 then
 					Modules.Quests.GiveQuest(playerInfo.Player,"Win","Minigame","Skate Race",1)
+					Modules.Quests.GiveQuest(playerInfo.Player,"Win","Minigame","All",1)
 					Modules.Income:AddGems(playerInfo.Player, 15, "Skate Race")
 				elseif playerInfo.Rank == 2 then
 					Modules.Income:AddGems(playerInfo.Player, 10, "Skate Race")

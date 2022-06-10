@@ -207,6 +207,7 @@ function CandyRush:StartEvent()
 				end
 				addGems(player, 7)
 				Modules.Quests.GiveQuest(player,"Win","Minigame","Candy Rush",1)
+				Modules.Quests.GiveQuest(player,"Win","Minigame","All",1)
 			elseif i == 2 then
 				addGems(player, 5)
 			elseif i == 3 then

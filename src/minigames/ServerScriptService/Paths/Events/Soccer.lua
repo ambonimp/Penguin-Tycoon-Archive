@@ -356,6 +356,7 @@ function Soccer:StartEvent()
 			if game.Players:FindFirstChild(player) and game.Players:FindFirstChild(player).Character and game.Players:FindFirstChild(player).Character.PrimaryPart then
 				local player = game.Players:FindFirstChild(player)
 				Modules.Quests.GiveQuest(player,"Win","Minigame","Soccer",1)
+				Modules.Quests.GiveQuest(player,"Win","Minigame","All",1)
 				local SpawnPos = Map.RedSpawns:FindFirstChild(i).CFrame
 				player.Character:MoveTo(SpawnPos.Position)
 			end

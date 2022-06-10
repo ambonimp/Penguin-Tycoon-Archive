@@ -345,6 +345,7 @@ function IceCreamExtravaganza:StartEvent()
 			table.insert(Winners, PlayerName)
 			RewardGems(Player, WINNER_REWARDS[i])
 			Modules.Quests.GiveQuest(Player,"Win","Minigame","Ice Cream Extravanganza",1)
+			Modules.Quests.GiveQuest(Player,"Win","Minigame","All",1)
 		else
 			RewardGems(Player, PARTICIPATION_REWARD)
 		end
