@@ -49,7 +49,10 @@ end
 Outfits.All = {	
 	--- Default Outfit(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
-
+	--Rewards
+	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false};
+	["Royale Robe"] = {Rarity = "Free", IsForSale = false};
+	["Lobster"] = {Rarity = "Legendary", IsForSale = false};
 	--- Purchaseable Hats ---
 	-- Rares
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};
@@ -74,7 +77,7 @@ Outfits.All = {
 	["Astronaut"] = {Rarity = "Legendary", IsForSale = true};
 	["Police Officer"] = {Rarity = "Legendary", IsForSale = true};
 	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true};
-
+	
 	--- Code Outfits ---
 	
 	--- Event Outfits ---

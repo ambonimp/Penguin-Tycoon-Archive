@@ -49,7 +49,9 @@ end
 Outfits.All = {	
 	--- Default Outfit(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
-
+	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false};
+	["Royale Robe"] = {Rarity = "Free", IsForSale = false};
+	["Lobster"] = {Rarity = "Legendary", IsForSale = false};
 	--- Purchaseable Hats ---
 	-- Rares
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};

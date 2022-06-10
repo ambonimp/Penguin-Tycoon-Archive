@@ -194,6 +194,10 @@ function Soccer:StartEvent()
 					else
 						data["Stats"][EVENT_NAME] =  ball:GetAttribute("Score")
 					end
+					if game.Players:FindFirstChild(ball.LastTouched.Value.Name) then
+						Modules.Quests.GiveQuest(game.Players:FindFirstChild(ball.LastTouched.Value.Name),"Collect","Minigame","Soccer",1)
+					end
+					
 				end
 			end
 			ball:Destroy()
@@ -330,7 +334,7 @@ function Soccer:StartEvent()
 		for i,player in pairs (blueteam) do
 			if game.Players:FindFirstChild(player) and game.Players:FindFirstChild(player).Character and game.Players:FindFirstChild(player).Character.PrimaryPart then
 				local player = game.Players:FindFirstChild(player)
-
+				Modules.Quests.GiveQuest(player,"Win","Minigame","Soccer",1)
 				local SpawnPos = Map.BlueSpawns:FindFirstChild(i).CFrame
 				player.Character:MoveTo(SpawnPos.Position)
 			end
@@ -351,7 +355,8 @@ function Soccer:StartEvent()
 		for i,player in pairs (redteam) do
 			if game.Players:FindFirstChild(player) and game.Players:FindFirstChild(player).Character and game.Players:FindFirstChild(player).Character.PrimaryPart then
 				local player = game.Players:FindFirstChild(player)
-
+				Modules.Quests.GiveQuest(player,"Win","Minigame","Soccer",1)
+				Modules.Quests.GiveQuest(player,"Win","Minigame","All",1)
 				local SpawnPos = Map.RedSpawns:FindFirstChild(i).CFrame
 				player.Character:MoveTo(SpawnPos.Position)
 			end

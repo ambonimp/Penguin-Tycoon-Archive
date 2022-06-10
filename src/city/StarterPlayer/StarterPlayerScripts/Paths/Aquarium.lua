@@ -68,6 +68,7 @@ function loadFish(ID,Part)
 end
 
 task.spawn(function()
+	repeat  OwnedFish = Remotes.GetStat:InvokeServer("Fish Found") task.wait(1) until OwnedFish
 	local fishAmount = #FishFolder:GetChildren()
 	local toLoadFish = {}
 	local totalFish = 0
@@ -77,7 +78,23 @@ task.spawn(function()
 		totalFish += 1
 	end
 
-	if totalFish == 0 then
+	if totalFish == 0 or totalFish == nil or totalFish == 1 or OwnedFish == nil then
+		totalFish = 10
+		toLoadFish = {
+			[1] = "1",
+			[2] = "2",
+			[3] = "3",
+			[4] = "4",
+			[5] = "5",
+			[6] = "6",
+			[7] = "7",
+			[8] = "8",
+			[9] = "9",
+			[10] = "10",
+		}
+	end
+	if totalFish == nil or totalFish == 1 or totalFish < 10 then
+		totalFish = 10
 		toLoadFish = {
 			[1] = "1",
 			[2] = "2",
@@ -108,7 +125,7 @@ task.spawn(function()
 			end
 		end
 		loadFish(fishID,Part)
-		totalFish -= 1
+		--totalFish -= 1
 	end
 end)
 

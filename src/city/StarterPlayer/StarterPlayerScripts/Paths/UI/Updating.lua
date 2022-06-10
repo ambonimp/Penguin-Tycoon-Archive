@@ -58,7 +58,7 @@ function UpdatingUI:Initiate()
 		Modules.UIAnimations:IncomeChanged(IncomeChange, NewIncome)
 		Modules.Money:UpdateMoneyRewards() -- Update the money product values in the store
 	end)
-	
+	--[[
 	spawn(function()
 		repeat wait() until Paths.Player:GetAttribute("Next5Gems")
 		local tim = Paths.Player:GetAttribute("Next5Gems")-os.time()
@@ -80,7 +80,7 @@ function UpdatingUI:Initiate()
 				Paths.UI.Left.GemDisplay.Amount.Text = "Next Reward in 15:00"
 			end
 		end
-	end)
+	end)]]
 end
 
 

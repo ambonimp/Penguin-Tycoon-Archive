@@ -336,8 +336,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 	Player:SetAttribute("Level", PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
 	Player:SetAttribute("Tool", "None")
 	
-	Player:SetAttribute("Next5Gems", PlayerData.sessionData[Player.Name]["NextGemReward"])
-	Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "city"
 
 	
 	if PlayerData.sessionData[Player.Name]["Pets"].Equipped then
@@ -348,7 +346,29 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Player:SetAttribute("PetEntertainment", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Entertainment)
 		Player:SetAttribute("PetHappiness", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Happiness)
 	end
+
+	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
+		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
+		PlayerData.sessionData[Player.Name]["Spin"][1] = true
+	end
 	
+	if PlayerData.sessionData[Player.Name]["Quests"].Timer then
+		if os.time() >= PlayerData.sessionData[Player.Name]["Quests"].Timer then
+			Modules.Quests.getNewQuests(Player)
+		end
+	else
+		Modules.Quests.getNewQuests(Player)
+	end
+	if PlayerData.sessionData[Player.Name]["Playtime"] and (os.time()-PlayerData.sessionData[Player.Name]["Playtime"][2]) < 5*60 then
+		Player:SetAttribute("JoinTime",PlayerData.sessionData[Player.Name]["Playtime"][1])
+	else
+		Player:SetAttribute("JoinTime",os.time())
+		PlayerData.sessionData[Player.Name]["Playtime"] = {
+			[1] = os.time(),
+			[2] = os.time(),
+			[3] = {},
+		}
+	end
 	-- Setup Leaderstats
 	local leaderstats = Instance.new("Folder", Player)
 	leaderstats.Name = "leaderstats"

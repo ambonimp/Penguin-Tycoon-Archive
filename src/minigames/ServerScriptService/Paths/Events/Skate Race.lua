@@ -291,6 +291,10 @@ function SkateRace:StartEvent()
 
 		if Player then
 			if i <= 3 then
+				if i == 1 then
+					Modules.Quests.GiveQuest(Player, "Win", "Minigame", "Skate Race", 1)
+					Modules.Quests.GiveQuest(Player, "Win"," Minigame", "All", 1)
+				end
 				table.insert(Winners, PlayerName)
 
 				-- Put character on pedestal

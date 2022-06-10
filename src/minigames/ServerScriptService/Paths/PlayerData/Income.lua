@@ -96,21 +96,6 @@ end
 
 function Income:GemLoop()
 	while true do
-		for i, Player in pairs(game.Players:GetPlayers()) do
-			if Player:GetAttribute("Loaded") and Modules.PlayerData.sessionData[Player.Name] and Player:GetAttribute("Next5Gems") == nil and Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] ~= "city" then
-				Player:SetAttribute("Next5Gems",os.time()+GEM_INTERVAL)
-				Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "city"
-				Modules.PlayerData.sessionData[Player.Name]["NextGemReward"]=os.time()+GEM_INTERVAL
-			elseif Player:GetAttribute("Loaded") and Modules.PlayerData.sessionData[Player.Name] and Player:GetAttribute("Next5Gems") then
-				if Player:GetAttribute("Next5Gems")-os.time() < 0 then
-					Income:AddGems(Player, 5, "gemLoop")
-					
-					Player:SetAttribute("Next5Gems",os.time()+GEM_INTERVAL)
-					Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "city"
-					Modules.PlayerData.sessionData[Player.Name]["NextGemReward"]=os.time()+GEM_INTERVAL
-				end
-			end
-		end
 		task.wait(1)
 		Day = os.date("%A")
 		if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then

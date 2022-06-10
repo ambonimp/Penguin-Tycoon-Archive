@@ -44,6 +44,7 @@ function Paths.Initiliaze()
 	Paths.Modules.GameInfo = require(Paths.Services.RStorage.Modules.GameInfo)
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
+	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
@@ -83,6 +84,7 @@ function Paths.Initiliaze()
 	Paths.Modules.PlayerData = require(script.PlayerData);
 	Paths.Modules.Income = require(script.PlayerData.Income)
 	Paths.Modules.Leaderboards = require(script.Leaderboards)
+
 	
 	-- Store Modules
 	Paths.Modules.Store = require(script.Store)
@@ -91,6 +93,8 @@ function Paths.Initiliaze()
 	Paths.Modules.Accessories = require(script.Store.Accessories)
 	Paths.Modules.Boosts = require(script.PlayerData.Boosts)
 	Paths.Modules.SpinTheWheel = require(script.SpinTheWheel)
+	Paths.Modules.Playtime = require(script.Playtime)
+	Paths.Modules.Quests = require(script.Quests)
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
 	Paths.Modules.PoolSpawner = require(script.Tycoon.Fishing.PoolSpawner)
 

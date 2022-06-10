@@ -6,17 +6,22 @@ local Paths = require(script.Parent.Parent)
 local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
-local UI = Paths.UI.Center.Spin
+local UI = Paths.UI.Center.Achievements.Sections.Spin
 
+local SpinTime = (12*60*60)
 local soundNums = {25,70,115,160,205,250,290,340}
 local spinning = false
 
+if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
+	SpinTime = 1*60
+end
+
 local winText = {
-	[1] = "You won x1 Super Fish Luck Boost!",
-	[2] = "You won x1 Triple Money Boost!",
-	[3] = "You won 10 gems!!",
-	[4] = "You won 30 gems!",
-	[6] = "You won x1 Ultra Fish Luck Boost!",
+	[1] = "You received x1 Super Fish Luck Boost!",
+	[2] = "You received x1 Triple Money Boost!",
+	[3] = "You received 10 gems!!",
+	[4] = "You received 30 gems!",
+	[6] = "You received x1 Ultra Fish Luck Boost!",
 	
 }
 local positions = {
@@ -72,25 +77,43 @@ function spinWheel()
 		
 		task.wait()
 	end
-	Remotes.SpinTheWheel:InvokeServer("ClaimReward")
+
+	local check,am = Remotes.SpinTheWheel:InvokeServer("ClaimReward")
 	spinning = false
-	UI.Exit.Visible = true
-	UI.Center.Button.TheText.Text = "Spin 99R$"
-	if result == 7 then
-		local text = "You won $ "..Modules.Format:FormatComma(Paths.Player:GetAttribute("Income")*20).."!"
+	
+	if check == "Owned" then
+		local text = "Already owned! You received "..am.." gems instead!"
 		Paths.Modules.Setup:Notification(text,Color3.new(0.945098, 0.525490, 0.282352),7)
-	elseif winText[result] then
-		Paths.Modules.Setup:Notification(winText[result],Color3.new(0.945098, 0.525490, 0.282352),7)
+	else
+		if result == 7 then
+			local text = "You received $ "..Modules.Format:FormatComma(Paths.Player:GetAttribute("Income")*20).."!"
+			Paths.Modules.Setup:Notification(text,Color3.new(0.945098, 0.525490, 0.282352),7)
+		elseif winText[result] then
+			Paths.Modules.Setup:Notification(winText[result],Color3.new(0.945098, 0.525490, 0.282352),7)
+		end
+	end
+
+	local Spins = Remotes.GetStat:InvokeServer("Spin")
+	if Spins[1] then
+		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
+		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
+		UI.Center.Button.TheText.Text = "Spin For Free"
+	else
+		UI.Center.Button.TheText.Text = "Spin 99R$"
+	end
+
+	task.wait(4)
+	if spinning == false then
+		UI.Wheel.Rotation = 0
 	end
 end
-
-UI.Wheel["7"].Icon.Text.Text = Modules.Format:FormatComma(Paths.Player:GetAttribute("Income")*20)
 
 UI.Center.Button.MouseButton1Down:Connect(function()
 	if spinning then return end
 	local Spins = Remotes.GetStat:InvokeServer("Spin")
-	UI.Exit.Visible = false
 	if Spins[1] then
+		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = false
+		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = false
 		spinWheel()
 	else
 		Services.MPService:PromptProductPurchase(Paths.Player, 1271390016)
@@ -103,11 +126,42 @@ end
 
 local Spins = Remotes.GetStat:InvokeServer("Spin")
 if Spins[1] then
+	Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
+	Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
 	UI.Center.Button.TheText.Text = "Spin For Free"
 else
 	UI.Center.Button.TheText.Text = "Spin 99R$"
 end
 
-Modules.Buttons:UIOn(UI,true)
+task.spawn(function()
+	 local nextReward = Spins[3]
+	 if os.time() > nextReward then
+		nextReward = os.time()+SpinTime
+	 end
+
+	 local function toHMS(s)
+		return string.format("%02i:%02i:%02i", s/60^2, s/60%60, s%60)
+	end
+
+	 local function start()
+		while os.time() < nextReward do
+			local tLeft = nextReward - os.time()
+			UI.FreeSpin.Text = "Next Free Spin: "..toHMS(tLeft)
+			task.wait(1)
+		end 
+		task.wait(3)
+		if spinning then 
+			repeat task.wait()
+			until not spinning
+		end
+		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
+		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
+		UI.Center.Button.TheText.Text = "Spin For Free"
+		nextReward = Remotes.SpinTheWheel:InvokeServer("CheckGift")
+		start()
+	 end
+	 
+	 start()
+end)
 
 return SpinTheWheel

@@ -81,6 +81,11 @@ function Paths.Initiliaze()
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
 	Paths.Modules.UI = require(script.UI)
 	Paths.Modules.Index = require(script.UI.Index)
+	Paths.Modules.Achievements = require(script.Achievements)
+	Paths.Modules.SpinTheWheel = require(script.Achievements.SpinTheWheel)
+	Paths.Modules.Playtime = require(script.Achievements.Playtime)
+	--Paths.Modules.AllAchievements = require(script.Achievements.AllAchievements)
+	Paths.Modules.Quests = require(script.Achievements.Quests)
 	
 	-- Store Modules
 	Paths.Modules.Store = require(script.Store)

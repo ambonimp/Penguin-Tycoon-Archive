@@ -168,15 +168,18 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
                 if added < 10 then
                     added = 10
                 end
-                Modules.Income:AddMoney(Player,added)
+                Modules.Income:AddMoney(Player,added,true)
                 Remotes.Axe:FireClient(Player,added)
             elseif Player:GetAttribute("Income") then
                 local added = math.floor((Player:GetAttribute("Income")*Mult*Mult2)/Div)
                 if added < 10 then
                     added = 10
                 end
-                Modules.Income:AddMoney(Player,added)
+                Modules.Income:AddMoney(Player,added,true)
                 Remotes.Axe:FireClient(Player,added)
+            end
+            if Tree:GetAttribute("Health") == 0 then
+                Modules.Quests.GiveQuest(Player,"Collect","Woodcutting","Tree",1)
             end
         end
     end

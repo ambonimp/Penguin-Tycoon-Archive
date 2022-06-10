@@ -66,7 +66,6 @@ function Paths.Initiliaze()
 	Paths.Modules.EventsConfig = require(Paths.Services.RStorage.Modules.EventsConfig)
 	Paths.Modules.SpeedLines = require(script.UI.SpecialEffects.SpeedLines)
 	Paths.Modules.Spectate = require(script.Events.Spectate)
-	Paths.Modules.EventsUI = require(script.UI.Events)
 	Paths.Modules.Events = require(script.Events)
 	
 	-- Character Modules
@@ -81,7 +80,12 @@ function Paths.Initiliaze()
 	Paths.Modules.Teleporting = require(script.UI.Teleporting)
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
 	Paths.Modules.UI = require(script.UI)
-
+	Paths.Modules.EventsUI = require(script.UI.Events)
+	Paths.Modules.Achievements = require(script.Achievements)
+	Paths.Modules.SpinTheWheel = require(script.Achievements.SpinTheWheel)
+	Paths.Modules.Playtime = require(script.Achievements.Playtime)
+	--Paths.Modules.AllAchievements = require(script.Achievements.AllAchievements)
+	Paths.Modules.Quests = require(script.Achievements.Quests)
 	-- Hearts Modules
 	Paths.Modules.Hearts = require(script.Hearts);
 	

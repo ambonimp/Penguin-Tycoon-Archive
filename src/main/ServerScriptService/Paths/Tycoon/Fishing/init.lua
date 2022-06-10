@@ -26,11 +26,12 @@ local Fishing = {}
 local RewardQueue = {}
 
 local awards = {
-	["Common"] = 40,
-	["Rare"] = 50,
-	["Epic"] = 75,
-	["Legendary"] = 100,
-	["Mythic"] = 200,
+	["Common"] = 15,
+	["Rare"] = 30,
+	["Epic"] = 50,
+	["Legendary"] = 250,
+	["Mythic"] = 500,
+	["All"] = 1000,
 }
 local RarityAmount = {}
 local FishCategories = {
@@ -39,12 +40,14 @@ local FishCategories = {
 	["Epic"] = {},
 	["Legendary"] = {},
 	["Mythic"] = {},
+	["All"] = {}
 }
 
 for i,v in pairs (config.ItemList) do
 	if v.Rarity and FishCategories[v.Rarity] then
 		table.insert(FishCategories[v.Rarity],i)
 	end
+	table.insert(FishCategories["All"],i)
 end
 for i,v in pairs (FishCategories) do
 	RarityAmount[i] = #v
@@ -76,6 +79,16 @@ function checkFishRewards(Player)
 				modules.Income:AddGems(Player, awards[rarity], "Fish Reward")
 				remotes.FishRewards:FireClient(Player,rarity,awards[rarity])
 			end
+		end
+
+		local total = 0
+		for i,v in pairs (ownedRarity) do
+			total += v
+		end
+
+		if total >= RarityAmount["All"] and sessionData["Fish Rewards"]["all"] == nil then
+			modules.Income:AddGems(Player, awards["All"], "Fish Reward")
+			remotes.FishRewards:FireClient(Player,"possible",awards["All"])
 		end
 
 		if CaughtJunk then
@@ -271,6 +284,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 
 	if sessionData and sessionData[player.Name] then
 		-- should hats be added to some sort of index?
+		
 		if lootInfo.Type == itemTypes.Hat then
 			local result = GiveHat(player, sessionData[player.Name])
 
@@ -284,6 +298,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 
 			-- no need to save junk to index, just give money
 		elseif lootInfo.Type == itemTypes.Junk then
+			modules.Quests.GiveQuest(player,"Catch","Junk",config.ItemList[lootInfo.Id].Name,1)
 			--if not AFKFishing then
 			if sessionData[player.Name]["Junk Found"] == nil then
 				sessionData[player.Name]["Junk Found"] = {
@@ -309,7 +324,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 			if returnData.Enchanted then
 				returnData.Worth *= 10
 			end
-
+			modules.Quests.GiveQuest(player,"Catch",config.ItemList[lootInfo.Id].Rarity,"Fish",1)
 			--if not AFKFishing then
 			modules.Income:AddMoney(player, returnData.Worth)
 			--end

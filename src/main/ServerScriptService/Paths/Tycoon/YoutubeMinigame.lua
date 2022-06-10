@@ -12,7 +12,7 @@ local debounces = {}
 
 local UPLOAD_COOLDOWN = 60
 -- This event is only fired when the game is finished
-Remotes.YoutubeMinigameFinished.OnServerEvent:Connect(function(player, computer, score, subscribers, likes)
+Remotes.YoutubeMinigameFinished.OnServerEvent:Connect(function(player, computer, score, subs, likes)
     local data = Modules.PlayerData.sessionData[player.Name]
     if data then
         if data.Tycoon[computer] and not debounces[player] then
@@ -23,8 +23,8 @@ Remotes.YoutubeMinigameFinished.OnServerEvent:Connect(function(player, computer,
             end
 
             local stats = data["YoutubeStats"]
-            stats.Liked += likes
-            stats.Subscribers += subscribers
+            stats.Likes += likes
+            stats.Subscribers += subs
 
             local gemsEarned = if score >= 40 then 3 else (if score >= 25 then 2 else (if score >= 10 then 1 else 0))
             Modules.Income:AddGems(player, gemsEarned, "Youtube Minigame")

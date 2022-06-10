@@ -43,6 +43,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
+	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
 	Paths.Modules.ActiveCodes = require(script.Codes.ActiveCodes)
@@ -59,6 +60,9 @@ function Paths.Initiliaze()
 	-- Emote Server Modules
 	Paths.Modules.Emotes = require(script.Emotes)
 	
+	Paths.Modules.SpinTheWheel = require(script.SpinTheWheel)
+	Paths.Modules.Playtime = require(script.Playtime)
+	Paths.Modules.Quests = require(script.Quests)
 	-- Data Modules
 	Paths.Modules.Save = require(script.PlayerData.Save)
 	Paths.Modules.PlayerData = require(script.PlayerData);

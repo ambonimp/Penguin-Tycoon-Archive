@@ -144,10 +144,18 @@ end
 --- Hiding/Showing buttons ---
 local ShowButtonsDB = false
 local OriginalPositions = {}
+local OriginalPositionsRight = {}
 
 for i, v in pairs(UI.Left.Buttons:GetChildren()) do
 	if v.Name ~= "Expand" and v.Name ~= "Hide" then
 		OriginalPositions[v] = v.Position
+	end
+end
+
+
+for i, v in pairs(UI.Right.Buttons:GetChildren()) do
+	if v.Name ~= "Expand" and v.Name ~= "Hide" then
+		OriginalPositionsRight[v] = v.Position
 	end
 end
 
@@ -181,6 +189,43 @@ UI.Left.Buttons.Hide.MouseButton1Down:Connect(function()
 	
 	task.wait(0.1)
 	for Button, Position in pairs(OriginalPositions) do
+		Button.Visible = false
+	end
+
+	ShowButtonsDB = false
+end)
+
+
+UI.Right.Buttons.Expand.MouseButton1Down:Connect(function()
+	if ShowButtonsDB then return end
+	ShowButtonsDB = true
+
+	UI.Right.Buttons.Expand.Visible = false
+	UI.Right.Buttons.Hide.Visible = true
+
+	for Button, Position in pairs(OriginalPositionsRight) do
+		Button.Visible = true
+		Button:TweenSizeAndPosition(UDim2.new(0.25, 0, 0.25, 0), Position, "Out", "Quart", 0.15, true)
+	end
+	
+	task.wait(0.12)
+
+	ShowButtonsDB = false
+end)
+
+UI.Right.Buttons.Hide.MouseButton1Down:Connect(function()
+	if ShowButtonsDB then return end
+	ShowButtonsDB = true
+
+	UI.Right.Buttons.Expand.Visible = true
+	UI.Right.Buttons.Hide.Visible = false
+
+	for Button, Position in pairs(OriginalPositionsRight) do
+		Button:TweenSizeAndPosition(UDim2.new(0.01, 0, 0.01, 0), UDim2.new(.9, 0, 0.5, 0), "Out", "Quart", 0.15, true)
+	end
+	
+	task.wait(0.1)
+	for Button, Position in pairs(OriginalPositionsRight) do
 		Button.Visible = false
 	end
 
