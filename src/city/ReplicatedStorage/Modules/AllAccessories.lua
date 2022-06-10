@@ -77,7 +77,9 @@ Accessories.Unlockables = {
 Accessories.All = {	
 	--- Default Hat(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
-
+	["Jellyfish Hat"] = {Rarity = "Free", IsForSale = false};
+	["Traffic Cone"] = {Rarity = "Free", IsForSale = false};
+	["Shark Hat"] = {Rarity = "Free", IsForSale = false};
 
 	--- Unlockable Hats ---
 	-- Collectable

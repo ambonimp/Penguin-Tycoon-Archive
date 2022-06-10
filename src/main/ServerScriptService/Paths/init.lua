@@ -85,7 +85,6 @@ function Paths.Initiliaze()
 	Paths.Modules.Income = require(script.PlayerData.Income)
 	Paths.Modules.Leaderboards = require(script.Leaderboards)
 
-	Paths.Modules.Quests = require(script.Quests)
 	
 	-- Store Modules
 	Paths.Modules.Store = require(script.Store)
@@ -95,6 +94,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Boosts = require(script.PlayerData.Boosts)
 	Paths.Modules.SpinTheWheel = require(script.SpinTheWheel)
 	Paths.Modules.Playtime = require(script.Playtime)
+	Paths.Modules.Quests = require(script.Quests)
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
 	Paths.Modules.PoolSpawner = require(script.Tycoon.Fishing.PoolSpawner)
 

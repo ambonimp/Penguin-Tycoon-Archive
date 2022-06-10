@@ -107,7 +107,7 @@ function CandyRush:InitiateEvent(Event)
 				if collected then return end
 				if hit.Parent:FindFirstChild("Humanoid") then
 					collected = true
-					
+					Modules.Quests.GiveQuest(game.Players:FindFirstChild(hit.Parent.Name),"Collect","Minigame","Candy Rush",1)
 					local tbl = findTbl(hit.Parent.Name)
 					if tbl == nil then
 						table.insert(EggsCollected,{hit.Parent.Name,0,{
@@ -206,6 +206,7 @@ function CandyRush:StartEvent()
 					data["Stats"][EVENT_NAME] =  1
 				end
 				addGems(player, 7)
+				Modules.Quests.GiveQuest(player,"Win","Minigame","Candy Rush",1)
 			elseif i == 2 then
 				addGems(player, 5)
 			elseif i == 3 then

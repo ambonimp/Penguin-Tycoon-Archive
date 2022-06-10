@@ -284,6 +284,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 
 	if sessionData and sessionData[player.Name] then
 		-- should hats be added to some sort of index?
+		
 		if lootInfo.Type == itemTypes.Hat then
 			local result = GiveHat(player, sessionData[player.Name])
 
@@ -297,6 +298,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 
 			-- no need to save junk to index, just give money
 		elseif lootInfo.Type == itemTypes.Junk then
+			modules.Quests.GiveQuest(player,"Catch","Junk",config.ItemList[lootInfo.Id].Name,1)
 			--if not AFKFishing then
 			if sessionData[player.Name]["Junk Found"] == nil then
 				sessionData[player.Name]["Junk Found"] = {
@@ -322,7 +324,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 			if returnData.Enchanted then
 				returnData.Worth *= 10
 			end
-
+			modules.Quests.GiveQuest(player,"Catch",config.ItemList[lootInfo.Id].Rarity,"Fish",1)
 			--if not AFKFishing then
 			modules.Income:AddMoney(player, returnData.Worth)
 			--end

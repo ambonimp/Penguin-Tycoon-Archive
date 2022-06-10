@@ -93,6 +93,7 @@ function Paths.Initiliaze()
 	Paths.Modules.SpinTheWheel = require(script.Achievements.SpinTheWheel)
 	Paths.Modules.Playtime = require(script.Achievements.Playtime)
 	Paths.Modules.AllAchievements = require(script.Achievements.AllAchievements)
+	Paths.Modules.Quests = require(script.Achievements.Quests)
 
 	print("store modules")
 	-- Store Modules

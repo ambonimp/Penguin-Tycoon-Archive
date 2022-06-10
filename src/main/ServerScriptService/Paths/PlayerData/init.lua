@@ -334,7 +334,7 @@ local function SetupNewStats(Player)
 	end
 
 	if not Data["Playtime"] then
-		Data["Playtime"] = {os.time(),0}
+		Data["Playtime"] = {0,0,{}}
 	end
 
 	if not Data["BoatUnlocked"] then
@@ -373,6 +373,10 @@ local function SetupNewStats(Player)
 		}
 	end
 	
+	if not Data["Quests"] then
+		Data["Quests"] = {}
+	end
+
 	if not Data["Youtube Minigame Score"] then
 		Data["Youtube Minigame Score"] = 0
 	end
@@ -458,6 +462,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "tycoon"
 	end]]
 	
+
 	if PlayerData.sessionData[Player.Name]["Pets"].Equipped then
 		Player:SetAttribute("Pet", PlayerData.sessionData[Player.Name]["Pets"].Equipped.RealName)
 		Player:SetAttribute("PetID", PlayerData.sessionData[Player.Name]["Pets"].Equipped.ID)
@@ -470,6 +475,24 @@ game.Players.PlayerAdded:Connect(function(Player)
 	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
 		PlayerData.sessionData[Player.Name]["Spin"][1] = true
+	end
+	
+	if PlayerData.sessionData[Player.Name]["Quests"].Timer then
+		if os.time() >= PlayerData.sessionData[Player.Name]["Quests"].Timer then
+			Modules.Quests.getNewQuests(Player)
+		end
+	else
+		Modules.Quests.getNewQuests(Player)
+	end
+	if PlayerData.sessionData[Player.Name]["Playtime"] and (os.time()-PlayerData.sessionData[Player.Name]["Playtime"][2]) < 5*60 then
+		Player:SetAttribute("JoinTime",PlayerData.sessionData[Player.Name]["Playtime"][1])
+	else
+		Player:SetAttribute("JoinTime",os.time())
+		PlayerData.sessionData[Player.Name]["Playtime"] = {
+			[1] = os.time(),
+			[2] = os.time(),
+			[3] = {},
+		}
 	end
 	-- Setup Leaderstats
 	local leaderstats = Instance.new("Folder", Player)
@@ -486,16 +509,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
 	NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
-	if PlayerData.sessionData[Player.Name]["Playtime"] and (os.time()-PlayerData.sessionData[Player.Name]["Playtime"][2]) < 15*60 then
-		Player:SetAttribute("JoinTime",PlayerData.sessionData[Player.Name]["Playtime"][1])
-	else
-		Player:SetAttribute("JoinTime",os.time())
-		PlayerData.sessionData[Player.Name]["Playtime"] = {
-			[1] = os.time(),
-			[2] = os.time(),
-			[3] = {},
-		}
-	end
+	
 	
 	-- Updating Leaderstats
 	Player:GetAttributeChangedSignal("Money"):Connect(function()

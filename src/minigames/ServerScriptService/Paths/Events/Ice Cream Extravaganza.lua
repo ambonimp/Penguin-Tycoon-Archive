@@ -288,7 +288,9 @@ function IceCreamExtravaganza:StartEvent()
 	        	end
 
 	        	Scores[Player] = newScore or oldScore
-
+				if newScore and newScore > oldScore then
+					Modules.Quests.GiveQuest(Player,"Collect","Minigame","Ice Cream Extravaganza",1)
+				end
 	        end
 
         end
@@ -342,6 +344,7 @@ function IceCreamExtravaganza:StartEvent()
 		if i <= 3 then
 			table.insert(Winners, PlayerName)
 			RewardGems(Player, WINNER_REWARDS[i])
+			Modules.Quests.GiveQuest(Player,"Win","Minigame","Ice Cream Extravanganza",1)
 		else
 			RewardGems(Player, PARTICIPATION_REWARD)
 		end

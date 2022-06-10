@@ -1,0 +1,37 @@
+local Achievements = {
+	{"Catch all common fish","","Gems",15,{"Fish","Common"}},
+	{"Catch all rare fish","","Gems",30,{"Fish","Rare"}},
+	{"Catch all epic fish","","Gems",50,{"Fish","Epic"}},
+	{"Catch all legendary fish","","Gems",250,{"Fish","Legendary"}},
+	{"Catch all mythic fish","","Gems",500,{"Fish","Mythic"}},
+	{"Catch all the fish in the index","","Gems",1000,{"Fish","All"}},
+	{"Catch 200 seaweed","","Accessory","Seaweed Hat",{"Fish","Sea Weed",200}},
+	{"Catch 200 boots","","Accessory","Boot Hat",{"Fish","Old Boots",200}},
+	{"Catch 200 bottles","","Accessory","Bottle Hat",{"Fish","Bottle",200}},
+	{"Catch a treasure chest","","Gems",10,{"Fish","Treasure Chest",200}},
+	{"Find all the boat pieces","","text","Access to the Sailboat"},
+	{"Find all the plane pieces","","text","Access to the Plane"},
+	{"Collect all of the hidden hats","","Gems",5,{"Accessory","Hidden"}},
+	{"Collect all different types of cats","","Gems",50},
+	{"Collect all different types of dogs","","Gems",100},
+	{"Collect all different types of rabbits","","Gems",250},
+	{"Collect all different types of dinosaurs","","Gems",500},
+	{"Collect all different types of unicorns","","Gems",750},
+	{"Collect all different types of pandas","","Gems",1000},
+	{"Follow @Penguin_Tycoon on twitter","rbxassetid://9852947672","text","10% extra income"},
+	{"Join our community server!","rbxassetid://9852947672","Gems","10% extra income"},
+	{"Collect all rare hats","Gems","",100},
+	{"Collect all epic hats","Gems","",250},
+	{"Collect all legendary hats","","Gems",300},
+	{"Collect all of the eyes","","Gems",300},
+	{"Win 500 skate race minigames","","Gems",250},
+	{"Win 500 falling tiles minigames","","Gems",250},
+	{"Win 500 soccer minigames","","Gems",250},
+	{"Score 1000 goals in soccer","","Gems",250},
+	{"Win 500 candy rush minigames","","Gems",250},
+	{"Win 500 ice cream minigames","","Gems",250},
+	{"Complete all achievements","","text","Shark Hat & Royale Robe Outfit"}
+}
+
+
+return Achievements
