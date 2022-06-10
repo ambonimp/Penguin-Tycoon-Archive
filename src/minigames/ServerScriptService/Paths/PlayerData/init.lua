@@ -258,6 +258,10 @@ local function SetupNewStats(Player)
 		}
 	end
 
+	if not Data["Playtime"] then
+		Data["Playtime"] = {0,0,{}}
+	end
+
 	if not Data["Pets"] then
 		Data["Pets"] = {
 			Equipped = nil,

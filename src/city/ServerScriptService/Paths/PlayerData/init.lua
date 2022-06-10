@@ -176,6 +176,10 @@ local function SetupNewStats(Player)
 	if not Data["LastPlayTime"] then
 		Data["LastPlayTime"] = os.time()-(30*60)
 	end
+
+	if not Data["Playtime"] then
+		Data["Playtime"] = {0,0,{}}
+	end
 	
 	if not Data["Gems"] then
 		Data["Gems"] = 1000
