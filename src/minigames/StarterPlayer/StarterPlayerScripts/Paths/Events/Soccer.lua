@@ -15,7 +15,7 @@ local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
 
 local setConnection = false
-local JumpAnim 
+local JumpAnim
 local jumpID = "rbxassetid://9282632702"--9243965764"
 local anim = Instance.new("Animation")
 anim.AnimationId = jumpID
@@ -100,7 +100,7 @@ function Soccer:InitiateEvent(Event)
 			BlueTeam.Team.Visible = true
 		end
 	end)
-	
+
 end
 
 function Soccer:EventStarted()
@@ -112,7 +112,7 @@ function Soccer:EventStarted()
 	-- Incase player resets during countdown
 	if Participants:FindFirstChild(Player.Name) then
 		SoccerUI.Visible = true
-		EventInfoUI.EventInfoText.Visible = false
+		EventInfoUI.TextToDisplay.Visible = false
 
 		if Player.Character:GetAttribute("Team") == "Red" then
 			RedTeam.Team.Visible = true
@@ -125,7 +125,7 @@ function Soccer:EventStarted()
 end
 
 function Soccer:LeftEvent()
-	EventInfoUI.EventInfoText.Visible = true
+	EventInfoUI.TextToDisplay.Visible = true
 	SoccerUI.Visible = false
 end
 

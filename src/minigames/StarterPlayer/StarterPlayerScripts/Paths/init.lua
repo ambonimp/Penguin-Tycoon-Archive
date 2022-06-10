@@ -30,6 +30,7 @@ function Paths.Initiliaze()
 	Paths.UI.Top = Paths.UI.Main:WaitForChild("Top")
 	Paths.UI.Full = Paths.UI.Main:WaitForChild("Full")
 	Paths.UI.BLCorner = Paths.UI.Main:WaitForChild("BLCorner")
+	Paths.UIFx = PlayerGui:WaitForChild("SpecialEffects")
 	
 	
 --- Initializing Remotes ---
@@ -63,8 +64,9 @@ function Paths.Initiliaze()
 	
 	-- Event Modules
 	Paths.Modules.EventsConfig = require(Paths.Services.RStorage.Modules.EventsConfig)
-	Paths.Modules.Events = require(script.Events)
+	Paths.Modules.SpeedLines = require(script.UI.SpecialEffects.SpeedLines)
 	Paths.Modules.Spectate = require(script.Events.Spectate)
+	Paths.Modules.Events = require(script.Events)
 	
 	-- Character Modules
 	Paths.Modules.DoubleJump = require(script.Character.DoubleJump);
@@ -78,6 +80,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Teleporting = require(script.UI.Teleporting)
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
 	Paths.Modules.UI = require(script.UI)
+	Paths.Modules.EventsUI = require(script.UI.Events)
 
 	-- Hearts Modules
 	Paths.Modules.Hearts = require(script.Hearts);

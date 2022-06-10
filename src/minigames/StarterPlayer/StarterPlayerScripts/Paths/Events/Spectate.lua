@@ -64,7 +64,7 @@ function Spectate.EnterSpectateMode()
 			Paths.UI.Top.Soccer.Visible = true
 
 			EventInfoUI.Position = UDim2.new(UDim.new(0, 0), UDim.new(0.4, -32))
-			EventInfoUI.EventInfoText.Visible = false
+			EventInfoUI.TextToDisplay.Visible = false
 
 		else
 			EventInfoUI.Position = DEFAULT_INFO_POSITION
@@ -79,7 +79,7 @@ function Spectate.ExitSpectateMode()
 	EventInfoUI.Position = DEFAULT_INFO_POSITION
 	Paths.UI.Top.Soccer.Visible = false
 
-	EventInfoUI.EventInfoText.Visible = true
+	EventInfoUI.TextToDisplay.Visible = true
 	EventInfoUI.StopSpectating.Visible = false
 	EventInfoUI.SpectateInfo.Visible = false
 	EventInfoUI.ExitEvent.Visible = true
@@ -199,7 +199,7 @@ if #Participants:GetChildren() > 0 and not Participants:FindFirstChild(Paths.Pla
 end
 --[[
 game.Players.LocalPlayer:GetAttributeChangedSignal("Minigame"):Connect(function()
-	if game.Players.LocalPlayer:GetAttribute("Minigame") == "none" then
+	if game.Players.LocalPlayer:GetAttribute("Minigame") == "None" then
 		Spectate.ExitSpectateMode()
 	end
 end)]]

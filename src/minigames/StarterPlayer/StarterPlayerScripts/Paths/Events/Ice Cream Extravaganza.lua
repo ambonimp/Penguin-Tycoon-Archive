@@ -19,12 +19,8 @@ local Config = Modules.EventsConfig[EVENT_NAME]
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
-
-local Timer =  Paths.UI.Top[EVENT_NAME]
-
 local Scoreboard =  Paths.UI.Left.EventUIs[EVENT_NAME]
 local ScoreDisplay =  Paths.UI.Right.EventUIs[EVENT_NAME]
-local FinishedUI = Paths.UI.Center.GeneralEventFinished
 
 local Assets = Services.RStorage.Assets[EVENT_NAME]
 
@@ -39,30 +35,6 @@ local CollectSounds
 local EventFinished = false
 
 local Rand = Random.new()
-
-local toText = {
-	[1] = "1ST",
-	[2] = "2ND",
-	[3] = "3RD",
-	[4] = "4TH",
-	[5] = "5TH",
-	[6] = "6TH",
-	[7] = "7TH",
-	[8] = "8TH",
-	[9] = "9TH",
-	[10] = "10TH",
-	[11] = "11TH",
-	[12] = "12TH",
-	[13] = "13TH",
-	[14] = "14TH",
-	[15] = "15TH",
-	[16] = "16TH",
-	[17] = "17TH",
-	[18] = "18TH",
-	[19] = "19TH",
-	[20] = "20TH",
-}
-
 
 
 -- Utility Functions --
@@ -165,9 +137,6 @@ function IceCreamExtravaganza:EventStarted()
 
 	-- Incase player resets during countdown
 	if Participants:FindFirstChild(Player.Name) then
-
-		-- Change countdown ui
-		Timer.Visible = true
 		Scoreboard.Visible = true
 		ScoreDisplay.Visible = true
 
@@ -190,9 +159,6 @@ function IceCreamExtravaganza:EventStarted()
 end
 
 function IceCreamExtravaganza:LeftEvent()
-	-- Change countdown ui
-	Timer.Visible = false
-
 	Scoreboard.Visible = false
 	ScoreDisplay.Visible = false
 
@@ -328,44 +294,10 @@ Remotes.IceCreamExtravaganza.OnClientEvent:Connect(function(Event, ...)
 		EventFinished = true
 
 		local Rankings = Params[1]
-		local MyRanking
+        Modules.EventsUI:UpdateRankings(Rankings)
 
-		for i = 1, Config.MaxPlayers do
-			local Placement = FinishedUI.Placement:FindFirstChild(i)
-			local Ranked = Rankings[i]
+	end
 
-			if Ranked then
-				Placement.Visible = true
-				Placement.PlayerName.Text = Ranked.PlayerName..":"
-				Placement.Score.Text = Ranked.Score
-
-				if Ranked.PlayerName == Player.Name then
-					MyRanking = i
-					Placement.BackgroundColor3 = Color3.new(0.901960, 0.843137, 0.058823)
-				else
-					Placement.BackgroundColor3 = Color3.new(1, 1, 1)
-				end
-
-			else
-				Placement.Visible = false
-			end
-
-		end
-
-		if MyRanking then
-			FinishedUI.Visible = true
-			Paths.Modules.Buttons:UIOn(FinishedUI,true)
-
-			FinishedUI.Title.Text = "YOU PLACED ".. toText[MyRanking]
-		end
-
-    end
-
-end)
-
-EventValues.IceCreamTimer.Changed:Connect(function()
-	local Remainder = EventValues.IceCreamTimer.Value
-	Timer.Timer.Text =  string.format("%02i:%02i", Remainder/60%60, Remainder%60)
 end)
 
 return IceCreamExtravaganza
