@@ -157,9 +157,11 @@ function SledRace:StartEvent()
 	local CompletedRace = {}
 
 	local Conn = Remotes.SledRace.OnServerEvent:Connect(function(Client, Event, ...)
+		
 		local Params = table.pack(...)
 
 		if Event == "OnRaceFinished" then
+			if Config.Duration - TimeLeft <= 35 then return end
 			if Participants:FindFirstChild(Client.Name) then
 				table.insert(CompletedRace, {
 					PlayerName = Client.Name,
@@ -206,7 +208,9 @@ function SledRace:StartEvent()
 				local Stats = Data["Stats"]
 				local RecordTime =  Stats[EVENT_NAME]
 				local StatTime = math.floor(Time * 100) / 100
-
+				if Time == 0 then
+					Time = 40
+				end
 				if RecordTime then
 					if StatTime < RecordTime then
 						Stats[EVENT_NAME] = StatTime

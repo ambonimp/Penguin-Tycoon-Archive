@@ -139,6 +139,11 @@ function Leaderboards:beginLeaderboardUpdate()
 								end)
 							end)
 						end
+						if Stat == "Sled Race" and Data["Stats"][Stat] < 30 then
+							Data["Stats"][Stat] = 1000000
+						end
+
+
 					end
 				end
 			end
