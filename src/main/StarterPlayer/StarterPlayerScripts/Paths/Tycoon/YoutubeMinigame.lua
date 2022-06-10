@@ -82,7 +82,9 @@ local fishInstances = gameScreen.Fish:GetChildren()
 
 -- Fish currently in play
 local fishCollected
+
 local highscore
+local totalScore
 
 local jumpingFish = {}
 local jumps = {}
@@ -94,6 +96,8 @@ local playing
 local timeRemainingInGame
 
 
+
+
 local function loop(x, min, max)
     if x > max then
         return min
@@ -102,6 +106,21 @@ local function loop(x, min, max)
     else
         return x
     end
+end
+
+local function toSuffix(n)
+    n = tonumber(n)
+    local suffixes = {"K", "M", "B", "T", "Q", "Qu", "S", "Se", "O", "N", "D"}
+
+    for i = #suffixes, 1, -1 do
+        local v = math.pow(10, i * 3)
+        if n >= v then
+            local returning = ("%.3f"):format(n / v)
+            return returning:sub(1, #returning - 1):gsub("%.", ".") .. suffixes[i]
+        end
+    end
+
+    return tostring(n)
 end
 
 local function tweenNumber(textLbl, goal, format)
@@ -136,6 +155,7 @@ local function toggleProximityPrompts(toggle)
         prompt.Enabled = toggle
     end
 end
+
 
 function transitionFrames(old, new, dir, scale)
     dir = dir or 1
@@ -218,7 +238,6 @@ end
     if not playing then
         return
     end
-
 
     local fish = fishInstances[inputId] -- pooling
     fish.Image = FISH_IMAGES[rand:NextInteger(1, #FISH_IMAGES)]
@@ -303,7 +322,6 @@ function play()
         close.Completed:Wait()
 
     end
-
 
     -- Non click input
     for inputId, keycodes in ipairs(KEYBINDS) do
@@ -448,7 +466,8 @@ function results(editingAccuracy)
         return string.format("+%s Subs", x)
     end)
 
-    local count2 = tweenNumber(rewardLbl.Bonus.TextLabel, math.floor(subs * rand:NextInteger(2, 2.5)), function(x)
+    local likes = math.floor(subs * rand:NextInteger(2, 2.5))
+    local count2 = tweenNumber(rewardLbl.Bonus.TextLabel, likes, function(x)
         return string.format("+%s Likes", x)
     end)
 
@@ -481,18 +500,21 @@ function results(editingAccuracy)
         count1:Cancel()
         count2:Cancel()
 
-        remotes.YoutubeMinigameFinished:FireServer(currentComputer, fishCollected)
+        remotes.YoutubeMinigameFinished:FireServer(currentComputer, fishCollected, subs, likes)
 
         for _, screen in ipairs(screens) do
-            local frame = screen:WaitForChild("Upload")
+            local uploadFrame = screen:WaitForChild("Upload")
+            local startFrame = screen:WaitForChild("Start")
 
-            frame.Enabled = true
+            uploadFrame.Enabled = true
+            startFrame.Enabled = false
 
-            local progressBar = frame.Progress.Bar
+            local progressBar = uploadFrame.Progress.Bar
             progressBar.Size = UDim2.fromScale(0, 1)
             progressBar:TweenSize(UDim2.fromScale(1, 1), Enum.EasingDirection.In, Enum.EasingStyle.Linear, UPLOAD_COOLDOWN, false, function()
                 toggleProximityPrompts(true)
-                frame.Enabled = false
+                uploadFrame.Enabled = false
+                startFrame.Enabled = true
             end)
 
         end
@@ -509,10 +531,20 @@ function open()
     local highscoreLbl = startScreen.Information.Highscore
     highscoreLbl.Text = "Your highscore: " .. highscore
 
+    local stats = remotes.GetStat:InvokeServer("YoutubeStats")
+    local statsLbl = startScreen.Information.Stats
+    statsLbl.Likes.Value.Text = toSuffix(stats.Likes)
+    statsLbl.Subscribers.Value.Text = toSuffix(stats.Subscribers)
+
     toggleOtherUI(false)
     psuedoFrame.Visible = true
     startScreen.Visible = true
     gameScreen.Visible = false
+
+    for _, screen in ipairs(screens) do
+        screen:WaitForChild("Upload").Visible = false
+        screen:WaitForChild("Start").Visible = false
+    end
 
 end
 
@@ -546,6 +578,7 @@ local function loadComputer(computer)
     currentComputer = computer.Name
 
     local screen = computer:WaitForChild("Screen")
+    screen.Start.Enabled = true
     table.insert(screens, screen)
 
     -- Created on the client so no one else can use it
@@ -608,6 +641,11 @@ end)
 
 startScreen.Buttons.Exit.MouseButton1Down:Connect(function()
     toggleProximityPrompts(true)
+    for _, screen in ipairs(screens) do
+        screen:WaitForChild("Upload").Visible = false
+        screen:WaitForChild("Start").Visible = true
+    end
+
     close()
 end)
 
@@ -620,7 +658,6 @@ for i, fish in ipairs(fishInstances) do
 
 end
 
--- open()
 for i = 1, 2 do
     local name = "Gaming Desk#" .. i
 

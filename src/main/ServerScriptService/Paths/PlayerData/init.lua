@@ -140,7 +140,11 @@ function PlayerData:SetupPlayerData(player)
 
 				["Redeemed Codes"] = {},
 
-				["Youtube Minigame Score"] = 0
+				["Youtube Minigame Score"] = 0,
+				["YoutubeStats"] = {
+					Likes = 0,
+					Subscribers = 0,
+				}
 
 			}
 		else
@@ -325,6 +329,10 @@ local function SetupNewStats(Player)
 		Data["Boosts"]["Ultra Fishing Luck"] = {0,0}
 	end
 
+	if not Data["Spin"] then
+		Data["Spin"] = {true,0,os.time()} 
+	end
+
 	if not Data["BoatUnlocked"] then
 		Data["BoatUnlocked"] = {
 			[1] = false,
@@ -364,6 +372,15 @@ local function SetupNewStats(Player)
 	if not Data["Youtube Minigame Score"] then
 		Data["Youtube Minigame Score"] = 0
 	end
+
+	if not Data["YoutubeStats"] then
+		Data["YoutubeStats"] = {
+			Likes = 0,
+			Subscribers = 0,
+		}
+	end
+
+
 end
 
 -- Send back the player stat that the client requests 
@@ -440,6 +457,11 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Player:SetAttribute("PetHunger", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Hunger)
 		Player:SetAttribute("PetEntertainment", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Entertainment)
 		Player:SetAttribute("PetHappiness", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Happiness)
+	end
+
+	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] then
+		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+(12*60*60)
+		PlayerData.sessionData[Player.Name]["Spin"][1] = true
 	end
 	-- Setup Leaderstats
 	local leaderstats = Instance.new("Folder", Player)

@@ -90,7 +90,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Products = require(script.Store.Products)
 	Paths.Modules.Accessories = require(script.Store.Accessories)
 	Paths.Modules.Boosts = require(script.PlayerData.Boosts)
-
+	Paths.Modules.SpinTheWheel = require(script.SpinTheWheel)
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
 	Paths.Modules.PoolSpawner = require(script.Tycoon.Fishing.PoolSpawner)
 

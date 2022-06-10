@@ -88,7 +88,7 @@ function Paths.Initiliaze()
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
 	Paths.Modules.UI = require(script.UI)
 	Paths.Modules.Index = require(script.UI.Index)
-	
+	Paths.Modules.SpinTheWheel = require(script.UI.SpinTheWheel)
 	
 	print("store modules")
 	-- Store Modules

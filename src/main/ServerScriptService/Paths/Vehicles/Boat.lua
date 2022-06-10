@@ -92,6 +92,7 @@ function Boat:Setup(Model)
 				local Hum = Seat.Occupant
 				local Char = Hum.Parent
 				local Player = game.Players:GetPlayerFromCharacter(Char)
+				Player:SetAttribute("Vehicle",Model.Name)
 				Prompt.Enabled = false
 
 				if Player and Char then
