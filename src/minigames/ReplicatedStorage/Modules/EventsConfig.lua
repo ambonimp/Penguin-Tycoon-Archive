@@ -8,14 +8,12 @@ EventsConfig.Names = {
 	[PlaceIds["Skate Race"]] = "Skate Race",
 	[PlaceIds["Soccer"]] = "Soccer",
 	[PlaceIds["Candy Rush"]] = "Candy Rush",
-	[PlaceIds["Ice Cream Extravaganza"]] = "Ice Cream Extravaganza"
+	[PlaceIds["Ice Cream Extravaganza"]] = "Ice Cream Extravaganza",
+	[PlaceIds["Sled Race"]] = "Sled Race"
 }
 
 
 EventsConfig.INTERMISSION_INTERVAL = 10
-EventsConfig.VOTE_TIMER = 10
-EventsConfig.ACCEPT_TIMER = 10
-
 
 EventsConfig["Skate Race"] = {
 	MinPlayers = 2,
@@ -48,7 +46,6 @@ EventsConfig["Soccer"] = {
 	--["Tutorial"] = "Reach the end to win!",
 }
 
-
 EventsConfig["Candy Rush"] = {
 	MinPlayers = 2,
 	MaxPlayers = 20,
@@ -70,6 +67,23 @@ EventsConfig["Ice Cream Extravaganza"] = {
 	--["Tutorial"] = "Reach the end to win!",
 }
 
+EventsConfig["Sled Race"] = {
+	MinPlayers = 2,
+	MaxPlayers = 15,
+	Duration = 70,
+	TurnVelocity = math.rad(25),
+	MaxSteerAngle = math.rad(45),
+	DefaultVelocity = 75,
+	MinVelocity = 30,
+	MaxVelocity = 280,
+	CollectableEffectDuration = 3,
+	ObstacleVelocityMinuend = 25,
+	BoostVelocityAddend = 30,
+	ImageID = 9868349733,
+	["Display Name"] = "Sled Race",
+	--["Tutorial"] = "Reach the end to win!",
+}
+
 EventsConfig["Egg Hunt"] = {
 	MinPlayers = 2,
 	MaxPlayers = 20,
@@ -80,8 +94,9 @@ EventsConfig["Egg Hunt"] = {
 }
 
 if game.PlaceId == 9647797909 then -- Testing
-	EventsConfig.Names[9647797909] = "Candy Rush"
-	EventsConfig[EventsConfig.Names[9647797909]].Duration = 20
+	EventsConfig.INTERMISSION_INTERVAL = 5
+	EventsConfig.Names[9647797909] = "Falling Tiles"
+	EventsConfig[EventsConfig.Names[9647797909]].Duration = 40
 	EventsConfig[EventsConfig.Names[9647797909]].MinPlayers = 1
 end
 

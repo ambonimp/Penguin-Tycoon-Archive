@@ -1,7 +1,6 @@
 local RStorage = game:GetService("ReplicatedStorage")
 local PlaceIds =  require(RStorage.Modules.PlaceIds)
 
-
 local EventsConfig = {}
 
 EventsConfig.Names = {
@@ -9,14 +8,12 @@ EventsConfig.Names = {
 	[PlaceIds["Skate Race"]] = "Skate Race",
 	[PlaceIds["Soccer"]] = "Soccer",
 	[PlaceIds["Candy Rush"]] = "Candy Rush",
-	[PlaceIds["Ice Cream Extravaganza"]] = "Ice Cream Extravaganza"
-} --,"Egg Hunt"}
+	[PlaceIds["Ice Cream Extravaganza"]] = "Ice Cream Extravaganza",
+	[PlaceIds["Sled Race"]] = "Sled Race"
+}
 
 
 EventsConfig.INTERMISSION_INTERVAL = 10
-EventsConfig.VOTE_TIMER = 10
-EventsConfig.ACCEPT_TIMER = 10
-
 
 EventsConfig["Skate Race"] = {
 	MinPlayers = 2,
@@ -49,7 +46,6 @@ EventsConfig["Soccer"] = {
 	--["Tutorial"] = "Reach the end to win!",
 }
 
-
 EventsConfig["Candy Rush"] = {
 	MinPlayers = 2,
 	MaxPlayers = 20,
@@ -62,12 +58,29 @@ EventsConfig["Candy Rush"] = {
 EventsConfig["Ice Cream Extravaganza"] = {
 	MinPlayers = 2,
 	MaxPlayers = 12,
-	Duration = 60,
-	DropVelocity = 10,
+	Duration = 45,
+	DropVelocity = 12,
 	DropRate = 0.4,
 	InvicibilityLength = 5,
-	ImageID = 9727955878,
+	ImageID = 9727903441,
 	["Display Name"] = "Ice Cream Extravaganza",
+	--["Tutorial"] = "Reach the end to win!",
+}
+
+EventsConfig["Sled Race"] = {
+	MinPlayers = 2,
+	MaxPlayers = 15,
+	Duration = 70,
+	TurnVelocity = math.rad(25),
+	MaxSteerAngle = math.rad(45),
+	DefaultVelocity = 75,
+	MinVelocity = 30,
+	MaxVelocity = 280,
+	CollectableEffectDuration = 3,
+	ObstacleVelocityMinuend = 25,
+	BoostVelocityAddend = 30,
+	ImageID = 9868349733,
+	["Display Name"] = "Sled Race",
 	--["Tutorial"] = "Reach the end to win!",
 }
 
@@ -79,14 +92,5 @@ EventsConfig["Egg Hunt"] = {
 	["Display Name"] = "Egg Hunt",
 	--["Tutorial"] = "Reach the end to win!",
 }
-
-if game.GameId == 3425588324 then -- Testing
-	EventsConfig.Names[9647797909] = "Ice Cream Extravaganza"
-	-- EventsConfig[EventsConfig.Names[9647797909]].Duration = 10
-	EventsConfig[EventsConfig.Names[9647797909]].MinPlayers = 1
-
-	EventsConfig.INTERMISSION_INTERVAL = 10
-	EventsConfig.ACCEPT_TIMER = 10
-end
 
 return EventsConfig

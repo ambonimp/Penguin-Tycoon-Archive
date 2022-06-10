@@ -59,6 +59,11 @@ local Locations = {
 		PlaceId = PlaceIds["Ice Cream Extravaganza"],
 		Description = "Collect all of the ice cream!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Ice Cream Extravaganza"].ImageID,
+	},
+	["Sled Race"] = {
+		PlaceId = PlaceIds["Sled Race"],
+		Description = "Race down the slope!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Sled Race"].ImageID,
 	}
 }
 

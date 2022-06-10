@@ -17,57 +17,34 @@ local EventInfoUI = Paths.UI.Top.EventInfo
 
 
 --- Event Functions ---
-function FallingTiles:EventStarted()
-end
-
-function FallingTiles:EventEnded()
-	
-end
 
 function FallingTiles.InitiateEvent()
 	local Map = workspace.Event:FindFirstChild("Event Map")
-	if not Map then return end
-	
-	if Map:FindFirstChild("Layers") then -- if it is Falling Tiles
-		local TilesTouched = {}
 
-		for i, layer in pairs(Map.Layers:GetChildren()) do
-			for i, tile in pairs(layer:GetChildren()) do
-				if not tile:FindFirstChild("TileHitbox") then break end
+	local Debounces = {}
 
-				tile.TileHitbox.Touched:Connect(function(part)
-					if not TilesTouched[tile] and string.match(part.Name, "Leg") and Map.Active.Value == true then
-						TilesTouched[tile] = true
+	for _, Layer in pairs(Map.Layers:GetChildren()) do
+		for _, Tile in ipairs(Layer:GetChildren()) do
+			Tile.Hitbox.Touched:Connect(function(Hit)
+				if not Debounces[Tile] and (string.find(Hit.Name, "Leg") or Hit.Name == "Main") and Map.Active.Value == true then
+					Debounces[Tile] = true
 
-						for i = 0, 20, 1 do
-							if i == 8 then
-								coroutine.resume(coroutine.create(function()
-									for i = 0, 1, 0.1 do
-										if tile then
-											tile.TopTile.Transparency = i
-											tile.BottomTile.Transparency = i
-										end
-										task.wait()
-									end
-								end))
-							end
-							if tile.Parent then
-								tile.TopTile.Position = Vector3.new(tile.TopTile.Position.X, tile.TopTile.Position.Y - 0.06, tile.TopTile.Position.Z)
-								tile.BottomTile.Position = Vector3.new(tile.BottomTile.Position.X, tile.BottomTile.Position.Y - 0.06, tile.BottomTile.Position.Z)
-								task.wait()
-							else
-								break
-							end
-
+					local Completed
+					for _, Child in ipairs(Tile:GetChildren()) do
+						if Child:IsA("BasePart") then
+							local Tween = Services.TweenService:Create(Child, TweenInfo.new(1.25, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Transparency = 1})
+							Completed = Completed or Tween.Completed
+							Tween:Play()
 						end
-
-						if tile then tile:Destroy() end
-
 					end
 
-				end)
+					task.delay(0.25, function()
+						Tile.Collideable.CanCollide = false
+					end)
 
-			end
+				end
+
+			end)
 
 		end
 
@@ -75,5 +52,14 @@ function FallingTiles.InitiateEvent()
 
 end
 
+Remotes.FallingTiles.OnClientEvent:Connect(function(Event, ...)
+	local Params = table.pack(...)
+
+	if Event == "Finished" then
+        local Rankings = Params[1]
+        Modules.EventsUI:UpdateRankings(Rankings)
+	end
+
+end)
 
 return FallingTiles

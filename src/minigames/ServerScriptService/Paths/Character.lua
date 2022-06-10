@@ -99,8 +99,6 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 		-- Spawn at the tycoon location
 		local SpawnLocation = Spawns[Random.new():NextInteger(1, #Spawns)]
 		Penguin:MoveTo(SpawnLocation.Position)
-		
-		Remotes.Lighting:FireClient(Player, "Night Skating")
 	end
 	
 	-- Set up new character

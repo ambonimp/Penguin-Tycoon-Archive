@@ -10,6 +10,7 @@ if GameId == 3073627998 then -- Main
     Ids["Candy Rush"] = 9731101983
     Ids["Soccer"] = 9731106565
     Ids["Ice Cream Extravaganza"] = 9731108400
+    Ids["Sled Race"] = 9731106565
 elseif GameId == 3425588324 then -- DEV
     Ids["Penguin Tycoon"] = 9118436978
     Ids["Penguin City"] = 9170899192
@@ -18,6 +19,7 @@ elseif GameId == 3425588324 then -- DEV
     Ids["Candy Rush"] = 9648025781
     Ids["Soccer"] = 9648024554
     Ids["Ice Cream Extravaganza"] = 9656094271
+    Ids["Sled Race"] = 9841455448
 elseif GameId == 3425594443 then -- QA
     Ids["Penguin Tycoon"] = 9118461324
 	Ids["Penguin City"] = 9170919040
@@ -26,6 +28,7 @@ elseif GameId == 3425594443 then -- QA
     Ids["Soccer"] = 9731069338
     Ids["Candy Rush"] = 9731075144
     Ids["Ice Cream Extravaganza"] = 9731078128
+    Ids["Sled Race"] = 9868358917
 end
 
 return Ids

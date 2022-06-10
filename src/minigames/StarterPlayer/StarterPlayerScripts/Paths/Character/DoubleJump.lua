@@ -28,21 +28,24 @@ local blackListedDoubleJumpLocations = {
 	["Egg Hunt"] = true,
 	["Candy Rush"] = true,
 	["Ice Cream Extravaganza"] = true,
+	["Sled Race"] = true,
 }
 
 local blackListedJumpLocations = {
 	["Skate Race"] = true,
 	["Ice Cream Extravaganza"] = true,
+	["Sled Race"] = true,
 }
 
 function DoubleJump:NewCharacter(Character)
 	Character = Character
 	Humanoid = Character:WaitForChild("Humanoid")
 	Animation = Humanoid:LoadAnimation(Character:WaitForChild("Animations"):WaitForChild("Double Jump"))
-	
+
+
 	Humanoid.StateChanged:Connect(function(old,new)
 		if blackListedJumpLocations[Modules.Lighting.CurrentLocation] then Humanoid.JumpPower = 0 return end
-		
+
 		State = new.Name
 		if State == "Landed" or State == "Running" or State == "RunningNoPhysics" then
 			Humanoid.JumpPower = 60

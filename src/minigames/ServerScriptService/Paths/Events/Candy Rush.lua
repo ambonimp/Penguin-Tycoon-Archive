@@ -22,6 +22,8 @@ local chances = {
 --- Event Variables ---
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
+local Config = Modules.EventsConfig[EVENT_NAME]
+
 
 function addGems(player,amount)
 	Modules.Income:AddGems(player, amount, EVENT_NAME)
@@ -50,9 +52,13 @@ function CandyRush:SpawnPlayers(ChosenBugName, ChosenBugNum)
 				["Green"] = 0,
 				["Blue"] = 0,}
 			})
+
 			player:SetAttribute("Minigame",EVENT_NAME)
+
 		end
+
 	end
+
 end
 
 local function randomEggChance(hatsSpawned)
@@ -143,6 +149,8 @@ function CandyRush:InitiateEvent(Event)
 		if s == false then print(m) end
 	end
 
+	EventValues.Timer.Value = Config.Duration
+	EventValues.Timer:SetAttribute("Enabled", true)
 
 	EventValues.TextToDisplay.Value = "Initiating Candy Rush..."
 
@@ -165,17 +173,19 @@ function CandyRush:StartEvent()
 	end
 	Map.Active.Value = true
 	local winners, text = nil,"Candy Rush has finished!"
-	EventValues.TextToDisplay.Value = "Get the candy!"
+
+	EventValues.TextToDisplay.Value = "Collect the candy!"
 	Remotes.Events:FireAllClients("Event Started")
 	task.wait(1)
 	repeat 
 		local TimeLeft = math.floor((FinishTime - tick()))
+		EventValues.Timer.Value = TimeLeft
 		
-		
-		EventValues.TextToDisplay.Value = "Collect Candy - "..TimeLeft
 		task.wait(.25)
 		Remotes.CandyRush:FireAllClients("Update",EggsCollected)
+
 	until tick() > FinishTime or #Participants:GetChildren() == 0
+
 	Map.EggSpawns:ClearAllChildren()
 	EventValues.TextToDisplay.Value = "Candy Rush has finished!"
 	task.wait(1)

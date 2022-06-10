@@ -14,61 +14,81 @@ local Remotes = Paths.Remotes
 local EVENT_NAME = "Falling Tiles"
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
+local Config = Modules.EventsConfig[EVENT_NAME]
+
+local WINNER_REWARD = 7
+local PARTICIPATION_REWARD = 1
 
 
+local Map, SpawnPoints
+
+
+local function RewardGems(Player, Amount)
+	Modules.Income:AddGems(Player,  Amount, EVENT_NAME)
+end
 
 --- Event Functions ---
 function FallingTiles:SpawnPlayers(ChosenBugName, ChosenBugNum)
-	local Map = workspace.Event["Event Map"]
-	local Spawns = Map.Spawns
-	
-	for index, playerName in pairs(Participants:GetChildren()) do
-		local player = game.Players:FindFirstChild(playerName.Name)
-		local SpawnPos = Spawns["Spawn"..index].CFrame * CFrame.new(0, 3, 0)
+	for i, Participant in pairs(Participants:GetChildren()) do
+		local Player = game.Players:FindFirstChild(Participant.Name)
+		local SpawnPos = SpawnPoints[i].CFrame * CFrame.new(0, 3, 0)
 		
-		if player then
-			Remotes.Lighting:FireClient(player, EVENT_NAME)
+		if Player then
+			Player:SetAttribute("Minigame", EVENT_NAME)
 			
-			local Character = Modules.Character:Spawn(player, SpawnPos)
+			local Character = Modules.Character:Spawn(Player, SpawnPos)
 			Character.Humanoid.JumpPower = 0
 			Character.Humanoid.WalkSpeed = 0
 			
 			Modules.Collisions.SetCollision(Character, false)
-			
 			Character.Humanoid.Died:Connect(function()
-				playerName:Destroy()
+				Participant:Destroy()
 			end)
 
-			player:SetAttribute("Minigame",EVENT_NAME)
 		end
+
 	end
+
 end
 
 function FallingTiles:InitiateEvent()
-	local Map = workspace.Event["Event Map"]
+	Map = workspace.Event["Event Map"]
+
 	Map:Destroy()
 
 	Map = Services.SStorage.EventMaps[EVENT_NAME]:Clone()
 	Map.Name = "Event Map"
 	Map.Parent = workspace.Event
 
+	SpawnPoints = Map.PlayerSpawns:GetChildren()
+
+
+	EventValues.Timer.Value = Config.Duration
+	EventValues.Timer:SetAttribute("Enabled", true)
 
 	EventValues.TextToDisplay.Value = "Initiating Tiles..."
+
+	Remotes.Events:FireAllClients("Initiate Event")
+
+
 	-- Initiate Tiles
 	local TilesTouched = {}
-
-	for i, Layer in pairs(Map.Layers:GetChildren()) do
+	for _, Layer in pairs(Map.Layers:GetChildren()) do
 		for i, Tile in pairs(Layer:GetChildren()) do
-			if i%10 == 0 then wait() end
-			Tile.TileHitbox.Touched:Connect(function(part)
-				if string.match(part.Name, "Leg") and not TilesTouched[Tile] and Map.Active.Value == true then
-					if part.Parent:FindFirstChild("Humanoid") then
+			if i%10 == 0 then
+				task.wait()
+			end
+
+			Tile.Hitbox.Touched:Connect(function(Hit)
+				if(string.find(Hit.Name, "Leg") or Hit.Name == "Main") and not TilesTouched[Tile] and Map.Active.Value == true then
+					if Hit.Parent:FindFirstChild("Humanoid") then
 						TilesTouched[Tile] = true
 
 						coroutine.resume(coroutine.create(function()
-							wait(0.5)
+							task.wait(0.6)
 							Tile:Destroy()
 						end))
+
 					end
 
 				end
@@ -78,92 +98,110 @@ function FallingTiles:InitiateEvent()
 		end
 
 	end
-	
-	Remotes.Events:FireAllClients("Initiate Event")
+
 end
 
 function FallingTiles:StartEvent()
-	local Map = workspace.Event["Event Map"]
+	local StartTime = os.time() + 1
+	local TimeLeft = Config.Duration
 
-	local allPlayers = {}
 	-- Activate Event
 	Map.Active.Value = true
-	Map.Spawns:Destroy()
-	local rewardValid = true--#Participants:GetChildren() >= 3
-	
-	
+	Map.PlayerSpawns:Destroy()
+
+	local Participated = {}
 	-- Give speed back to players
-	for index, playerName in pairs(Participants:GetChildren()) do
-		local player = game.Players:FindFirstChild(playerName.Name)
-		if player and player.Character and player.Character:FindFirstChild("Humanoid") then
-			table.insert(allPlayers,player)
-			player.Character.Humanoid.WalkSpeed = 18
-			Modules.Income:AddGems(game.Players[player.Name], 5, EVENT_NAME)
+	for _, Participant in pairs(Participants:GetChildren()) do
+		local Player = game.Players:FindFirstChild(Participant.Name)
+		if Player then
+			Player.Character.Humanoid.WalkSpeed = 18
+			table.insert(Participated, Player)
+		else
+			Participant:Destroy()
 		end
 	end
 
 	Remotes.Events:FireAllClients("Event Started")
-	
-	local StartTime = tick()
-	local FinishTime = StartTime + Modules.EventsConfig[EVENT_NAME].Duration
 
-	EventValues.TextToDisplay.Value = "GO!!"
-	wait(1)
-	
-	
 	-- Setup death part
-	local TouchDb = {}
-	
-	Map.KillingFloor.Touched:Connect(function(Part)
-		if Part.Name == "HumanoidRootPart" and Part.Parent:FindFirstChild("Humanoid") and game.Players:FindFirstChild(Part.Parent.Name) and not TouchDb[Part.Parent] then
-			TouchDb[Part] = true
-		
-			Part.Parent.Humanoid.Health = 0
-			
-			task.wait(1)
-			TouchDb[Part] = nil
+	local Rankings = {}
+	local Debounces = {}
+	Map.KillingFloor.Touched:Connect(function(Hit)
+		local Character = Hit.Parent
+		local Name = Character.Name
+		local Hum = Character:FindFirstChild("Humanoid")
+
+		if Hum and not Debounces[Character] and game.Players:FindFirstChild(Name) then
+			Debounces[Character] = true
+			Hit.Parent.Humanoid.Health = 0
+
+			table.insert(Rankings, {
+				PlayerName = Name,
+				Score = os.time() - StartTime
+			})
+
 		end
+
 	end)
-	
+
 	-- Start the event
+	EventValues.TextToDisplay.Value = "Stay alive"
+
 	repeat
-		task.wait()
-		
+		TimeLeft = math.floor(TimeLeft - task.wait(1))
+		EventValues.Timer.Value = TimeLeft
+
 		EventValues.TextToDisplay.Value = "In Progress - "..#Participants:GetChildren().. " Player(s) Left"
-		
-		
-	until #Participants:GetChildren() <= 1 or tick() > FinishTime
-	local n = ""
-	if #Participants:GetChildren() == 1 then
-		for i, v in pairs(Participants:GetChildren()) do
-			if game.Players:FindFirstChild(v.Name) and rewardValid then
-				Paths.Remotes.ClientNotif:FireClient(game.Players[v.Name],"You did great, you earned  <font color=\"rgb(62, 210, 255)\">15 gems</font>!",Color3.new(0.184313, 0.752941, 0.792156),6.5)
-				Modules.Income:AddGems(game.Players[v.Name],15, EVENT_NAME)
-				local data = Modules.PlayerData.sessionData[v.Name] 
-				n = v.Name
-				if data then
-					print(data["Stats"])
-					if data["Stats"][EVENT_NAME] then
-						data["Stats"][EVENT_NAME] = data["Stats"][EVENT_NAME] + 1
-					else
-						data["Stats"][EVENT_NAME] =  1
-					end
-				end
+	until #Participants:GetChildren() == 0 or TimeLeft <= 0
+
+
+	-- These people won
+	local Winners = {}
+	Rankings[#Rankings+1] = Winners
+	for _, Participant in ipairs(Participants:GetChildren()) do
+		table.insert(Winners, {
+			PlayerName = Participant.Name,
+			Score = Config.Duration,
+		})
+	end
+	if #Winners == 0 then Rankings[#Rankings] = nil end
+
+
+	-- Display rankings
+	for _, Player in ipairs(Participated) do
+		Remotes.FallingTiles:FireClient(Player, "Finished", Modules.FuncLib.ArrayFlip(Rankings))
+	end
+
+	-- Leaderboard stuff
+	for i, Winner in ipairs(Winners) do
+		local Name = Winner.PlayerName
+		Winners[i] = Name
+
+		local Data = Modules.PlayerData.sessionData[Name]
+		if Data then
+			local Stats = Data["Stats"]
+
+			if Stats[EVENT_NAME] then
+				Stats[EVENT_NAME] += 1
 			else
-				
+				Stats[EVENT_NAME] = 1
 			end
-			for i,v in pairs (allPlayers) do
-				if v and v.Name ~= n then
-					Paths.Remotes.ClientNotif:FireClient(v,"You did great, you earned  <font color=\"rgb(62, 210, 255)\">5 gems</font>!",Color3.new(0.184313, 0.752941, 0.792156),6.5)
-				end
-			end
-			return {v.Name}
+
+		end
+
+	end
+
+	-- Reward
+	for _, Player in ipairs(Participated) do
+		if table.find(Winners, Player.Name) then
+			RewardGems(Player, WINNER_REWARD)
+		else
+			RewardGems(Player, PARTICIPATION_REWARD)
 		end
 	end
 
-	
 
-	return false
+	return #Winners > 0 and Winners or nil
 end
 
 return FallingTiles
