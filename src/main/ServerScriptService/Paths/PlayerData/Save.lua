@@ -23,6 +23,7 @@ Save.IsSaving = {}
 function Save:SavePlayerData(player)
 	local playerName = player.Name
 	local playerData = Modules.PlayerData.sessionData[playerName]
+	playerData["Playtime"][2] = os.time()
 	Modules.PlayerData.sessionData[playerName]["LastPlayTime"] = os.time()
 -- Prevent Errors / False Saving
 	if not playerData then

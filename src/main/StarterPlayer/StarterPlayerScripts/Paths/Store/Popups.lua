@@ -20,6 +20,7 @@ local lastPopup = os.time()-(60*5)
 local interval = 60*10
 local lastChildrenTycoon = 0
 local lastGems = 0
+local barTime = 15
 
 if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
 	lastPopup = os.time()-(60*.5)
@@ -27,6 +28,7 @@ if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
 
 	regularlastPopup = os.time()-(60*.25)
 	regularPopupInterval = 60*.5
+	barTime = 5
 end
 
 local regularNames = {"Twitter","Discord","Group","Like","Friend"}
@@ -64,6 +66,14 @@ local nameToId = {
 function Popups.getAction()
 	local Tool = Paths.Player:GetAttribute("Tool")
 	local Vehicle = Paths.Player:GetAttribute("Vehicle")
+
+	if #Paths.Tycoon.Tycoon:GetChildren() > lastChildrenTycoon then
+		lastChildrenTycoon = #Paths.Tycoon.Tycoon:GetChildren()
+		return "Income"
+	elseif Paths.Player:GetAttribute("Gems") > lastGems then
+		lastGems = Paths.Player:GetAttribute("Gems")
+		return "Gems"
+	end
 
 	--Check tool
 	if Tool and (Tool == "Fishing Rod" or Tool == "Gold Fishing Rod" or Tool == "Rainbow Fishing Rod") and not Paths.Player:GetAttribute("AFKFishing") then
@@ -105,13 +115,7 @@ function Popups.getAction()
 		end
 	end
 
-	if #Paths.Tycoon.Tycoon:GetChildren() > lastChildrenTycoon then
-		lastChildrenTycoon = #Paths.Tycoon.Tycoon:GetChildren()
-		return "Income"
-	elseif Paths.Player:GetAttribute("Gems") > lastGems then
-		lastGems = Paths.Player:GetAttribute("Gems")
-		return "Gems"
-	end
+	
 
 	return nil
 end
@@ -156,6 +160,7 @@ function showGamepass(name)
 	if id then
 		local Info = Services.MPService:GetProductInfo(id, Enum.InfoType.GamePass)
 		if Info["IsForSale"] then
+			PopupUI.Bar.Size = UDim2.new(.8,0,.1,0)
 			PopupRegularUI.Visible = false
 			local desc = Popups.Gamepasses[id]
 			currentPass = id
@@ -165,6 +170,13 @@ function showGamepass(name)
 			PopupUI.Icon.Image = "rbxassetid://"..Info["IconImageAssetId"]
 			PopupUI.Visible = true
 			Paths.Audio.Notif:Play()
+			task.spawn(function()
+				PopupUI.Bar:TweenSize(UDim2.new(0,0,.1,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,barTime,true)
+				task.wait(barTime)
+				if PopupUI.Visible then
+					PopupUI.Visible = false
+				end
+			end)
 			return true
 		end
 		return false
@@ -186,11 +198,17 @@ function showRegular(name)
 	else
 		popupFunction = nil
 	end
-	
+	PopupRegularUI.Bar.Size = UDim2.new(.8,0,.1,0)
 	PopupRegularUI.Description.Text = text
 	PopupRegularUI.Icon.Image = icon
 	PopupRegularUI.Done.TheText.Text = button
-
+	task.spawn(function()
+		PopupRegularUI.Bar:TweenSize(UDim2.new(0,0,.1,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,barTime,true)
+		task.wait(barTime)
+		if PopupRegularUI.Visible then
+			PopupRegularUI.Visible = false
+		end
+	end)
 	PopupRegularUI.Visible = true
 end
 
@@ -206,6 +224,7 @@ task.spawn(function()
 		if os.time()-lastPopup>=interval and Modules.Gamepasses then
 			if lastAction then
 				local showed = showGamepass(lastAction)
+				lastAction = nil
 				if showed ~= "Owns" then
 					lastPopup = os.time()
 				end

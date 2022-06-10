@@ -1,0 +1,4 @@
+local Quests = {}
+
+
+return Quests
