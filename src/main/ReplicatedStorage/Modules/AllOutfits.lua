@@ -52,7 +52,8 @@ Outfits.All = {
 	--Rewards
 	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false};
 	["Royale Robe"] = {Rarity = "Free", IsForSale = false};
-	["Lobster"] = {Rarity = "Legendary", IsForSale = false};
+	["Lobster"] = {Rarity = "Free", IsForSale = false};
+	["Wilco Shirt"] = {Rarity = "Free", IsForSale = false};
 	--- Purchaseable Hats ---
 	-- Rares
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};
