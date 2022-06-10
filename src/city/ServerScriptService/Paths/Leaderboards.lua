@@ -61,7 +61,7 @@ local leaderboards = {
 		Leaderboard = workspace.Leaderboards["Ice Cream Extravaganza"];
 		smallestFirst = false;};
 	["Sled Race"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Sled Race_v-RELEASE"),
+		DataStore = Services.DataStoreService:GetOrderedDataStore("Sled Race_v-RELEASE1"),
 		Leaderboard = workspace.Leaderboards["Sled Race"];
 		smallestFirst = true;};
 }
