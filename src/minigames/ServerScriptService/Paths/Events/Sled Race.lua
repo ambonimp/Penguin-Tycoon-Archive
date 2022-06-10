@@ -188,8 +188,8 @@ function SledRace:StartEvent()
 	end)
 
 	repeat
-		TimeLeft = math.floor(TimeLeft - task.wait(1))
-		EventValues.Timer.Value = TimeLeft
+		TimeLeft -= task.wait()
+		EventValues.Timer.Value = math.floor(TimeLeft)
 	until #CompletedRace >= #Participants:GetChildren() or TimeLeft <= 0
 
 	Conn:Disconnect()

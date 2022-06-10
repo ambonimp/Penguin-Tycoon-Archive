@@ -74,6 +74,7 @@ local function StartingCountdown(ChosenEvent)
 
 	-- Initiate Event
 	local s, m = pcall(function()
+		Remotes.Lighting:FireAllClients(ChosenEvent)
 		EventModule:InitiateEvent(ChosenEvent)
 	end)
 
@@ -233,10 +234,6 @@ local function EventLoop()
 	end
 
 end
-
-game.Players.PlayerAdded:Connect(function(Player)
-	Remotes.Lighting:FireClient(Player, ChosenEvent)
-end)
 
 -- If player leaves and is in the participants, remove them
 game.Players.PlayerRemoving:Connect(function(Player)

@@ -41,6 +41,7 @@ local MEDALS = {
 
 local SCORE_UNIT = {
     ["Sled Race"] = "s",
+    ["Skate Race"] = "s",
     ["Falling Tiles"] = "s"
 
 }
@@ -56,9 +57,12 @@ local function Reset()
 end
 
 local function AddPlacement(Ranking, Info)
+    if FinishedUI.Placement:FindFirstChild(Info.PlayerName) then return end
+
     local Placement = Dependency.Placement:Clone()
+    Placement.Name = Info.PlayerName
     Placement.PlayerName.Text = Info.PlayerName
-    Placement.Score.Text = Info.Score .. (SCORE_UNIT[Player:GetAttribute("Minigame")] or "")
+    Placement.Score.Text = string.format("%.1f", Info.Score) .. (SCORE_UNIT[Player:GetAttribute("Minigame")] or "")
     Placement.Medal.Image = MEDALS[Ranking] or ""
     Placement.Parent = FinishedUI.Placement
 
@@ -68,9 +72,11 @@ local function AddPlacement(Ranking, Info)
         FinishedUI.Visible = true
         Paths.Modules.Buttons:UIOn(FinishedUI,true)
         FinishedUI.Title.Text = "YOU PLACED ".. RANKINGS_TEXT[Ranking]
+
     else
         Placement.BackgroundColor3 = Color3.new(1, 1, 1)
     end
+
 end
 
 function Events:UpdateRankings(Rankings)

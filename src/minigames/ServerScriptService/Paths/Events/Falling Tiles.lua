@@ -148,7 +148,9 @@ function FallingTiles:StartEvent()
 	EventValues.TextToDisplay.Value = "Stay alive"
 
 	repeat
-		TimeLeft = math.floor(TimeLeft - task.wait(1))
+		task.wait(1)
+		TimeLeft -= 1
+
 		EventValues.Timer.Value = TimeLeft
 
 		EventValues.TextToDisplay.Value = "In Progress - "..#Participants:GetChildren().. " Player(s) Left"

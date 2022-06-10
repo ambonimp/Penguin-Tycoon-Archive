@@ -1,6 +1,5 @@
 local Gamepasses = {}
 
-
 --- Main Variables ---
 local Paths = require(script.Parent.Parent)
 
@@ -11,28 +10,29 @@ local UI = Paths.UI
 
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
+local Popups = require(script.Parent.Popups)
 local Store = UI.Center.Store
-
+Modules.Popups = Popups
 Gamepasses.Owned = {}
 
 --- Gamepass Variables ---
 local AllGamepasses = {
-	{25313170,"Earn double money!"},	 -- x2 Income
+	{25313170,"Double your income!",Color3.new(0.498039, 0.811764, 0.086274)},	 -- x2 Income
 	{26268187,"Run faster!"}, -- Faster Speed
 	{26268229,"Jump twice!"}, -- Double Jump
 	{26269102,"VIP Tag and Golden Hearts!"}, -- VIP
-	{28927736,"x2 Fish"}, -- Gold Fishing Rod
+	{28927736,"Catch fish twice as fast!"}, -- Gold Fishing Rod
 	{41205566,"Luxury Boat that drives faster!"}, -- Luxury Boat
-	{41205759,"Super Glider that flies faster!"}, -- Super Glider
-	{43183311,"x2 income per chopped tree!"}, -- Gold Axe
-	{45764173,"Jet plane that flies faster!"}, -- Jet Plane
-	{47438416,"15% increased chance of rainbow fish!"}, -- rainbow fishing rod,
+	{41205759,"Fly twice as fast!"}, -- Super Glider
+	{43183311,"Double money from chopped trees!"}, -- Gold Axe
+	{45764173,"Fly fast in a cool jet!"}, -- Jet Plane
+	{47438416,"Catch fish twice as fast and increase the chance of catching rainbow fish!"}, -- rainbow fishing rod,
 	{47438471,"Double gems from everything!"}, -- x2 gems
 	{47438595,"Ability to use the map in Penguin City!"}, -- map teleport
 	{49090546, "Capture 3 fish per cast!"}
 }
 
-
+Popups.load(AllGamepasses)
 
 --- Functions ---
 

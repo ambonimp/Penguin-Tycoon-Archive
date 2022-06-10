@@ -111,7 +111,7 @@ function SledRace:InitiateEvent(Collectables)
         local PrimaryPartOffset = CenterCFrame:ToObjectSpace(Model.PrimaryPart.CFrame)
 
         local Results = assert(workspace:Raycast(Position, Vector3.new(0, -50, 0), RParams))
-        local FloorCFrame = CFrame.new(Results.Position) * CFrame.fromEulerAnglesYXZ(GetNormalIncline(Results), 0, 0)
+        local FloorCFrame = CFrame.new(Results.Position) * CFrame.fromEulerAnglesYXZ(-GetNormalIncline(Results), math.pi, 0)
 
 		Model:SetPrimaryPartCFrame(FloorCFrame * PrimaryPartOffset * CFrame.new(Size * Vector3.new(0, 0.5, 0)))
 
@@ -132,7 +132,6 @@ function SledRace:InitiateEvent(Collectables)
                                 VelocityAddend = -Config.ObstacleVelocityMinuend
 
                                 -- TODO: Smoke particle
-
                             else
                                 VelocityAddend = Config.BoostVelocityAddend
 
@@ -202,7 +201,7 @@ function SledRace:EventStarted()
     -- Moving
     local SpeedLines = Paths.Modules.SpeedLines:Play()
     local Driving = Services.RunService.Heartbeat:Connect(function(dt)
-        local TurnSpeed = TurnVelocity * dt
+        local TurnSpeed = TurnVelocity * (dt * 2)
 
         local Results = assert(workspace:Raycast(Hrp.Position + Vector3.new(0, 50, 0), Vector3.new(0, -100, 0), RParams))
         local Incline = GetNormalIncline(Results)

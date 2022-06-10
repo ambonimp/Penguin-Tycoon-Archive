@@ -17,13 +17,13 @@ local isVerified = Remotes.GetStat:InvokeServer("Twitter Verification")
 local db = false
 
 
-
+Verification.isVerified = false
 --- Functions ---
 
 -- Set the UI to display as already verified
 local function SetVerified()
 	isVerified = true
-
+	Verification.isVerified = true
 	verificationUI.TextBox.TextBox.Text = "10% Bonus Active"
 	verificationUI.TextBox.TextBox.TextColor3 = Color3.fromRGB(28, 255, 47)
 	verificationUI.TextBox.UIStroke.Color = Color3.fromRGB(28, 255, 47)

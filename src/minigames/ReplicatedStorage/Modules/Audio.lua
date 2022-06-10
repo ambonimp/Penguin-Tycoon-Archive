@@ -7,6 +7,7 @@ Audio.Music = {
 	["Falling Tiles"] = "rbxassetid://9789046121";
 	["Candy Rush"] = "rbxassetid://9789060375";
 	["Ice Cream Extravaganza"] = "rbxassetid://9736196634",
+	["Sled Race"] = "rbxassetid://9281859168";
 	["1"] = "rbxassetid://9789033755";
 	["2"] = "rbxassetid://9789029867";
 	["3"] = "rbxassetid://9789024459";

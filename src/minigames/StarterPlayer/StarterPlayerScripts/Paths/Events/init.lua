@@ -17,8 +17,6 @@ local ChosenEvent = Modules.EventsConfig.Names[game.PlaceId]
 local EventModule = require(script[ChosenEvent])
 
 
-
-
 local announcementRemote = Remotes:WaitForChild("Announcement")
 
 

@@ -9,12 +9,13 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 local UI = Paths.UI.Center.GroupReward
-
+GroupReward.IsClaimed = false
 
 --- Group Reward Function ---
 Remotes.GroupReward.OnClientEvent:Connect(function(IsClaimed)
 	if IsClaimed then
 		UI.Visible = true
+		GroupReward.IsClaimed = true
 	end
 end)
 

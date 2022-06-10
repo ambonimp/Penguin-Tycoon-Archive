@@ -32,8 +32,7 @@ local Assets = Services.RStorage.Assets[EVENT_NAME]
 
 
 
-local Map
-local SpawnPoints
+local Map, SpawnPoints
 
 local Scores
 
@@ -297,7 +296,9 @@ function IceCreamExtravaganza:StartEvent()
 
     -- Countdown
     repeat
-		TimeLeft = math.floor(TimeLeft - task.wait(1))
+		task.wait(1)
+		TimeLeft -= 1
+
 		EventValues.Timer.Value = TimeLeft
 
 		-- Updates scores. Done here to reduce network traffic

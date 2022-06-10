@@ -42,7 +42,6 @@ function DoubleJump:NewCharacter(Character)
 	Humanoid = Character:WaitForChild("Humanoid")
 	Animation = Humanoid:LoadAnimation(Character:WaitForChild("Animations"):WaitForChild("Double Jump"))
 
-
 	Humanoid.StateChanged:Connect(function(old,new)
 		if blackListedJumpLocations[Modules.Lighting.CurrentLocation] then Humanoid.JumpPower = 0 return end
 
