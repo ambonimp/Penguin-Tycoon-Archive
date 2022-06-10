@@ -542,8 +542,8 @@ function open()
     gameScreen.Visible = false
 
     for _, screen in ipairs(screens) do
-        screen:WaitForChild("Upload").Visible = false
-        screen:WaitForChild("Start").Visible = false
+        screen:WaitForChild("Upload").Enabled = false
+        screen:WaitForChild("Start").Enabled = false
     end
 
 end
@@ -642,8 +642,8 @@ end)
 startScreen.Buttons.Exit.MouseButton1Down:Connect(function()
     toggleProximityPrompts(true)
     for _, screen in ipairs(screens) do
-        screen:WaitForChild("Upload").Visible = false
-        screen:WaitForChild("Start").Visible = true
+        screen:WaitForChild("Upload").Enabled = false
+        screen:WaitForChild("Start").Enabled = true
     end
 
     close()
