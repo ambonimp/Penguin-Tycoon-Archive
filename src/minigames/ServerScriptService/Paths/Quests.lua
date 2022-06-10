@@ -118,7 +118,9 @@ function Quests.GiveQuest(Player,QuestKind,QuestName,QuestType,Amount)
         local updated = false
         for i=1,5 do
             local Quest = Data["Quests"].Quests[i]
+            print(Quest[1],QuestKind,Quest[2][1],QuestName,Quest[2][2],QuestType,Quest[3],Quest[2][3])
             if Quest[1] == QuestKind and Quest[2][1] == QuestName and Quest[2][2] == QuestType and Quest[3] ~= "CLAIMED" then
+                print("UPDATED")
                 updated = true
                 local new = Quest[3]+Amount
                 if new >= Quest[2][3] then

@@ -44,6 +44,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
+	Paths.Modules.Penguins = require(script.Penguins)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
 	Paths.Modules.ActiveCodes = require(script.Codes.ActiveCodes)
@@ -63,19 +64,21 @@ function Paths.Initiliaze()
 	Paths.Modules.SpinTheWheel = require(script.SpinTheWheel)
 	Paths.Modules.Playtime = require(script.Playtime)
 	Paths.Modules.Quests = require(script.Quests)
-	-- Data Modules
-	Paths.Modules.Save = require(script.PlayerData.Save)
-	Paths.Modules.PlayerData = require(script.PlayerData);
-	Paths.Modules.Income = require(script.PlayerData.Income)
-	
+
 	-- Store Modules
 	Paths.Modules.Store = require(script.Store)
 	Paths.Modules.Gamepasses = require(script.Store.Gamepasses)
 	Paths.Modules.Products = require(script.Store.Products)
 	Paths.Modules.Accessories = require(script.Store.Accessories)
+	-- Data Modules
+	Paths.Modules.Save = require(script.PlayerData.Save)
+	Paths.Modules.PlayerData = require(script.PlayerData);
+	Paths.Modules.Income = require(script.PlayerData.Income)
+	Paths.Modules.Boosts = require(script.PlayerData.Boosts)
+	
+
 	
 	-- Penguins
-	Paths.Modules.Penguins = require(script.Penguins)
 	
 	-- Hearts
 	Paths.Modules.Hearts = require(script.Hearts)

@@ -427,6 +427,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	task.wait(5)
 	-- Setup Chat
 	Modules.Chat:ApplyChatTag(Player)
+
 end)
 
 return PlayerData
