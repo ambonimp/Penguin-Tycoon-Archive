@@ -10,23 +10,24 @@ local Remotes = Paths.Remotes
 
 
 
+
+
+
 --- Lighting Variables ---
 local Presets = Services.RStorage.LightingPresets
-
-local Minigame = game.Players.LocalPlayer:GetAttribute("Minigame")
-Lighting.CurrentLocation = Minigame == "None" and "Night Skating" or Minigame
+Lighting.CurrentLocation = "Night Skating" -- require(Services.RStorage.Modules.EventsConfig).Names[game.PlaceId]
 
 --- Functions ---
 function Lighting:ChangeLighting(Preset)
+	if not Presets:FindFirstChild(Preset) or Preset == Lighting.CurrentLocation then return end
+	Lighting.CurrentLocation = Preset
+	Services.Lighting:ClearAllChildren()
+
 	-- Module is loaded after this one, so not a garuantee that it exists in Modules when this event is fired
 	if not Modules.AudioHandler then
 		repeat task.wait() until Modules.AudioHandler
 	end
-
-	if not Presets:FindFirstChild(Preset) or Preset == Lighting.CurrentLocation then return end
-	Lighting.CurrentLocation = Preset
 	Modules.AudioHandler:LocationChanged(Preset)
-	Services.Lighting:ClearAllChildren()
 
 	for i, v in pairs(Presets[Preset]:GetChildren()) do
 		if not v:IsA("Folder") then
@@ -39,6 +40,7 @@ function Lighting:ChangeLighting(Preset)
 			end 
 		end
 	end
+
 end
 
 Remotes.Lighting.OnClientEvent:Connect(function(Location)

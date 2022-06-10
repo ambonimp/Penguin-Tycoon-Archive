@@ -70,7 +70,7 @@ EventsConfig["Ice Cream Extravaganza"] = {
 EventsConfig["Sled Race"] = {
 	MinPlayers = 2,
 	MaxPlayers = 15,
-	Duration = 70,
+	Duration = 100,
 	TurnVelocity = math.rad(25),
 	MaxSteerAngle = math.rad(45),
 	DefaultVelocity = 75,
@@ -94,9 +94,11 @@ EventsConfig["Egg Hunt"] = {
 }
 
 if game.PlaceId == 9647797909 then -- Testing
-	EventsConfig.INTERMISSION_INTERVAL = 5
-	EventsConfig.Names[9647797909] = "Falling Tiles"
-	EventsConfig[EventsConfig.Names[9647797909]].Duration = 40
+	EventsConfig.INTERMISSION_INTERVAL = 10
+	EventsConfig.Names[9647797909] = "Sled Race"
+	EventsConfig[EventsConfig.Names[9647797909]].Duration = 60
+	EventsConfig[EventsConfig.Names[9647797909]].FastestPossible = 1
+	EventsConfig[EventsConfig.Names[9647797909]].Laps = 1
 	EventsConfig[EventsConfig.Names[9647797909]].MinPlayers = 1
 end
 

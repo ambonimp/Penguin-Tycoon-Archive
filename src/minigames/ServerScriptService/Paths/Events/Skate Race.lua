@@ -1,6 +1,5 @@
 local SkateRace = {}
 
-
 --- Main Variables ---
 local Paths = require(script.Parent.Parent)
 
@@ -9,309 +8,322 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 
-
 --- Event Variables ---
 local EVENT_NAME = script.Name
+
+local WINNER_REWARDS = {15, 10, 5}
+local PARTICIPATION_REWARD = 1
+
 
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
 local Config = Modules.EventsConfig[EVENT_NAME]
 
+local Map, SpawnPoints
+
 
 
 
 --- Event Functions ---
-local function SortPlayerPositions(Rankings, Winners)
+local function RewardGems(Player, Amount)
+	Modules.Income:AddGems(Player,  Amount, EVENT_NAME)
+end
+
+local function RelayToParticipants(...)
+	for _, PlayerName in ipairs(Participants:GetChildren()) do
+		local Player = game.Players:FindFirstChild(PlayerName.Name)
+		if Player then
+			Remotes.SledRace:FireClient(Player, ...)
+		end
+	end
+end
+
+local function SortPlayerPositions(Rankings)
 	-- Sort position rankings
 	table.sort(Rankings, function(a, b) return a.Position > b.Position end)
-
 	for i, playerData in ipairs(Rankings) do
 		playerData.Rank = i-- + #Winners
 	end
-	
-	-- Sort winner rankings
-	table.sort(Winners, function(a, b) return a.Time < b.Time end)
 
-	for i, playerData in ipairs(Rankings) do
-		for winnerIndex, winnerData in ipairs(Winners) do
-			if winnerData.Player == playerData.Player then
-				playerData.Rank = winnerIndex
-				playerData.Time = winnerData.Time
-			end
-		end
-	end
-	
 	return Rankings
 end
 
-function SkateRace:SpawnPlayers(ChosenBugName, ChosenBugNum)
-	local Map = workspace.Event["Event Map"]
-	local Spawns = Map.Spawns
-	
-	for index, playerName in pairs(Participants:GetChildren()) do
-		local player = game.Players:FindFirstChild(playerName.Name)
-		local SpawnPos = Spawns["Spawn"..index].CFrame * CFrame.new(0, 3, 0)
-		
-		if player then
-			Remotes.Lighting:FireClient(player, "Skate Race")
-			
-			local Character = Modules.Character:Spawn(player, SpawnPos)
-			Character.Humanoid.JumpPower = 0
-			Character.Humanoid.WalkSpeed = 0
-			
-			Modules.Collisions.SetCollision(Character, false)
-			
-			Character.Humanoid.Died:Connect(function()
-				playerName:Destroy()
-			end)
-
-			player:SetAttribute("Minigame","Skate Race")
-
-		end
-
+local function ToggleGemRewardUI(toggle)
+	for i, v in pairs(Map.Winners.UIs:GetChildren()) do
+		v.GemReward.Enabled = toggle
 	end
 
 end
 
+
 function SkateRace:InitiateEvent(Event)
+	Map = workspace.Event["Event Map"]
+	SpawnPoints = Map.PlayerSpawns:GetChildren()
+
 	EventValues.Timer.Value = Config.Duration
 	EventValues.Timer:SetAttribute("Enabled", true)
 
 	Remotes.Events:FireAllClients("Initiate Event", Event)
 end
 
+function SkateRace:SpawnPlayers(ChosenBugName, ChosenBugNum)
+	for i, Participant in pairs(Participants:GetChildren()) do
+		local Player = game.Players:FindFirstChild(Participant.Name)
+		local SpawnPos = SpawnPoints[i].CFrame * CFrame.new(0, 3, 0)
+
+		if Player then
+			Remotes.Lighting:FireClient(Player, "Skate Race")
+
+			local Character = Modules.Character:Spawn(Player, SpawnPos)
+			Character.Humanoid.JumpPower = 0
+			Character.Humanoid.WalkSpeed = 0
+
+			Modules.Collisions.SetCollision(Character, false)
+
+			Character.Humanoid.Died:Connect(function()
+				Participant:Destroy()
+			end)
+
+			Player:SetAttribute("Minigame","Skate Race")
+		end
+
+	end
+
+end
+
 function SkateRace:StartEvent()
-	local Map = workspace.Event["Event Map"]
-	
-	-- Activate Event
-	Map.Active.Value = true
-	
-	
+	local StartTime = tick()
+	local TimeLeft = Config.Duration
+
+	local Laps = {}
+	local CompletedRace = {}
+	local Rankings = {}
+
+
 	-- Give speed back to players
-	for index, playerName in pairs(Participants:GetChildren()) do
-		local player = game.Players:FindFirstChild(playerName.Name)
-		if player and player.Character and player.Character:FindFirstChild("Humanoid") then
-			player.Character.Humanoid.WalkSpeed = 35
+	for _, Participant in pairs(Participants:GetChildren()) do
+		local Player = game.Players:FindFirstChild(Participant.Name)
+		if Player and Player.Character and Player.Character:FindFirstChild("Humanoid") then
+			Player.Character.Humanoid.WalkSpeed = 35
 		end
 	end
 
+	-- Activate Event
+	local Active = true
+
 	Remotes.Events:FireAllClients("Event Started")
-	
-	local StartTime = tick()
-	local FinishTime = StartTime + Modules.EventsConfig["Skate Race"].Duration
-	
-	
 	EventValues.TextToDisplay.Value = "RACE!!"
-	wait(1)
+	task.wait(1)
 
 
 	-- Setup things
-	
+	local WaypointsTouched = {}
 	local WaypointPositions = {}
-	for i, Waypoint in pairs(Map.Waypoints:GetChildren()) do
+	for _, Waypoint in pairs(Map.Waypoints:GetChildren()) do
 		WaypointPositions[tonumber(Waypoint.Name)] = Waypoint.Position
 	end
 
-	local PlayerLaps = {}
-	local Winners = {}
-	local Rankings = {}
-	
-	
-	-- Setup Lap Touchpart
-	local WaypointsTouched = {}
-	local TouchDb = {}
-	
-	Map.LapHitbox.Touched:Connect(function(Part)
-		if Part.Name == "HumanoidRootPart" and Part.Parent:FindFirstChild("Humanoid") and game.Players:FindFirstChild(Part.Parent.Name) and not TouchDb[Part.Parent] then
-			TouchDb[Part] = true
-			
-			local player = game.Players[Part.Parent.Name]
-			local character = Part.Parent
-			
-			if not WaypointsTouched[player] then WaypointsTouched[player] = {} end
-			
-			-- If they have touched all the waypoints (minus a few for lag or anomalies)
-			if #WaypointsTouched[player] >= 44 then -- Total waypoints 47
-				if not PlayerLaps[player] then PlayerLaps[player] = 1 end
-				
-				if PlayerLaps[player] == Modules.EventsConfig["Skate Race"].Laps then
-				-- Player has finished the race
-					local PlayerTime = math.floor((tick() - StartTime) * 100)/100
-					
-					-- mini anti exploit
-					
-					local data = Modules.PlayerData.sessionData[player.Name] 
-					if data then
-						local PlayerTime = PlayerTime * 100
-						if (not data["Stats"]["Skate Race Record"]) or (data["Stats"]["Skate Race Record"] and data["Stats"]["Skate Race Record"] > PlayerTime and PlayerTime > Modules.EventsConfig["Skate Race"].FastestPossible) then
-							data["Stats"]["Skate Race Record"] = math.floor(PlayerTime)
+	-- Detect progress (Waypoints)
+	task.spawn(function()
+		while Active do
+			Rankings = {}
+			for index, Participant in pairs(Participants:GetChildren()) do
+				local Player = game.Players:FindFirstChild(Participant.Name)
+
+				if Player then
+					local Hrp = Player.Character.HumanoidRootPart
+
+					if not WaypointsTouched[Player] then WaypointsTouched[Player] = {} end
+
+					local PlayerPosition = Hrp.Position
+
+					local LastWaypoint, LastWaypointDistance = Map.Waypoints["1"], math.huge
+					local NextWaypoint, NextWaypointDistance = false, math.huge
+
+
+					-- Get last waypoint
+					for Waypoint, Position in pairs(WaypointPositions) do
+						local Distance = math.abs((PlayerPosition - Position).Magnitude)
+						if Distance < LastWaypointDistance then
+							LastWaypoint = Map.Waypoints[Waypoint]
+							LastWaypointDistance = Distance
 						end
+
 					end
-					
-					if PlayerTime < Modules.EventsConfig["Skate Race"].FastestPossible then 
-						player:Kick("Potential Lag Issues") 
-						PlayerLaps[player] = nil 
-						WaypointsTouched[player] = nil 
-						
+
+					local Next = tonumber(LastWaypoint.Name) + 1
+					if WaypointPositions[LastWaypoint.Name + 1] then
+						NextWaypoint = Map.Waypoints[Next]
+						NextWaypointDistance = (PlayerPosition - WaypointPositions[Next]).Magnitude
+					end
+
+					-- Player is being LastWaypoint
+					local Last = tonumber(LastWaypoint.Name) - 1
+					if WaypointPositions[Last] then
+						if (PlayerPosition - WaypointPositions[Last]).Magnitude < NextWaypointDistance then
+							NextWaypoint = LastWaypoint
+							NextWaypointDistance = (PlayerPosition - NextWaypoint.Position).Magnitude
+
+							LastWaypoint = Map.Waypoints[Last]
+							LastWaypointDistance = (PlayerPosition - LastWaypoint.Position).Magnitude
+						end
 					else
-						Winners[#Winners+1] = {Player = player, Time = PlayerTime}
+						if #WaypointsTouched[Player] >= 40 then NextWaypoint = Map.Waypoints["47"] end
 					end
-					
-					PlayerLaps[player] += 1 -- Add a lap (even if they finished so it can be used to check winners in live rankings)
-					
-					character.Humanoid.WalkSpeed = 0
-					
-				elseif PlayerLaps[player] < Modules.EventsConfig["Skate Race"].Laps then
-				-- Next lap
-					PlayerLaps[player] += 1 
-					
+
+					if tonumber(LastWaypoint.Name) > 5 and tonumber(LastWaypoint.Name)/2 > #WaypointsTouched[Player] then
+						LastWaypoint = Map.Waypoints["1"]
+					end
+
+
+					-- Set
+					local PlayerLap = Laps[Player]
+					if not PlayerLap then
+						Laps[Player] = 1
+						PlayerLap = 1
+					end
+
+					Rankings[index] = {
+						Player = Player,
+						Position = PlayerLap * 10000 + (LastWaypoint.Name * 100) + LastWaypointDistance,
+						Lap = PlayerLap
+					}
+
+					-- Set the waypoint as touched by the player so they're able to complete the lap
+					if not WaypointsTouched[Player][tonumber(LastWaypoint.Name)] then
+						WaypointsTouched[Player][tonumber(LastWaypoint.Name)] = true
+					end
+
 				end
 
-				WaypointsTouched[player] = nil
 			end
-			
-			task.wait(1)
-			TouchDb[Part] = nil
+
+			-- Update race leaderboard live
+			SortPlayerPositions(Rankings)
+			Remotes.Events:FireAllClients("Update Event", Rankings)
+
+			task.wait(0.2)
 		end
 	end)
-	
-	local lastUpdated = tick()
-	
+
+	-- Laps / Finishing
+	local TouchDb = {}
+
+	Map.LapHitbox.Touched:Connect(function(Part)
+		local Character = Part.Parent
+		local Player = game.Players:GetPlayerFromCharacter(Character)
+
+		if Part.Name == "HumanoidRootPart" and Part.Parent:FindFirstChild("Humanoid") and Player and not TouchDb[Character] then
+			TouchDb[Character] = true
+
+			if not WaypointsTouched[Player] then
+				WaypointsTouched[Player] = {}
+			end
+
+			-- If they have touched all the waypoints (minus a few for lag or anomalies)
+			if #WaypointsTouched[Player] >= 44 then -- Total waypoints 47
+				-- Player has finished the race
+				if Laps[Player] == Modules.EventsConfig["Skate Race"].Laps then
+					local Time = Config.Duration - TimeLeft
+
+					-- Mini anti exploit
+					if Time < Modules.EventsConfig["Skate Race"].FastestPossible then
+						Player:Kick("Potential Lag Issues")
+						Laps[Player] = nil
+						WaypointsTouched[Player] = nil
+
+					else
+						local PlayerName = Player.Name
+						local Ranking = #CompletedRace + 1
+
+						-- Scoreboard
+						CompletedRace[Ranking] = {
+							PlayerName = PlayerName,
+							Score = Time
+						}
+
+						-- Record setting
+						local Data = Modules.PlayerData.sessionData[PlayerName]
+						if Data then
+							local StatTime = math.floor(Time * 100) / 100
+							local Record =  Data["Stats"]["Skate Race Record"]
+							if Record then
+								if Record > StatTime then
+									Data["Stats"]["Skate Race Record"] = StatTime
+								end
+							else
+								Data["Stats"]["Skate Race Record"] = StatTime
+							end
+
+						end
+
+					end
+
+					Character.Humanoid.WalkSpeed = 0
+
+				end
+
+				Laps[Player] += 1 -- Add a lap (even if they finished so it can be used to check winners in live rankings)
+				WaypointsTouched[Player] = nil
+
+			end
+
+			task.wait(1)
+			TouchDb[Character] = nil
+		end
+
+	end)
+
+
+
 	-- Start the event
 	EventValues.TextToDisplay.Value = "Reach the finish line"
 	repeat
-		task.wait()
-		
-		local TimeLeft = math.floor((FinishTime - tick())*10)/10
-		EventValues.Timer.Value = TimeLeft
+		TimeLeft -= task.wait()
+		EventValues.Timer.Value = math.floor(TimeLeft)
+	until #Participants:GetChildren() <= #CompletedRace or TimeLeft <= 0
 
-		if not string.match(tostring(TimeLeft), "%.") then
-			TimeLeft = tostring(TimeLeft)..".0"
+	Active = false
 
-		--elseif string.len(string.split(tostring(TimeLeft), ".")[2]) == 1 then -- for .00 second intervals rather than .0
-		--	TimeLeft = tostring(TimeLeft).."0"
-		end
-		
-		for i = 1, select(2, tostring(TimeLeft):gsub("1", "")), 1 do
-			TimeLeft = tostring(TimeLeft).." "
-		end
-		
-		
-		if tick() > lastUpdated + 0.2 then
-			lastUpdated = tick()
-			
-			-- Update race leaderboard live
-			Rankings = {}
-			
-			for index, Participant in pairs(Participants:GetChildren()) do
-				local player = game.Players:FindFirstChild(Participant.Name)
-				
-				if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-					if not WaypointsTouched[player] then WaypointsTouched[player] = {} end
-					
-					local PlayerPosition = player.Character.HumanoidRootPart.Position
-					
-					local Waypoint1, Waypoint1Distance = Map.Waypoints["1"], 1000
-					local Waypoint2, Waypoint2Distance = false, 1000
-					
-					for Waypoint, Position in pairs(WaypointPositions) do
-						local Distance = math.abs((PlayerPosition - Position).magnitude)
+	local Winners = {}
+	for i, Ranked in ipairs(CompletedRace) do
+		local PlayerName = Ranked.PlayerName
+		local Player = game.Players:FindFirstChild(PlayerName)
 
-						if Distance < Waypoint1Distance then
-							Waypoint1 = Map.Waypoints[Waypoint]
-							Waypoint1Distance = Distance
-						end
-					end
-					
-					if WaypointPositions[Waypoint1.Name + 1] then
-						Waypoint2 = Map.Waypoints[Waypoint1.Name + 1]
-						Waypoint2Distance = math.abs((PlayerPosition - WaypointPositions[Waypoint1.Name + 1]).magnitude)
-					end
-					
-					if WaypointPositions[Waypoint1.Name - 1] then
-						if math.abs((PlayerPosition - WaypointPositions[Waypoint1.Name - 1]).magnitude) < Waypoint2Distance then
-							Waypoint2 = Waypoint1
-							Waypoint2Distance = math.abs((PlayerPosition - Waypoint2.Position).magnitude)
-							
-							Waypoint1 = Map.Waypoints[Waypoint1.Name - 1]
-							Waypoint1Distance = math.abs((PlayerPosition - Waypoint1.Position).magnitude)
-						end
-					else
-						
-						if #WaypointsTouched[player] >= 40 then Waypoint2 = Map.Waypoints["47"] end
-					end
-					
-					if tonumber(Waypoint1.Name) > 5 and tonumber(Waypoint1.Name)/2 > #WaypointsTouched[player] then
-						Waypoint1 = Map.Waypoints["1"]
-					end
-					
-					local WaypointPosition = (Waypoint1.Name * 100) + Waypoint1Distance
-					local PlayerLap = PlayerLaps[player] or 1
-					
-					Rankings[index] = {Player = player, Position = PlayerLap * 10000 + WaypointPosition, Lap = PlayerLap}
-					--print(player.DisplayName, "Total Distance:", PlayerLap * 10000 + WaypointPosition, "Waypoints:", Waypoint1, Waypoint2, Waypoint2Distance)
-					
-					-- Set the waypoint as touched by the player so they're able to complete the lap
-					if not WaypointsTouched[player][tonumber(Waypoint1.Name)] then
-						WaypointsTouched[player][tonumber(Waypoint1.Name)] = true
-					end
+		if Player then
+			if i <= 3 then
+				if i == 1 then
+					Modules.Quests.GiveQuest(Player, "Win", "Minigame", "Skate Race", 1)
+					Modules.Quests.GiveQuest(Player, "Win"," Minigame", "All", 1)
 				end
-			end
-			
-			SortPlayerPositions(Rankings, Winners)
-			Remotes.Events:FireAllClients("Update Event", Rankings)
-		end
-		
-	until #Participants:GetChildren() == 0 or #Participants:GetChildren() == #Winners or tick() > FinishTime
+				table.insert(Winners, PlayerName)
 
-	SortPlayerPositions(Rankings, Winners)
-	Remotes.Events:FireAllClients("Update Event", Rankings)
-	
-	if #Winners > 0 then
-		local Top3 = {"", "", ""}
-		
-		for i, playerInfo in pairs(Rankings) do
-			if playerInfo.Rank <= 3 then
-				Top3[playerInfo.Rank] = playerInfo.Player.Name
-				
-				local Character = Modules.Character:MoveTo(playerInfo.Player, Map.Winners["Spawn"..playerInfo.Rank].CFrame)
-				
+				-- Put character on pedestal
+				local Character = Modules.Character:MoveTo(Player, Map.Winners["Spawn".. i].CFrame)
 				if Character:FindFirstChild("HumanoidRootPart") then
 					Character.Humanoid.WalkSpeed = 0
 				end
-				
-				if playerInfo.Rank == 1 and #Winners >= 2 then
-					Modules.Quests.GiveQuest(playerInfo.Player,"Win","Minigame","Skate Race",1)
-					Modules.Quests.GiveQuest(playerInfo.Player,"Win","Minigame","All",1)
-					Modules.Income:AddGems(playerInfo.Player, 15, "Skate Race")
-				elseif playerInfo.Rank == 2 then
-					Modules.Income:AddGems(playerInfo.Player, 10, "Skate Race")
-				elseif playerInfo.Rank == 3 then
-					Modules.Income:AddGems(playerInfo.Player, 5, "Skate Race")
-				end
+
+				RewardGems(Player, WINNER_REWARDS[i])
+
 			else
-				Modules.Income:AddGems(playerInfo.Player, 1, "Skate Race")
+				RewardGems(Player, PARTICIPATION_REWARD)
+
 			end
 
 		end
-		
-		for i, Participant in pairs(Participants:GetChildren()) do
-			local player = game.Players:FindFirstChild(Participant.Name)
-			if player then
-				Remotes.Events:FireClient(player, "Skate Race Winners Camera", Map.Winners.CameraAngle.CFrame,Rankings)
-			end
-		end
-		
-		for i, v in pairs(Map.Winners.UIs:GetChildren()) do
-			v.GemReward.Enabled = true
-		end
-		
-		local WinnerText = "#1 - "..Top3[1]..", #2 - "..Top3[2]..", #3 - "..Top3[3]
-		
-		return Top3, WinnerText
 	end
 
-	return false
+	for _, Participant in ipairs(Participants:GetChildren()) do
+		local Player = game.Players:FindFirstChild(Participant.Name)
+		Remotes.SkateRace:FireClient(Player, "Finished", CompletedRace, Map.Winners.CameraAngle.CFrame)
+	end
+
+	ToggleGemRewardUI(true)
+	task.delay(10, ToggleGemRewardUI, false)
+
+
+	return #Winners > 0 and Winners or nil
 end
 
 return SkateRace

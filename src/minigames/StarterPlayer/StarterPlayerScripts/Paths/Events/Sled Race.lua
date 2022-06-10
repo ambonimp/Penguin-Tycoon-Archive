@@ -89,15 +89,6 @@ function SledRace:InitiateEvent(Collectables)
     Velocity = Config.DefaultVelocity
     TurnVelocity = Config.TurnVelocity
 
-    -- Sound
-    CollectSounds = {}
-    for _, Sound in ipairs(Assets.CollectSounds:GetChildren()) do
-        Sound = Sound:Clone()
-        Sound.Parent = Character
-
-        CollectSounds[Sound.Name] = Sound
-    end
-
     -- Collectables
     for Id, Collectable in ipairs(Collectables) do
         local Position = Collectable.Position
@@ -111,7 +102,7 @@ function SledRace:InitiateEvent(Collectables)
         local PrimaryPartOffset = CenterCFrame:ToObjectSpace(Model.PrimaryPart.CFrame)
 
         local Results = assert(workspace:Raycast(Position, Vector3.new(0, -50, 0), RParams))
-        local FloorCFrame = CFrame.new(Results.Position) * CFrame.fromEulerAnglesYXZ(GetNormalIncline(Results), 0, 0)
+        local FloorCFrame = CFrame.new(Results.Position) * CFrame.fromEulerAnglesYXZ(-GetNormalIncline(Results), math.pi, 0)
 
 		Model:SetPrimaryPartCFrame(FloorCFrame * PrimaryPartOffset * CFrame.new(Size * Vector3.new(0, 0.5, 0)))
 
@@ -132,7 +123,6 @@ function SledRace:InitiateEvent(Collectables)
                                 VelocityAddend = -Config.ObstacleVelocityMinuend
 
                                 -- TODO: Smoke particle
-
                             else
                                 VelocityAddend = Config.BoostVelocityAddend
 
@@ -164,10 +154,10 @@ function SledRace:InitiateEvent(Collectables)
 
                             -- Notify server
                             Remotes.SledRace:FireServer("CollectableCollected", Id)
+                            Model:Destroy()
 
                         end
 
-                        Model:Destroy()
                     end
 
                 end)
@@ -199,10 +189,20 @@ function SledRace:EventStarted()
 
     local Finished
 
+
+    -- Sound
+    CollectSounds = {}
+    for _, Sound in ipairs(Assets.CollectSounds:GetChildren()) do
+        Sound = Sound:Clone()
+        Sound.Parent = Character
+
+        CollectSounds[Sound.Name] = Sound
+    end
+
     -- Moving
     local SpeedLines = Paths.Modules.SpeedLines:Play()
     local Driving = Services.RunService.Heartbeat:Connect(function(dt)
-        local TurnSpeed = TurnVelocity * dt
+        local TurnSpeed = TurnVelocity * (dt * 2)
 
         local Results = assert(workspace:Raycast(Hrp.Position + Vector3.new(0, 50, 0), Vector3.new(0, -100, 0), RParams))
         local Incline = GetNormalIncline(Results)
@@ -262,9 +262,8 @@ function SledRace:EventStarted()
 
     -- Progress bar on the left
     task.spawn(function()
-        local Top = Map.StartingLine.PrimaryPart.Position.Y
-        local Bottom = FinishLine.Position.Y
-        local Height = Top - Bottom
+        local Top = Map.StartingLine.PrimaryPart.CFrame
+        local Distance = Top:PointToObjectSpace(FinishLine.Position).Z
 
         PositionIndicators = {}
         for _, Participant in ipairs(Participants:GetChildren()) do
@@ -290,7 +289,9 @@ function SledRace:EventStarted()
 
                 if Participants:FindFirstChild(Indicator.Name) then
                     local Char = game.Players:FindFirstChild(Indicator.Name).Character
-                    Indicator.Position = UDim2.fromScale(1, math.clamp(1 - (Top - Char.PrimaryPart.Position.Y)/Height, 0, 1))
+
+                    local Position = Top:PointToObjectSpace(Char.PrimaryPart.Position).Z
+                    Indicator.Position = UDim2.fromScale(1, math.clamp(1 - Position/Distance, 0, 1))
                 else
                     Indicator:Destroy()
                     table.remove(PositionIndicators, i)
@@ -323,7 +324,7 @@ end
 Remotes.SledRace.OnClientEvent:Connect(function(Event, ...)
     local Params = table.pack(...)
 
-    if Event == "OnSomeoneCompletedRace" then
+    if Event == "Finished" then
         local Rankings = Params[1]
         Modules.EventsUI:UpdateRankings(Rankings)
     end

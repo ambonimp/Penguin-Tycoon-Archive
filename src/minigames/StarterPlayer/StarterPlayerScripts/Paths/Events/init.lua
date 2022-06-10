@@ -17,8 +17,6 @@ local ChosenEvent = Modules.EventsConfig.Names[game.PlaceId]
 local EventModule = require(script[ChosenEvent])
 
 
-
-
 local announcementRemote = Remotes:WaitForChild("Announcement")
 
 
@@ -145,6 +143,7 @@ Remotes.Events.OnClientEvent:Connect(function(Action, ...)
 		end
 		
 		Modules.EventsUI:EventStarted()
+
 	elseif Action == "Event Started" then
 		local handler = EventModule.EventStarted
 		if handler then
@@ -164,7 +163,6 @@ Remotes.Events.OnClientEvent:Connect(function(Action, ...)
 			handler(EventModule, ...)
 		end
 
-		Modules.EventsUI:EventEnded()
 		Modules.Spectate.EventEnded()
 	end
 

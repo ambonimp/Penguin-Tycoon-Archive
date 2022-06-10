@@ -137,7 +137,6 @@ function FallingTiles:StartEvent()
 
 			table.insert(Rankings, {
 				PlayerName = Name,
-				Score = os.time() - StartTime
 			})
 
 		end
@@ -148,7 +147,9 @@ function FallingTiles:StartEvent()
 	EventValues.TextToDisplay.Value = "Stay alive"
 
 	repeat
-		TimeLeft = math.floor(TimeLeft - task.wait(1))
+		task.wait(1)
+		TimeLeft -= 1
+
 		EventValues.Timer.Value = TimeLeft
 
 		EventValues.TextToDisplay.Value = "In Progress - "..#Participants:GetChildren().. " Player(s) Left"
@@ -161,7 +162,6 @@ function FallingTiles:StartEvent()
 	for _, Participant in ipairs(Participants:GetChildren()) do
 		table.insert(Winners, {
 			PlayerName = Participant.Name,
-			Score = Config.Duration,
 		})
 	end
 	if #Winners == 0 then Rankings[#Rankings] = nil end

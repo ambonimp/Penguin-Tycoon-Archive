@@ -163,10 +163,8 @@ function SledRace:StartEvent()
 			if Participants:FindFirstChild(Client.Name) then
 				table.insert(CompletedRace, {
 					PlayerName = Client.Name,
-					Score = os.time() - StartTime
+					Score = Config.Duration - TimeLeft
 				})
-
-				RelayToParticipants("OnSomeoneCompletedRace", CompletedRace)
 			end
 
 		elseif Event == "OnCollectableCollected" then
@@ -188,10 +186,11 @@ function SledRace:StartEvent()
 	end)
 
 	repeat
-		TimeLeft = math.floor(TimeLeft - task.wait(1))
-		EventValues.Timer.Value = TimeLeft
+		TimeLeft -= task.wait()
+		EventValues.Timer.Value = math.floor(TimeLeft)
 	until #CompletedRace >= #Participants:GetChildren() or TimeLeft <= 0
 
+	RelayToParticipants("Finished", CompletedRace)
 	Conn:Disconnect()
 
 	local Winners = {}
@@ -205,14 +204,15 @@ function SledRace:StartEvent()
 			local Data = Modules.PlayerData.sessionData[PlayerName]
 			if Data then
 				local Stats = Data["Stats"]
-				local PreviousTime =  Stats[EVENT_NAME]
+				local RecordTime =  Stats[EVENT_NAME]
+				local StatTime = math.floor(Time * 100) / 100
 
-				if PreviousTime then
-					if Time < PreviousTime then
-						Stats[EVENT_NAME] = Time
+				if RecordTime then
+					if StatTime < RecordTime then
+						Stats[EVENT_NAME] = StatTime
 					end
 				else
-					Stats[EVENT_NAME] = Time
+					Stats[EVENT_NAME] = StatTime
 				end
 
 			end
