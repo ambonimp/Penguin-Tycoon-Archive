@@ -10,7 +10,8 @@ local Remotes = Paths.Remotes
 
 local debounces = {}
 
-local UPLOAD_COOLDOWN = 60
+local UPLOAD_COOLDOWN = 30
+
 -- This event is only fired when the game is finished
 Remotes.YoutubeMinigameFinished.OnServerEvent:Connect(function(player, computer, score, subs, likes)
     local data = Modules.PlayerData.sessionData[player.Name]
