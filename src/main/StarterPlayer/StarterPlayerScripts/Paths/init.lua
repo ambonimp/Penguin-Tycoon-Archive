@@ -69,6 +69,7 @@ function Paths.Initiliaze()
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Verification = require(script.Verification)
 	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
+	Paths.Modules.DeviceDetector = require(script.DeviceDetector)
 	Paths.Modules.Feedback = require(script.Feedback)
 	
 	-- Tool Modules

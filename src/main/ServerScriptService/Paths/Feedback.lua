@@ -1,10 +1,12 @@
 local Feedback = {}
 
---- Main Variables ---
+--- Dependencies ---
 local Paths = require(script.Parent)
 local Remotes = Paths.Remotes
-
+local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
 local discord = require(script.Parent.Discord)
+
+--- Members ---
 local cachedPlayers = {}
 
 --- CONSTANTS ---
@@ -37,7 +39,7 @@ local MOODS = {
 Remotes.SendFeedback.OnServerInvoke = function(player, moodIndex, feedback, platform)
     if cachedPlayers[player.UserId] then
         if tick() - cachedPlayers[player.UserId] < DEBOUNCING_TIME then
-            return false, "Wait 5 minutes"
+            return false, "Please, wait 5 minutes before sending another feedback"
         end
     end
 
@@ -70,6 +72,13 @@ Remotes.SendFeedback.OnServerInvoke = function(player, moodIndex, feedback, plat
     webhook:Send(message)
 
     cachedPlayers[player.UserId] = tick()
+
+    EventHandler:Fire("feedbackSent", player, {
+        mood = moodIndex,
+        platform = platform,
+        place = "Tycoon"
+    })
+
     return true, "Success!"
 end
 
