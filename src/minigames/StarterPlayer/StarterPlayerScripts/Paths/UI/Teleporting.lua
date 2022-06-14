@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local Teleporting = {}
 
 
@@ -15,12 +14,13 @@ local EventsConfig =  require(Services.RStorage.Modules.EventsConfig)
 local PlaceIds =  require(Services.RStorage.Modules.PlaceIds)
 
 
---- Variables ---
+--- Variables --
+local Frame = Paths.UI.Center.TeleportConfirmation
+
 local TeleportButton = UI.Left.Buttons.Teleport
 local Confirmation = UI.Center.TeleportConfirmation
 
 local TeleportDB = false
-
 
 local Locations = {
 	["Penguin Tycoon"] = {
@@ -37,25 +37,41 @@ local Locations = {
 	},
 	["Falling Tiles"] = {
 		PlaceId = PlaceIds["Falling Tiles"],
-		Description = "Be the last man standing",
+		Description = "Survive the falling tiles!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Falling Tiles"].ImageID,
 	},
 	["Skate Race"] = {
 		PlaceId = PlaceIds["Skate Race"],
-		Description = "Race on skates",
+		Description = "Race around the ice track!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Skate Race"].ImageID,
 	},
 	["Soccer"] = {
 		PlaceId = PlaceIds["Soccer"],
-		Description = "Score as many goals",
+		Description = "Score goals against the other team!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Soccer"].ImageID,
 	},
 	["Candy Rush"] = {
 		PlaceId = PlaceIds["Candy Rush"],
-		Description = "Something",
+		Description = "Collect all of the candy!",
 		Thumbnail = "rbxassetid://" .. EventsConfig["Candy Rush"].ImageID,
+	},
+	["Ice Cream Extravaganza"] = {
+		PlaceId = PlaceIds["Ice Cream Extravaganza"],
+		Description = "Collect all of the ice cream!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Ice Cream Extravaganza"].ImageID,
+	},
+	["Sled Race"] = {
+		PlaceId = PlaceIds["Sled Race"],
+		Description = "Race down the slope!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Sled Race"].ImageID,
 	}
 }
+
+local function InitializeLocationIds(Ids)
+	for Name, Id in pairs(Ids) do
+		Locations[Name].PlaceId = Id
+	end
+end
 
 --- Functions ---
 function Teleporting:TeleportTo(PlaceId)
@@ -64,27 +80,24 @@ function Teleporting:TeleportTo(PlaceId)
 
 	local Success, Error = Remotes.Teleport:InvokeServer(PlaceId)
 
-	if not Success then
+	if not Success and Confirmation.Visible then
 		Confirmation.InfoHolder.Confirm.Error.Visible = true
 		wait(0.8)
 		Confirmation.InfoHolder.Confirm.Error.Visible = false
 	end
 	TeleportDB = false
+	return Success
 end
 
 
 function Teleporting:OpenConfirmation(Location)
-	local LocationInfo = Locations[Location]
+	local LocationInfo = assert(Locations[Location], string.format("Location: %s does not exist", Location))
 
-	if LocationInfo then
-		Confirmation.InfoHolder.Thumbnail.Image = LocationInfo.Thumbnail
-		Confirmation.InfoHolder.Description.Text = LocationInfo.Description
-		Confirmation.InfoHolder.TeleportingTo.Text = "Teleporting To: " .. Location
+	Confirmation.InfoHolder.Thumbnail.Image = LocationInfo.Thumbnail
+	Confirmation.InfoHolder.Description.Text = LocationInfo.Description
+	Confirmation.InfoHolder.TeleportingTo.Text = "Teleporting To: " .. Location
 
-		Confirmation.PlaceId.Value = LocationInfo.PlaceId
-	else
-		warn(Location, debug.traceback())
-	end
+	Confirmation.PlaceId.Value = LocationInfo.PlaceId
 
 end
 
@@ -94,10 +107,16 @@ Confirmation.InfoHolder.Confirm.MouseButton1Down:Connect(function()
 	Teleporting:TeleportTo(tonumber(Confirmation.PlaceId.Value))
 end)
 
+--Confirmation.Cancel.MouseButton1Down:Connect(function()
+--	Confirmation.Visible = false
+--end)
+
+
 -- Different teleport locations/buttonns
 TeleportButton.MouseButton1Down:Connect(function()
-	Teleporting:OpenConfirmation("Penguin City")
+	Teleporting:OpenConfirmation(game.PlaceId == PlaceIds["Penguin City"] and "Penguin Tycoon" or "Penguin City")
 end)
+
 
 --- Switching between tabs ---
 Confirmation.InfoHolder.Friends.MouseButton1Down:Connect(function()
@@ -167,23 +186,6 @@ local function FriendTemplate(Info)
 end
 
 
-local function iterPageItems(pages)
-	return coroutine.wrap(function()
-		local pagenum = 1
-		while true do
-			for _, item in ipairs(pages:GetCurrentPage()) do
-				coroutine.yield(item, pagenum)
-			end
-			if pages.IsFinished then
-				break
-			end
-			pages:AdvanceToNextPageAsync()
-			pagenum = pagenum + 1
-		end
-	end)
-end
-
-
 function Teleporting:RefreshFriends()
 	for i, v in pairs(Confirmation.FriendsList.List:GetChildren()) do
 		if v:IsA("Frame") then
@@ -232,8 +234,8 @@ function Teleporting:RefreshFriends()
 end
 
 
-local Portals = Workspace:FindFirstChild("Portals")
-if workspace:FindFirstChild("Portals") then
+local Portals = workspace:FindFirstChild("Portals")
+if Portals then
 	for _, Portal in ipairs(Portals:GetChildren()) do
 		local Location = Portal.Name
 
@@ -241,13 +243,13 @@ if workspace:FindFirstChild("Portals") then
 		ProximityPrompt.HoldDuration = 0.25
 		ProximityPrompt.MaxActivationDistance = 10
 		ProximityPrompt.RequiresLineOfSight = false
-		ProximityPrompt.ActionText = Location
+		ProximityPrompt.ActionText = "Teleport"
 		ProximityPrompt.Parent = Portal.PrimaryPart
 
 		ProximityPrompt.Triggered:Connect(function(player)
-			if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
+			if player == game.Players.LocalPlayer and Frame.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
 				Teleporting:OpenConfirmation(Location)
-				Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
+				Modules.Buttons:UIOn(Frame,true)
 			end
 
 		end)
@@ -255,6 +257,41 @@ if workspace:FindFirstChild("Portals") then
 	end
 
 end
+
+-- Minigames
+local MinigameButton = Paths.UI.Top:FindFirstChild("Minigames") or  Paths.UI.Top.EventInfo.Minigames
+local MinigameFrame = Paths.UI.Center.Minigames
+MinigameButton.MouseButton1Down:Connect(function()
+	if Paths.UI.Center.Minigames.Visible then
+		Paths.Modules.Buttons:UIOff(MinigameFrame,true)
+	else
+		Paths.Modules.Buttons:UIOn(MinigameFrame,true)
+	end
+end)
+
+for PlaceId, Minigame in pairs(EventsConfig.Names) do
+	local Location = Locations[Minigame]
+
+	if Location then
+		local Label = Dependency.MinigameTemplate:Clone()
+		Label:FindFirstChild("Name").Text = Minigame
+		Label.Description.Text = Location.Description
+		Label.Thumbnail.Image = Location.Thumbnail
+		Label.Parent = MinigameFrame.List
+
+		local PlayBtn =Label.Play
+		PlayBtn.MouseButton1Click:Connect(function()
+			PlayBtn.TextLabel.Text = "Teleporting.."
+			if not Teleporting:TeleportTo(PlaceId) then
+				PlayBtn.TextLabel.Text  = "Error.."
+			end
+
+		end)
+
+	end
+
+end
+
 
 coroutine.wrap(function()
 	Teleporting:RefreshFriends()

@@ -102,7 +102,6 @@ function FallingTiles:InitiateEvent()
 end
 
 function FallingTiles:StartEvent()
-	local StartTime = os.time() + 1
 	local TimeLeft = Config.Duration
 
 	-- Activate Event

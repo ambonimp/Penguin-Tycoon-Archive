@@ -13,8 +13,6 @@ local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
 local EventInfoUI = Paths.UI.Top.EventInfo
-local EventVotingUI = Paths.UI.Top.EventVoting
-local EventPromptUI = Paths.UI.Top.EventPrompt
 local EventUIs = Paths.UI.Right.EventUIs
 local EventUI = EventUIs["Egg Hunt"]
 local FinishedUI = Paths.UI.Center.EggHuntFinished

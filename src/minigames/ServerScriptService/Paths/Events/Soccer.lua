@@ -32,14 +32,6 @@ function addGems(red,blue)
 	end
 end
 
-local function RelayToParticpants(...)
-	for _, PlayerName in ipairs(Participants:GetChildren()) do
-		local Player = game.Players:FindFirstChild(PlayerName.Name)
-		if Player then
-			Remotes.SoccerEvent:FireClient(Player, ...)
-		end
-	end
-end
 
 --- Event Functions ---
 function Soccer:SpawnPlayers(ChosenBugName, ChosenBugNum)
@@ -123,8 +115,8 @@ function Soccer:StartEvent()
 	local Map = workspace.Event["Event Map"]
 	-- Activate Event
 	Map.Active.Value = true
-	local bluescore = 0
-	local redscore = 0
+	local BlueScore = 0
+	local RedScore = 0
 	local velocity = 50
 	local startCFrame = Map.PrimaryPart.Position+Vector3.new(0,16,0)
 	Remotes.Events:FireAllClients("Event Started")
@@ -148,7 +140,7 @@ function Soccer:StartEvent()
 				else
 					ball:ApplyImpulse(hit.Parent.HumanoidRootPart.CFrame.LookVector * velocity/10 * ball:GetMass())
 				end
-				Paths.Remotes.SoccerEvent:FireClient(game.Players:GetPlayerFromCharacter(hit.Parent),"hit",ball)
+				Paths.Remotes.SoccerEvent:FireClient(game.Players:GetPlayerFromCharacter(hit.Parent),"Hit",ball)
 				task.wait(.5)
 				db[hit.Parent] = nil
 			end
@@ -200,8 +192,10 @@ function Soccer:StartEvent()
 					
 				end
 			end
+
 			ball:Destroy()
 		end
+
 	end
 	
 	local function randomBallChance()
@@ -241,7 +235,9 @@ function Soccer:StartEvent()
 	
 	repeat
 		local justscoredother = false
-		if os.time()>nextRandomBallTime and #Map.Balls:GetChildren() <= 2 then
+
+		-- Spawning additional balls
+		if os.time() > nextRandomBallTime and #Map.Balls:GetChildren() <= 2 then
 			local ball = randomBallChance()
 			ball.PrimaryPart.Position = startCFrame + Vector3.new(math.random(-20,20),10,math.random(-15,15))
 			ball.Parent = Map.Balls
@@ -252,6 +248,9 @@ function Soccer:StartEvent()
 		TimeLeft = string.format("%02i:%02i", TimeLeft/60%60, TimeLeft%60)
 		
 		for i,ball in pairs (Map.Balls:GetChildren()) do
+			local LastTouched = ball.LastTouched.Value
+			LastTouched = LastTouched and LastTouched.Name or nil
+
 			if ball.PrimaryPart.Position.Z > Map.RedGoal.PrimaryPart.Position.Z and not ball.PrimaryPart:GetAttribute("JustTP") then
 				if Map.Cheering.Sound.IsPlaying == false then
 					--Map.Cheering.Sound:Play()
@@ -271,11 +270,13 @@ function Soccer:StartEvent()
 					handleBall(ball.PrimaryPart)
 				end
 
-				RelayToParticpants("Scored", "Blue")
+				BlueScore += ball:GetAttribute("Score")
+				Map.BlueScore.SurfaceGui.Frame.TextLabel.Text = BlueScore
+				EventValues.ScoreBlue.Value = BlueScore
+				Remotes.SoccerEvent:FireAllClients("Scored", "Blue", LastTouched)
 
-
-				bluescore += ball:GetAttribute("Score")
 				justscoredother = true
+
 			elseif ball.PrimaryPart.Position.Z < Map.BlueGoal.PrimaryPart.Position.Z and not ball.PrimaryPart:GetAttribute("JustTP") then
 				if Map.Cheering.Sound.IsPlaying == false then
 					--Map.Cheering.Sound:Play()
@@ -295,17 +296,17 @@ function Soccer:StartEvent()
 					handleBall(ball.PrimaryPart)
 				end
 
-				RelayToParticpants("Scored", "Red")
 
-				redscore += ball:GetAttribute("Score")
+				Map.RedScore.SurfaceGui.Frame.TextLabel.Text = RedScore
+				EventValues.ScoreRed.Value = RedScore
+				Remotes.SoccerEvent:FireAllClients("Scored", "Red", LastTouched)
+
 				justscoredother = true
 
 			end
 
 		end
 		
-		Map.BlueScore.SurfaceGui.Frame.TextLabel.Text = bluescore
-		Map.RedScore.SurfaceGui.Frame.TextLabel.Text = redscore
 		
 		EventValues.SoccerTime.Value = TimeLeft
 		--netWorkowner() 
@@ -317,18 +318,15 @@ function Soccer:StartEvent()
 			did10 = true
 			Map.Cheering.S10Sec:Play()
 		end
-		EventValues.ScoreRed.Value = redscore
-		EventValues.ScoreBlue.Value = bluescore
-	until tick() > FinishTime or bluescore >= 10 or redscore >= 10 or #Participants:GetChildren() == 0
+
+	until tick() > FinishTime or BlueScore >= 10 or RedScore >= 10 or #Participants:GetChildren() == 0
 	Map.Cheering.GameEnd:Play()
-	local bluescore = bluescore
-	local redscore = redscore
 	local winners,text
 	
-	if redscore > bluescore then --red won
+	if RedScore > BlueScore then --red won
 		winners = redteam
 		confetti(Map.RedConfetti)
-		text = "Red team won with a score of "..redscore.."!"
+		text = "Red team won with a score of "..RedScore.."!"
 		Services.RStorage.Assets.RedChampion:Clone().Parent = Map
 		Map.RedChampion.Name = "Winners"
 		for i,player in pairs (blueteam) do
@@ -348,10 +346,10 @@ function Soccer:StartEvent()
 			end
 		end
 		addGems(15,0)
-	elseif redscore < bluescore then -- blue won
+	elseif RedScore < BlueScore then -- blue won
 		winners = blueteam
 		confetti(Map.BlueConfetti)
-		text = "Blue team won with a score of "..bluescore.."!"
+		text = "Blue team won with a score of "..BlueScore.."!"
 		Services.RStorage.Assets.BlueChampion:Clone().Parent = Map
 		Map.BlueChampion.Name = "Winners"
 		for i,player in pairs (redteam) do
@@ -370,9 +368,9 @@ function Soccer:StartEvent()
 			end
 		end
 		addGems(0,15)
-	elseif redscore == bluescore then -- tied
+	elseif RedScore == BlueScore then -- tied
 		winners = {unpack(blueteam),unpack(redteam)}
-		text = "Both teams tied at "..redscore.."!"
+		text = "Both teams tied at "..RedScore.."!"
 		addGems(5,5)
 	end
 
