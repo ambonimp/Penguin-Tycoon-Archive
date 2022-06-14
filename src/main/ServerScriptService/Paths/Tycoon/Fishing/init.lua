@@ -124,7 +124,11 @@ function Fishing.GetRandomId(chanceTable,Player)
 	if randomNumber > 1 and (Player:GetAttribute("FishingUltraLuckBoost") or Player:GetAttribute("FishingSuperLuckBoost"))then
 		local n = math.random(1,20)
 		if n >= 18 then
-			randomNumber = .99999
+			if math.random(1,2) == 1 then
+				randomNumber = 0.99994
+			else
+				randomNumber = .99999
+			end
 		elseif n >= 12 and n <= 18 then
 			randomNumber = .99989 * rand:NextNumber(.999, 1)
 		else

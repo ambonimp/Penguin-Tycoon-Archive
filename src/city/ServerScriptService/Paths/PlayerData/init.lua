@@ -411,13 +411,15 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	task.spawn(function()
 		task.wait(10)
-		for name,details in pairs (PlayerData.sessionData[Player.Name]["Boosts"]) do
-			if details[2] > 20 then
-				task.spawn(function()
-					Paths.Modules.Boosts.startPlayerBoost(Player,name,true)
-				end)
-			else
-				details[2] = 0
+		if PlayerData.sessionData[Player.Name] then
+			for name,details in pairs (PlayerData.sessionData[Player.Name]["Boosts"]) do
+				if details[2] > 20 then
+					task.spawn(function()
+						Paths.Modules.Boosts.startPlayerBoost(Player,name,true)
+					end)
+				else
+					details[2] = 0
+				end
 			end
 		end
 	end)
