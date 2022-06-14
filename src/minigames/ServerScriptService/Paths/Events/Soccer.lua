@@ -247,7 +247,7 @@ function Soccer:StartEvent()
 		local TimeLeft = math.floor((FinishTime - tick())*10)/10
 		TimeLeft = string.format("%02i:%02i", TimeLeft/60%60, TimeLeft%60)
 		
-		for i,ball in pairs (Map.Balls:GetChildren()) do
+		for i, ball in pairs (Map.Balls:GetChildren()) do
 			local LastTouched = ball.LastTouched.Value
 			LastTouched = LastTouched and LastTouched.Name or nil
 
@@ -296,7 +296,7 @@ function Soccer:StartEvent()
 					handleBall(ball.PrimaryPart)
 				end
 
-
+				RedScore += ball:GetAttribute("Score")
 				Map.RedScore.SurfaceGui.Frame.TextLabel.Text = RedScore
 				EventValues.ScoreRed.Value = RedScore
 				Remotes.SoccerEvent:FireAllClients("Scored", "Red", LastTouched)

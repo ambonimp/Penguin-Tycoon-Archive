@@ -11,6 +11,7 @@ local UI = Paths.UI.Center.Achievements.Sections.Spin
 local SpinTime = (12*60*60)
 local soundNums = {25,70,115,160,205,250,290,340}
 local spinning = false
+local rotations = {0,45,90,135,180,225,270,315}
 
 if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
 	SpinTime = 1*60
@@ -35,10 +36,11 @@ local positions = {
 	[1] = {-20,20},
 }
 
+UI.Wheel.Rotation = rotations[math.random(1,#rotations)]
+
 function spinWheel()
 	spinning = true
 	
-	UI.Wheel.Rotation = 0
 	local result = Remotes.SpinTheWheel:InvokeServer("GetResult")
 	local low = math.min(positions[result][1],positions[result][2])
 	local high = math.max(positions[result][1],positions[result][2])
@@ -55,7 +57,7 @@ function spinWheel()
 		tween:Play()
 		tween.Completed:Wait()
 		timePassed += spinSpeed
-		spinSpeed *= 1.015
+		spinSpeed *= 1.04
 		if spinSpeed >= .05 then
 			spinning = false
 		end
@@ -77,7 +79,6 @@ function spinWheel()
 		
 		task.wait()
 	end
-
 	local check,am = Remotes.SpinTheWheel:InvokeServer("ClaimReward")
 	spinning = false
 	
@@ -104,7 +105,7 @@ function spinWheel()
 
 	task.wait(4)
 	if spinning == false then
-		UI.Wheel.Rotation = 0
+		UI.Wheel.Rotation = rotations[math.random(1,#rotations)]
 	end
 end
 

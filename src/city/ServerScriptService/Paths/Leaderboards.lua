@@ -141,6 +141,10 @@ function Leaderboards:beginLeaderboardUpdate()
 								Data["Stats"][Stat] = 12000
 								lbInfo.DataStore:SetAsync(Player.UserId, 12000)
 							end)
+						elseif Stat == "Sled Race" then
+							if Data["Stats"][Stat] < 30 then
+								Data["Stats"][Stat] = 1000000
+							end
 						else
 							PlrStat = math.floor(PlrStat)
 							pcall(function()
@@ -148,9 +152,6 @@ function Leaderboards:beginLeaderboardUpdate()
 									return tonumber(PlrStat) --Set new value
 								end)
 							end)
-						end
-						if Stat == "Sled Race" and Data["Stats"][Stat] < 30 then
-							Data["Stats"][Stat] = 1000000
 						end
 
 					end

@@ -164,7 +164,7 @@ function SledRace:StartEvent()
 
 	local Velocities = {}
 	local LastPositions = {}
-
+	local SpeedInfractions = {}
 	for _, Participant in pairs(Participants:GetChildren()) do
 		local Player = game.Players:FindFirstChild(Participant.Name)
 		local Character = Player.Character
@@ -176,6 +176,7 @@ function SledRace:StartEvent()
 
 		Velocities[Player] = Config.DefaultVelocity
 		LastPositions[Player] = PrimaryPart.Position
+		SpeedInfractions[Player] = {}
 	end
 
 	Remotes.Events:FireAllClients("Event Started")
@@ -189,15 +190,27 @@ function SledRace:StartEvent()
 		local Params = table.pack(...)
 
 		if Event == "OnRaceFinished" then
+			local PlayerName = Client.Name
 			local Time = math.floor((Config.Duration - TimeLeft) * 100) / 100
 
-			if Time <= 35 then
+			-- Anti exploit
+			local Infractions = SpeedInfractions[Client]
+			local InvalidScore = true
+			if #Infractions > 3 then
+				InvalidScore = true
+			else
+				for _, Deviation in ipairs(Infractions) do
+					if Deviation > 300 then
+						InvalidScore = true
+					end
+				end
+			end
+
+			if InvalidScore or Time <= 35 then
+				warn(Client, "Score invalidated", #Infractions)
 				return
 			end
 
-			LastPositions[Client] = nil
-
-			local PlayerName = Client.Name
 
 			if Participants:FindFirstChild(PlayerName) then
 				local Data = Modules.PlayerData.sessionData[PlayerName]
@@ -220,12 +233,14 @@ function SledRace:StartEvent()
 
 				table.insert(CompletedRace, {
 					PlayerName = Client.Name,
-					Score = Config.Duration - TimeLeft
+					Score = Time
 				})
 
 			end
 
 		elseif Event == "OnCollectableCollected" then -- Track velocity for anti exploit
+			if not Client.Parent then return end
+
 			local Id = Params[1]
 			local Collectable = Collectables[Id]
 
@@ -254,17 +269,18 @@ function SledRace:StartEvent()
 					local Velocity = (LastPosition - Position).Magnitude / dt
 					local Deviation = Velocity - Velocities[Player]
 
-					if Deviation > 50 then
-						warn(Deviation)
-						Player:Kick("Potential Lag Issues")
-					else
-						LastPositions[Player] = Position
-						continue
+					if Deviation > 100 then
+						warn(Player, "Velocity devitation: ", Deviation)
+						table.insert(SpeedInfractions[Player], Deviation)
 					end
-				end
 
-				LastPositions[Player] = nil
-				Velocities[Player] = nil
+					LastPositions[Player] = Position
+
+				else
+					LastPositions[Player] = nil
+					Velocities[Player] = nil
+					SpeedInfractions[Player] = nil
+				end
 
 			end
 

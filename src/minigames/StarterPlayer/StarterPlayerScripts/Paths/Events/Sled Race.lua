@@ -74,9 +74,11 @@ local function ToggleBlizzard(Toggle)
 end
 
 local function ClosePositionMap()
-    PositionMap.Visible = false
-    for _, Indicator in ipairs(PositionIndicators) do
-        Indicator:Destroy()
+    if PositionIndicators then
+        PositionMap.Visible = false
+        for _, Indicator in ipairs(PositionIndicators) do
+            Indicator:Destroy()
+        end
     end
 end
 
