@@ -85,7 +85,6 @@ local function sendFeedback()
     -- Keep the message being displayed for 5 seconds
     delay(5, function()
         feedbackTextBox.Visible = true
-        feedbackUI.Visible = false
     end)
 
     -- Update the message displayed in the screen to whether success or failure
