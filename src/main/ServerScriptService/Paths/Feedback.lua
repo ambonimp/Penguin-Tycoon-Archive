@@ -54,7 +54,7 @@ Remotes.SendFeedback.OnServerInvoke = function(player, moodIndex, feedback, plat
 
     -- Create message
     local message = discord:NewMessage():SetUsername(username):SetAvatarUrl(avatarUrl)
-    local embed = message:AddEmbed("Encounters", feedback)
+    local embed = message:AddEmbed("Penguin Tycoon", feedback)
 
     if color then
         embed:SetColor(color)
