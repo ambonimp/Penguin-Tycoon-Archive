@@ -48,6 +48,8 @@ local function ButtonClicked(button,Store)
 	Debounce = false
 end
 
+Achievements.ButtonClicked = ButtonClicked
+
 for i, Button in pairs(Store.Buttons:GetChildren()) do
 	if Button:IsA("ImageButton") then
 		Button.MouseButton1Down:Connect(function()
