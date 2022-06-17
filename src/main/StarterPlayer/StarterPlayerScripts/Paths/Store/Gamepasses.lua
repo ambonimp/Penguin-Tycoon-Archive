@@ -29,7 +29,8 @@ local AllGamepasses = {
 	{47438416,"Catch fish twice as fast and increase the chance of catching rainbow fish!"}, -- rainbow fishing rod,
 	{47438471,"Double gems from everything!"}, -- x2 gems
 	{47438595,"Ability to use the map in Penguin City!"}, -- map teleport
-	{49090546, "Capture 3 fish per cast!"}
+	{49090546, "Capture 3 fish per cast!"}, --x3 fishing
+	{52724179,"x2 income from mined ores!"} --gold pickaxe
 }
 
 Popups.load(AllGamepasses)
