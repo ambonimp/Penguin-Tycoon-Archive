@@ -30,7 +30,7 @@ function Paths.Initiliaze()
 	Paths.Dependency = Paths.Services.SStorage:WaitForChild("ServerDependency")
 --- Other Variables ---
 	Paths.Template = workspace.Template;
-	Paths.Template.Parent = Paths.Services.SStorage
+	Paths.Template.Parent = Paths.Services.RStorage
 	
 	
 --- Initializing Remotes ---
@@ -54,6 +54,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Teleporting = require(script.Teleporting)
 	Paths.Modules.Badges = require(Paths.Services.RStorage.Modules.Badges)
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
+	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Feedback = require(script.Feedback)
 	

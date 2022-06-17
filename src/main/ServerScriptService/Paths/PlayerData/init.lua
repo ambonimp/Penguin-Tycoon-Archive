@@ -144,7 +144,9 @@ function PlayerData:SetupPlayerData(player)
 				["YoutubeStats"] = {
 					Likes = 0,
 					Subscribers = 0,
-				}
+				},
+
+				["Tycoon Rewards"] = {}
 
 			}
 		else
@@ -161,9 +163,9 @@ local function getPlayerIncome(Player)
 	local levelIncome = Modules.GameFunctions:GetPlayerPenguinIncome(PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
 	local total = levelIncome
 	for i,v in pairs (PlayerData.sessionData[Player.Name]["Tycoon"]) do
-		local item = game.ServerStorage:WaitForChild("Template"):WaitForChild("Buttons"):FindFirstChild(i)
+		local item = game.ReplicatedStorage:WaitForChild("Template"):WaitForChild("Buttons"):FindFirstChild(i)
 		if item == nil then
-			item = game.ServerStorage:WaitForChild("Template"):WaitForChild("Upgrades"):FindFirstChild("Island1"):FindFirstChild(i)
+			item = game.ReplicatedStorage:WaitForChild("Template"):WaitForChild("Upgrades"):FindFirstChild("Island1"):FindFirstChild(i)
 		end
 		if item ~= nil then
 			local income = item:GetAttribute("Income")
@@ -386,6 +388,11 @@ local function SetupNewStats(Player)
 			Likes = 0,
 			Subscribers = 0,
 		}
+	end
+
+	if not Data["Tycoon Rewards"] then
+		Data["Tycoon Rewards"] = {}
+
 	end
 
 

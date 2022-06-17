@@ -6,8 +6,8 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local UI = Paths.UI
 
-local PopupUI = UI.Top.Popup
-local PopupRegularUI = UI.Top.PopupRegular
+local PopupUI = UI.Top.Popups.Popup
+local PopupRegularUI = UI.Top.Popups.PopupRegular
 
 local currentPass = nil
 Popups.Gamepasses = {}

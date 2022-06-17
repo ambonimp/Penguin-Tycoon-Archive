@@ -69,9 +69,8 @@ function Paths.Initiliaze()
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Verification = require(script.Verification)
 	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
-	Paths.Modules.DeviceDetector = require(script.DeviceDetector)
-	Paths.Modules.Feedback = require(script.Feedback)
-	
+	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
+
 	-- Tool Modules
 	Paths.Modules.Tools = require(script.Tools);
 
@@ -122,6 +121,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Tycoon = require(script.Tycoon)
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
 	Paths.Modules.YoutubeMinigame = require(script.Tycoon.YoutubeMinigame)
+	Paths.Modules.TycoonProgressBar = require(script.UI.TycoonProgressBar)
 	
 --- Load Version ---
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version

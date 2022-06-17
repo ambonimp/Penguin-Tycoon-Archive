@@ -155,7 +155,7 @@ do -- boat
             if doAnim and am < 10 then
                 Paths.UI.Top.Compass.Visible = false
                 local n = UI.ViewportFrame:Clone()
-                local foundBoatPart = Paths.UI.Top.FoundBoatPart
+                local foundBoatPart = Paths.UI.Top.Popups.FoundBoatPart
                 if foundBoatPart:FindFirstChild("ViewportFrame") then
                     foundBoatPart.ViewportFrame:Destroy()
                 end
@@ -191,8 +191,8 @@ do -- boat
         Paths.UI.Center.BoatUnlock.Items.Text.Text =  am.."/10 ITEMS FOUND"
         if doAnim and am == 10 then
             Paths.UI.Top.Compass.Visible = false
-            Paths.UI.Top.FoundBoatPart.Visible = false
-            local foundBoatPart = Paths.UI.Top.SailboatCompleted
+            Paths.UI.Top.Popups.FoundBoatPart.Visible = false
+            local foundBoatPart = Paths.UI.Top.Popups.SailboatCompleted
             foundBoatPart.Size = UDim2.fromScale(0,0)
             foundBoatPart.Visible = true
             Paths.Audio.Celebration:Play()
@@ -368,7 +368,7 @@ do -- plane
             if doAnim and am < 10 then
                 Paths.UI.Top.Compass.Visible = false
                 local n = UI.ViewportFrame:Clone()
-                local foundBoatPart = Paths.UI.Top.FoundPlanePart
+                local foundBoatPart = Paths.UI.Top.Popups.FoundPlanePart
                 if foundBoatPart:FindFirstChild("ViewportFrame") then
                     foundBoatPart.ViewportFrame:Destroy()
                 end
