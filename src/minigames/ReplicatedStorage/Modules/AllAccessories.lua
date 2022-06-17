@@ -99,7 +99,7 @@ Accessories.All = {
 	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false};
 	["Bowl Hat"] = {Rarity = "Free", IsForSale = false};
 	["Cap"] = {Rarity = "Free", IsForSale = false};
-	
+
 	--Fish Rewards
 	["Boot Hat"] = {Rarity = "Free", IsForSale = false};
 	["Bottle Hat"] = {Rarity = "Free", IsForSale = false};
