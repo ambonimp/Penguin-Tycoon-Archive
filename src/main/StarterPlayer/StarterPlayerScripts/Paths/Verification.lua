@@ -63,19 +63,6 @@ end)
 
 
 -- Verify physical display (starter area of tycoon, turns on the codes UI when touched)
-coroutine.wrap(function()
-	Paths.Tycoon:WaitForChild("Verification"):WaitForChild("Hitbox").Touched:Connect(function(p)
-		if p.Name == "Main" and p.Parent == Paths.Player.Character then
-			Modules.Buttons:UIOn(Paths.UI.Center.Codes, true)
-		end
-	end)
-	
-	Paths.Tycoon.Verification.Hitbox.TouchEnded:Connect(function(p)
-		if p.Name == "Main" and p.Parent == Paths.Player.Character then
-			Modules.Buttons:UIOff(Paths.UI.Center.Codes, true)
-		end
-	end)
-end)()
 
 
 return Verification

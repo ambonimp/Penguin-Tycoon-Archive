@@ -95,6 +95,17 @@ local function onPromptTriggered(promptObject, player)
         if promptObject.ActionText == "Sailboat" then
             Paths.Modules.Buttons:UIOff(Paths.UI.Center.PlaneUnlock)
 			Paths.Modules.Buttons:UIOn(Paths.UI.Center.BoatUnlock,true)
+		elseif promptObject.ActionText == "Socials" then
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Codes,true)
+        elseif promptObject.ActionText == "Spin" then
+            Paths.Modules.Achievements.ButtonClicked(Paths.UI.Center.Achievements.Buttons.Spin,Paths.UI.Center.Achievements)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Achievements,true)
+		elseif promptObject.ActionText == "Money" then
+			Paths.Modules.Store.ButtonClicked(Paths.UI.Center.Store.Buttons.Money,Paths.UI.Center.Store)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Store,true)
+		elseif promptObject.ActionText == "Gems" then
+			Paths.Modules.Store.ButtonClicked(Paths.UI.Center.Store.Buttons.Gems,Paths.UI.Center.Store)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Store,true)
         elseif promptObject.ActionText == "Plane" then
             Paths.Modules.Buttons:UIOff(Paths.UI.Center.BoatUnlock)
             Paths.Modules.Buttons:UIOn(Paths.UI.Center.PlaneUnlock,true)

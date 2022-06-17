@@ -852,25 +852,6 @@ Paths.UI.Center.BuyEgg.Exit.MouseButton1Click:Connect(function()
 	game.Players.LocalPlayer:SetAttribute("BuyingEgg",false)
 end)
 
-local ProximityPrompt
-if Paths.Tycoon then
-	ProximityPrompt = Paths.Tycoon:WaitForChild("BuyEgg").ProximityPart.Value:WaitForChild("ProximityPrompt")
-elseif workspace:FindFirstChild("PetShop") then
-	ProximityPrompt = workspace.PetShop.ProximityPart.Value:WaitForChild("ProximityPrompt")
-end
-
-if ProximityPrompt then
-	--[[ProximityPrompt.Triggered:Connect(function(player)
-		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
-			Pets.PetUI.LoadEgg("Egg1",Paths)
-			Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
-			Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
-		end
-	end)]]
-else
-	print("no proximity prompt")
-end
-
 Paths.Remotes.ResetProductPurchase.OnClientEvent:Connect(function()
 	Paths.Modules.Buttons:UIOff(Paths.UI.Center.BuyEgg,true)
 	game.Players.LocalPlayer:SetAttribute("BuyingEgg",false)

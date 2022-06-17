@@ -56,6 +56,7 @@ function Paths.Initiliaze()
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
 	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
+	Paths.Modules.Feedback = require(script.Feedback)
 	
 	-- Chat Modules
 	Paths.Modules.Chat = require(script.Chat)
