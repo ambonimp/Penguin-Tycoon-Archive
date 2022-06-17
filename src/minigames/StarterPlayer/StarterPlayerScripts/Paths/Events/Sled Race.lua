@@ -37,10 +37,13 @@ local Map
 local Velocity, TurnVelocity
 
 local FOVTween
-
 local BlizzardEnabled, BlizzardTween
 
+local Driving
+local SpeedLines
+
 local PositionIndicators
+local UserThumbnails = {}
 
 
 local function GetNormalIncline(RaycastResults)
@@ -70,6 +73,15 @@ local function ToggleBlizzard(Toggle)
 
 end
 
+local function ClosePositionMap()
+    if PositionIndicators then
+        PositionMap.Visible = false
+        for _, Indicator in ipairs(PositionIndicators) do
+            Indicator:Destroy()
+        end
+    end
+end
+
 local function IncrementVelocity(Addend)
    Velocity = math.clamp(Velocity + Addend, Config.MinVelocity, Config.MaxVelocity)
 end
@@ -84,81 +96,59 @@ function SledRace:InitiateEvent(Collectables)
 
     BlizzardEnabled = false
 
-
     -- Configs
     Velocity = Config.DefaultVelocity
     TurnVelocity = Config.TurnVelocity
 
+
     -- Collectables
     for Id, Collectable in ipairs(Collectables) do
-        local Position = Collectable.Position
+        local Type =  Collectable.Type
+        local Model = Collectable.Model
 
-        local Model = Collectable.Model:Clone()
-        Model.Name = Id
-        Model.Parent = Map.Collectables
-
-
-        local CenterCFrame, Size = Model:GetBoundingBox()
-        local PrimaryPartOffset = CenterCFrame:ToObjectSpace(Model.PrimaryPart.CFrame)
-
-        local Results = assert(workspace:Raycast(Position, Vector3.new(0, -50, 0), RParams))
-        local FloorCFrame = CFrame.new(Results.Position) * CFrame.fromEulerAnglesYXZ(-GetNormalIncline(Results), math.pi, 0)
-
-		Model:SetPrimaryPartCFrame(FloorCFrame * PrimaryPartOffset * CFrame.new(Size * Vector3.new(0, 0.5, 0)))
-
-        local Debounce
         for _, BasePart in ipairs(Model:GetDescendants()) do
             if BasePart:IsA("BasePart") then
                 BasePart.Touched:Connect(function(Hit)
-                    local Char = Hit.Parent
-                    local Hum = Char:FindFirstChildOfClass("Humanoid")
+                    if  Hit.Parent ~= Character then return end
 
-                    if Hum then
-                        if Char == Character then -- Notifiy server that scoop has been collected
-                            local Type =  Collectable.Type
-                            CollectSounds[Type]:Play()
+                    CollectSounds[Type]:Play()
 
-                            local VelocityAddend
-                            if Type == "Obstacle" then
-                                VelocityAddend = -Config.ObstacleVelocityMinuend
+                    local VelocityAddend
+                    if Type == "Boost" then
+                        VelocityAddend = Config.BoostVelocityAddend
 
-                                -- TODO: Smoke particle
-                            else
-                                VelocityAddend = Config.BoostVelocityAddend
+                        -- Zoom out fx
+                        if FOVTween then FOVTween:Cancel() end
+                        local CancelComeback = (100 - Camera.FieldOfView)/30 -- Tween length is proportional to how much FOV is actually changing
 
-                                if FOVTween then FOVTween:Cancel() end
-                                local CancelComeback = (100 - Camera.FieldOfView)/30 -- Tween length is proportional to how much FOV is actually changing
-
-                                FOVTween = Services.TweenService:Create(Camera, TweenInfo.new(Config.CollectableEffectDuration*0.5*CancelComeback, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
-                                    FieldOfView = 100
-                                })
-                                -- Revert
-                                FOVTween.Completed:Connect(function()
-                                    FOVTween = Services.TweenService:Create(Camera, TweenInfo.new(Config.CollectableEffectDuration*0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
-                                        FieldOfView = 70
-                                    })
-                                    FOVTween.Completed:Connect(function()
-                                        FOVTween = nil
-                                    end)
-                                    FOVTween:Play()
-                                end)
-
-                                FOVTween:Play()
-
-                            end
-
-                            IncrementVelocity(VelocityAddend)
-                            task.delay(Config.CollectableEffectDuration, function()
-                                IncrementVelocity(-VelocityAddend)
+                        FOVTween = Services.TweenService:Create(Camera, TweenInfo.new(Config.CollectableEffectDuration*0.5*CancelComeback, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+                            FieldOfView = 100
+                        })
+                        FOVTween.Completed:Connect(function() -- Revert
+                            FOVTween = Services.TweenService:Create(Camera, TweenInfo.new(Config.CollectableEffectDuration*0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+                                FieldOfView = 70
+                            })
+                            FOVTween.Completed:Connect(function()
+                                FOVTween = nil
                             end)
+                            FOVTween:Play()
+                        end)
+                        FOVTween:Play()
 
-                            -- Notify server
-                            Remotes.SledRace:FireServer("CollectableCollected", Id)
-                            Model:Destroy()
-
-                        end
-
+                    else
+                        VelocityAddend = -Config.ObstacleVelocityMinuend
+                        -- TODO: Smoke particle
                     end
+
+                    IncrementVelocity(VelocityAddend)
+                    task.delay(Config.CollectableEffectDuration, function()
+                        IncrementVelocity(-VelocityAddend)
+                    end)
+
+                    -- Notifiy server that scoop has been collected
+                    Remotes.SledRace:FireServer("OnCollectableCollected", Id)
+
+                    Model:Destroy()
 
                 end)
 
@@ -200,8 +190,8 @@ function SledRace:EventStarted()
     end
 
     -- Moving
-    local SpeedLines = Paths.Modules.SpeedLines:Play()
-    local Driving = Services.RunService.Heartbeat:Connect(function(dt)
+    SpeedLines = Paths.Modules.SpeedLines:Play()
+    Driving = Services.RunService.Heartbeat:Connect(function(dt)
         local TurnSpeed = TurnVelocity * (dt * 2)
 
         local Results = assert(workspace:Raycast(Hrp.Position + Vector3.new(0, 50, 0), Vector3.new(0, -100, 0), RParams))
@@ -267,14 +257,22 @@ function SledRace:EventStarted()
 
         PositionIndicators = {}
         for _, Participant in ipairs(Participants:GetChildren()) do
+            local RespectivePlayer = game.Players:FindFirstChild(Participant.Name)
+
             local Color = Color3.fromRGB(math.random(150, 255), math.random(150, 255), math.random(150, 255))
+
+            local UserThumbnail = UserThumbnails[RespectivePlayer]
+            if not UserThumbnail then
+                UserThumbnail = Remotes.GetUserThumbnail:InvokeServer(RespectivePlayer)
+                UserThumbnails[RespectivePlayer] = UserThumbnail
+            end
 
             local Indicator = Assets.PositionIndicator:Clone()
             Indicator.Name = Participant.Name
             Indicator.BackgroundColor3 = Color
 
             local Thumbnail = Indicator.Thumbnail
-            Thumbnail.Image = Remotes.GetUserThumbnail:InvokeServer(game.Players:FindFirstChild(Participant.Name))
+            Thumbnail.Image = UserThumbnail
             Thumbnail.UIStroke.Color = Color
             Thumbnail.BackgroundColor3 = Color
 
@@ -296,29 +294,23 @@ function SledRace:EventStarted()
                     Indicator:Destroy()
                     table.remove(PositionIndicators, i)
                 end
-
             end
-
             task.wait()
-        end
-
-        for _, PositionIndicator in ipairs(PositionIndicators) do
-            PositionIndicator:Destroy()
         end
 
     end)
 
 end
 
-function SledRace:EventEnded()
-    PositionMap.Visible = false
-    if PositionIndicators then
-        for _, Indicator in ipairs(PositionIndicators) do
-            Indicator:Destroy()
-        end
-    end
+function SledRace:LeftEvent()
+    if Driving then Driving:Disconnect() end
+    if SpeedLines then SpeedLines:Disconnect() end
 
-    Map.Collectables:ClearAllChildren()
+    ClosePositionMap()
+end
+
+function SledRace:EventEnded()
+    ClosePositionMap()
 end
 
 Remotes.SledRace.OnClientEvent:Connect(function(Event, ...)
@@ -333,6 +325,10 @@ end)
 
 Player.CharacterAdded:Connect(function(Char)
     Character = Char
+end)
+
+game.Players.PlayerRemoving:Connect(function(OtherPlayer)
+    UserThumbnails[Player] = nil
 end)
 
 return SledRace

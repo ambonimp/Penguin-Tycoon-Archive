@@ -314,16 +314,20 @@ function SkateRace:StartEvent()
 		end
 	end
 
-	for _, Participant in ipairs(Participants:GetChildren()) do
-		local Player = game.Players:FindFirstChild(Participant.Name)
-		Remotes.SkateRace:FireClient(Player, "Finished", CompletedRace, Map.Winners.CameraAngle.CFrame)
+	if #Winners > 0 then
+		for _, Participant in ipairs(Participants:GetChildren()) do
+			local Player = game.Players:FindFirstChild(Participant.Name)
+			Remotes.SkateRace:FireClient(Player, "Finished", CompletedRace, Map.Winners.CameraAngle.CFrame)
+		end
+
+		ToggleGemRewardUI(true)
+		task.delay(10, ToggleGemRewardUI, false)
+
+		return Winners
+	else
+		return nil
 	end
 
-	ToggleGemRewardUI(true)
-	task.delay(10, ToggleGemRewardUI, false)
-
-
-	return #Winners > 0 and Winners or nil
 end
 
 return SkateRace

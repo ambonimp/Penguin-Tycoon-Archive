@@ -9,6 +9,9 @@ local Remotes = Paths.Remotes
 
 local Dependency = Services.RStorage.ClientDependency[script.Name]
 local FinishedUI = Paths.UI.Center.GeneralEventFinished
+local EventInfoUI = Paths.UI.Top.EventInfo
+
+local PlaceIds =  require(Services.RStorage.Modules.PlaceIds)
 
 local RANKINGS_TEXT = {
 	[1] = "1ST",
@@ -100,5 +103,13 @@ end
 
 -- Resetting
 FinishedUI.Exit.MouseButton1Down:Connect(Reset)
+
+EventInfoUI.ExitEvents.MouseButton1Down:Connect(function()
+	Remotes.Teleport:InvokeServer(PlaceIds["Penguin City"])
+end)
+
+
+
+
 
 return Events
