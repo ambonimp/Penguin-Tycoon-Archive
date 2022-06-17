@@ -11,11 +11,8 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local funcLib = Paths.Modules.FuncLib
 
-local PlaceIds =  require(Services.RStorage.Modules.PlaceIds)
-
 local ChosenEvent = Modules.EventsConfig.Names[game.PlaceId]
 local EventModule = require(script[ChosenEvent])
-
 
 local announcementRemote = Remotes:WaitForChild("Announcement")
 
@@ -51,7 +48,8 @@ local function ChangeDisplayText(Text)
 		if Participants:FindFirstChild(Paths.Player.Name) then
 			if not StartingTextOn then
 				StartingTextOn = true
-				EventInfoUI.ExitEvent.Visible = false
+				EventInfoUI.ExitEvents.Visible = false
+				EventInfoUI.Minigames.Visible = false
 				EventInfoUI.TextToDisplay:TweenSizeAndPosition(UDim2.new(1, 0, 0.7, 0), UDim2.new(0, 0, 1, 0), "In", "Quart", 0.5, true)
 			end
 
@@ -75,7 +73,8 @@ end
 local function JoinedEvent(Participant)
 	if Participant.Name ~= Paths.Player.Name then return end
 
-	EventInfoUI.ExitEvent.Visible = false
+	EventInfoUI.ExitEvents.Visible = false
+	EventInfoUI.Minigames.Visible = false
 
 	Paths.UI.Left.GemDisplay.Visible = false
 	Paths.UI.Left.Buttons.Visible = false
@@ -86,7 +85,8 @@ local function JoinedEvent(Participant)
 end
 
 local function LeftEvent()
-	EventInfoUI.ExitEvent.Visible = true
+	EventInfoUI.ExitEvents.Visible = true
+	EventInfoUI.Minigames.Visible = true
 	EventInfoUI.Timer.Visible = false
 
 	Paths.UI.Left.GemDisplay.Visible = true
@@ -103,6 +103,7 @@ local function LeftEvent()
 	for _, v in pairs(Paths.UI.Right.EventUIs:GetChildren()) do
 		v.Visible = false
 	end
+
 end
 
 
@@ -182,11 +183,6 @@ announcementRemote.OnClientEvent:Connect(function(player, item)
 
 end)
 
-
-
-EventInfoUI.ExitEvent.MouseButton1Down:Connect(function()
-	Remotes.Teleport:InvokeServer(PlaceIds["Penguin City"])
-end)
 
 
 

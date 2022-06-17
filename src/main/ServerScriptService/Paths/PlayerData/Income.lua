@@ -60,7 +60,9 @@ function Income:AddGems(Player, Amount, Source)
 
 	if Data then
 		if Amount > 0 and Source ~= "Bought" and Source ~= "Code" then
+			warn("Old: ", Amount)
 			Amount = Amount * Mult * Data["Gem Multiplier"]
+			warn("New: ", Amount)
 		end
 		Data["Stats"]["Total Gems"] += Amount 
 

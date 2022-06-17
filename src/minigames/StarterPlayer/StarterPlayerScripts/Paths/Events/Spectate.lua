@@ -15,8 +15,6 @@ local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
 
 local EventInfoUI = Paths.UI.Top.EventInfo
-local EventVotingUI = Paths.UI.Top.EventVoting
-local EventPromptUI = Paths.UI.Top.EventPrompt
 local EventUIs = Paths.UI.Right.EventUIs
 
 local isSpectating = false
@@ -55,7 +53,8 @@ function Spectate.EnterSpectateMode()
 		EventInfoUI.SpectateInfo.Visible = true
 		EventInfoUI.StopSpectating.Visible = true
 		EventInfoUI.Spectate.Visible = false
-		EventInfoUI.ExitEvent.Visible = false
+		EventInfoUI.ExitEvents.Visible = false
+		EventInfoUI.Minigames.Visible = false
 
 		if EventUIs:FindFirstChild(EventValues.CurrentEvent.Value) then
 			EventUIs[EventValues.CurrentEvent.Value].Visible = true
@@ -82,7 +81,8 @@ function Spectate.ExitSpectateMode()
 	EventInfoUI.TextToDisplay.Visible = true
 	EventInfoUI.StopSpectating.Visible = false
 	EventInfoUI.SpectateInfo.Visible = false
-	EventInfoUI.ExitEvent.Visible = true
+	EventInfoUI.ExitEvents.Visible = true
+	EventInfoUI.Minigames.Visible = true
 
 	for _, v in pairs(EventUIs:GetChildren()) do v.Visible = false end
 
