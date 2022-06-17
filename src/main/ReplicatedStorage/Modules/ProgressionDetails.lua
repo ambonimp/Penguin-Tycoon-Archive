@@ -2,9 +2,9 @@ return {
     {Object = "", Icon = "rbxassetid://9920788467"}, -- Spawn
     {Object = "New Island!#1", Icon = "rbxassetid://9936592531"}, -- Lumberjack
     {Object = "Youtube Island!#1", Icon = "rbxassetid://9940055674"}, -- Youtube
+    {Object = "Mining Island!#1", Icon = "rbxassetid://9941290962"}, -- Mining Island
     {Object = "New Island!#2", Icon = "rbxassetid://9920789493"}, -- Ice Rink
     {Object = "New Island!#3", Icon = "rbxassetid://9936592325"}, -- Glider
-    -- {Object = "", Icon = "rbxassetid://9938518908"}, -- Volcanoe Island
     {Object = "New Island!#4", Icon = "rbxassetid://9920786806"}, -- King Penguin
     {Object = "New Island!#5", Icon = "rbxassetid://9920786616"}, -- Japanesse
     {Object = "New Island!#6", Icon = "rbxassetid://9920881198"}, -- Iceberg 1

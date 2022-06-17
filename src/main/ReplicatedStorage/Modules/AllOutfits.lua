@@ -84,6 +84,10 @@ Outfits.All = {
 	--- Event Outfits ---
 	["Red Jersey"] = {Rarity = "Event", IsForSale = false};
 	["Blue Jersey"] = {Rarity = "Event", IsForSale = false};
+
+	-- Mining Outfits
+	["Miner"] = {Rarity = "Free", IsForSale = false};
+
 }
 
 return Outfits

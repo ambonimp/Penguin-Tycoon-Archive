@@ -146,13 +146,29 @@ function PlayerData:SetupPlayerData(player)
 					Subscribers = 0,
 				},
 
-				["Tycoon Rewards"] = {}
+				["Tycoon Rewards"] = {},
+
+				["Mining"] = {
+					Level = 1,
+					Mined = {
+						Coal = 0,
+						Iron = 0,
+						Gold = 0,
+						Amethyst = 0,
+						Ruby = 0,
+						Emerald = 0,
+						Diamond = 0,
+					},
+				}
 
 			}
+
 		else
 			PlayerData.sessionData[player.Name] = data
 		end
+
 	end
+
 end
 
 
@@ -395,6 +411,20 @@ local function SetupNewStats(Player)
 
 	end
 
+	if not Data.Mining then
+		Data["Mining"] = {
+			Level = 1,
+			Mined = {
+				Coal = 0,
+				Iron = 0,
+				Gold = 0,
+				Amethyst = 0,
+				Ruby = 0,
+				Emerald = 0,
+				Diamond = 0,
+			},
+		}
+	end
 
 end
 
