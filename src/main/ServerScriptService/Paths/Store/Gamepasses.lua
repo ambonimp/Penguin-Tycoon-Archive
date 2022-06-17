@@ -28,6 +28,7 @@ local AllGamepasses = {
 	47438471, -- x2 gems
 	47438595, -- map teleport
 	49090546, -- x3 fish capture
+	52724179, -- Golden Pickaxe
 }
 
 local GamepassButtons = {
@@ -80,6 +81,8 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				Modules.Tools.AddTool(Player, "Gold Fishing Rod")
 			elseif gamepass == 47438416 then
 				Modules.Tools.AddTool(Player, "Rainbow Fishing Rod")
+			elseif gamepass == 52724179 then
+				Modules.Tools.AddTool(Player, "Gold Pickaxe")
 			end
 		end
 		

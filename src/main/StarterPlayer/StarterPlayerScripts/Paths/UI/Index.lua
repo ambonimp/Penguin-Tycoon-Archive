@@ -1,3 +1,4 @@
+local DataStoreService = game:GetService("DataStoreService")
 local Index = {}
 
 --- Main variables ---
@@ -86,9 +87,11 @@ local function ButtonClicked(button)
 end
 
 for i, Button in pairs(indexUI.Buttons:GetChildren()) do
-	Button.MouseButton1Down:Connect(function()
-		ButtonClicked(Button)
-	end)
+	if Button:IsA("ImageButton") then
+		Button.MouseButton1Down:Connect(function()
+			ButtonClicked(Button)
+		end)
+	end
 end
 
 
@@ -171,6 +174,10 @@ function Index.ItemObtained(Info)
 	end
 end
 
+function Index.OreCollected(Level)
+	local Ore = modules.MiningDetails[Level].Ore
+	indexUI.Sections.Mining.Holder.List[Level].Mined.Text = string.format("%s: %s mined", Ore, remotes.GetStat:InvokeServer("Mining").Mined[Ore])
+end
 
 -- Loading fish
 local function LoadAllFish()
@@ -307,10 +314,21 @@ local function LoadAllItems()
 	end
 end
 
-coroutine.wrap(function()
+local function LoadAllOres()
+	for Level, Enums in pairs(modules.MiningDetails) do
+		local Lbl = Dependency.OreTemplate:Clone()
+		Lbl.Parent = indexUI.Sections.Mining.Holder.List
+		Lbl.Name = Level
+		Index.OreCollected(Level)
+	end
+end
+
+
+task.spawn(function()
 	LoadAllFish()
 	LoadAllItems()
-end)()
+	LoadAllOres()
+end)
 
 
 

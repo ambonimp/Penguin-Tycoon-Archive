@@ -45,6 +45,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
 	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
+	Paths.Modules.MiningDetails = require(Paths.Services.RStorage.Modules.MiningDetails)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);

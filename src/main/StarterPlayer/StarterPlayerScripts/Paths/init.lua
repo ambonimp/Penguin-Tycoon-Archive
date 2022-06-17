@@ -24,6 +24,8 @@ function Paths.Initiliaze()
 	print("LOad UI")
 	local PlayerGui = game.Players.LocalPlayer.PlayerGui
 	Paths.UI.Main = PlayerGui:WaitForChild("Main")
+	Paths.UI.SpecialEffects = PlayerGui:WaitForChild("SpecialEffects")
+
 	Paths.UI.Left = Paths.UI.Main:WaitForChild("Left")
 	Paths.UI.Right = Paths.UI.Main:WaitForChild("Right")
 	Paths.UI.Center = Paths.UI.Main:WaitForChild("Center")
@@ -70,6 +72,8 @@ function Paths.Initiliaze()
 	Paths.Modules.Verification = require(script.Verification)
 	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
 	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
+	Paths.Modules.MiningDetails = require(Paths.Services.RStorage.Modules.MiningDetails)
+	
 
 	-- Tool Modules
 	Paths.Modules.Tools = require(script.Tools);

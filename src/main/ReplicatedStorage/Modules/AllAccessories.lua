@@ -162,6 +162,10 @@ Accessories.All = {
 	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
 	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
 	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false};
+
+	-- Mining Hats ===
+	["Hard Hat"] = {Rarity = "Free", IsForSale = false};
+
 }
 
 return Accessories

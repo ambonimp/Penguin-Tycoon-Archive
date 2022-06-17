@@ -1,6 +1,5 @@
 local Axe = {}
 
-
 --- Main Variables ---
 local Paths = require(script.Parent.Parent)
 
