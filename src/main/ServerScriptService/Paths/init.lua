@@ -30,7 +30,7 @@ function Paths.Initiliaze()
 	Paths.Dependency = Paths.Services.SStorage:WaitForChild("ServerDependency")
 --- Other Variables ---
 	Paths.Template = workspace.Template;
-	Paths.Template.Parent = Paths.Services.SStorage
+	Paths.Template.Parent = Paths.Services.RStorage
 	
 	
 --- Initializing Remotes ---
@@ -45,6 +45,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
 	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
+	Paths.Modules.MiningDetails = require(Paths.Services.RStorage.Modules.MiningDetails)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
@@ -54,7 +55,9 @@ function Paths.Initiliaze()
 	Paths.Modules.Teleporting = require(script.Teleporting)
 	Paths.Modules.Badges = require(Paths.Services.RStorage.Modules.Badges)
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
+	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
+	Paths.Modules.Feedback = require(script.Feedback)
 	
 	-- Chat Modules
 	Paths.Modules.Chat = require(script.Chat)

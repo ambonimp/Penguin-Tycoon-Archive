@@ -95,6 +95,17 @@ local function onPromptTriggered(promptObject, player)
         if promptObject.ActionText == "Sailboat" then
             Paths.Modules.Buttons:UIOff(Paths.UI.Center.PlaneUnlock)
 			Paths.Modules.Buttons:UIOn(Paths.UI.Center.BoatUnlock,true)
+		elseif promptObject.ActionText == "Socials" then
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Codes,true)
+        elseif promptObject.ActionText == "Spin" then
+            Paths.Modules.Achievements.ButtonClicked(Paths.UI.Center.Achievements.Buttons.Spin,Paths.UI.Center.Achievements)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Achievements,true)
+		elseif promptObject.ActionText == "Money" then
+			Paths.Modules.Store.ButtonClicked(Paths.UI.Center.Store.Buttons.Money,Paths.UI.Center.Store)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Store,true)
+		elseif promptObject.ActionText == "Gems" then
+			Paths.Modules.Store.ButtonClicked(Paths.UI.Center.Store.Buttons.Gems,Paths.UI.Center.Store)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Store,true)
         elseif promptObject.ActionText == "Plane" then
             Paths.Modules.Buttons:UIOff(Paths.UI.Center.BoatUnlock)
             Paths.Modules.Buttons:UIOn(Paths.UI.Center.PlaneUnlock,true)
@@ -144,7 +155,7 @@ do -- boat
             if doAnim and am < 10 then
                 Paths.UI.Top.Compass.Visible = false
                 local n = UI.ViewportFrame:Clone()
-                local foundBoatPart = Paths.UI.Top.FoundBoatPart
+                local foundBoatPart = Paths.UI.Top.Popups.FoundBoatPart
                 if foundBoatPart:FindFirstChild("ViewportFrame") then
                     foundBoatPart.ViewportFrame:Destroy()
                 end
@@ -180,8 +191,8 @@ do -- boat
         Paths.UI.Center.BoatUnlock.Items.Text.Text =  am.."/10 ITEMS FOUND"
         if doAnim and am == 10 then
             Paths.UI.Top.Compass.Visible = false
-            Paths.UI.Top.FoundBoatPart.Visible = false
-            local foundBoatPart = Paths.UI.Top.SailboatCompleted
+            Paths.UI.Top.Popups.FoundBoatPart.Visible = false
+            local foundBoatPart = Paths.UI.Top.Popups.SailboatCompleted
             foundBoatPart.Size = UDim2.fromScale(0,0)
             foundBoatPart.Visible = true
             Paths.Audio.Celebration:Play()
@@ -357,7 +368,7 @@ do -- plane
             if doAnim and am < 10 then
                 Paths.UI.Top.Compass.Visible = false
                 local n = UI.ViewportFrame:Clone()
-                local foundBoatPart = Paths.UI.Top.FoundPlanePart
+                local foundBoatPart = Paths.UI.Top.Popups.FoundPlanePart
                 if foundBoatPart:FindFirstChild("ViewportFrame") then
                     foundBoatPart.ViewportFrame:Destroy()
                 end

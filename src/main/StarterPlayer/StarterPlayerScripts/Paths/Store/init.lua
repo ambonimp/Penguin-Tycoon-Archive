@@ -1,4 +1,4 @@
-local Store = {}
+local Store1 = {}
 
 
 --- Main Variables ---
@@ -49,6 +49,10 @@ local function ButtonClicked(button,Store)
 	Debounce = false
 end
 
+Store1.ButtonClicked = function(button,Store)
+	ButtonClicked(button,Store)
+end
+
 for i, Button in pairs(Store.Buttons:GetChildren()) do
 	if Button:IsA("ImageButton") then
 		Button.MouseButton1Down:Connect(function()
@@ -97,4 +101,4 @@ for i, Button in pairs(UI.Center.Clothing.Buttons:GetChildren()) do
 end
 
 
-return Store
+return Store1
