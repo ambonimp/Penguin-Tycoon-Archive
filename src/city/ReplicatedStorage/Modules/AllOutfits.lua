@@ -49,6 +49,7 @@ end
 Outfits.All = {	
 	--- Default Outfit(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
+	--Rewards
 	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false};
 	["Royale Robe"] = {Rarity = "Free", IsForSale = false};
 	["Lobster"] = {Rarity = "Free", IsForSale = false};
@@ -83,6 +84,10 @@ Outfits.All = {
 	--- Event Outfits ---
 	["Red Jersey"] = {Rarity = "Event", IsForSale = false};
 	["Blue Jersey"] = {Rarity = "Event", IsForSale = false};
+
+	-- Mining Outfits
+	["Miner"] = {Rarity = "Free", IsForSale = false};
+
 }
 
 return Outfits

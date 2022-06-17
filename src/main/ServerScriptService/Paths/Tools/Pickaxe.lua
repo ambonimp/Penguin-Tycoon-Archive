@@ -33,12 +33,42 @@ for Level, Enums in pairs(Modules.MiningDetails) do
         local Enum = Modules.MiningDetails[Level-1]
         for _, Divider in ipairs(Dividers:GetChildren()) do
             if Divider:IsA("BasePart") then
-                warn("GOOD")
                 Divider.SurfaceGui.Top.Text = string.format("%s %s", Enums.Requirement, Enum.Plural or Enum.Ore .. "s")
-            else
-                warn("OH NO")
+                local prompt = Instance.new("ProximityPrompt")
+                prompt.HoldDuration = 0.25
+                prompt.MaxActivationDistance = 30
+                prompt.RequiresLineOfSight = false
+                prompt.ActionText = "Unlock"
+                prompt.Parent = Divider
+
+                prompt.Triggered:Connect(function(Player)
+                    local Data = Modules.PlayerData.sessionData[Player.Name]
+
+                    if Data and Data.Mining.Level + 1 == Level then
+                        local Id = 1274261950
+                        Services.MPService:PromptProductPurchase(Player, Id)
+
+                        local Conn
+                        Conn = Services.MPService.PromptProductPurchaseFinished:Connect(function(UserId, _Id, Purchased)
+                            if UserId == Player.UserId and _Id == Id then
+                                if Purchased then
+                                    Data.Mining.Level = Level
+                                    Remotes.MiningLevelUp:FireClient(Player, Level)
+                                end
+
+                                Conn:Disconnect()
+                            end
+                        end)
+                    else
+                        warn(Data, Data.Mining.Level + 1, Level)
+                    end
+
+                end)
+
             end
+
         end
+
     end
 
 end
@@ -76,7 +106,7 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
         Data.Mining.Mined[Enums.Ore] = OresMinedThisLevel
 
         local Earnings = Data.Income * Enums.EarningMultiplier * (Client:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1)
-        Modules.Income:AddGems(Client, Earnings, "Mining")
+        Modules.Income:AddMoney(Client, Earnings)
 
         if Data.Mining.Level == Level then
             local NextLevel = Level + 1
@@ -137,8 +167,7 @@ task.spawn(function()
                 Data.Mining.Mined.Diamond += 2000
             end
 
-            return true
-
+            return false
         else
             return false
         end
