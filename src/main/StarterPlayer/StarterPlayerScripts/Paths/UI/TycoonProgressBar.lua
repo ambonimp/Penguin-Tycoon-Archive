@@ -120,6 +120,10 @@ function Progress()
     local Unlocked = IslandInfo.Unlocked
     local Unlockables = IslandInfo.Unlockables
 
+    if Unlocked == Unlockables and not GetIncompleteIslandIndex() then
+        TycoonCompleted()
+    end
+
     -- warn(Unlocked, Unlockables)
     UpdateBar(true)
 

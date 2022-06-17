@@ -1,3 +1,4 @@
+local Workspace = game:GetService("Workspace")
 local DataStoreService = game:GetService("DataStoreService")
 local Pickaxe = {}
 
@@ -138,6 +139,21 @@ local function LoadMine(Mine)
 
 end
 
+local function UpdateDividerText(Level)
+    local Dividers = Island.Zones[Level]:FindFirstChild("Dividers")
+    if Dividers then
+        warn(Modules.MiningDetails[Level].Dividers)
+        repeat task.wait() until #Dividers:GetChildren() == Modules.MiningDetails[Level].Dividers
+        warn("PLEASE")
+        for _, Divider in ipairs(Dividers:GetChildren()) do
+            local Ore = Modules.MiningDetails[Level-1].Ore
+            local Remainder = Modules.MiningDetails.Requirement - Remotes.GetStat("Mining").Mined[Ore]
+
+            Divider.SurfaceGui.Top.Text = string.format("%s %s", Remainder, Enum.Plural or Enum.Ore .. "s")
+        end
+    end
+end
+
 
 
 --- Events ---
@@ -187,6 +203,11 @@ task.spawn(function()
                     Paths.Modules.Index.OreCollected(Level)
                     -- TODO: Sound
 
+--[[                     local NextLevel = Level + 1
+                    if Modules.MiningDetails[NextLevel] then
+                        UpdateDividerText(Level)
+                    end
+ *]]
 				else
 					MineTrack:Stop()
 				end
@@ -226,10 +247,14 @@ end
 -- Island
 task.spawn(function()
     -- Dividers
-    for i = 2, Remotes.GetStat:InvokeServer("Mining").Level do
+    local Level = Remotes.GetStat:InvokeServer("Mining").Level
+    for i = 2, Level do
         DestroyDividers(i)
     end
-
+--[[     for i = Level + 1, #Modules.MiningDetails do
+        UpdateDividerText(i)
+    end
+ *]]
     -- Teleport back
     local prompt = Instance.new("ProximityPrompt")
 	prompt.HoldDuration = 0.25

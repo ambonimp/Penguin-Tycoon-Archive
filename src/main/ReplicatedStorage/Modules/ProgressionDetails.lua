@@ -1,7 +1,7 @@
 return {
     {Object = "", Icon = "rbxassetid://9920788467"}, -- Spawn
     {Object = "New Island!#1", Icon = "rbxassetid://9936592531"}, -- Lumberjack
-    {Object = "Youtube Island!#1", Icon = "rbxassetid://9940055674"}, -- Youtube
+    {Object = "Youtube Island!#1", Icon = "rbxassetid://9942378352"}, -- Youtube
     {Object = "Mining Island!#1", Icon = "rbxassetid://9941290962"}, -- Mining Island
     {Object = "New Island!#2", Icon = "rbxassetid://9920789493"}, -- Ice Rink
     {Object = "New Island!#3", Icon = "rbxassetid://9936592325"}, -- Glider
@@ -16,7 +16,7 @@ return {
     {Object = "New Island!#12", Icon = "rbxassetid://9920787582"}, -- Observatory
     {Object = "New Island!#13", Icon = "rbxassetid://9920786122"}, -- Iceberg 3
     {Object = "New Island!#14", Icon = "rbxassetid://9920786270"}, -- Iceberg 4
-    {Object = "New Island!#15", Icon = "rbxassetid://9920787045"}, -- Meteor
+    {Object = "New Island!#15", Icon = "rbxassetid://9942500543"}, -- Meteor
     {Object = "New Island!#16", Icon = "rbxassetid://9920787993"}, -- Space Station
     {Object = "New Island!#17", Icon = "rbxassetid://9920787745"}, -- Rovers
     {Object = "New Island!#18", Icon = "rbxassetid://9920787863"}, -- Satellite

@@ -61,6 +61,7 @@ local nameToId = {
 	["RainbowRod"] = 47438416,
 	["Gems"] = 47438471,
 	["Fish"] = 49090546,
+	["Mining"] = 52724179,
 }
 
 function Popups.getAction()
@@ -97,6 +98,11 @@ function Popups.getAction()
 		local ownsG = Popups.ownsGamepass("Glider")
 		if not ownsG then
 			return "Glider"
+		end
+	elseif Tool and (Tool == "Pickaxe" or Tool == "Gold Pickaxe") then
+		local ownsGold = Popups.ownsGamepass("Mining")
+		if not ownsGold then
+			return "Mining"
 		end
 	end
 
