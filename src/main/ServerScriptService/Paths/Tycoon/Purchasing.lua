@@ -12,30 +12,30 @@ local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandl
 
 
 --- Purchase Functions ---
-function Purchasing:CanPurchase(Player, Item)
+function Purchasing:CanPurchaseWithMoney(Player, Item)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	
 	if Data then
 		local PlayerMoney = Data["Money"]
-		
+
 		local ItemPrice = Item:GetAttribute("Price")
-		
+
 		-- Check if the player has enough Money
 		if PlayerMoney and ItemPrice then
 			if not (PlayerMoney >= ItemPrice) then
 				local ProductRequired = Modules.GameFunctions:GetRequiredMoneyProduct(Player, ItemPrice)
 				Services.MPService:PromptProductPurchase(Player, ProductRequired)
-				
+
 				return false--, "Not enough Money."
 			end
 		else
 			return false, "Error [Money]"
 		end
-		
+
 		-- Check if the player owns the necessary item & doesn't already own this one (duplicate)
 		local PlayerTycoon = Modules.Ownership:GetPlayerTycoon(Player)
 		local Dependency = Item:GetAttribute("Dependency")
-		
+
 		if PlayerTycoon then
 			if (not PlayerTycoon.Tycoon:FindFirstChild(Dependency) and Dependency ~= "NONE") or Data["Tycoon"][Item.Name] then
 				return false--, "Dependency not owned."
@@ -43,9 +43,10 @@ function Purchasing:CanPurchase(Player, Item)
 		else
 			return false, "Error [Tycoon]"
 		end
-		
+
 		-- Purchase may be made
 		return true
+
 	end
 	
 	return false
@@ -122,22 +123,54 @@ end
 function Purchasing:PurchaseItem(Player, Item, IsAnimated)
 	local Button = Paths.Template.Buttons:FindFirstChild(Item)
 	if not Button then return end
-	
-	local CanPurchase, ErrorMsg = Purchasing:CanPurchase(Player, Button)
-	
-	if CanPurchase then
-		-- Take player's money
-		local Data = Modules.PlayerData.sessionData[Player.Name]
-		Data["Money"] -= Button:GetAttribute("Price")
-		Player:SetAttribute("Money", Data["Money"])
+
+	local CurrencyType = Button:GetAttribute("CurrencyType")
+	local Purchased
+
+	if CurrencyType == "Money" then
+		local CanPurchase, ErrorMsg = Purchasing:CanPurchaseWithMoney(Player, Button)
 		
+		if CanPurchase then
+			-- Take player's money
+			local Data = Modules.PlayerData.sessionData[Player.Name]
+			Data["Money"] -= Button:GetAttribute("Price")
+			Player:SetAttribute("Money", Data["Money"])
+
+			Purchased = true
+		elseif ErrorMsg then
+			warn(Player, ErrorMsg)
+			Purchased = false
+		end
+
+	elseif CurrencyType == "Gamepass" then
+		local Id = tonumber(Button:GetAttribute("ID"))
+		Services.MPService:PromptGamePassPurchase(Player, Id)
+
+		if Services.MPService:UserOwnsGamePassAsync(Player.UserId, Id) then
+			Purchased = true
+		else
+			local Conn
+			Conn = Services.MPService.PromptGamePassPurchaseFinished:Connect(function(_Player, _Id, Success)
+				if Player  == _Player and _Id == Id then
+					Purchased = Success
+					Conn:Disconnect()
+				end
+	        end)
+
+	        repeat
+				task.wait()
+			until Purchased ~= nil
+		end
+
+	end
+
+	if Purchased then
 		Purchasing:ItemPurchased(Player, Item, IsAnimated)
-		
 		return true
-	elseif ErrorMsg then
-		warn(Player, ErrorMsg)
+	else
 		return false
 	end
+
 end
 
 

@@ -16,11 +16,13 @@ local ParticleSystem = require(Services.RStorage.Modules.FreshParticles)
 
 
 local Island = workspace.Islands["Mining Island"]
+local Camera = workspace.CurrentCamera
+
 local Char, MineTrack, Hrp
 
 local Rand = Random.new()
-local OreParticles = {}
 
+local FirstTeleport = false
 
 --- Functions ---
 function GetCFramer(Model)
@@ -94,6 +96,17 @@ local function DestroyDividers(Level)
     Dividers:Destroy()
 end
 
+local function UpdateDividerText(Level)
+    local Dividers = Island.Zones[Level]:FindFirstChild("Dividers")
+    if Dividers then
+        for _, Divider in ipairs(Dividers:GetChildren()) do
+            local PrevDetails = Modules.MiningDetails[Level-1]
+            local Remainder = Modules.MiningDetails[Level].Requirement - Remotes.GetStat:InvokeServer("Mining").Mined[PrevDetails.Ore]
+
+            Divider.SurfaceGui.BASE.Top.Text = string.format("%s %s Ore", Remainder, PrevDetails.Ore)
+        end
+    end
+end
 
 local function Teleport(ToMine)
     local Info = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
@@ -103,12 +116,14 @@ local function Teleport(ToMine)
     In.Completed:Wait()
 
     Remotes.MineTeleport:InvokeServer(ToMine)
+    Camera.CFrame = CFrame.new(Camera.CFrame.Position) * Hrp.CFrame.Rotation
 
     local Out = Services.TweenService:Create(UI.SpecialEffects.Bloom, Info, {BackgroundTransparency = 1})
     Out:Play()
     Out.Completed:Wait()
 
 end
+
 
 local function LoadCharacter(C)
     if not C then return end
@@ -135,25 +150,26 @@ local function LoadMine(Mine)
         prompt.Enabled = false
         Teleport(true)
         prompt.Enabled = true
+
+
+        if not FirstTeleport then
+            FirstTeleport = false
+            -- Initialize dividers
+            local Level = Remotes.GetStat:InvokeServer("Mining").Level
+
+            for i = 2, Level do
+                DestroyDividers(i)
+            end
+
+            for i = Level + 1, #Modules.MiningDetails do
+                UpdateDividerText(i)
+            end
+
+        end
+
     end)
 
 end
-
-local function UpdateDividerText(Level)
-    local Dividers = Island.Zones[Level]:FindFirstChild("Dividers")
-    if Dividers then
-        warn(Modules.MiningDetails[Level].Dividers)
-        repeat task.wait() until #Dividers:GetChildren() == Modules.MiningDetails[Level].Dividers
-        warn("PLEASE")
-        for _, Divider in ipairs(Dividers:GetChildren()) do
-            local Ore = Modules.MiningDetails[Level-1].Ore
-            local Remainder = Modules.MiningDetails.Requirement - Remotes.GetStat("Mining").Mined[Ore]
-
-            Divider.SurfaceGui.Top.Text = string.format("%s %s", Remainder, Enum.Plural or Enum.Ore .. "s")
-        end
-    end
-end
-
 
 
 --- Events ---
@@ -179,7 +195,7 @@ task.spawn(function()
 
                 if Mining then
                     -- Special effects
-                    local Earnings = Remotes.GetStat:InvokeServer("Income") * Modules.MiningDetails[Level].EarningMultiplier * (Paths.Player:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1)
+                    local Earnings = Remotes.GetStat:InvokeServer("Income") * Remotes.GetStat:InvokeServer("Income Multiplier") * Modules.MiningDetails[Level].EarningMultiplier * (Paths.Player:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1)
                     EarningParticle(Earnings)
 
 					Remotes.Pickaxe:FireServer(Mining)
@@ -203,11 +219,11 @@ task.spawn(function()
                     Paths.Modules.Index.OreCollected(Level)
                     -- TODO: Sound
 
---[[                     local NextLevel = Level + 1
+                    local NextLevel = Level + 1
                     if Modules.MiningDetails[NextLevel] then
-                        UpdateDividerText(Level)
+                        UpdateDividerText(NextLevel)
                     end
- *]]
+
 				else
 					MineTrack:Stop()
 				end
@@ -242,19 +258,11 @@ else
             LoadMine(Child)
         end
     end)
+
 end
 
 -- Island
 task.spawn(function()
-    -- Dividers
-    local Level = Remotes.GetStat:InvokeServer("Mining").Level
-    for i = 2, Level do
-        DestroyDividers(i)
-    end
---[[     for i = Level + 1, #Modules.MiningDetails do
-        UpdateDividerText(i)
-    end
- *]]
     -- Teleport back
     local prompt = Instance.new("ProximityPrompt")
 	prompt.HoldDuration = 0.25
@@ -269,7 +277,24 @@ task.spawn(function()
         prompt.Enabled = true
     end)
 
+    local GoldPickaxe = Island.GoldPickaxe
+    GoldPickaxe:WaitForChild("Loader", math.huge)
+    if Remotes.GetStat:InvokeServer("Tycoon")["Gold Pickaxe#1"] then
+        if GoldPickaxe:FindFirstChild("Model") then
+            GoldPickaxe.Model:Destroy()
+        end
+    else
+        local Conn
+        Conn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(Button)
+            if Button == "Gold Pickaxe#1" then
+                Conn:Disconnect()
+                GoldPickaxe.Model:Destroy()
+            end
+        end)
+    end
+
 end)
+
 
 Remotes.MiningLevelUp.OnClientEvent:Connect(DestroyDividers)
 

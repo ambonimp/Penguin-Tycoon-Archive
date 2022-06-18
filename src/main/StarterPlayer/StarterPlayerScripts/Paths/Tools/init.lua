@@ -18,6 +18,13 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 local ToolFunctions = {}
 for i, v in pairs(script:GetChildren()) do ToolFunctions[v.Name] = require(v) end
 
+local ToolExeptions = {
+	["Gold Axe"] = "Axe",
+	["Gold Fishing Rod"] = "Fishing Rod",
+	["Powered Glider"] = "Glider",
+	["Gold Pickaxe"] = "Pickaxe"
+}
+
 local Keybinds = {
 	[Enum.KeyCode.One] = 1, [Enum.KeyCode.Two] = 2, [Enum.KeyCode.Three] = 3, [Enum.KeyCode.Four] = 4, [Enum.KeyCode.Five] = 5, 
 	[Enum.KeyCode.Six] = 6, [Enum.KeyCode.Seven] = 7, [Enum.KeyCode.Eight] = 8, [Enum.KeyCode.Nine] = 9, [Enum.KeyCode.Zero] = 0, 
@@ -39,6 +46,11 @@ end
 --- Tool Functions ---
 function Tools.AddTool(Tool,isNew)
 	if Paths.UI.Tools:FindFirstChild(Tool) then return end
+
+	if ToolExeptions[Tool] then
+		Tools.RemoveTool(ToolExeptions[Tool])
+	end
+
 	LastAdded = os.time()
 	if Tool == "Axe" or Tool == "Gold Axe" then
 		workspace.Preload:FindFirstChild("Swamp Indicator").GUI.IslandIcon.Frame.Visible = true
@@ -67,9 +79,10 @@ function Tools.AddTool(Tool,isNew)
 	
 	Template.Parent = Paths.UI.Tools
 
+	-- Blinking thing for new tools
 	if isAnimating then
 		task.defer(function()
-			while Template:GetAttribute("Animating") do
+			while Template:GetAttribute("Animating") and Template.Parent and Template:FindFirstChild("BG") do
 				local tween = TweenService:Create(Template.BG,TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(240, 202, 34)})
 				tween:Play()
 				task.wait(.4)
@@ -81,6 +94,27 @@ function Tools.AddTool(Tool,isNew)
 	end
 end
 
+function Tools.RemoveTool(Tool)
+	local Button =  Paths.UI.Tools:FindFirstChild(Tool)
+
+	if Button then
+		local Keybind = tonumber(Button.Keybind.Text)
+		Button:Destroy()
+
+		-- Shift all other tools  back
+		for _, OtherButton in ipairs(Paths.UI.Tools:GetChildren()) do
+			if OtherButton:IsA("ImageButton") then
+				local OtherKeybind = tonumber(OtherButton.Keybind.Text)
+				if OtherKeybind > Keybind then
+					OtherButton.LayoutOrder -= 1
+					OtherButton.Keybind.Text = OtherKeybind - 1
+				end
+			end
+		end
+
+	end
+
+end
 
 -- Animating unlocking a new tool (full-screen UI)
 function Tools.AnimateNewTool(Tool)
@@ -187,11 +221,8 @@ Remotes.Tools.OnClientEvent:Connect(function(Action, Tool)
 end)
 
 local PlayerTools = Remotes.GetStat:InvokeServer("Tools")
-local ToolExeptions = {
-	["Gold Axe"] = "Axe",
-	["Gold Fishing Rod"] = "Fishing Rod",
-	["Powered Glider"] = "Glider"
-}
+
+
 local tbl = {}
 for Tool, isOwned in pairs(PlayerTools) do
 	table.insert(tbl, Tool)

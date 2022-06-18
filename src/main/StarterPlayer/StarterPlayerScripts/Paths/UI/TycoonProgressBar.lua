@@ -16,7 +16,7 @@ local Dividers = ProgressBar.Dividers
 local DividerTemplate = Dependency.Divider
 local DividerSize = DividerTemplate.Size.X.Scale
 
-local Popup = UI.Top.Popups.ProgressBarReward
+local Popup = UI.Top.Bottom.Popups.ProgressBarReward
 local PopupSession
 
 
@@ -49,6 +49,7 @@ end
 local function GetIncompleteIslandIndex()
     for i,v in ipairs(Unlocking) do
         if v.Unlocked < v.Unlockables then
+            -- warn(v)
             return i
         end
     end
@@ -91,7 +92,7 @@ function LoadIsland(Island)
         local Divider = DividerTemplate:Clone()
         Divider.Parent = Dividers
 
-        if i == math.floor(Unlockables/2) + 1 then
+        if i == math.floor(Unlocking[CurrentIsland].Unlockables / 2) then
             local RewardIcon = Dependency.Reward:Clone()
             RewardIcon.Parent = Divider
         end
@@ -105,7 +106,7 @@ function LoadIsland(Island)
         ProgressBar.NextIsland.Visible = true
         ProgressBar.NextIsland.Image = Modules.ProgressionDetails[NextIsland].Icon
     else
-        ProgressBar.NextIsland.Visible = true
+		ProgressBar.NextIsland.Visible = false
     end
 
     -- Bar
@@ -120,11 +121,13 @@ function Progress()
     local Unlocked = IslandInfo.Unlocked
     local Unlockables = IslandInfo.Unlockables
 
-    if Unlocked == Unlockables and not GetIncompleteIslandIndex() then
-        TycoonCompleted()
+    if Unlocked == Unlockables then
+        if not GetIncompleteIslandIndex() then
+		    TycoonCompleted()
+        end
     end
 
-    -- warn(Unlocked, Unlockables)
+    print("Progress:", Unlocked, Unlockables)
     UpdateBar(true)
 
     return Unlocked, Unlockables
@@ -132,6 +135,7 @@ end
 
 function TycoonCompleted()
     ProgressBar.Visible = false
+    ProgressBar:SetAttribute("Disabled", true)
 end
 
 -- Initialize
@@ -142,23 +146,16 @@ for i = 1, #Modules.ProgressionDetails do
     }
 end
 -- Unlocked
-for Object in pairs(Remotes.GetStat:InvokeServer("Tycoon")) do
-    local Button = Buttons:FindFirstChild(Object)
-    if Button then
-        local Index = GetIslandIndex(Button)
-        if IsUnlockable(Index, Button) then
-            Unlocking[Index].Unlocked += 1
-        end
-
-    end
-
-end
+local Tycoon = Remotes.GetStat:InvokeServer("Tycoon")
 
 -- Unlockables
 for _, Button in pairs(Buttons:GetChildren()) do
     local Index = GetIslandIndex(Button)
     if IsUnlockable(Index, Button) then
         table.insert(Unlocking[Index].Unlockables, Button)
+        if Tycoon[Button.Name] then
+            Unlocking[Index].Unlocked += 1
+        end
     end
 end
 
@@ -185,7 +182,7 @@ if CurrentIsland then
             local Unlocked, Unlockables = Progress()
 
             --Get half reward
-            if Unlocked == math.floor(Unlockables / 2) then
+            if Unlocked == math.floor(Unlockables/2) then
                 local Id = os.time()
                 PopupSession = Id
 

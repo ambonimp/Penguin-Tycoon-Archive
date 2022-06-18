@@ -33,20 +33,20 @@ function Animations:IncomeChanged(Change, NewIncome)
 
 	Template.Size = UDim2.new(1, 0, 0.02, 0)
 	Template.Text = '+ <font color="rgb(57,225,91)">$ '..Modules.Format:FormatComma(Change).."</font> Income ($ "..Modules.Format:FormatComma(NewIncome)..")"
-	Template.Parent = UI.Top
+	Template.Parent = UI.Top.Bottom
 
 	Template:TweenSize(UDim2.new(1, 0, 0.2, 0), "Out", "Quart", 0.25, true)
 
-	wait(1)
+	task.wait(1)
 
-	Template:TweenPosition(UDim2.new(0.5, 0, 0.35, 0), "Out", "Quart", 1.5, true)
+	Template:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Quart", 1.5, true)
 
-	wait(0.6)
+	task.wait(0.6)
 
 	for i = 0, 1, 0.1 do
 		Template.TextTransparency = i
 		Template.TextStrokeTransparency = 0.5 + i
-		wait()
+		task.wait()
 	end
 
 	Template:Destroy()
@@ -84,7 +84,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 	end
 
 	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change)) ..add
-	Template.Parent = UI.Top.MoneyDisplay
+	Template.Parent = UI.Top.Currencies.MoneyDisplay
 
 	Template:TweenSize(UDim2.new(1, 0, YSize, 0), "Out", "Quart", 0.25, true)
 
@@ -107,12 +107,12 @@ function Animations:MoneyChanged(Change, NewMoney)
 
 	-- Total money tween
 	local Goal = {Value = NewMoney}
-	PreviousTotalTween = Services.TweenService:Create(UI.Top.MoneyDisplay.Amount.Change, TrickleTI, Goal)
+	PreviousTotalTween = Services.TweenService:Create(UI.Top.Currencies.MoneyDisplay.Amount.Change, TrickleTI, Goal)
 
-	UI.Top.MoneyDisplay.Amount.Change.Value = NewMoney - Change
+	UI.Top.Currencies.MoneyDisplay.Amount.Change.Value = NewMoney - Change
 
-	UI.Top.MoneyDisplay.Amount.Change.Changed:Connect(function(Value)
-		UI.Top.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(Value)
+	UI.Top.Currencies.MoneyDisplay.Amount.Change.Changed:Connect(function(Value)
+		UI.Top.Currencies.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(Value)
 	end)
 
 	PreviousTotalTween:Play()
@@ -160,7 +160,7 @@ function Animations:GemsChanged(Change, NewGems)
 	Template.Size = UDim2.new(0.5, 0, 0.02, 0)
 
 	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))..add
-	Template.Parent = UI.Top.GemDisplay
+	Template.Parent = UI.Top.Currencies.GemDisplay
 
 	Template:TweenSize(UDim2.new(1, 0, YSize, 0), "Out", "Quart", 0.25, true)
 
@@ -183,12 +183,12 @@ function Animations:GemsChanged(Change, NewGems)
 
 	-- Total money tween
 	local Goal = {Value = NewGems}
-	PreviousTotalTween = Services.TweenService:Create(UI.Top.GemDisplay.Amount.Change, TrickleTI, Goal)
+	PreviousTotalTween = Services.TweenService:Create(UI.Top.Currencies.GemDisplay.Amount.Change, TrickleTI, Goal)
 
-	UI.Top.GemDisplay.Amount.Change.Value = NewGems - Change
+	UI.Top.Currencies.GemDisplay.Amount.Change.Value = NewGems - Change
 
-	UI.Top.GemDisplay.Amount.Change.Changed:Connect(function(Value)
-		UI.Top.GemDisplay.Amount.Text = Modules.Format:FormatComma(Value)
+	UI.Top.Currencies.GemDisplay.Amount.Change.Changed:Connect(function(Value)
+		UI.Top.Currencies.GemDisplay.Amount.Text = Modules.Format:FormatComma(Value)
 	end)
 
 	PreviousTotalTween:Play()

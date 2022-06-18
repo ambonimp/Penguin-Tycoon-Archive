@@ -64,7 +64,8 @@ end
 function getMostExpensive(Player,Data)
 	local mostExpensive = nil
 	for name,has in pairs (Data) do
-		local button = Paths.Template.Buttons:FindFirstChild(name) 
+		local button = Paths.Template.Buttons:FindFirstChild(name)
+		-- warn(name)
 		if button and button:GetAttribute("CurrencyType") == "Money" and button:GetAttribute("Type") == nil and Paths.Template.Upgrades:FindFirstChild(button:GetAttribute("Island")):FindFirstChild(name):GetAttribute("Type") == nil  then
 			if mostExpensive == nil then
 				mostExpensive = Paths.Template.Buttons:FindFirstChild(name)
@@ -111,8 +112,6 @@ end
 function Buttons:NewButton(Player, Button)
 	local Button = Paths.Template.Buttons:FindFirstChild(Button)
 	if Button then
-		local Data = Modules.PlayerData.sessionData[Player.Name]
-	
 		local Tycoon = Modules.Ownership:GetPlayerTycoon(Player)
 		
 		if Tycoon.Tycoon:FindFirstChild(Button:GetAttribute("Object")) then return end
@@ -129,24 +128,26 @@ function Buttons:NewButton(Player, Button)
 				
 				if game.Players:GetPlayerFromCharacter(Char) == Player and not PurchaseDBs[Button.Name] then
 					PurchaseDBs[Button.Name] = true
-					
+
 					local CurrencyType = Button:GetAttribute("CurrencyType")
 					local ItemType = Button:GetAttribute("Type") or "Normal"
 					
 					if CurrencyType == "Robux" then
 						Modules.Products:PromptRobuxItemPurchase(Player, Button:GetAttribute("ID"), Button)
-					elseif CurrencyType == "Money" then
+					elseif CurrencyType == "Money" or CurrencyType == "Gamepass" then
 						Modules.Purchasing:PurchaseItem(Player, Button.Name, true)
-					elseif CurrencyType == "Gamepass" then
-						Services.MPService:PromptGamePassPurchase(Player, Button:GetAttribute("ID"))
 					end
 					
 					task.wait(0.3)
 					PurchaseDBs[Button.Name] = nil
+
 				end
 			end
+
 		end)
+
 	end
+
 end
 
 

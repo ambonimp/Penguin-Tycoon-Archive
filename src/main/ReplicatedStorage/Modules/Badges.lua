@@ -50,7 +50,6 @@ Badges.Purchases = {
 	["New Island!#26"] = 2124929787;
 	["New Island!#29"] = 2124929788; --Hospital
 
-	["Mining Island!#1"] = 2126876430;
 }
 
 return Badges

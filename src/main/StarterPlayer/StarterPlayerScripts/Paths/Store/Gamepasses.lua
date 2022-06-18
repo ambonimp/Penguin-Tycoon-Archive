@@ -66,14 +66,23 @@ Remotes.Store.OnClientEvent:Connect(function(PurchaseType, gamepass, purchased)
 end)
 
 -- Load Gamepasses
-coroutine.wrap(function()
+task.spawn(function()
 	task.wait(2)
 	
 	local OwnedPasses = nil
 	repeat OwnedPasses = Remotes.GetStat:InvokeServer("Gamepasses") if not OwnedPasses then wait(1) end until OwnedPasses
 
 	for i, Gamepass in pairs(AllGamepasses) do
-		local Info = Services.MPService:GetProductInfo(Gamepass[1], Enum.InfoType.GamePass)
+		local Info
+		for _ = 1, 5 do
+			local Success, Results = pcall(function()
+				return Services.MPService:GetProductInfo(Gamepass[1], Enum.InfoType.GamePass)
+			end)
+			if Success then
+				Info = Results
+				break
+			end
+		end
 
 		if Info["IsForSale"] then
 			local Template = Dependency.GamepassTemplate:Clone()
@@ -94,9 +103,12 @@ coroutine.wrap(function()
 					Services.MPService:PromptGamePassPurchase(Paths.Player, Gamepass[1])
 				end
 			end)
+
 		end
+
 	end
-end)()
+
+end)
 
 
 return Gamepasses

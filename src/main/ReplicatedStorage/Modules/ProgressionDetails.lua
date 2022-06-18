@@ -15,7 +15,7 @@ return {
     {Object = "New Island!#11", Icon = "rbxassetid://9920784544"}, -- Desert Island
     {Object = "New Island!#12", Icon = "rbxassetid://9920787582"}, -- Observatory
     {Object = "New Island!#13", Icon = "rbxassetid://9920786122"}, -- Iceberg 3
-    {Object = "New Island!#14", Icon = "rbxassetid://9920786270"}, -- Iceberg 4
+    {Object = "New Island!#14", Icon = "rbxassetid://9920785947"}, -- Iceberg 4
     {Object = "New Island!#15", Icon = "rbxassetid://9942500543"}, -- Meteor
     {Object = "New Island!#16", Icon = "rbxassetid://9920787993"}, -- Space Station
     {Object = "New Island!#17", Icon = "rbxassetid://9920787745"}, -- Rovers
@@ -26,7 +26,7 @@ return {
     {Object = "New Island!#22", Icon = "rbxassetid://9920785154"}, -- Green tree
     {Object = "New Island!#23", Icon = "rbxassetid://9920785355"}, -- Greenhouse
     {Object = "New Island!#24", Icon = "rbxassetid://9920783589"}, -- Allotment
-    {Object = "New Island!#25", Icon = "rbxassetid://9920784062"}, -- Cavement
+    {Object = "New Island!#25", Icon = "rbxassetid://9920784062"}, -- Cavemen
     {Object = "New Island!#26", Icon = "rbxassetid://9920784747"}, -- Enchanted Mushroom
     {Object = "New Island!#29", Icon = "rbxassetid://9936592115"}, -- Hospital
 }

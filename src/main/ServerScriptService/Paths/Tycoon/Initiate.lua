@@ -58,7 +58,7 @@ Remotes.IslandProgressRewardCollected.OnServerEvent:Connect(function(Client, Ind
 
 		-- warn(Unlocked, Unlockables)
 		if Unlocked == math.floor(Unlockables/2) then
-			Modules.Income:AddGems(Client, 5, "Tycoon Reward")
+			Modules.Income:AddGems(Client, 3, "Tycoon Reward")
 		end
 	end
 

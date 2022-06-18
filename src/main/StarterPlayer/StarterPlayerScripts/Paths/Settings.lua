@@ -35,7 +35,11 @@ function Settings:GetPlayerSettings()
 	for i = 1, 5, 1 do
 		PlayerSettings = Remotes.GetStat:InvokeServer("Settings")
 		PlayerGamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
-		if not PlayerSettings or not PlayerGamepasses then wait(0.5) end
+		if not PlayerSettings or not PlayerGamepasses then
+			task(0.5)
+		else
+			break
+		end
 	end
 
 	return PlayerSettings, PlayerGamepasses
@@ -74,6 +78,9 @@ function Settings:SettingUpdated(Setting, Value)
 		else
 			Paths.Audio["Music"].Volume = 0
 		end
+	elseif Setting == "Progress Bar" then
+		local ProgressBar = UI.Top.ProgressBar
+		ProgressBar.Visible = if ProgressBar:GetAttribute("Disabled") then false else Value
 	end
 end
 
@@ -87,77 +94,92 @@ end)
 
 
 --- Loading Settings ---
-for i, Setting in pairs(SettingsUI:GetChildren()) do
-	if Setting:IsA("Frame") then
-		Setting.Toggle.IsToggled.Changed:Connect(function(val)
-			TweenSetting(val, Setting)
-		end)
+task.spawn(function()
+	local PlayerSettings, PlayerGamepasses = Settings:GetPlayerSettings()
+	if PlayerGamepasses["26269102"] then
+		SettingsUI["Chat Tag"].Visible = true
+	end
 
-		Setting.Toggle.MouseButton1Down:Connect(function()
-			if not ToggleDB then
-				if Setting:FindFirstChild("Locked") and Setting.Locked.Visible == true then return end
-				
-				ToggleDB = true
+	for i, Setting in pairs(SettingsUI:GetChildren()) do
+		if Setting:IsA("Frame") then
 
-				Setting.Toggle.IsToggled.Value = not Setting.Toggle.IsToggled.Value
-				Remotes.Settings:FireServer(Setting.Name, Setting.Toggle.IsToggled.Value)
+			Setting.Toggle.MouseButton1Down:Connect(function()
+				if not ToggleDB then
+					if Setting:FindFirstChild("Locked") and Setting.Locked.Visible == true then return end
 
-				wait(0.2)
+					ToggleDB = true
 
-				ToggleDB = false
-			end
-		end)
-		
-		if Setting:FindFirstChild("Locked") then
-			Setting.Locked.MouseButton1Down:Connect(function()
-				Services.MPService:PromptGamePassPurchase(Paths.Player, Setting:GetAttribute("Gamepass"))
+					Setting.Toggle.IsToggled.Value = not Setting.Toggle.IsToggled.Value
+					Remotes.Settings:FireServer(Setting.Name, Setting.Toggle.IsToggled.Value)
+
+					task.wait(0.2)
+
+					ToggleDB = false
+				end
 			end)
-		end
 
-		-- Load Plr Currently Saved Settings
-		coroutine.wrap(function()
-			local PlayerSettings, PlayerGamepasses = Settings:GetPlayerSettings()
+			if Setting:FindFirstChild("Locked") then
+				Setting.Locked.MouseButton1Down:Connect(function()
+					Services.MPService:PromptGamePassPurchase(Paths.Player, Setting:GetAttribute("Gamepass"))
+				end)
+			end
+
+			-- Load Plr Currently Saved Settings
 			if PlayerSettings and PlayerGamepasses then
-				Setting.Toggle.IsToggled.Value = PlayerSettings[Setting.Name]
-				
+				local val = PlayerSettings[Setting.Name]
+
+				Setting.Toggle.IsToggled.Value = val
+				TweenSetting(val, Setting)
+
 				if Setting:GetAttribute("Gamepass") then
 					Setting.Locked.Visible = not PlayerGamepasses[tostring(Setting:GetAttribute("Gamepass"))]
+
 				end
-				
-				if PlayerGamepasses["26269102"] then
-					SettingsUI["Chat Tag"].Visible = true
-				end
+
 			end
-		end)()
+
+			Setting.Toggle.IsToggled.Changed:Connect(function(val)
+				TweenSetting(val, Setting)
+			end)
+
+		end
+
 	end
-end
 
-
-
---- Updating Settings ---
-
--- Music Enabled
-if SettingsUI["Music"].Toggle.IsToggled.Value == false then
-	if Paths.Audio:FindFirstChild("Music") then
-		Paths.Audio.Music.Volume = 0
+	--- Updating Settings ---
+	if SettingsUI["Progress Bar"].Toggle.IsToggled.Value == false then
+		UI.Top.ProgressBar.Visible = false
 	end
-end
-if Paths.Audio:FindFirstChild("Music") then
-	Paths.Audio.Music.Changed:Connect(function()
-		if SettingsUI["Music"].Toggle.IsToggled.Value == false then
+
+	-- Music Enabled
+	if SettingsUI["Music"].Toggle.IsToggled.Value == false then
+		if Paths.Audio:FindFirstChild("Music") then
 			Paths.Audio.Music.Volume = 0
 		end
-	end)
-end
-Paths.Audio.ChildAdded:Connect(function(Sound)
-	if Sound.Name == "Music" then
-		Sound.Changed:Connect(function()
+	end
+
+	if Paths.Audio:FindFirstChild("Music") then
+		Paths.Audio.Music.Changed:Connect(function()
 			if SettingsUI["Music"].Toggle.IsToggled.Value == false then
-				Sound.Volume = 0
+				Paths.Audio.Music.Volume = 0
 			end
 		end)
 	end
+	Paths.Audio.ChildAdded:Connect(function(Sound)
+		if Sound.Name == "Music" then
+			Sound.Changed:Connect(function()
+				if SettingsUI["Music"].Toggle.IsToggled.Value == false then
+					Sound.Volume = 0
+				end
+			end)
+		end
+	end)
+
 end)
+
+
+
+
 
 
 return Settings

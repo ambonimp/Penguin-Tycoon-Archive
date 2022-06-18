@@ -80,14 +80,12 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 			-- Gold Fishing Rod
 			elseif gamepass == 28927736 then
 				Modules.Tools.AddTool(Player, "Gold Fishing Rod")
-			-- Gold Fishing Rod 
 			elseif gamepass == 52724179 then
 				Modules.Tools.AddTool(Player, "Gold Pickaxe")
 			elseif gamepass == 47438416 then
 				Modules.Tools.AddTool(Player, "Rainbow Fishing Rod")
-			elseif gamepass == 52724179 then
-				Modules.Tools.AddTool(Player, "Gold Pickaxe")
 			end
+
 		end
 		
 		-- Gamepass buttons/tycoon item

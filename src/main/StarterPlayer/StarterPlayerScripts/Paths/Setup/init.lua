@@ -136,7 +136,7 @@ do -- boat
         currentlySelected = new
     end
 
-        
+
     local function unlockItem(itemName,doAnim)
         local model = game.ReplicatedStorage.BoatBuildParts:FindFirstChild(itemName)
         local UI = Paths.UI.Center.BoatUnlock.Items.Unlocked:FindFirstChild(itemName)
@@ -153,9 +153,9 @@ do -- boat
             UI.Location.Text = model:GetAttribute("Location")
             UI.Location.TextColor3 = Color3.new(1,1,1)
             if doAnim and am < 10 then
-                Paths.UI.Top.Compass.Visible = false
+                Paths.UI.Right.Compass.Visible = false
                 local n = UI.ViewportFrame:Clone()
-                local foundBoatPart = Paths.UI.Top.Popups.FoundBoatPart
+                local foundBoatPart = Paths.UI.Top.Bottom.Popups.FoundBoatPart
                 if foundBoatPart:FindFirstChild("ViewportFrame") then
                     foundBoatPart.ViewportFrame:Destroy()
                 end
@@ -176,7 +176,7 @@ do -- boat
                     foundBoatPart:TweenSize(UDim2.fromScale(0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.25)
                     task.wait(.25)
                     if Paths.UI.Center.PlaneUnlock.Metal.Owned.Visible == true or Paths.UI.Center.BoatUnlock.Compass.Owned.Visible == true then
-                        Paths.UI.Top.Compass.Visible = true
+                        Paths.UI.Right.Compass.Visible = true
                     end
                     foundBoatPart.Visible = false
                 end)
@@ -190,9 +190,9 @@ do -- boat
         end
         Paths.UI.Center.BoatUnlock.Items.Text.Text =  am.."/10 ITEMS FOUND"
         if doAnim and am == 10 then
-            Paths.UI.Top.Compass.Visible = false
-            Paths.UI.Top.Popups.FoundBoatPart.Visible = false
-            local foundBoatPart = Paths.UI.Top.Popups.SailboatCompleted
+            Paths.UI.Right.Compass.Visible = false
+            Paths.UI.Top.Bottom.Popups.FoundBoatPart.Visible = false
+            local foundBoatPart = Paths.UI.Top.Bottom.Popups.SailboatCompleted
             foundBoatPart.Size = UDim2.fromScale(0,0)
             foundBoatPart.Visible = true
             Paths.Audio.Celebration:Play()
@@ -209,7 +209,7 @@ do -- boat
 
 
     local function startCompass(selected)
-        local UI = Paths.UI.Top.Compass
+        local UI = Paths.UI.Right.Compass
         local Compass = UI.Compass
         local player = game.Players.LocalPlayer
         Paths.Services.RunService:BindToRenderStep("Compass",Enum.RenderPriority.Camera.Value+1,function()
@@ -255,7 +255,7 @@ do -- boat
                 Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.On.Text.Text = "Enable"
                 Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.On.BackgroundColor3 = Color3.fromRGB(106, 255, 14)
             end
-            Paths.UI.Top.Compass.Compass.Visible = isOn
+            Paths.UI.Right.Compass.Compass.Visible = isOn
         end
 
         Paths.UI.Center.BoatUnlock.Compass.Owned.ImageButton.MouseButton1Down:Connect(switch)
@@ -349,7 +349,7 @@ do -- plane
         currentlySelectedPlane = new
     end
 
-        
+
     local function unlockItem(itemName,doAnim)
         local model = game.ReplicatedStorage.PlaneBuildParts:FindFirstChild(itemName)
         local UI = Paths.UI.Center.PlaneUnlock.Items.Unlocked:FindFirstChild(itemName)
@@ -366,9 +366,9 @@ do -- plane
             UI.Location.Text = model:GetAttribute("Location")
             UI.Location.TextColor3 = Color3.new(1,1,1)
             if doAnim and am < 10 then
-                Paths.UI.Top.Compass.Visible = false
+                Paths.UI.Right.Compass.Visible = false
                 local n = UI.ViewportFrame:Clone()
-                local foundBoatPart = Paths.UI.Top.Popups.FoundPlanePart
+                local foundBoatPart = Paths.UI.Top.Bottom.Popups.FoundPlanePart
                 if foundBoatPart:FindFirstChild("ViewportFrame") then
                     foundBoatPart.ViewportFrame:Destroy()
                 end
@@ -389,7 +389,7 @@ do -- plane
                     foundBoatPart:TweenSize(UDim2.fromScale(0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.25)
                     task.wait(.25)
                     if Paths.UI.Center.PlaneUnlock.Metal.Owned.Visible == true or Paths.UI.Center.BoatUnlock.Compass.Owned.Visible == true then
-                        Paths.UI.Top.Compass.Visible = true
+                        Paths.UI.Right.Compass.Visible = true
                     end
                     foundBoatPart.Visible = false
                 end)
@@ -403,7 +403,7 @@ do -- plane
         end
         Paths.UI.Center.PlaneUnlock.Items.Text.Text =  am.."/10 ITEMS FOUND"
         if doAnim and am == 10 then
-            Paths.UI.Top.Compass.Visible = false
+            Paths.UI.Right.Compass.Visible = false
             Paths.UI.Top.FoundPlanePart.Visible = false
             local foundBoatPart = Paths.UI.Top.PlaneCompleted
             foundBoatPart.Size = UDim2.fromScale(0,0)
@@ -421,7 +421,7 @@ do -- plane
     end
 
     local function startCompass(selected)
-        local UI = Paths.UI.Top.Compass
+        local UI = Paths.UI.Right.Compass
         local Compass = UI.Metal
         local player = game.Players.LocalPlayer
         Paths.Services.RunService:BindToRenderStep("Metal",Enum.RenderPriority.Camera.Value+1,function()
@@ -467,7 +467,7 @@ do -- plane
                 Paths.UI.Center.PlaneUnlock.Metal.Owned.ImageButton.On.Text.Text = "Enable"
                 Paths.UI.Center.PlaneUnlock.Metal.Owned.ImageButton.On.BackgroundColor3 = Color3.fromRGB(106, 255, 14)
             end
-            Paths.UI.Top.Compass.Metal.Visible = isOn
+            Paths.UI.Right.Compass.Metal.Visible = isOn
         end
         Paths.UI.Center.PlaneUnlock.Metal.Owned.ImageButton.MouseButton1Down:Connect(switch)
         Paths.UI.Center.PlaneUnlock.Metal.Owned.ImageButton.On.MouseButton1Down:Connect(switch)
