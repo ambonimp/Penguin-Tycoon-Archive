@@ -73,6 +73,8 @@ function Paths.Initiliaze()
 	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
 	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
 	Paths.Modules.MiningDetails = require(Paths.Services.RStorage.Modules.MiningDetails)
+	Paths.Modules.DeviceDetector = require(script.DeviceDetector)
+	Paths.Modules.Feedback = require(script.Feedback)
 	
 
 	-- Tool Modules
