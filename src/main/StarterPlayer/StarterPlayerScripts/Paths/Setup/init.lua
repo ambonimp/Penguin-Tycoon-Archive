@@ -404,8 +404,8 @@ do -- plane
         Paths.UI.Center.PlaneUnlock.Items.Text.Text =  am.."/10 ITEMS FOUND"
         if doAnim and am == 10 then
             Paths.UI.Right.Compass.Visible = false
-            Paths.UI.Top.FoundPlanePart.Visible = false
-            local foundBoatPart = Paths.UI.Top.PlaneCompleted
+			Paths.UI.Top.Bottom.Popups.FoundPlanePart.Visible = false
+			local foundBoatPart = Paths.UI.Top.Bottom.Popups.PlaneCompleted
             foundBoatPart.Size = UDim2.fromScale(0,0)
             foundBoatPart.Visible = true
             Paths.Audio.Celebration:Play()
