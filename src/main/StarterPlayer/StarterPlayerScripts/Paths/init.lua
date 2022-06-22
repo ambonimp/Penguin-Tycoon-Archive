@@ -69,13 +69,17 @@ function Paths.Initiliaze()
 	Paths.Modules.GroupReward = require(script.GroupReward)
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
+	Paths.Modules.Maid = require(Paths.Services.RStorage.Modules.Maid)
+	Paths.Modules.Signal = require(Paths.Services.RStorage.Modules.Signal)
 	Paths.Modules.Verification = require(script.Verification)
 	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
 	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
 	Paths.Modules.MiningDetails = require(Paths.Services.RStorage.Modules.MiningDetails)
+	Paths.Modules.VehicleDetails = require(Paths.Services.RStorage.Modules.VehicleDetails)
 	Paths.Modules.DeviceDetector = require(script.DeviceDetector)
 	Paths.Modules.Feedback = require(script.Feedback)
 	
+
 
 	-- Tool Modules
 	Paths.Modules.Tools = require(script.Tools);

@@ -18,17 +18,19 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 local ToolFunctions = {}
 for i, v in pairs(script:GetChildren()) do ToolFunctions[v.Name] = require(v) end
 
-local ToolExeptions = {
+local TOOL_EXCEPTIONS = {
 	["Gold Axe"] = "Axe",
 	["Gold Fishing Rod"] = "Fishing Rod",
 	["Powered Glider"] = "Glider",
 	["Gold Pickaxe"] = "Pickaxe"
 }
 
-local Keybinds = {
+local KEYBINDS = {
 	[Enum.KeyCode.One] = 1, [Enum.KeyCode.Two] = 2, [Enum.KeyCode.Three] = 3, [Enum.KeyCode.Four] = 4, [Enum.KeyCode.Five] = 5, 
 	[Enum.KeyCode.Six] = 6, [Enum.KeyCode.Seven] = 7, [Enum.KeyCode.Eight] = 8, [Enum.KeyCode.Nine] = 9, [Enum.KeyCode.Zero] = 0, 
 }
+
+
 
 function stopAnimation(Template,Tool)
 	Template:SetAttribute("Animating",false)
@@ -41,14 +43,16 @@ function stopAnimation(Template,Tool)
 		Paths.UI.Bottom.ToolText.Visible = true
 		Paths.UI.Bottom.ToolText.Text = "Walk infront of a tree to start chopping!"
 	end
+
 end
+
 
 --- Tool Functions ---
 function Tools.AddTool(Tool,isNew)
 	if Paths.UI.Tools:FindFirstChild(Tool) then return end
 
-	if ToolExeptions[Tool] then
-		Tools.RemoveTool(ToolExeptions[Tool])
+	if TOOL_EXCEPTIONS[Tool] then
+		Tools.RemoveTool(TOOL_EXCEPTIONS[Tool])
 	end
 
 	LastAdded = os.time()
@@ -90,8 +94,11 @@ function Tools.AddTool(Tool,isNew)
 				tween:Play()
 				task.wait(.3)
 			end
+
 		end)
+
 	end
+
 end
 
 function Tools.RemoveTool(Tool)
@@ -109,12 +116,16 @@ function Tools.RemoveTool(Tool)
 					OtherButton.LayoutOrder -= 1
 					OtherButton.Keybind.Text = OtherKeybind - 1
 				end
+
 			end
+
 		end
 
 	end
 
 end
+
+
 
 -- Animating unlocking a new tool (full-screen UI)
 function Tools.AnimateNewTool(Tool)
@@ -193,9 +204,9 @@ Services.InputService.InputBegan:Connect(function(input, gameProcessed)
 		if input.UserInputType == Enum.UserInputType.Keyboard then
 			local KeyPressed = input.KeyCode
 			
-			if Keybinds[KeyPressed] then
+			if KEYBINDS[KeyPressed] then
 				for i, v in pairs(Paths.UI.Tools:GetChildren()) do
-					if v:IsA("ImageButton") and tonumber(v.Keybind.Text) == Keybinds[KeyPressed] then
+					if v:IsA("ImageButton") and tonumber(v.Keybind.Text) == KEYBINDS[KeyPressed] then
 						if Modules.Fishing and not Modules.Fishing.LastUpdate.FishingAnimationActive then
 							Remotes.Tools:FireServer("Equip Tool", v.Name)	
 							if v:GetAttribute("Animating") then
@@ -228,7 +239,7 @@ for Tool, isOwned in pairs(PlayerTools) do
 	table.insert(tbl, Tool)
 end
 
-for name,exception in pairs (ToolExeptions) do
+for name,exception in pairs (TOOL_EXCEPTIONS) do
 	if table.find(tbl,name) and table.find(tbl,exception) then
 		table.remove(tbl,table.find(tbl,exception))
 	end

@@ -164,7 +164,7 @@ do -- boat
                 foundBoatPart.Visible = true
                 foundBoatPart.Text.Text = "You found a Sailboat part: "..itemName.."!"
                 Paths.Audio.Celebration:Play()
-                foundBoatPart:TweenSize(UDim2.fromScale(.309,.527),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
+                foundBoatPart:TweenSize(UDim2.fromScale(.309,1),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
                 task.defer(function()
                     foundBoatPart.BottomText.Text = am.."/10 items found"
                     if am == 1 then
@@ -196,7 +196,7 @@ do -- boat
             foundBoatPart.Size = UDim2.fromScale(0,0)
             foundBoatPart.Visible = true
             Paths.Audio.Celebration:Play()
-            foundBoatPart:TweenSize(UDim2.fromScale(.457,.778),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
+            foundBoatPart:TweenSize(UDim2.fromScale(.309,1),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
             task.defer(function()
                 task.wait(5)
                 foundBoatPart:TweenSize(UDim2.fromScale(0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.25)
@@ -377,7 +377,7 @@ do -- plane
                 foundBoatPart.Visible = true
                 foundBoatPart.Text.Text = "You found a plane part: "..itemName.."!"
                 Paths.Audio.Celebration:Play()
-                foundBoatPart:TweenSize(UDim2.fromScale(.309,.527),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
+                foundBoatPart:TweenSize(UDim2.fromScale(.309,1),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
                 task.defer(function()
                     foundBoatPart.BottomText.Text = am.."/10 items found"
                     if am == 1 then
@@ -409,7 +409,7 @@ do -- plane
             foundBoatPart.Size = UDim2.fromScale(0,0)
             foundBoatPart.Visible = true
             Paths.Audio.Celebration:Play()
-            foundBoatPart:TweenSize(UDim2.fromScale(.457,.778),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
+            foundBoatPart:TweenSize(UDim2.fromScale(.309,1),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,.25)
             task.defer(function()
                 task.wait(5)
                 foundBoatPart:TweenSize(UDim2.fromScale(0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.25)

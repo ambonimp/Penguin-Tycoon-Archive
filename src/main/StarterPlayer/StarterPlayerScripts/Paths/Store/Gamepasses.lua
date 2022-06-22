@@ -30,7 +30,8 @@ local AllGamepasses = {
 	{47438471,"Double gems from everything!"}, -- x2 gems
 	{47438595,"Ability to use the map in Penguin City!"}, -- map teleport
 	{49090546, "Capture 3 fish per cast!"},
-	{52724179, "Double money from ores mined!"} -- Gold Pickaxe
+	{52724179, "Double money from ores mined!"}, -- Gold Pickaxe
+	{54396254, "Spawn your vehicles from anywhere"} -- Vehicle spawner
 }
 
 Popups.load(AllGamepasses)
@@ -109,6 +110,5 @@ task.spawn(function()
 	end
 
 end)
-
 
 return Gamepasses

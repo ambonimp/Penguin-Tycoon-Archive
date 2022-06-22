@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local Pickaxe = {}
 
 local Paths = require(script.Parent.Parent)
@@ -155,7 +154,7 @@ Remotes.MineTeleport.OnServerInvoke = function(Client, toIsland)
     local Character = Client.Character
 
     if Character then
-        local SpawnPart = toIsland and Island.Spawn or Workspace.Tycoons[string.gsub(Client.Team.Name, " Island", "")].Spawn
+        local SpawnPart = toIsland and Island.Spawn or workspace.Tycoons[string.gsub(Client.Team.Name, " Island", "")].Spawn
         local CFrame = SpawnPart.CFrame + Vector3.new(0, 3, 0)
         Client:RequestStreamAroundAsync(CFrame.Position)
         Character:SetPrimaryPartCFrame(CFrame)
@@ -195,4 +194,5 @@ if game.PlaceId == 9118461324 then
     end)
 
 end
+
 return Pickaxe
