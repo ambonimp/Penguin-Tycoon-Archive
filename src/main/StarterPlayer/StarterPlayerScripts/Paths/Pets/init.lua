@@ -502,12 +502,12 @@ function updateUI(data,kind,ID)
 		end)
 
 		if table.find(data.Equipped,ID) then
-			--Frame.LayoutOrder = -1
+			Frame.LayoutOrder = -1
 			changeFrameColors(Frame,Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
 			changeFrameColors(Frame.Equip,Color3.new(0.752941, 0.027450, 0.027450),Color3.new(0.588235, 0.027450, 0.027450))
 			Frame.Equip.Text.Text = "Unequip"
 		else
-			--Frame.LayoutOrder = ID
+			Frame.LayoutOrder = ID
 			changeFrameColors(Frame,Color3.fromRGB(211, 211, 211),Color3.fromRGB(255, 255, 255))
 			changeFrameColors(Frame.Equip,Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
 			Frame.Equip.Text.Text = "Equip"
@@ -567,7 +567,7 @@ function updateUI(data,kind,ID)
 			local Frame = PetsFrame.Pets.Pets:FindFirstChild(ID)
 			Frame.PetName.Text = petDetails[3]
 			if table.find(data.Equipped,ID) then
-				--Frame.LayoutOrder = -1
+				Frame.LayoutOrder = -1
 				changeFrameColors(Frame,Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
 				changeFrameColors(Frame.Equip,Color3.new(0.752941, 0.027450, 0.027450),Color3.new(0.588235, 0.027450, 0.027450))
 				Frame.Equip.Text.Text = "Unequip"
@@ -575,7 +575,7 @@ function updateUI(data,kind,ID)
 					changeFrameColors(UI.Center.Merge.Pets.Pets:FindFirstChild(ID),Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
 				end
 			else
-				--Frame.LayoutOrder = ID
+				Frame.LayoutOrder = ID
 				if UI.Center.Merge.Pets.Pets:FindFirstChild(ID) then
 					changeFrameColors(UI.Center.Merge.Pets.Pets:FindFirstChild(ID),Color3.fromRGB(211, 211, 211),Color3.fromRGB(255, 255, 255))
 				end
