@@ -119,10 +119,17 @@ function loadPlayer(Player)
 			PetName.Level.Text = ""
 			PetName.StudsOffset = Vector3.new(0,2.5,0)
 			PetName.Parent = PetModel.PrimaryPart
-			PetAnims[PetModel] = {
-				Walk = PetModel.AnimationController.Animator:LoadAnimation(PetModel.Animations.Walk),
-				Idle = PetModel.AnimationController.Animator:LoadAnimation(PetModel.Animations.Idle)
-			}
+			if PetModel.AnimationController:FindFirstChild("Animator") then
+				PetAnims[PetModel] = {
+					Walk = PetModel.AnimationController.Animator:LoadAnimation(PetModel.Animations.Walk),
+					Idle = PetModel.AnimationController.Animator:LoadAnimation(PetModel.Animations.Idle)
+				}
+			else
+				PetAnims[PetModel] = {
+					Walk = PetModel.AnimationController:LoadAnimation(PetModel.Animations.Walk),
+					Idle = PetModel.AnimationController:LoadAnimation(PetModel.Animations.Idle)
+				}
+			end
 		else
 			PetModel = PetsAssets:FindFirstChild(string.upper(PetName)):FindFirstChild(string.upper(PetKind)).Model:Clone()
 			local BlankModel = PetsAssets:FindFirstChild(string.upper(PetName)).BLANK.Model
