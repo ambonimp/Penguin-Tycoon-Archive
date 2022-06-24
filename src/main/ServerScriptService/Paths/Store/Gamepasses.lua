@@ -29,6 +29,7 @@ local AllGamepasses = {
 	47438595, -- map teleport
 	49090546, -- x3 fish capture
 	52724179, -- Golden Pickaxe
+	26269102, -- Vehicle spawner
 }
 
 local GamepassButtons = {

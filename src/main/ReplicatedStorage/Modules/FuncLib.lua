@@ -1,5 +1,34 @@
 local FuncLib = {}
 
+function FuncLib.TableClone(t)
+	local clone = {}
+
+	for i, v in pairs(t) do
+		clone[i] = v -- Need it simple
+	end
+
+	return clone
+end
+
+function FuncLib.ArrayFlip(t)
+    local returning = {}
+
+    for i = #t, 1, -1 do
+        table.insert(returning, t[i])
+    end
+
+    return returning
+end
+
+function FuncLib.DictLength(t)
+    local length = 0
+    for _, _ in pairs(t) do
+        length+= 1;
+    end
+
+    return length
+end
+
 function FuncLib.QuadraticBezier(t,p0,p1,p2)
 	return (1-t)^2*p0+2*(1-t)*t*p1+t^2*p2
 end

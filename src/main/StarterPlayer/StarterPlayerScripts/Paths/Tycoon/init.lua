@@ -49,5 +49,8 @@ coroutine.wrap(function()
 	end
 end)()
 
+for _, MinigameHandler in ipairs(script.Minigames:GetChildren()) do
+	require(MinigameHandler)
+end
 
 return Penguins
