@@ -42,6 +42,12 @@ local EggProducts = {
 	[1276705868] = 2,
 	[1276720361] = 3,
 	[1276721630] = 4,
+
+	[1276753445] = 5,
+	[1276753534] = 6,
+	[1276753571] = 7,
+	[1276753612] = 8,
+
 }
 
 Services.MPService.PromptProductPurchaseFinished:Connect(function(id, assetId, isPurchased)

@@ -148,7 +148,7 @@ PetDetails.ChanceTables = {
         Name = "Island 8",
         PriceGems = 239,
         PriceRobux = 199,
-        ProductId = 1276721630,
+        ProductId = 1276753445,
         Pets = {
            {Id = 25,Percentage = .35}, --Common
            {Id = 26,Percentage = .61}, --Common
@@ -162,7 +162,7 @@ PetDetails.ChanceTables = {
         Name = "Island 9",
         PriceGems = 279,
         PriceRobux = 259,
-        ProductId = 1276721630,
+        ProductId = 1276753534,
         Pets = {
            {Id = 31,Percentage = .35}, --Common
            {Id = 32,Percentage = .61}, --Common
@@ -176,7 +176,7 @@ PetDetails.ChanceTables = {
         Name = "Island 11",
         PriceGems = 349,
         PriceRobux = 299,
-        ProductId = 1276721630,
+        ProductId = 1276753571,
         Pets = {
            {Id = 37,Percentage = .35}, --Common
            {Id = 38,Percentage = .61}, --Common
@@ -190,7 +190,7 @@ PetDetails.ChanceTables = {
         Name = "Island 12",
         PriceGems = 389,
         PriceRobux = 339,
-        ProductId = 1276721630,
+        ProductId = 1276753612,
         Pets = {
            {Id = 43,Percentage = .35}, --Common
            {Id = 44,Percentage = .61}, --Common
