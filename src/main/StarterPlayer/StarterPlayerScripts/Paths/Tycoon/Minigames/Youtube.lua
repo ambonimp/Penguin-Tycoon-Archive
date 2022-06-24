@@ -2,14 +2,14 @@ local minigame = {}
 
 
 --- Main Variables ---
-local paths = require(script.Parent.Parent)
+local paths = require(script.Parent.Parent.Parent)
 
 local services = paths.Services
 local modules = paths.Modules
 local remotes = paths.Remotes
 local ui = paths.UI
 
-local dependency = paths.Dependency:WaitForChild(script.Name)
+local dependency = paths.Dependency:WaitForChild("YoutubeMinigame")
 
 
 local MAX_SCORE = 40
@@ -76,7 +76,7 @@ local partsMadeInvisible = {}
 local camera = workspace.CurrentCamera
 
 
-local frame = ui.Full:WaitForChild(script.Name) -- We pretend it's on the screen
+local frame = ui.Full:WaitForChild("YoutubeMinigame") -- We pretend it's on the screen
 local gameScreen = frame.Play
 local startScreen = frame.Start
 local editingscreen = frame.Edit
@@ -567,7 +567,7 @@ local function loadComputer(computer)
 	prompt.Triggered:Connect(function()
 		toggleProximityPrompts(false)
 
-		character = player.character
+		character = player.Character
 		if character then
 			local humanoid = character.Humanoid
 
@@ -624,7 +624,7 @@ startScreen.Buttons.Exit.MouseButton1Down:Connect(function()
 
 end)
 
--- open()
+-- open
 for i = 1, 2 do
 	local name = "Gaming Desk#" .. i
 

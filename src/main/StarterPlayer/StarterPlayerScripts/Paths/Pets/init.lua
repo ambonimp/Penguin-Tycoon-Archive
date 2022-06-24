@@ -837,6 +837,7 @@ PetsFrame.Search.TextBox:GetPropertyChangedSignal("Text"):Connect(function()
 end)
 
 PetsFrame.EditName.Exit.MouseButton1Down:Connect(function()
+	PetsFrame.EditName.Visible = false
 	EndState()
 end)
 
