@@ -111,6 +111,7 @@ function Paths.Initiliaze()
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
 	
 	-- Pets
+	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
 	Paths.Modules.Pets = require(script.Pets)
 end
 

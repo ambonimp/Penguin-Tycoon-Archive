@@ -84,6 +84,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Hearts = require(script.Hearts)
 	
 	-- Pets
+	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
 	Paths.Modules.Pets = require(script.Pets)
 	
 	
