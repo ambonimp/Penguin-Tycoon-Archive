@@ -163,7 +163,7 @@ Remotes.MineTeleport.OnServerInvoke = function(Client, toIsland)
 end
 
 
-if game.PlaceId == 9118461324 then
+--[[ if game.PlaceId == 9118461324 then
     task.spawn(function()
         require(game.ServerScriptService:WaitForChild("ChatServiceRunner").ChatService):RegisterProcessCommandsFunction("Commands", function(speaker, message)
             local player = game.Players[speaker]
@@ -193,6 +193,6 @@ if game.PlaceId == 9118461324 then
 
     end)
 
-end
+end *]]
 
 return Pickaxe

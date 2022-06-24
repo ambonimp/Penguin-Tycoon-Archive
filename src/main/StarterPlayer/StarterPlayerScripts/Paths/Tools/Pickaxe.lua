@@ -105,23 +105,15 @@ local function UpdateDividerText(Level)
 
             Divider.SurfaceGui.BASE.Top.Text = string.format("%s %s Ore", Remainder, PrevDetails.Ore)
         end
+
     end
+
 end
 
 local function Teleport(ToMine)
-    local Info = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-
-    local In = Services.TweenService:Create(UI.SpecialEffects.Bloom, Info, {BackgroundTransparency = 0})
-    In:Play()
-    In.Completed:Wait()
-
-    Remotes.MineTeleport:InvokeServer(ToMine)
-    Camera.CFrame = CFrame.new(Camera.CFrame.Position) * Hrp.CFrame.Rotation
-
-    local Out = Services.TweenService:Create(UI.SpecialEffects.Bloom, Info, {BackgroundTransparency = 1})
-    Out:Play()
-    Out.Completed:Wait()
-
+    Modules.UIAnimations.BlinkTransition(function()
+        Remotes.MineTeleport:InvokeServer(ToMine)
+    end, true)
 end
 
 

@@ -23,4 +23,9 @@ function Tycoon:InitializePlayer(Player)
 	Modules.Character:Spawn(Player, "Penguin")
 end
 
+for _, MinigameHandler in ipairs(script.Minigames:GetChildren()) do
+	require(MinigameHandler)
+end
+
+
 return Tycoon

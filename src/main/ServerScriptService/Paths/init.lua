@@ -74,7 +74,6 @@ function Paths.Initiliaze()
 	
 	-- Tycoon Modules
 	Paths.Modules.Tycoon = require(script.Tycoon)
-	Paths.Modules.YoutubeMinigame = require(script.Tycoon.YoutubeMinigame)
 	Paths.Modules.Initiate = require(script.Tycoon.Initiate)
 	Paths.Modules.Vehicles = require(script.Vehicles)
 	Paths.Modules.Ownership = require(script.Tycoon.Ownership)

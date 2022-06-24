@@ -205,4 +205,25 @@ function Animations:GemsChanged(Change, NewGems)
 	Template:Destroy()
 end
 
+function Animations.BlinkTransition(OnHalfPoint, AlignCamera)
+    local Info = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+
+    local In = Services.TweenService:Create(Paths.UI.SpecialEffects.Bloom, Info, {BackgroundTransparency = 0})
+    In:Play()
+    In.Completed:Wait()
+
+    OnHalfPoint()
+    if AlignCamera then
+        local Camera = workspace.Camera
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position) * Paths.Player.Character.HumanoidRootPart.CFrame.Rotation
+    end
+
+    local Out = Services.TweenService:Create(Paths.UI.SpecialEffects.Bloom, Info, {BackgroundTransparency = 1})
+    Out:Play()
+    Out.Completed:Wait()
+
+end
+
+
+
 return Animations

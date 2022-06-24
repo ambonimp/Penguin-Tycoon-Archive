@@ -51,16 +51,11 @@ local function Defaults(Player)
 		},
 
 		-- Possessions
-		["Pets"] = {
-			Equipped = nil,
-			PetsOwned = {
-			},
-			Food = {
-				--{Name = "Carrot", Amount = 4},
-			},
-			Toys = {
-				--{Name = "Plushy"},
-			},
+		["PetsData"] = {
+			Equipped = {},
+			PetsOwned = {},
+			MaxEquip = 3,
+			Unlocked = {},
 		},
 
 		["Outfits"] = {
@@ -68,7 +63,7 @@ local function Defaults(Player)
 		},
 
 		["Tools"] = {
-			["Vehicle Spawner"] = true
+			["Vehicle Spawner"] = true,
 		},
 
 		["Accessories"] = {
@@ -219,6 +214,8 @@ local function Defaults(Player)
 			Subscribers = 0,
 		},
 
+		["Military Minigame Score"] = math.huge,
+
 		["Mining"] = {
 			Level = 1,
 			Mined = {
@@ -337,14 +334,16 @@ Remotes.GetStat.OnServerInvoke = function(player, stat)
 		end
 	end
 end
-
 --- INITIALIZE PLAYER ---
 game.Players.PlayerAdded:Connect(function(Player)
+
 	local PolicyService = game:GetService("PolicyService")
+
 
 	-- Setup Data
 	PlayerData:SetupPlayerData(Player)
 	SetupNewStats(Player)
+
 
 	-- Badges
 	Modules.Badges:AwardBadge(Player.UserId, 2124902910) -- Welcome
@@ -358,12 +357,15 @@ game.Players.PlayerAdded:Connect(function(Player)
 		end
 	end)()
 
+
+
 	-- Initialize Character Functions
 	local OldChar = nil
 	Player.CharacterAdded:Connect(function(Character)
 		Modules.Character:Spawned(Player, Character, OldChar)
 		OldChar = Character
 	end)
+
 
 	-- Group reward
 	pcall(function()
@@ -391,16 +393,18 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Player:SetAttribute("Next5Gems", PlayerData.sessionData[Player.Name]["NextGemReward"])
 		Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "tycoon"
 	end]]
-
-
-	if PlayerData.sessionData[Player.Name]["Pets"].Equipped then
-		Player:SetAttribute("Pet", PlayerData.sessionData[Player.Name]["Pets"].Equipped.RealName)
-		Player:SetAttribute("PetID", PlayerData.sessionData[Player.Name]["Pets"].Equipped.ID)
-		Player:SetAttribute("PetName", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Name)
-		Player:SetAttribute("PetHunger", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Hunger)
-		Player:SetAttribute("PetEntertainment", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Entertainment)
-		Player:SetAttribute("PetHappiness", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Happiness)
+	if PlayerData.sessionData[Player.Name]["Pets"] then
+		for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets"].PetsOwned) do
+			local breed = string.split(v.RealName," ")[2]
+			PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[v.ID] = {
+				breed, v.RealName,v.Name,"LEGACY",0,{1.05,"All","Income"}
+			}
+		end
+		PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
+		PlayerData.sessionData[Player.Name]["Pets"] = nil
 	end
+
+	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip)
 
 	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
@@ -490,5 +494,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 	-- Setup Chat
 	Modules.Chat:ApplyChatTag(Player)
 end)
+
 
 return PlayerData
