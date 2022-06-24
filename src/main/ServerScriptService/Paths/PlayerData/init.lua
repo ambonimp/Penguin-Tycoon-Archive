@@ -406,8 +406,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip)
 
-	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip)
-
 	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
 		PlayerData.sessionData[Player.Name]["Spin"][1] = true
