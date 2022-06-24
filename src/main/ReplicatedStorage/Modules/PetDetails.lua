@@ -1,86 +1,87 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Assets = ReplicatedStorage:WaitForChild("Assets")
-local Pets = Assets:WaitForChild("Pets")
-local petDetails = {
-	["Cat"] = {
-		Walk = "rbxassetid://9162529784",
-		Idle = "rbxassetid://9162531527",
-		Jump = "rbxassetid://9162528680",
-		Sit = "rbxassetid://9193584042",
-		Trick = "rbxassetid://9193585338",
-		TrickSound = "rbxassetid://9230598079",
-		TrickCFrame = CFrame.Angles(0,0,0),
-		CatchCFrame = CFrame.new(0,0,0),
-		SitCFrame = CFrame.new(0,.3,0),
-		Models = {},
-		Emotes = {},
-	},
+local PetDetails = {}
 
-	["Dog"] = {
-		Walk = "rbxassetid://9183710247",
-		Idle = "rbxassetid://9183708514",
-		Jump = "rbxassetid://9183709545",
-		Sit = "rbxassetid://9193587891",
-		Trick = "rbxassetid://9193587092",
-		TrickSound = "rbxassetid://9230598153",
-		TrickCFrame = CFrame.new(0,.4,-3.75),
-		CatchCFrame = CFrame.new(0,0,0),
-		SitCFrame = CFrame.new(0,.35,0),
-		Models = {},
-		Emotes = {},
+PetDetails.Rarities = {
+    [.35] = "Common",
+    [.61] = "Common",
+    [.85] = "Rare",
+    [.94] = "Rare",
+    [.99] = "Epic",
+    [1] = "Legendary",
+}
+
+PetDetails.RarityColors = {
+    ["Common"] = Color3.fromRGB(94, 255, 0),
+    ["Rare"] = Color3.fromRGB(0, 174, 255),
+    ["Epic"] = Color3.fromRGB(247, 0, 255),
+    ["Legendary"] = Color3.fromRGB(255, 217, 0),
+    ["Mythic"] = Color3.fromRGB(224, 0, 0),
+    ["LEGACY"] = Color3.fromRGB(0, 60, 255),
+}
+
+PetDetails.Pets = {
+    [1] = {"Leafy","Default",1.05,"Fishing","Income"},
+    [2] = {"Cakku","Default",1.07,"Fishing","Income"},
+    [3] = {"Leafy","Purple",1.07,"Fishing","Income"},
+    [4] = {"Cakku","Flower",1.1,"Fishing","Income"},
+    [5] = {"Garr","Metallic",1.25,"Fishing","Income"},
+    [6] = {"Drake","Default",1.5,"Fishing","Income"},
+}
+
+PetDetails.EggNameToId = {
+    ["Island 1"] = 1,
+}
+
+PetDetails.ChanceTables = {
+    [1] = {
+        Name = "Island 1",
+        PriceGems = 50,
+        PriceRobux = 45,
+        ProductId = 1251433285,
+        Pets = {
+           {Id = 1,Percentage = .35}, --Common
+           {Id = 2,Percentage = .61}, --Common
+           {Id = 3,Percentage = .85}, --Rare
+           {Id = 4,Percentage =.94}, --Rare
+           {Id = 5,Percentage =.99}, --Epic
+           {Id = 6,Percentage = 1}, --Legendary
+        }
+    }
+}
+
+PetDetails.PetsOffset = {
+	[1] = {
+		[1] = CFrame.new(0,-2,5)
 	},
-	["Panda"] = {
-		Walk = "rbxassetid://9183752445",
-		Idle = "rbxassetid://9183750215",
-		Jump = "rbxassetid://9183748067",
-		Sit = "rbxassetid://9183751395",
-		Trick = "rbxassetid://9193553984",
-		TrickSound = "rbxassetid://9230598234",
-		TrickCFrame = CFrame.new(0,0,2),--* CFrame.Angles(0,math.rad(180),0),
-		CatchCFrame = CFrame.new(0,0,0),
-		SitCFrame = CFrame.new(0,.15,0),
-		Models = {},
-		Emotes = {},
+	[2] = {
+		[1] = CFrame.new(2.5,-2,5),
+		[2] = CFrame.new(-2.5,-2,5),
 	},
-	["Dinosaur"] = {
-		Walk = "rbxassetid://9186490286",
-		Idle = "rbxassetid://9186492591",
-		Jump = "rbxassetid://9186493831",
-		Sit = "rbxassetid://9186495121",
-		Trick = "rbxassetid://9193582369",
-		TrickSound = "rbxassetid://9230597946",
-		TrickCFrame = CFrame.new(0,-1,0),
-		CatchCFrame = CFrame.new(0,0,0),
-		SitCFrame = CFrame.new(0,.25,0),
-		Models = {},
-		Emotes = {},
+	[3] = {
+		[1] = CFrame.new(3.5,-2,5),
+		[2] = CFrame.new(0,-2,5),
+		[3] = CFrame.new(-3.5,-2,5),
 	},
-	["Rabbit"] = {
-		Walk = "rbxassetid://9224129202",
-		Idle = "rbxassetid://9224127536",
-		Jump = "rbxassetid://9224126078",
-		Sit = "rbxassetid://9224131229",
-		Trick = "rbxassetid://9224123727",
-		TrickSound = "rbxassetid://9230598331",
-		TrickCFrame = CFrame.new(0,0.75,0),
-		CatchCFrame = CFrame.new(0,0.25,2.5),
-		SitCFrame = CFrame.new(0,0.35,0),
-		Models = {},
-		Emotes = {},
+	[4] = {
+		[1] = CFrame.new(2.5,-2,5),
+		[2] = CFrame.new(-2.5,-2,5),
+		[3] = CFrame.new(2.5,-2,9.5),
+		[4] = CFrame.new(-2.5,-2,9.5),
 	},
-	["Unicorn"] = {
-		Walk = "rbxassetid://9229614636",
-		Idle = "rbxassetid://9229617324",
-		Jump = "rbxassetid://9229626165",
-		Sit = "rbxassetid://9229620236",
-		Trick = "rbxassetid://9229623258",
-		TrickSound = "rbxassetid://9230598032",
-		TrickCFrame = CFrame.new(0,0.1,0),
-		CatchCFrame = CFrame.new(0,0.25,2.5),
-		SitCFrame = CFrame.new(0,.335,0),
-		Models = {},
-		Emotes = {},
+	[5] = {
+		[1] = CFrame.new(3.5,-2,5),
+		[2] = CFrame.new(0,-2,5),
+		[3] = CFrame.new(-3.5,-2,5),
+		[4] = CFrame.new(-2.5,-2,9.5),
+		[5] = CFrame.new(2.5,-2,9.5),
+	},
+	[6] = {
+		[1] = CFrame.new(3.5,-2,5),
+		[2] = CFrame.new(0,-2,5),
+		[3] = CFrame.new(-3.5,-2,5),
+		[4] = CFrame.new(3.5,-2,9.5),
+		[5] = CFrame.new(0,-2,9.5),
+		[6] = CFrame.new(-3.5,-2,9.5),
 	},
 }
 
-return petDetails
+return PetDetails

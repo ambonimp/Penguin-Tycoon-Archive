@@ -36,7 +36,7 @@ local TycoonProducts = {
 }
 
 local EggProducts = {
-	[1251433285]  = "Egg1"
+	[1251433285]  = 1,
 }
 
 Services.MPService.PromptProductPurchaseFinished:Connect(function(id, assetId, isPurchased)
@@ -105,7 +105,7 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 			Products:PenguinUpgradePurchased(Player,product == 1261487367)
 			
 		elseif EggProducts[product] then
-			Modules.Pets.BuyPet(Player,EggProducts[product],true)
+			Modules.Pets.BuyRobuxPet(Player,EggProducts[product])
 		
 		--compass
 		elseif product == 1260546076 then

@@ -316,7 +316,6 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 				sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)] += 1
 				returnData.Amount = sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)]
 			end
-
 			modules.Income:AddMoney(player, returnData.Worth)
 			--end
 
@@ -375,8 +374,12 @@ function Main(player, hitPosition, reroll, AFKFishing)
 		
 			if data.LootInfo["IncomeMultiplier"] then
 				data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
+				
+				
 				local old = data.Worth
 				if old ~= 0 then
+					local mult = paths.Modules.Pets.getBonus(player,"Fishing","Income")
+					data.Worth = data.Worth * mult
 					data.Worth = math.ceil(data.Worth * multiplier)
 				end
 			end
@@ -397,6 +400,8 @@ function Main(player, hitPosition, reroll, AFKFishing)
 			data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
 			local old = data.Worth
 			if old ~= 0 then
+				local mult = paths.Modules.Pets.getBonus(player,"Fishing","Income")
+				data.Worth = data.Worth * mult
 				data.Worth = math.ceil(data.Worth * multiplier)
 			end
 		end

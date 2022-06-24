@@ -99,6 +99,7 @@ function Paths.Initiliaze()
 	Paths.Modules.PoolSpawner = require(script.Tycoon.Fishing.PoolSpawner)
 
 	-- Pets
+	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
 	Paths.Modules.Pets = require(script.Pets)
 	
 	--- Other Variables ---
