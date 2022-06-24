@@ -66,6 +66,7 @@ Accessories.Unlockables = {
 	["Witch#1"] = "Witch Hat";
 	["Shroom#1"] = "Mushroom Hat";
 	["Nurse#1"] = "Bowl Hat";
+	["Soldier#1"] = "Beret";
 	["Youtuber#1"] = "Cap";
 	-- Pick-up Unlockables
 	["Bunny Ears"] = true;
@@ -101,7 +102,8 @@ Accessories.All = {
 	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false};
 	["Bowl Hat"] = {Rarity = "Free", IsForSale = false};
 	["Cap"] = {Rarity = "Free", IsForSale = false};
-
+	["Beret"] = {Rarity = "Free", IsForSale = false};
+	
 	--Fish Rewards
 	["Boot Hat"] = {Rarity = "Free", IsForSale = false};
 	["Bottle Hat"] = {Rarity = "Free", IsForSale = false};

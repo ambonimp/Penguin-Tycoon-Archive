@@ -34,10 +34,20 @@ local TycoonProducts = {
 	[1254284581] = "Table#2",[1255289603] = "Mammoth#1",[1255290553] = "Skull#1",[1259073561] = "Witch's Garden#1",[1262257357] = "Helicopter#1",[1269810293] = "Icons#1",
 	[1269812728] = "Car#1",
 	[1274238094] = "Big Skull#1",
+	[1276711866] = "Helicopter#2"
 }
 
 local EggProducts = {
-	[1251433285]  = "Egg1"
+	[1276705832] = 1,
+	[1276705868] = 2,
+	[1276720361] = 3,
+	[1276721630] = 4,
+
+	[1276753445] = 5,
+	[1276753534] = 6,
+	[1276753571] = 7,
+	[1276753612] = 8,
+
 }
 
 Services.MPService.PromptProductPurchaseFinished:Connect(function(id, assetId, isPurchased)
@@ -106,7 +116,7 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 			Products:PenguinUpgradePurchased(Player,product == 1261487367)
 			
 		elseif EggProducts[product] then
-			Modules.Pets.BuyPet(Player,EggProducts[product],true)
+			Modules.Pets.BuyRobuxPet(Player,EggProducts[product])
 		
 		--compass
 		elseif product == 1260546076 then

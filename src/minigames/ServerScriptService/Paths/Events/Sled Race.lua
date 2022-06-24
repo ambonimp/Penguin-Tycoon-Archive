@@ -195,19 +195,19 @@ function SledRace:StartEvent()
 
 			-- Anti exploit
 			local Infractions = SpeedInfractions[Client]
-			local InvalidScore = true
+			local InvalidScore = false
 			if #Infractions > 3 then
 				InvalidScore = true
 			else
 				for _, Deviation in ipairs(Infractions) do
-					if Deviation > 300 then
+					if Deviation > 500 then
 						InvalidScore = true
 					end
 				end
 			end
 
 			if InvalidScore or Time <= 35 then
-				warn(Client, "Score invalidated", #Infractions)
+				warn(Client, "Score invalidated", #Infractions, Time)
 				return
 			end
 

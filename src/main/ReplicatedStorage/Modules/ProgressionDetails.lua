@@ -29,4 +29,5 @@ return {
     {Object = "New Island!#25", Icon = "rbxassetid://9920784062"}, -- Cavemen
     {Object = "New Island!#26", Icon = "rbxassetid://9920784747"}, -- Enchanted Mushroom
     {Object = "New Island!#29", Icon = "rbxassetid://9936592115"}, -- Hospital
+    {Object = "New Island!#30", Icon = "rbxassetid://10011061266"}, -- Military
 }

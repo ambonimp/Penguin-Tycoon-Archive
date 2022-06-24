@@ -19,7 +19,6 @@ Penguins.Penguins = {}
 --- Setting Up Buttons (Proximity Prompts) ---
 function Penguins:SetupPenguin(Penguin)
 	local Info = Penguin:WaitForChild("Info", 3)
-
 	if Info and not Penguins.Penguins[Penguin] then
 		local ProximityPrompt = Info:WaitForChild("ProximityPrompt", 3)
 

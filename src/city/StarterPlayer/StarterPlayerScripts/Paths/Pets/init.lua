@@ -1,997 +1,1063 @@
---Handles all things pets on client
-local Pets = {}
-local MarketplaceService = game:GetService("MarketplaceService")
-local Paths = require(script.Parent)
-local ScriptModules = Paths.Modules
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-local PathfindingService = game:GetService("PathfindingService")
 local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Modules = ReplicatedStorage:WaitForChild("Modules")
-local Assets = ReplicatedStorage:WaitForChild("Assets")
-local Mouse = Paths.Player:GetMouse()
+local Pets = {}
+local Paths = require(script.Parent)
 
-local WorldPets = workspace:WaitForChild("WorldPets")
-local Dependency = Paths.Dependency:FindFirstChild(script.Name)
+local Services = Paths.Services
+local Modules = Paths.Modules
+local Remotes = Paths.Remotes
+local UI = Paths.UI
 
-local PetsFolder = workspace:WaitForChild("Pets")
-local PetsAssets = Assets:WaitForChild("Pets")
-local PetDetails = require(Modules:WaitForChild("PetDetails"))
-local PetModels = {}
-local LastPetStats = {}
-local DidAdd = {}
+local Dependency = Paths.Dependency:WaitForChild("Pets")
 
-local PetUI = require(script:WaitForChild("PetUI"))
-local PartTweenInfo = TweenInfo.new(.15,Enum.EasingStyle.Linear,Enum.EasingDirection.In)
+local AllAudio = Paths.Player.PlayerScripts:WaitForChild("Audio")
+local ButtonClick = Modules.Audio:GetSound(Modules.Audio.BUTTON_CLICKED, AllAudio, 0.2)
+local LocalPlayer = Paths.Player
+local PetDetails = Modules.PetDetails
+local TweenService = Services.TweenService
+local Assets = Services.RStorage.Assets
+local PetsAssets = Assets.Pets
+local PetsFolder = workspace.Pets
+local PetSelected = UI.Full.PetSelected
+local PetsFrame = UI.Center.Pets
+local SelectedPetDetails = nil
+local Example = Dependency.PetTemplate
+local CurrentEggLoaded = nil
+local BuyEgg = UI.Center.BuyEgg
+--local IndexPage = UI.Center.Index.Sections.Pets.Holder
+local PetAdoptionUI = UI.Full.PetAdoption
 
-local isAdopting = false
+local Deleting = {}
+local State = "None"
+local EditID = nil
+local info = TweenInfo.new(.125)
+local Loaded = {}
+local PetAnims = {}  -- Equipped pets loaded animations
+local TweenValues = {} --Used for tweening the pets smoothly
+local clickdb = false
+local openingEgg = false
+local MergeSelected = {}
+local RealData = nil
+local PromptObj = nil
 
-local testing = false
-
-local RenderDistance = 1000 --distance in studs to render movement of other players pets
-local radius = 3
-local fullCircle = 2 * math.pi
-
-function newPart(cframe)
-	local p = Instance.new("Part")
-	p.Anchored = true
-	p.CanCollide = false
-	p.CanQuery = false
-	p.Transparency = .5
-	p.Size = Vector3.new(.1,.1,.1)
-	p.CFrame = cframe 
-	p.Parent = workspace
-end
-
-function resizeModel(model, a)
-	local base = model.PrimaryPart
-	for _, part in pairs(model:GetDescendants()) do
-		if part:IsA("BasePart") then
-			part.Position = base.Position:Lerp(part.Position, a)
-			part.Size *= a
-			if part:FindFirstChildOfClass("SpecialMesh") then
-				part:FindFirstChildOfClass("SpecialMesh").Scale *= a
-			end
+function tweenModel(model,cf)
+	local c = TweenValues[model] or Instance.new("CFrameValue")
+	TweenValues[model] = c
+	c.Value = model:GetPrimaryPartCFrame()
+	c:GetPropertyChangedSignal("Value"):Connect(function()
+		if model and model.PrimaryPart then
+			model:SetPrimaryPartCFrame(c.Value)
+		else
+			c:Destroy()
 		end
-	end
-end
-
-function tweenModelSize(model, duration, factor, easingStyle, easingDirection)
-	local s = factor - 1
-	local i = 0
-	local oldAlpha = 0
-	while i < 1 do
-		local dt = RunService.Heartbeat:Wait()
-		i = math.min(i + dt/duration, 1)
-		local alpha = TweenService:GetValue(i, easingStyle, easingDirection)
-		resizeModel(model, (alpha*s + 1)/(oldAlpha*s + 1))
-		oldAlpha = alpha
+	end)
+	if c then
+		local tween = Services.TweenService:Create(c,info,{Value = cf})
+		tween:Play()
 	end
 end
 
-function getBone(Part,BoneName)
-	for i,v in pairs (Part:GetDescendants()) do
-		if v:IsA("Bone") and string.lower(v.Name) == string.lower(BoneName) then
-			return v
-		end
-	end
-	return nil
+function getDis(Model1,Model2)
+	if Model1 == nil or Model2 == nil then return 0 end
+	if Model1.PrimaryPart == nil or Model2.PrimaryPart == nil then return 0 end
+	return (Model1.PrimaryPart.Position-Model2.PrimaryPart.Position).magnitude
 end
 
---Raycast behind player to find spawn position of pet
-function getSpawnPosition(Character,distance,dist2) 
-	local rayOrigin
-	if type(Character) == "userdata" and Character.PrimaryPart == nil then
-		repeat RunService.RenderStepped:wait() until Character.PrimaryPart --i hate having to do this
-	end
-	local ignore = {workspace.Pets}
-	for i,v in pairs (game.Players:GetPlayers()) do
-		if v.Character then
-			table.insert(ignore,v)
-		end
-	end
-	if type(Character) == "userdata" then
-		local cf = Character:GetPrimaryPartCFrame() * CFrame.new(dist2 or 4,0,distance)
-		rayOrigin = cf.Position
-	elseif type(Character) == "vector" then
-		rayOrigin = Character
-	end
-	
-	local rayDirection = Vector3.new(0, -1000, 0)
-	
-	local raycastParams = RaycastParams.new()
-	raycastParams.FilterDescendantsInstances = ignore
-	raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-	local raycastResult = workspace:Raycast(rayOrigin, rayDirection, raycastParams)
-	if testing and raycastResult then
-		newPart(CFrame.new(raycastResult.Position))
-	end
-	return raycastResult
-end
+function loadPlayer(Player)
+	if Loaded[Player.Name] then return end
+	Loaded[Player.Name] = true
+	local PetData = Remotes.PetsRemote:InvokeServer(Player)
+	local PetTable = {}
 
-local function IsBehind(Part1,Part2)
-	local point1,point2 = (Part1.CFrame + Part1.CFrame.LookVector),(Part1.CFrame + Part1.CFrame.LookVector*-1)
-	local mag1,mag2 = (point1.Position-Part2.Position).Magnitude,(point2.Position-Part2.Position).Magnitude
-	return not (mag1 <= mag2)
-end
+	local function EquipPet(PetData,id)
+		if Player.Character == nil or Player.Character:FindFirstChild(id.."_Pet") then return end
+		local PetModel = nil
+		local PetName = PetData[1]
+		local PetKind = PetData[2]
+		local newPart = Instance.new("Part")
+		newPart.Transparency = 1
+		newPart.CanCollide = false
+		newPart.CanQuery = false
+		newPart.Anchored = true
 
-function HandleServerPet(PetModel)
-	local interacting = false
-	local PetUI1 = Paths.Dependency.PetUI.PetUI:Clone()
-	PetUI1.Parent =  Paths.Player.PlayerGui
-	PetUI1.Adornee = PetModel.PrimaryPart
-	PetUI1.Interact.Stats.Lock.Visible = true
-	PetUI1.Interact.Catch.Lock.Visible = true
-	local emote = Paths.Dependency.PetUI.Emote:Clone()
-	emote.Parent =  Paths.Player.PlayerGui
-	emote.Adornee = PetModel.PrimaryPart
-
-	local PetClick = Paths.Dependency.PetUI.PetClick:Clone()
-	PetClick.Parent =  Paths.Player.PlayerGui
-	PetClick.Adornee = PetModel.PrimaryPart
-	local lastOpened = tick()-10
-	local justclosed = false
-	local function openInteract()
-		if tick()-lastOpened < 4.8 then return end
-		lastOpened = tick()
-		ScriptModules.Buttons:UIOn(PetUI1.Interact,false,.1)
-		PetClick.Enabled = false
-		task.wait(3)
-		if PetUI1 and PetUI1:FindFirstChild("Interact") and PetUI1.Interact.Visible and tick()-lastOpened >= 2.8 then
-			ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
-		end
-	end
-
-	local ButtonClick = ScriptModules.Audio:GetSound(ScriptModules.Audio.BUTTON_CLICKED, Paths.Player.PlayerScripts:WaitForChild("Audio"), 0.2)
-	
-	for i, v in pairs(PetClick:GetDescendants()) do
-		if string.match(v.ClassName, "Button") then
-			v.MouseButton1Down:Connect(function()
-				ButtonClick:Play()
-			end)
-		end
-	end
-	for i, v in pairs(PetUI1:GetDescendants()) do
-		if string.match(v.ClassName, "Button") then
-			v.MouseButton1Down:Connect(function()
-				ButtonClick:Play()
-			end)
-		end
-	end
-
-	PetClick.Interact.MouseButton1Click:Connect(function()
-		openInteract()
-	end)
-
-	PetUI1.Interact.Feed.MouseButton1Click:Connect(function()
-		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
-		ReplicatedStorage.Remotes.WorldPet:FireServer(PetModel,"Eat")
-	end)
-
-	PetUI1.Interact.Trick.MouseButton1Click:Connect(function()
-		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
-		ReplicatedStorage.Remotes.WorldPet:FireServer(PetModel,"Trick")
-	end)
-
-	PetUI1.Interact.Close.MouseButton1Click:Connect(function()
-		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
-		wait(.1)
-		lastOpened = tick()-5
-	end)
-
-	PetUI1.Interact.Catch.MouseButton1Down:Connect(function()
-		PetUI.LoadEgg("Egg1",Paths)
-		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
-		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
-		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
-	end)
-
-	PetUI1.Interact.Stats.MouseButton1Down:Connect(function()
-		PetUI.LoadEgg("Egg1",Paths)
-		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
-		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
-		ScriptModules.Buttons:UIOff(PetUI1.Interact,false,.1)
-	end)
-
-	local lastTurnedOn = tick()
-	UserInputService.InputBegan:Connect(function(Input,GPE)
-		if GPE then return end
-		if Mouse.Target and interacting == false then
-			if Input.UserInputType == Enum.UserInputType.Touch then
-				if Mouse.Target:IsDescendantOf(PetModel) and PetUI1.Interact.Visible == false then
-					openInteract()
-				end
-			end
-		end
-	end)
-	local lastInput = tick()
-	RunService:BindToRenderStep("PetInteractUIServer"..PetModel.Name,Enum.RenderPriority.Last.Value,function()
-		local Input = justclosed or UserInputService:GetLastInputType()
-		if tick()-lastInput<.15 then return end
-		if Mouse.Target and interacting == false then
-			if Input ~= Enum.UserInputType.Touch then
-				if Mouse.Target:IsDescendantOf(PetModel) then
-					interacting = false
-					PetClick.Enabled = true
-				else
-					PetClick.Enabled = false
-				end
-			end
-		end
-		if interacting then
-			PetClick.Enabled = false
-		end
-	end)
-
-end
-
-for i,pet in pairs (WorldPets:GetChildren()) do
-	HandleServerPet(pet)
-end
-
---Handles pet removing and equipping 
-function Pets.addPetToPlayer(Player)
-	if DidAdd[Player] then return end
-	DidAdd[Player] = true
-	if Player.Character == nil then
-		repeat RunService.RenderStepped:wait() until Player.Character --i hate having to do this
-	end
-	local Character = Player.Character
-	local Pet = nil -- Pet[1] pet model, Pet[2] owner character Pet[3] tracking part Pet[4] - [6] pet walk, idle anim
-	local CurrentSpawn = 0
-	local Feeding = false
-	local Throwing = false
-	--remove unneccessary pets from client processing
-	local function removePet()
-		if Pet then
-			if Pet[1] then
-				Pet[1]:Destroy()
-			end
-			if Pet[3] then
-				Pet[3]:Destroy()
-			end
-			if Pet[9] then
-				Pet[9]:Disconnect()
-			end
-			if Pet[7] then
-				Pet[7]:Destroy()
-			end
-			if Pet[8] then
-				Pet[8]:Destroy()
-			end
-			if Pet[18] then
-				Pet[18]:Disconnect()
-			end
-			pcall(function()
-				PetUI.CleanConnections()
-			end)
-			RunService:UnbindFromRenderStep("PetInteractUI")
-			if table.find(PetModels,Pet) then
-				table.remove(PetModels,table.find(PetModels,Pet))
-			end
-		end
-	end
-	
-	local function sitPet()
-		Pet[12]:Play(.25)
-		task.wait(Pet[12].Length*.75)
-		Pet[12]:AdjustSpeed(0)
-	end
-	
-	local function playerInBoat()
-		if Character and Character:FindFirstChild("Humanoid") and Character.Humanoid.SeatPart and (string.find(string.lower(Character.Humanoid.SeatPart.Parent.Name),"boat") or string.find(string.lower(Character.Humanoid.SeatPart.Parent.Name),"raft")) then
-			Character:SetAttribute("InBoat",false)
-			return true
-		elseif Character and Character:FindFirstChild("Humanoid") then
-			local result = getSpawnPosition(Character,0,0)
-			if result and result.Instance then
-				local name = result.Instance.Parent.Name
-				local name2 = result.Instance.Parent.Parent.Name
-				Character:SetAttribute("InBoat",true)
-				if (string.find(string.lower(name),"boat") or string.find(string.lower(name),"raft")) or (string.find(string.lower(name2),"boat") or string.find(string.lower(name2),"raft")) then
-					return true	
-				end
-			end
-		end
-		Character:SetAttribute("InBoat",false)
-		return false
-	end
-	
-	local function resetPetAnimation()
-		spawn(function()
-			repeat 
-				ReplicatedStorage.Remotes.ResetPetAnimation:FireServer()
-				wait(.75)
-			until game.Players.LocalPlayer.Character == nil or game.Players.LocalPlayer.Character:GetAttribute("PetAnimation") == "none"
-			Pet[1]:SetAttribute("State","Idle")
-			Pet[1]:SetAttribute("Status","Idling")
-		end)
-	end
-	
-	--handles penguin throw animation and moving pet to object thrown
-	local function ThrowFunction(toy,amount)
-		if Pet then
-			if Throwing then return end
-			local t=  tick()
-			Throwing = true
-			if Pet[12].IsPlaying then
-				Pet[12]:Stop()
-			end
-			local Pet = Pet
-			local HeadBone = getBone(Pet[1].PrimaryPart,"Mouth")
-			local headCF = Pet[14].CatchCFrame
-			local throwAnim = ReplicatedStorage.Animations.ThrowToy
-			local loadedAnim = Player.Character.Humanoid.Animator:LoadAnimation(throwAnim)
-			local model = Assets.Toys:FindFirstChild(toy):Clone()
-			for i,v in pairs (model:GetDescendants()) do
+		local Constraint1 = Instance.new("AlignPosition")
+		local Constraint2 = Instance.new("AlignOrientation")
+		Constraint1.MaxVelocity = 50
+		Constraint1.Responsiveness = 100
+		Constraint2.RigidityEnabled = true
+		local att1 = Instance.new("Attachment")
+		local att2 = Instance.new("Attachment")
+		if PetData[4] == "LEGACY" then
+			PetModel = PetsAssets:FindFirstChild(PetName):FindFirstChild(PetKind):Clone()
+			for i,v in PetModel:GetChildren() do
 				if v:IsA("BasePart") then
 					v.CanCollide = false
+					v.Anchored = false
+					v.Massless = true
 				end
 			end
-			local throw = Instance.new("Sound")
-			throw.RollOffMaxDistance = 35
-			throw.RollOffMinDistance = 10
-			throw.SoundId = "rbxassetid://9221813109"
-			throw.Parent = model.PrimaryPart
-			throw.Volume = .5
-			model:SetPrimaryPartCFrame(Player.Character["Arm L"].CFrame*CFrame.new(-.5,-1.75,0))
-			model.Parent = workspace.Pets
-			local weld = Instance.new("WeldConstraint")
-			weld.Part0 = Player.Character["Arm L"]
-			weld.Part1 = model.PrimaryPart
-			weld.Parent = model.PrimaryPart
-			local con
-			con = loadedAnim:GetMarkerReachedSignal("THROW"):Connect(function()
-				local s,m = pcall(function()
-					weld:Destroy()
-					if IsBehind(Character.PrimaryPart,Pet[3]) then
-						model.PrimaryPart.Velocity = (Character.PrimaryPart.CFrame).LookVector * math.random(15,40)
-					else
-						local t = 1
-						local g = Vector3.new(0, -game.Workspace.Gravity, 0);
-						local x0 = model.PrimaryPart.CFrame
-						local p =(Character.PrimaryPart.CFrame*CFrame.new(math.random(-10,10),0,math.random(-20,-14))).Position
-						local v0 = (p - x0.Position - .2*g*t*t)/t;
-						
-						model.PrimaryPart.Velocity = v0 
-						
-					end
-					throw:Play()
-					for i,v in pairs (model:GetDescendants()) do
-						if v:IsA("BasePart") then
-							v.CanCollide = true
-						end
-					end
-					wait(1)
-					model.PrimaryPart.Anchored = true
-					for i,v in pairs (model:GetDescendants()) do
-						if v:IsA("BasePart") then
-							v.CanCollide = false
-						end
-					end
-					local ray = Ray.new(Character.PrimaryPart.Position, Character.PrimaryPart.CFrame:vectorToWorldSpace(Vector3.new(0, -100, 0)) )
-					local hit, position, normal, getPos = workspace:FindPartOnRay(ray,Character)
-					if getPos == nil or (getPos) == Enum.Material.Water or (getPos) == Enum.Material.Sand or (getPos) == Enum.Material.Air or (getPos) == nil  then
-						wait(2)
-						resetPetAnimation()
-						model:Destroy()
-						con:Disconnect()
-						return
-					end
-					Pet[5]:Stop(.25)
-					Pet[4]:Play()
-					local lastPoint = nil
-					local ypos = Pet[3].Position.Y
-					
-					if (Pet[3].Position-Character.PrimaryPart.Position).magnitude < 8 and IsBehind(Character.PrimaryPart,Pet[3]) then
-						local neg = math.random(1,2) == 1 and -1 or 1
-						local pos = (Character.PrimaryPart.CFrame*CFrame.new(math.random(3,7)*neg,0,0))
-						local tween = TweenService:Create(Pet[3],TweenInfo.new(.15,Enum.EasingStyle.Linear,Enum.EasingDirection.In),{
-							CFrame = CFrame.new(Pet[3].Position,Vector3.new(pos.X,ypos,pos.Z)) --* CFrame.new(0,0,-2)
-						})
-						tween:Play()
-						wait(.15)
-						pos = Vector3.new(pos.X,ypos,pos.Z)
-						local rotation = Pet[3].CFrame - Pet[3].Position
-						local tween = TweenService:Create(Pet[3],TweenInfo.new(.5,Enum.EasingStyle.Linear,Enum.EasingDirection.In),{
-							CFrame = CFrame.new(pos)* rotation
-						})
-						tween:Play()
-						wait(.4)
-					end
-					local tween = TweenService:Create(Pet[3],TweenInfo.new(.15,Enum.EasingStyle.Linear,Enum.EasingDirection.In),{
-						CFrame = CFrame.new(Pet[3].Position,Vector3.new(model.PrimaryPart.Position.X,ypos,model.PrimaryPart.Position.Z)) --* CFrame.new(0,0,-2)
-					})
-					tween:Play()
-					wait(.15)
-					
-					local pos = (model.PrimaryPart.CFrame*CFrame.new(0,0,-1)).Position
-					pos = Vector3.new(pos.X,ypos,pos.Z)
-					local rotation = Pet[3].CFrame - Pet[3].Position
-					local tween = TweenService:Create(Pet[3],TweenInfo.new(1.5,Enum.EasingStyle.Linear,Enum.EasingDirection.In),{
-						CFrame = CFrame.new(pos) * rotation --* CFrame.new(0,0,-2)
-					})
-					tween:Play()
-					wait(1.5)
-					local att = Instance.new("Attachment")
-					att.Parent = model.PrimaryPart
-					local weld = Instance.new("RigidConstraint")
-					weld.DestructionEnabled	= false
-					weld.Attachment0 = HeadBone
-					model.PrimaryPart.Anchored = false
-					weld.Attachment1 = att
-					weld.Parent = model.PrimaryPart
-					model:SetPrimaryPartCFrame(HeadBone.TransformedWorldCFrame * headCF)
-					local tween = TweenService:Create(Pet[3],TweenInfo.new(.15,Enum.EasingStyle.Linear,Enum.EasingDirection.In),{
-						CFrame = CFrame.new(Pet[3].Position,Vector3.new(Character.PrimaryPart.Position.X,ypos,Character.PrimaryPart.Position.Z)) --* CFrame.new(0,0,-2)
-					})
-					tween:Play()
-					wait(.15)
-					RunService:BindToRenderStep("LookAtPlayer"..Player.Name,Enum.RenderPriority.Last.Value,function()
-						local pos = getSpawnPosition(Character,-1.5).Position
-						pos = Vector3.new(pos.X,ypos,pos.Z)
-						local cfRot = CFrame.new(Pet[3].Position,Vector3.new(Character.PrimaryPart.Position.X,ypos,Character.PrimaryPart.Position.Z))-Pet[3].Position
-						local tween = TweenService:Create(Pet[3],TweenInfo.new(.5,Enum.EasingStyle.Linear,Enum.EasingDirection.In),{
-							CFrame = CFrame.new(pos) * cfRot
-						})
-						tween:Play()
-					end)
-					wait(1.5)
-					Pet[4]:Stop(.25)
-					Pet[5]:Play(.25)
-					RunService:UnbindFromRenderStep("LookAtPlayer"..Player.Name)
-					wait(2)
-					model:Destroy()
-					if Player == game.Players.LocalPlayer then
-						resetPetAnimation()
-					end
-					if Pet[2]:FindFirstChild("Humanoid") and Pet[2].Humanoid:GetState() == Enum.HumanoidStateType.Seated then
-						sitPet()
-					end
-					Throwing = false
-					con:Disconnect()
-					Pet[1]:SetAttribute("State","Idle")
-					Pet[1]:SetAttribute("Status","Idling")
-				end)
-				if s == false then
-					warn(m)
-					RunService:UnbindFromRenderStep("LookAtPlayer"..Player.Name)
-					if model then
-						model:Destroy()
-					end
-					if Player == game.Players.LocalPlayer then
-						resetPetAnimation()
-					end
-					Throwing = false
-					con:Disconnect()
-					Pet[1]:SetAttribute("State","Idle")
-					Pet[1]:SetAttribute("Status","Idling")
-				end
-			end)
 			
-			loadedAnim:Play()
-		end
-	end
-	
-	--handles penguin feed animation and hearts
-	local function FeedFunction(food,amount)
-		if Pet then
-			if Feeding then return end
-			Feeding = true
-			if Pet[12].IsPlaying then
-				Pet[12]:Stop()
-			end
-			local Pet = Pet
-			local foodModel
-			local heart
-			local s,m = pcall(function()
-				if Player == game.Players.LocalPlayer then
-					local tween = TweenService:Create(Character.PrimaryPart,TweenInfo.new(.5,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{
-						CFrame = CFrame.new(Character.PrimaryPart.Position,Vector3.new(Pet[1].PrimaryPart.Position.X,Character.PrimaryPart.Position.Y,Pet[1].PrimaryPart.Position.Z))
-					})
-					tween:Play()
-					local tween2 = TweenService:Create(Pet[3],TweenInfo.new(.5,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{
-						CFrame = CFrame.new(Pet[3].Position,Vector3.new(Character.PrimaryPart.Position.X,Pet[3].Position.Y,Character.PrimaryPart.Position.Z))
-					})
-					tween2:Play()
-					wait(.5)
-					Paths.Modules.Emotes:PlayEmote(8210287558)
-				end
-				foodModel = Assets.Foods:FindFirstChild(food):Clone()
-				local rot1 = math.random(-360,360)
-				local rot2 = math.random(-360,360)
-				local rot3 = math.random(-360,360)
-				foodModel:SetPrimaryPartCFrame((Pet[1].PrimaryPart.CFrame*CFrame.Angles(math.rad(rot1),math.rad(rot2),math.rad(rot3)))+Vector3.new(0,3,0))
-				local pos = foodModel:GetPrimaryPartCFrame()
-				resizeModel(foodModel,.01)
-				RunService:BindToRenderStep("foodRotate"..Player.Name,Enum.RenderPriority.Last.Value,function()
-					rot1 += 1
-					rot2 += 1
-					rot3 += 1
-					foodModel:SetPrimaryPartCFrame(pos*CFrame.Angles(math.rad(rot1),math.rad(rot2),math.rad(rot3)))
-				end)
+			att1.Parent = PetModel.PrimaryPart
+			att2.Parent = newPart
 
-				foodModel.Parent = PetsFolder
-				if Pet and Pet[3] then
-					tweenModelSize(foodModel,.8,75,Enum.EasingStyle.Bounce,Enum.EasingDirection.Out)
-					local tween = TweenService:Create(foodModel.PrimaryPart,TweenInfo.new(1.35,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{
-						CFrame = Pet[3].CFrame
-					})
-					spawn(function()
-						wait(.25)
-						tweenModelSize(foodModel,.45,.01,Enum.EasingStyle.Quad,Enum.EasingDirection.In)
-						foodModel:Destroy()
-						RunService:UnbindFromRenderStep("foodRotate"..Player.Name)
-					end)
+			Constraint1.Attachment0 = att1
+			Constraint1.Attachment1 = att2
+			Constraint2.Attachment0 = att1
+			Constraint2.Attachment1 = att2
 
-					if Pet and Pet[6] then
-						tween:Play()
-						Pet[6]:Play()
-						Pet[16]["Eat"]:Play()
-						heart = Assets.Hearts:Clone()
-						heart.Size = Pet[1].PrimaryPart.Size
-						heart.CFrame = Pet[1].PrimaryPart.CFrame
-						heart.Parent = workspace.Pets
-						wait(Pet[6].Length*.9)
-						Pet[6]:Play()
-						wait(Pet[6].Length*.9)
-						heart:Destroy()
-						if Player == game.Players.LocalPlayer then
-							resetPetAnimation()
-						end
-						if Pet[2]:FindFirstChild("Humanoid") and Pet[2].Humanoid:GetState() == Enum.HumanoidStateType.Seated then
-							sitPet()
-						end
-						Feeding = false
-						Pet[1]:SetAttribute("State","Idle")
-						Pet[1]:SetAttribute("Status","Idling")
-					end
-				end
-			end)
-			if s == false then
-				warn(m)
-				Feeding = false
-				if Player == game.Players.LocalPlayer then
-					resetPetAnimation()
-				end
-				if foodModel then
-					foodModel:Destroy()
-				end
-				if heart then
-					heart:Destroy()
-				end
-				Pet[1]:SetAttribute("State","Idle")
-				Pet[1]:SetAttribute("Status","Idling")
-			end
-		end
-	end
-	
-	local function NewPet()
-		removePet()
-		if Player:GetAttribute("Pet") and Player:GetAttribute("Pet") ~= "none" then --double check the player has a pet equipped. only changed by server
-			Paths.UI.Center.Pets.Certificate.Visible = true
-			local spawn_ = CurrentSpawn
-			if Player ~= game.Players.LocalPlayer and not (Player and Player.Character and Player.Character.PrimaryPart and (Player.Character.PrimaryPart.Position-game.Players.LocalPlayer.Character.PrimaryPart.Position).magnitude < 100 ) then
-				repeat wait(5) until (Player and Player.Character and Player.Character.PrimaryPart and (Player.Character.PrimaryPart.Position-game.Players.LocalPlayer.Character.PrimaryPart.Position).magnitude < 100) or spawn_ ~= CurrentSpawn 
-			end
-			if spawn_ ~= CurrentSpawn then return end
-			local PetName = Player:GetAttribute("Pet")
-			Pet = {PetsAssets:WaitForChild(PetName):Clone(),Character} -- [1] = pet model, [2] = character of player, [3] = part that follows player used to move the pet, [4] = walk anim, [5] = idle anim, [6] = jump anim
-			local spawnPos = getSpawnPosition(Character,-1.5) 
-			if spawnPos then
-				if Player == game.Players.LocalPlayer then
-					resetPetAnimation()
-				end
-				local pos = spawnPos.Position 
-				local height = (pos.Y  + Pet[1]:GetExtentsSize().Y/2) * .8
-				local headBone = getBone(Pet[1].PrimaryPart,"Mouth")
-				
-				local PetAttachment = Instance.new("Attachment",Pet[1].PrimaryPart)
-				PetAttachment.Name = "PetAttachment"
-				
-				local newAlignPosition = Instance.new("AlignPosition",Pet[1].PrimaryPart)
-				local newAlignOrientation = Instance.new("AlignOrientation",Pet[1].PrimaryPart)
-				newAlignPosition.MaxForce = 100000
-				newAlignPosition.Responsiveness = 25
-				newAlignOrientation.MaxTorque = 10000
-				newAlignOrientation.Responsiveness = 15
-				
-				newAlignPosition.Attachment0 = PetAttachment
-				newAlignOrientation.Attachment0 = PetAttachment
-				
-				--Create part that follows player, used for moving the pet smoothly
-				Pet[3] = Instance.new("Part")
-				Pet[3].CanCollide = false
-				Pet[3].Transparency = 1
-				Pet[3].CFrame = CFrame.new(Vector3.new(pos.X ,height,pos.Z),Vector3.new(Character.PrimaryPart.Position.X,height,Character.PrimaryPart.Position.Z))
-				Pet[1]:SetPrimaryPartCFrame(Pet[3].CFrame)
-				Pet[3].Anchored = true
-				local Attachment = Instance.new("Attachment")
-				Attachment.Parent = Pet[3]
-				
-				Pet[3].Parent = PetsFolder
-				Pet[1].Parent = PetsFolder
-				
-				Pet[1].PrimaryPart.AlignOrientation.Attachment1 = Attachment
-				Pet[1].PrimaryPart.AlignPosition.Attachment1 = Attachment
+			Constraint1.Parent = PetModel.PrimaryPart
+			Constraint2.Parent = PetModel.PrimaryPart
+			PetModel:SetPrimaryPartCFrame(Player.Character:GetPrimaryPartCFrame()*CFrame.new(0,-10,10))
 
-				local petDetails = nil
-				
-				for petKind,details in pairs (PetDetails) do
-					if string.find(PetName,petKind) then
-						petDetails = details
-						break
-					end
-				end
-				Pet[15] = Player
-				Pet[14] = petDetails
-				Pet[13] = CFrame.Angles(0,0,0)
-				
-				--load pet animations
-				Pet[12] = Pet[1].AnimationController:LoadAnimation(Pet[1].Animations.Sit)
-				Pet[11] = Pet[1].AnimationController:LoadAnimation(Pet[1].Animations.Trick)
-				Pet[4] = Pet[1].AnimationController:LoadAnimation(Pet[1].Animations.Walk)
-				Pet[5] = Pet[1].AnimationController:LoadAnimation(Pet[1].Animations.Idle)
-				Pet[6] = Pet[1].AnimationController:LoadAnimation(Pet[1].Animations.Jump)
-				Pet[1]:SetAttribute("State","Idle")
-				Pet[1]:SetAttribute("Status","Idling")
-				
-				if Character and Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid"):GetState() == Enum.HumanoidStateType.Seated then 
-					spawn(function()
-						sitPet()
-					end)
-				elseif Character and Character:FindFirstChild("Humanoid") then
-					Pet[5]:Play()
-				else
-					removePet()
-					return
-				end
-				
-				
-				Pet[9] =  Pet[6].DidLoop:Connect(function()
-					Pet[6]:Stop(.25)
-				end)
-				
-				--detect state changes and handle anim accordingly
-				Pet[1]:GetAttributeChangedSignal("State"):Connect(function() 
-					if Pet[1]:GetAttribute("State") == "Idle" then
-						Pet[12]:Stop(.25)
-						Pet[4]:Stop(.25)
-						Pet[5]:Play(.25)
-					elseif Pet[1]:GetAttribute("State") == "Walk" then
-						Pet[12]:Stop(.25)
-						Pet[5]:Stop(.25)
-						Pet[4]:Play(.25)
-					elseif Pet[1]:GetAttribute("State") == "Sit" then
-						Pet[5]:Stop(.25)
-						Pet[4]:Stop(.25)
-						sitPet()
-					end
-				end)
-				
-				--jump with the player
-				Pet[18] = Character.Humanoid:GetPropertyChangedSignal("Jump"):Connect(function() 
-					local ray = Ray.new(Character.PrimaryPart.Position+Vector3.new(0,50,0), Character.PrimaryPart.CFrame:vectorToWorldSpace(Vector3.new(0, -100, 0)) )
-					local hit, position, normal, material = workspace:FindPartOnRay(ray,Character)
-					if material == Enum.Material.Water then
-						return
-					end
-					if Pet[6].IsPlaying then return end
-					Pet[6]:Play(.25)
-				end)
-				print("Do pet UI")
-				--Handle Pet interaction UI
-				local PetName = Dependency.Parent.PetUI.PetName:Clone()
-				PetName.Parent = Paths.UI.Main.Parent
-				PetName.Adornee = Pet[1].PrimaryPart
-				PetName.PetName.Text = Player:GetAttribute("PetName")
-				if Player == game:GetService("Players").LocalPlayer then
-					local PetUI,PetClick = PetUI.StartInteractPetUI(Pet,Paths,ScriptModules,ThrowFunction,FeedFunction,sitPet,playerInBoat)
-					
-					Pet[7] = PetUI
-					Pet[8] = PetClick
-				end
-				Pet[16] = {}
-				for i,sound in pairs (Dependency.PetSounds:GetChildren()) do
-					local new = sound:Clone()
-					new.Parent = Pet[1].PrimaryPart
-					Pet[16][sound.Name] = new
-				end
-				Pet[16].Trick.SoundId = Pet[14].TrickSound
-				--[[local HeadBone = getBone(Pet[1].PrimaryPart,"Head")
-				
-				if HeadBone then
-					print("added emote ui")
-				end--]]
-				local EmoteUI = Dependency.Parent.PetUI.Emote:Clone()
-				EmoteUI.Parent = Pet[1].PrimaryPart
-				EmoteUI.Adornee = Pet[1].PrimaryPart
-				Pet[10] = EmoteUI
-				print("end pet adding")
-				table.insert(PetModels,Pet) --insert Pet table into PetModels, used in RenderStep to handle all players pets, locally
+			PetModel.Name = id.."_Pet"
+			newPart.Name = id.."_PetPart"
+
+			newPart.Parent = Player.Character
+			PetModel.Parent = Player.Character
+
+			local PetName = Dependency.PetName:Clone()
+			PetName.PetName.Text = PetData[3]
+			PetName.Level.Text = ""
+			PetName.StudsOffset = Vector3.new(0,2.5,0)
+			PetName.Parent = PetModel.PrimaryPart
+			if PetModel.AnimationController:FindFirstChild("Animator") then
+				PetAnims[PetModel] = {
+					Walk = PetModel.AnimationController.Animator:LoadAnimation(PetModel.Animations.Walk),
+					Idle = PetModel.AnimationController.Animator:LoadAnimation(PetModel.Animations.Idle)
+				}
 			else
-				Paths.UI.Center.Pets.Certificate.Visible = false
+				PetAnims[PetModel] = {
+					Walk = PetModel.AnimationController:LoadAnimation(PetModel.Animations.Walk),
+					Idle = PetModel.AnimationController:LoadAnimation(PetModel.Animations.Idle)
+				}
 			end
-		end
-	end
-	
-	local function PetAnimationChanged()
-		if Character:GetAttribute("PetAnimation") ~= "none" then
-			local split = string.split(Character:GetAttribute("PetAnimation"),"_")
-			if split[1] == "Toy" then
-				ThrowFunction(split[2],0)
-			elseif split[1] == "Feed" then
-				FeedFunction(split[2],0)
-			end
-		end
-	end
-	
-	--Handles new character being added
-	Player.CharacterAdded:Connect(function(NewChar)
-		Character = NewChar
-		CurrentSpawn = CurrentSpawn + 1
-		NewPet()
-
-		NewChar:WaitForChild("Humanoid").Died:Connect(function()
-			removePet()
-		end)
-		if Player ~= game.Players.LocalPlayer then
-			NewChar:GetAttributeChangedSignal("PetAnimation"):Connect(PetAnimationChanged)
-		end
-	end)
-	
-	Player:GetAttributeChangedSignal("PetID"):Connect(function()
-		NewPet()
-	end)
-	
-	Player:GetAttributeChangedSignal("PetTrick"):Connect(function()
-		if Player ~= game.Players.LocalPlayer and Pet[11].IsPlaying == false then
-			if Pet[12].IsPlaying then
-				Pet[12]:Stop()
-			end
-			Pet[16].Trick:Play()
-			Pet[13] = Pet[14].TrickCFrame
-			Pet[5]:Stop(.15)
-			Pet[11]:Play(.25)
-			wait(Pet[11].Length*.95)
-			Pet[11]:Stop(.25)
-			Pet[5]:Play(.25)
-			Pet[13] = CFrame.new()
-			if Pet[2]:FindFirstChild("Humanoid") and Pet[2].Humanoid:GetState() == Enum.HumanoidStateType.Seated then
-				sitPet()
-			end
-		end
-	end)
-	
-	local changedNumber = 0
-	local function changeHappinessIcon(Amount)
-		if Pet[10] and Pet[10]:FindFirstChild("ImageLabel") then
-			changedNumber = changedNumber + 1
-			local number = changedNumber
-			local icons = {
-				[6] = {"rbxassetid://9184554398",90},
-				[5] = {"rbxassetid://9184554810",70},
-				[4] = {"rbxassetid://9184554646",50},
-				[3] = {"rbxassetid://9184555092",30},
-				[2] = {"rbxassetid://9184554961",15},
-				[1] ={ "rbxassetid://9184555197",0},
-			}
-			local oldImage = Pet[10].ImageLabel.Image 
-			for i = 1,6 do
-				local v = icons[i]
-				if Amount >= v[2] then
-					Pet[10].ImageLabel.Image = v[1]
+		else
+			PetModel = PetsAssets:FindFirstChild(string.upper(PetName)):FindFirstChild(string.upper(PetKind)).Model:Clone()
+			local BlankModel = PetsAssets:FindFirstChild(string.upper(PetName)).BLANK.Model
+			for i,v in PetModel:GetChildren() do
+				if v:IsA("BasePart") then
+					v.CanCollide = false
+					v.Anchored = false
+					v.Massless = true
 				end
 			end
-			if oldImage == Pet[10].ImageLabel.Image then
+			PetModel:SetPrimaryPartCFrame(Player.Character:GetPrimaryPartCFrame()*CFrame.new(0,-10,10))
+
+			att1.Parent = PetModel.CenteredBase
+			att2.Parent = newPart
+
+			Constraint1.Attachment0 = att1
+			Constraint1.Attachment1 = att2
+			Constraint2.Attachment0 = att1
+			Constraint2.Attachment1 = att2
+			Constraint1.Parent = PetModel.CenteredBase
+			Constraint2.Parent = PetModel.CenteredBase
+			PetModel.PrimaryPart = PetModel.CenteredBase
+			PetModel.Name = id.."_Pet"
+			newPart.Name = id.."_PetPart"
+			newPart.Parent = Player.Character
+			PetModel.Parent = Player.Character
+			if BlankModel.AnimationController.walk:FindFirstChild("Speed") then
+				PetModel:SetAttribute("AnimWalkSpeed",BlankModel.AnimationController.walk:FindFirstChild("Speed").Value)
+			else
+				PetModel:SetAttribute("AnimWalkSpeed",1)
+			end
+
+			local PetName = Dependency.PetName:Clone()
+			PetName.PetName.Text = PetData[3]
+			PetName.Level.Text = "Lvl. "..PetData[5]
+			PetName.Parent = PetModel.HumanoidRootPart.NametagAttachment
+			PetAnims[PetModel] = {
+				Walk = PetModel.AnimationController.Animator:LoadAnimation(BlankModel.AnimationController.walk),
+				Idle = PetModel.AnimationController.Animator:LoadAnimation(BlankModel.AnimationController.idle)
+			}
+		end
+		table.insert(PetTable,{newPart,PetModel})
+	end
+	local lastPos = nil
+	Services.RunService:BindToRenderStep("Pets"..Player.Name,Enum.RenderPriority.Camera.Value-1,function(delta)
+		if Player.Character and Player.Character.PrimaryPart and #PetTable > 0 then
+			local dis = getDis(Player.Character,LocalPlayer.Character)
+			if (Player ~= LocalPlayer and dis < 100 and dis ~= 0) or Player == LocalPlayer then
+				local moving = Player.Character.Humanoid.MoveDirection ~= Vector3.new(0,0,0)
+				for i = 1,#PetTable do
+					local Part = PetTable[i][1]
+					local Model = PetTable[i][2]
+					local cfOffset = PetDetails.PetsOffset[#PetTable][i]
+					if lastPos == nil then
+						lastPos = Player.Character:GetPrimaryPartCFrame()
+					end
+					if (Player.Character:GetPrimaryPartCFrame().Position-lastPos.Position).magnitude > 80 then
+						Part.CFrame = Player.Character.PrimaryPart.CFrame*cfOffset
+						Model:SetPrimaryPartCFrame(Player.Character.PrimaryPart.CFrame*cfOffset)
+						if i == #PetTable then
+							lastPos = Player.Character:GetPrimaryPartCFrame()
+						end
+					else
+						local raycastParams = RaycastParams.new()
+						raycastParams.FilterDescendantsInstances = {Player.Character,Model}
+						raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+						
+						local raycastResult = workspace:Raycast((Player.Character.PrimaryPart.CFrame*cfOffset).Position+Vector3.new(0,3.5,0), Vector3.new(0,-200,0), raycastParams)
+						if raycastResult and raycastResult.Material ~= Enum.Material.Water then
+							if moving then
+								if PetAnims[Model].Walk.IsPlaying == false then
+									PetAnims[Model].Idle:Stop(.25)
+									PetAnims[Model].Walk:Play(.25,1,Model:GetAttribute("AnimWalkSpeed"))
+								end
+							else
+								if PetAnims[Model].Idle.IsPlaying == false then
+									PetAnims[Model].Idle:Play(.25)
+									PetAnims[Model].Walk:Stop(.25)
+								end
+							end
+							local rot = Player.Character:GetPrimaryPartCFrame()-Player.Character.PrimaryPart.Position
+							Part.CFrame = CFrame.new(raycastResult.Position+Vector3.new(0,Model.PrimaryPart.Size.Y/2,0)) * rot
+							--tweenModel(
+							--	Model,
+							--	CFrame.new(raycastResult.Position+Vector3.new(0,Model.PrimaryPart.Size.Y/2,0)) * rot
+							--)
+							
+							if i == #PetTable then
+								lastPos = Player.Character:GetPrimaryPartCFrame()
+							end
+						else
+							if PetAnims[Model].Idle.IsPlaying == false then
+								PetAnims[Model].Idle:Play(.25)
+								PetAnims[Model].Walk:Stop(.25)
+							end
+						end
+					end
+				end
+			end
+		end
+	end)
+		
+	local loaded = false
+	local lastRetreival = tick()-5
+	local function loadPets(from)
+		local lastData = PetData
+		PetData = Remotes.PetsRemote:InvokeServer(Player)
+		if PetData then
+			if lastData then
+				for i,v1 in pairs (PetData.Equipped) do
+					EquipPet(PetData.PetsOwned[v1],v1)
+				end
+				for i,v1 in pairs (lastData.Equipped) do
+					if table.find(PetData.Equipped,v1) == nil then
+						for i,v in pairs (PetTable) do
+							if v[2].Name == v1.."_Pet" then
+								local _1 = v[1]
+								local _2 = v[2]
+								table.remove(PetTable,i)
+								_1:Destroy()
+								_2:Destroy()
+								break
+							end
+						end
+					end
+				end
+			else
+				for i,v in pairs (PetData.Equipped) do
+					EquipPet(PetData.PetsOwned[v],v)
+				end
+			end
+		end
+	end
+
+	Player:GetAttributeChangedSignal("PetsEquipped"):Connect(function()
+		if Player ~= LocalPlayer then 
+			local dis = getDis(Player.Character,LocalPlayer.Character)
+			if dis > 0 and dis < 100 then
+				loadPets("changed attribute")
+			end
+		else
+			loadPets("changed attribute")
+		end
+	end)
+
+	Player.CharacterAdded:Connect(function()
+		PetTable = {}
+		if Player ~= LocalPlayer then 
+			local dis = getDis(Player.Character,LocalPlayer.Character)
+			if dis > 0 and dis < 100 then
+				loadPets("new character")
+			end
+		else
+			loadPets("new character")
+		end
+	end)
+	--workspace.Player1:MoveTo(workspace.Player2.PrimaryPart.Position)
+	if Player ~= LocalPlayer then
+		while true do
+			local dis = getDis(Player.Character,LocalPlayer.Character)
+			if dis ~= 0 and dis < 100 and loaded == false then
+				loaded = true
+				PetTable = {}
+				loadPets("character now close")
+			elseif Player:DistanceFromCharacter(LocalPlayer.Character.PrimaryPart.Position) > 100 or dis == 0 then
+				loaded = false
+				for i,v in pairs (PetTable) do
+					v[1]:Destroy()
+					v[2]:Destroy()
+				end
+				PetTable = {}
+			end
+			task.wait(3)
+		end
+	else
+		loadPets("initial load")
+	end
+end
+
+game.Players.PlayerAdded:Connect(function(plr)
+	loadPlayer(plr)
+end)
+
+game.Players.PlayerRemoving:Connect(function(plr)
+	Loaded[plr.Name] = nil
+	Services.RunService:UnbindFromRenderStep("Pets"..plr.Name)
+end)
+
+task.spawn(function()
+	for i,v in pairs (game.Players:GetPlayers()) do
+		loadPlayer(v)
+	end
+end)
+
+function openSelected(x,y)
+	local petDetails = SelectedPetDetails[2]
+	PetSelected.Position = UDim2.fromOffset(x,y)
+	PetSelected.Frame.PetName.Text = petDetails[3]
+	PetSelected.Frame.PetType.Text = petDetails[1]
+	PetSelected.Frame.PetKind.Text = petDetails[2]
+	PetSelected.Frame.Rarity.Text = petDetails[4]
+	PetSelected.Frame.Rarity.TextColor3 = PetDetails.RarityColors[petDetails[4]]
+	PetSelected.Frame.Level.Text = "Lvl. ".. petDetails[5]
+	PetSelected.Frame.Ability.Text = "x"..petDetails[6][1].." ".. petDetails[6][2].." ".. petDetails[6][3]
+	PetSelected.Visible = true
+end
+
+PetsFrame.Merge.MouseButton1Down:Connect(function()
+	MergeSelected = {}
+	UI.Center.Merge.Merge1.Icon.Image = ""
+	UI.Center.Merge.Merge2.Icon.Image = ""
+	UI.Center.Merge.Merge3.Icon.Image = ""
+
+	UI.Center.Merge.Merge1.Text.Text = "Lvl. 0"
+	UI.Center.Merge.Merge2.Text.Text = "Lvl. 0"
+	UI.Center.Merge.Merge3.Text.Text = "Lvl. 0"
+end)
+
+UI.Center.Merge.Clear.MouseButton1Down:Connect(function()
+	MergeSelected = {}
+	UI.Center.Merge.Merge1.Icon.Image = ""
+	UI.Center.Merge.Merge2.Icon.Image = ""
+	UI.Center.Merge.Merge3.Icon.Image = ""
+
+	UI.Center.Merge.Merge1.Text.Text = "Lvl. 0"
+	UI.Center.Merge.Merge2.Text.Text = "Lvl. 0"
+	UI.Center.Merge.Merge3.Text.Text = "Lvl. 0"
+end)
+
+UI.Center.Merge.Exit.MouseButton1Down:Connect(function()
+	Paths.Modules.Buttons:UIOn(Paths.UI.Center.Pets,true)
+end)
+
+UI.Center.Merge.Merge.MouseButton1Down:Connect(function()
+	if clickdb then return end
+	clickdb = true
+	if MergeSelected[1] and MergeSelected[2] then
+		local Merged,Data,ID1,ID2 = Remotes.MergePet:InvokeServer(MergeSelected[1],MergeSelected[2])
+		if Merged then
+			RealData = Data
+			updateUI(Data,"delete",ID2)
+			updateUI(Data,"update",ID1)
+		else
+			UI.Center.Merge.Warn.Text = "Something went wrong."
+			task.wait(4)
+			if UI.Center.Merge.Warn.Text == "Something went wrong." then
+				UI.Center.Merge.Warn.Text = "Merging creates a stronger poofie"
+			end
+		end
+		MergeSelected = {}
+		UI.Center.Merge.Merge1.Icon.Image = ""
+		UI.Center.Merge.Merge2.Icon.Image = ""
+		UI.Center.Merge.Merge3.Icon.Image = ""
+	
+		UI.Center.Merge.Merge1.Text.Text = "Lvl. 0"
+		UI.Center.Merge.Merge2.Text.Text = "Lvl. 0"
+		UI.Center.Merge.Merge3.Text.Text = "Lvl. 0"
+	end
+	task.wait(.15)
+	clickdb = false
+end)
+
+function changeFrameColors(frame,color1,color2)
+	frame.BackgroundColor3 = color1
+	frame.UIStroke.Color = color2
+end
+--[[
+function updateIndex(data,islandId)
+	local island = PetDetails.ChanceTables[islandId]
+	local frame = IndexPage.List:FindFirstChild(island.Name)
+	if frame then
+		local Pets = frame.Pets.Pets:GetChildren()
+		for i,v in pairs (Pets) do
+			if tonumber(v.Name) and data.Unlocked[tonumber(v.Name)] then
+				local Rarity = PetDetails.Rarities[island.Pets[tonumber(v.Name)].Percentage]
+				v.Icon.ImageColor3 = Color3.new(1,1,1)
+				v.PetName.Text = PetDetails.Pets[tonumber(v.Name)][1].." x"..data.Unlocked[tonumber(v.Name)]
+				v.BackgroundColor3 = PetDetails.RarityColors[Rarity]
+				v.UIStroke.Color = PetDetails.RarityColors[Rarity]
+			end
+		end
+	end
+end]]
+
+function addPetToViewport(Model,ViewPort)
+	local camera = ViewPort.CurrentCamera or Instance.new("Camera")
+	camera.Parent = ViewPort.WorldModel
+	
+	--remove any pre-exisitng models in the viewport
+	if ViewPort.WorldModel:FindFirstChildOfClass("Model") then
+		ViewPort.WorldModel:FindFirstChildOfClass("Model"):Destroy()
+	end
+	
+	local newModel = Model:Clone()
+	newModel.Parent = ViewPort.WorldModel
+	
+	--set camera in front and rotate towards model
+	camera.CFrame = CFrame.new((newModel:GetPrimaryPartCFrame()*CFrame.new(0,0,-(newModel:GetExtentsSize().Y)*1.1)).Position,newModel:GetPrimaryPartCFrame().Position) 
+	
+	ViewPort.CurrentCamera = camera
+end
+
+
+function updateUI(data,kind,ID)
+	if kind == "add" then
+		local petDetails = data.PetsOwned[ID]
+		local PetModel = nil
+		local Frame = Example:Clone()
+		Frame.PetName.Text = petDetails[3]
+		Frame.Name = ID
+		Frame.Visible = true
+
+		if petDetails[4] ~= "LEGACY" then
+			Frame.PetName.TextColor3 = PetDetails.RarityColors[petDetails[4]]
+			PetModel = PetsAssets:FindFirstChild(string.upper(petDetails[1])):FindFirstChild(string.upper(petDetails[2]))
+			Frame.Icon.Image = PetModel.Icon.Texture
+		else
+			Frame.Icon.Image = ""
+			PetModel = PetsAssets:FindFirstChild(petDetails[1]):FindFirstChild(petDetails[2])
+			Frame.LayoutOrder = 99999
+			addPetToViewport(PetModel,Frame.ViewportFrame)
+		end
+
+		Frame.Button.MouseButton1Click:Connect(function()
+			if State == "NameChange" then
+				OpenEdit(ID)
 				return
 			end
-			Pet[10].ImageLabel.Visible = false
-			Pet[10].ImageLabel.Size = UDim2.fromScale(0,0)
-			Pet[10].ImageLabel.Visible = true
-			Pet[10].ImageLabel:TweenSize(UDim2.fromScale(1,1),Enum.EasingDirection.Out,Enum.EasingStyle.Bounce,1,true)
-			if changedNumber == number  then
-				wait(2)
-				Pet[10].ImageLabel:TweenSize(UDim2.fromScale(0,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,1,true)
-				Pet[10].ImageLabel.Visible = false
+			if State == "Deleting" and table.find(RealData.Equipped,ID) then
+				if table.find(RealData.Equipped,ID)  then
+					PetsFrame.Top.Text = "Can't edit an equipped pet"
+					task.wait(4)
+					if PetsFrame.Top.Text == "Can't edit an equipped pet" then
+						PetsFrame.Top.Text = "Select pets to delete"
+					end
+					return
 				end
-		end
-	end
-	
-	Player:GetAttributeChangedSignal("PetHappiness"):Connect(function()
-		if Player:GetAttribute("PetHappiness") and Pet and Pet[1] and Pet[10] then
-			changeHappinessIcon(Player:GetAttribute("PetHappiness"))
-		end
-	end)
-	
-	Player.AncestryChanged:Connect(function() --detect when player leaves game
-		if Player.Parent == nil then
-			DidAdd[Player] = nil
-			removePet()
-		end
-	end)
-	
-	Character:WaitForChild("Humanoid").Died:Connect(function()
-		removePet()
-	end)
-	
-	if Player ~= game.Players.LocalPlayer then
-		Character:GetAttributeChangedSignal("PetAnimation"):Connect(PetAnimationChanged)
-	end
-	if Pet == nil then
-		NewPet()
-	end
-	
-	local lastTool = Player:GetAttribute("Tool")
-	Player:GetAttributeChangedSignal("Tool"):Connect(function()
-		if Player:GetAttribute("Tool") == "Glider" then
-			removePet()
-		elseif lastTool == "Glider" then
-			NewPet()
-		end
-		lastTool = Player:GetAttribute("Tool")
-	end)
-end
-
-local function getXAndZPositions(angle)
-	local x = math.cos(angle) * radius
-	local z = math.sin(angle) * radius
-	return x, z
-end
-
-RunService:BindToRenderStep("PetHandling",Enum.RenderPriority.Character.Value,function(delta) --Handle all pets in the world
-	for i,Pet in pairs (PetModels) do
-		coroutine.wrap(function()
-			local PetModel = Pet[1] 
-			local Character = Pet[2]
-			local waterUnder = false
-			if Character then
-				local ray = Ray.new(Character.PrimaryPart.Position, Character.PrimaryPart.CFrame:vectorToWorldSpace(Vector3.new(0, -100, 0)) )
-				local hit, position, normal, material = workspace:FindPartOnRay(ray,Character)
-				if material == Enum.Material.Water then
-					waterUnder = true
-				end
-			end
-			if Character and Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid").Health > 0 and (Character:FindFirstChild("Humanoid"):GetState() == Enum.HumanoidStateType.Swimming or waterUnder) then 
-				PetModel:SetAttribute("State","Idle")
-				PetModel:SetAttribute("Status","Idling")
-			end
-			if Pet[15] and Pet[15]:GetAttribute("Tool") ~= "Glider" and Character and Character:GetAttribute("PetAnimation") == "none" and Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid").Health > 0 and Character:FindFirstChild("Humanoid"):GetState() ~= Enum.HumanoidStateType.Swimming and not waterUnder then
-				--teleport pet if pet is further than 50 studs away, else only render pets of players within the render radius
-				local spawnPos5 = getSpawnPosition(Character,-1.5) 
-				local continu =true
-				if Pet[15]:GetAttribute("Minigame") == "Falling Tiles" or spawnPos5 == nil then
-					spawnPos5 = {
-						Position = (Character.PrimaryPart.CFrame*CFrame.new(4,0,-1.5)).Position - Vector3.new(0,2.8,0),
-						Material = Enum.Material.SmoothPlastic,
-					}
-				end
-				if continu and PetModel and PetModel.PrimaryPart and (PetModel.PrimaryPart.Position-Character.PrimaryPart.Position).magnitude > 50 or Character:GetAttribute("InBoat") then
-					local height = spawnPos5.Position.Y  + PetModel:GetExtentsSize().Y/2
-					Pet[3].CFrame = CFrame.new(Vector3.new(spawnPos5.Position.X ,height,spawnPos5.Position.Z),Vector3.new(Character.PrimaryPart.Position.X,height,Character.PrimaryPart.Position.Z))
-					PetModel:SetPrimaryPartCFrame(Pet[3].CFrame)
-				elseif continu and PetModel and PetModel.PrimaryPart and game:GetService("Players").LocalPlayer.Character and (PetModel.PrimaryPart.Position-game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position).magnitude < RenderDistance then
-					--move towards player
-					if Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid"):GetState() == Enum.HumanoidStateType.Seated and Character.Humanoid.SeatPart then
-						--player is sitting
-						if Pet[17] == nil then
-							-- if not already sitting, find valid position around player to sit at
-							local spawnPos
-							Pet[17] = true
-							if string.find(Character.Humanoid.SeatPart.Parent.Name,"Bench") then --sit infront of player in benches
-								spawnPos = getSpawnPosition(Character,-6,0) 
-							elseif string.find(Character.Humanoid.SeatPart.Parent.Name,"SmallSeat") then --sit infront of player in small round seats
-								spawnPos = getSpawnPosition(Character,-1,4) 
-							else --sit around player, find position
-								for i = 1,8 do
-									local angle = i * (fullCircle / 8)
-									local x, z = getXAndZPositions(angle)
-									local position = (Character.PrimaryPart.CFrame * CFrame.new(x, 0, z)).p
-									spawnPos = getSpawnPosition(position,x,z) 
-									if spawnPos.Instance.CanCollide == false or (spawnPos.Material) == Enum.Material.Water or (spawnPos.Material) == Enum.Material.Sand or (spawnPos.Material) == Enum.Material.Air or (spawnPos.Material) == nil then
-									else
-										break
-									end
-								end
-							end
-							if Character:FindFirstChild("Humanoid") and Character:FindFirstChild("Humanoid"):GetState() == Enum.HumanoidStateType.Seated and Character.Humanoid.SeatPart then
-								local height = spawnPos.Position.Y + PetModel:GetExtentsSize().Y/2
-								if string.find(Character.Humanoid.SeatPart.Parent.Name,"Bench") == nil then
-									Pet[1]:SetPrimaryPartCFrame( CFrame.new(Vector3.new(spawnPos.Position.X ,height,spawnPos.Position.Z))  * Pet[14].SitCFrame * CFrame.Angles(0,math.rad(Character.PrimaryPart.Orientation.Y),0))
-								end
-								Pet[3].CFrame =  CFrame.new(Vector3.new(spawnPos.Position.X ,height,spawnPos.Position.Z))  * Pet[14].SitCFrame * CFrame.Angles(0,math.rad(Character.PrimaryPart.Orientation.Y),0)
-								Pet[1].PrimaryPart.AlignPosition.RigidityEnabled = true
-								Pet[1].PrimaryPart.AlignOrientation.RigidityEnabled = true
-								Pet[17] = Character.PrimaryPart.CFrame:toObjectSpace(Pet[3].CFrame)
-								PetModel:SetAttribute("State","Sit")
-							end
-						elseif Pet[17] and type(Pet[17]) == "userdata" then --found place to sit already, set position
-							PetModel:SetAttribute("State","Sit")
-							Pet[1].PrimaryPart.AlignPosition.RigidityEnabled = true
-							Pet[1].PrimaryPart.AlignOrientation.RigidityEnabled = true
-							Pet[1]:SetPrimaryPartCFrame(Character.PrimaryPart.CFrame * Pet[17] * Pet[14].SitCFrame)
-							Pet[3].CFrame = Character.PrimaryPart.CFrame * Pet[17] * Pet[14].SitCFrame --* CFrame.Angles(0,math.rad(Character.PrimaryPart.Orientation.Y),0)
-						end
-					else --move to player
-						Pet[1].PrimaryPart.AlignOrientation.RigidityEnabled = false
-						Pet[1].PrimaryPart.AlignPosition.RigidityEnabled = false
-						Pet[17] = nil
-						local rot = Character:GetPrimaryPartCFrame()-Character.PrimaryPart.Position
-						local height = spawnPos5.Position.Y + PetModel:GetExtentsSize().Y/2
-						if (spawnPos5.Material) == nil or (spawnPos5.Material) == Enum.Material.Water or (spawnPos5.Material) == Enum.Material.Sand or (spawnPos5.Material) == Enum.Material.Air then
-							Pet[3].CFrame = CFrame.new(Pet[3].Position) * rot --,Vector3.new(Pet[2].PrimaryPart.Position.X,Pet[3].Position.Y,Pet[2].PrimaryPart.Position.Z))	
-						else
-							Pet[3].CFrame = CFrame.new(Vector3.new(spawnPos5.Position.X ,height,spawnPos5.Position.Z)) * rot * Pet[13]--,Vector3.new(Pet[2].PrimaryPart.Position.X,height,Pet[2].PrimaryPart.Position.Z)) * Pet[13]
-						end
-						if Pet[2] and Pet[2].Humanoid.MoveDirection.Magnitude > 0 and (spawnPos5.Material) ~= Enum.Material.Water and (spawnPos5.Material) ~= Enum.Material.Sand and (spawnPos5.Material) ~= Enum.Material.Air and (spawnPos5.Material) ~= nil  then
-							PetModel:SetAttribute("State","Walk")
-							PetModel:SetAttribute("Status","Moving")
-						else
-							PetModel:SetAttribute("State","Idle")
-							PetModel:SetAttribute("Status","Idling")
-						end
+				for i,v in pairs (Deleting) do
+					if v[1] == ID and v[2] == Frame then
+						Frame.X.Visible = false
+						table.remove(Deleting,i)
+						PetsFrame.DeleteReal.Top.Text = "Delete "..#Deleting
+						return
 					end
 				end
+				Frame.X.Visible = true
+				table.insert(Deleting,{ID,Frame})
+				PetsFrame.DeleteReal.Top.Text = "Delete "..#Deleting
+				return
 			end
-		end)()
-	end
-end)
+			if PetSelected and PetSelected.Visible then
+				PetSelected.Visible = false
+			end
+			ButtonClick:Play()
+			if SelectedPetDetails and SelectedPetDetails[1] == ID then SelectedPetDetails = nil return end
+			SelectedPetDetails = {ID,RealData.PetsOwned[ID]}
+			local mPos = Paths.Services.InputService:GetMouseLocation()
+			openSelected(mPos.X,mPos.Y)
+		end)
+		
+		Frame.Equip.MouseButton1Down:Connect(function()
+			if clickdb then return end
+			clickdb = true
+			ButtonClick:Play()
+			local data,did = nil,false
+			if Frame.Equip.Text.Text == "Unequip" then
+				data,did = Remotes.UnequipPet:InvokeServer({ID})
+			else
+				data,did = Remotes.EquipPet:InvokeServer({ID})
+			end
+			if data and did then
+				RealData = data
+				updateUI(data,"update",ID)
+			end
+			task.wait(.15)
+			clickdb = false
+		end)
 
---add pet for all existing players
-spawn(function()
-	for i,player in pairs (game:GetService("Players"):GetPlayers()) do
-		if player ~= game.Players.LocalPlayer then
-			Pets.addPetToPlayer(player)
+		if table.find(data.Equipped,ID) then
+			Frame.LayoutOrder = -1
+			changeFrameColors(Frame,Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
+			changeFrameColors(Frame.Equip,Color3.new(0.752941, 0.027450, 0.027450),Color3.new(0.588235, 0.027450, 0.027450))
+			Frame.Equip.Text.Text = "Unequip"
+		else
+			Frame.LayoutOrder = ID
+			changeFrameColors(Frame,Color3.fromRGB(211, 211, 211),Color3.fromRGB(255, 255, 255))
+			changeFrameColors(Frame.Equip,Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
+			Frame.Equip.Text.Text = "Equip"
+		end
+
+		Frame.Parent = PetsFrame.Pets.Pets
+		if petDetails[4] ~= "LEGACY" then
+			local clone = Frame:Clone()
+
+			clone.Equip:Destroy()
+			clone.Parent = UI.Center.Merge.Pets.Pets
+			clone.PetName.Text = "Lvl. "..petDetails[5]
+			clone.PetName.TextColor3 = Color3.new(1,1,1)
+			clone.Button.MouseButton1Down:Connect(function()
+				ButtonClick:Play()
+				if table.find(RealData.Equipped,ID) then
+					UI.Center.Merge.Warn.Text = "Can't merge an equipped pet."
+					task.wait(4)
+					if UI.Center.Merge.Warn.Text == "Can't merge an equipped pet." then
+						UI.Center.Merge.Warn.Text = "Merging creates a stronger poofie"
+					end
+					return
+				end
+				if MergeSelected[1] and MergeSelected[1] ~= ID and MergeSelected[2] == nil then
+					if RealData.PetsOwned[ID][1] == RealData.PetsOwned[MergeSelected[1]][1] and RealData.PetsOwned[ID][2] == RealData.PetsOwned[MergeSelected[1]][2] and RealData.PetsOwned[ID][5] == RealData.PetsOwned[MergeSelected[1]][5] then
+						MergeSelected[2] = ID
+						UI.Center.Merge.Merge2.Icon.Image = PetModel.Icon.Texture
+						UI.Center.Merge.Merge2.Text.Text = "Lvl.".. RealData.PetsOwned[ID][5]
+
+						UI.Center.Merge.Merge3.Icon.Image = PetModel.Icon.Texture
+						UI.Center.Merge.Merge3.Text.Text = "Lvl.".. RealData.PetsOwned[ID][5]+1
+					else
+						UI.Center.Merge.Warn.Text = "Can only merge same level and same poofie type."
+						task.wait(4)
+						if UI.Center.Merge.Warn.Text == "Can only merge same level and same poofie type." then
+							UI.Center.Merge.Warn.Text = "Merging creates a stronger poofie"
+						end
+					end
+					
+				elseif MergeSelected[1] == nil then
+					MergeSelected[1] = ID
+					UI.Center.Merge.Merge1.Icon.Image = PetModel.Icon.Texture
+					UI.Center.Merge.Merge1.Text.Text = "Lvl.".. RealData.PetsOwned[ID][5]
+				end
+			end)
+		end
+	elseif kind == "delete" then
+		if PetsFrame.Pets.Pets:FindFirstChild(ID) then
+			PetsFrame.Pets.Pets:FindFirstChild(ID):Destroy()
+		end
+		if UI.Center.Merge.Pets.Pets:FindFirstChild(ID) then
+			UI.Center.Merge.Pets.Pets:FindFirstChild(ID):Destroy()
+		end
+	elseif kind == "update" then
+		local petDetails = data.PetsOwned[ID]
+		if PetsFrame.Pets.Pets:FindFirstChild(ID) then
+			local Frame = PetsFrame.Pets.Pets:FindFirstChild(ID)
+			Frame.PetName.Text = petDetails[3]
+			if table.find(data.Equipped,ID) then
+				Frame.LayoutOrder = -1
+				changeFrameColors(Frame,Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
+				changeFrameColors(Frame.Equip,Color3.new(0.752941, 0.027450, 0.027450),Color3.new(0.588235, 0.027450, 0.027450))
+				Frame.Equip.Text.Text = "Unequip"
+				if UI.Center.Merge.Pets.Pets:FindFirstChild(ID) then
+					changeFrameColors(UI.Center.Merge.Pets.Pets:FindFirstChild(ID),Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
+				end
+			else
+				Frame.LayoutOrder = ID
+				if UI.Center.Merge.Pets.Pets:FindFirstChild(ID) then
+					changeFrameColors(UI.Center.Merge.Pets.Pets:FindFirstChild(ID),Color3.fromRGB(211, 211, 211),Color3.fromRGB(255, 255, 255))
+				end
+				changeFrameColors(Frame,Color3.fromRGB(211, 211, 211),Color3.fromRGB(255, 255, 255))
+				changeFrameColors(Frame.Equip,Color3.fromRGB(85, 255, 0),Color3.fromRGB(41, 124, 0))
+				Frame.Equip.Text.Text = "Equip"
+			end
+
+			if UI.Center.Merge.Pets.Pets:FindFirstChild(ID) then
+				UI.Center.Merge.Pets.Pets:FindFirstChild(ID).PetName.Text = "Lvl. "..petDetails[5]
+			end
+		else
+			updateUI(data,"add",ID)
 		end
 	end
-end)
-
---detect any new players
-game:GetService("Players").PlayerAdded:Connect(function(Player)
-	Pets.addPetToPlayer(Player)
-end)
-
---handle pet for local client
-print("add pet to localplayer")
-Pets.addPetToPlayer(game:GetService("Players").LocalPlayer)
-print("load inventory")
-PetUI.Inventory(Paths)
-print("end load inventory")
-game.Players.LocalPlayer:SetAttribute("BuyingEgg",false)
-
-game.Players.LocalPlayer:GetAttributeChangedSignal("BuyingEgg"):Connect(function()
-	if game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
-		isAdopting = false
-	end
-end)
-
-Paths.UI.Center.BuyEgg.Exit.MouseButton1Click:Connect(function()
-	game.Players.LocalPlayer:SetAttribute("BuyingEgg",false)
-end)
-
-local ProximityPrompt
-if Paths.Tycoon then
-	ProximityPrompt = Paths.Tycoon:WaitForChild("BuyEgg").ProximityPart.Value:WaitForChild("ProximityPrompt")
-elseif workspace:FindFirstChild("PetShop") then
-	ProximityPrompt = workspace.PetShop.ProximityPart.Value:WaitForChild("ProximityPrompt")
 end
 
-if ProximityPrompt then
-	ProximityPrompt.Triggered:Connect(function(player)
-		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
-			PetUI.LoadEgg("Egg1",Paths)
-			Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
-			Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
+function loadUI(data)
+	for i,v in pairs (data.PetsOwned) do
+		updateUI(data,"add",i)
+	end
+end
+
+function OpenEdit(ID)
+	State = "None"
+	PetsFrame.Top.Text = ""
+	EditID = ID
+	local Frame = PetsFrame.EditName
+	local PetData = RealData.PetsOwned[ID]
+	local PetModel = nil
+	if PetData[4] ~= "LEGACY" then
+		Frame.ViewportFrame.Visible = false
+		PetModel = PetsAssets:FindFirstChild(string.upper(PetData[1])):FindFirstChild(string.upper(PetData[2]))
+		Frame.Icon.Image = PetModel.Icon.Texture
+	else
+		Frame.Icon.Image = ""
+		Frame.ViewportFrame.Visible = true
+		PetModel = PetsAssets:FindFirstChild(PetData[1]):FindFirstChild(PetData[2])
+		Frame.LayoutOrder = 99999
+		addPetToViewport(PetModel,Frame.ViewportFrame)
+	end
+	Frame.NameChange.TextBox.Text = PetData[3]
+	Frame.Text.Text = PetData[1]
+	Frame.Visible = true
+end
+
+function Pets.LoadEgg(Island,Prompt)
+	Paths.Modules.Buttons:UIOff(Paths.UI.Center.UnlockedEggs,true)
+	if CurrentEggLoaded == Island then 
+		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
+		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
+		return 
+	end
+	if Prompt then
+		Prompt.Enabled = false
+		PromptObj = Prompt
+	end
+	CurrentEggLoaded = Island
+	local IslandDetails = PetDetails.ChanceTables[PetDetails.EggNameToId[Island]]
+
+	BuyEgg.Gems.Text.Text = IslandDetails.PriceGems
+	BuyEgg.Robux.Text.Text = IslandDetails.PriceRobux
+
+	BuyEgg.TopText.Text = "Get A Poofie: "..Island
+	for i,v in pairs (BuyEgg.Pets.Pets:GetChildren()) do
+		if v:IsA("ImageButton") then
+			v:Destroy()
 		end
+	end
+ 
+	for i,v in pairs (IslandDetails.Pets) do
+		local Pet = PetDetails.Pets[v.Id]
+		local Template = Dependency.ShopTemplate:Clone()
+		local PetModel = PetsAssets:FindFirstChild(string.upper(Pet[1])):FindFirstChild(string.upper(Pet[2]))
+
+		local prev = IslandDetails.Pets[i-1]
+		if prev then
+			Template.Amount.Text = (v.Percentage*100)-(prev.Percentage*100).."%"
+		else
+			Template.Amount.Text = (v.Percentage*100).."%"
+		end
+		
+		Template:FindFirstChild(PetDetails.Rarities[v.Percentage]).Visible = true 
+		Template.PetName.Text = Pet[1]
+		Template.Icon.Image = PetModel.Icon.Texture
+
+		Template.MouseButton1Down:Connect(function()
+			ButtonClick:Play()
+			BuyEgg.Bonus.Icon.Image = PetModel.Icon.Texture
+			BuyEgg.Bonus.Text.Text ="x"..Pet[3].." ".. Pet[4].." ".. Pet[5]
+			BuyEgg.Bonus.Visible = true
+		end)
+
+		Template.Parent = BuyEgg.Pets.Pets
+	end
+	BuyEgg.Bonus.Visible = false
+	Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
+	Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
+end
+
+BuyEgg.Bonus.Exit.MouseButton1Down:Connect(function()
+	BuyEgg.Bonus.Visible = false
+end)
+
+BuyEgg.Exit.MouseButton1Down:Connect(function()
+	BuyEgg.Bonus.Visible = false
+	if PromptObj then
+		PromptObj.Enabled = true
+		PromptObj = nil
+	end
+end)
+
+BuyEgg:GetPropertyChangedSignal("Visible"):Connect(function()
+	if BuyEgg.Visible == false and openingEgg == false then
+		BuyEgg.Bonus.Visible = false
+		if PromptObj then
+			PromptObj.Enabled = true
+			PromptObj = nil
+		end
+	end
+end)
+
+BuyEgg.Gems.MouseButton1Down:Connect(function()
+	BuyEgg.Bonus.Visible = false
+	if CurrentEggLoaded then
+		local Bought,Data,NewPetInfo,newId = Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Gems")
+		if Bought then
+			RealData = Data
+			local PetModel = PetsAssets:FindFirstChild(string.upper(NewPetInfo[1])):FindFirstChild(string.upper(NewPetInfo[2]))
+			local info = RealData.PetsOwned[newId]
+			openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]])
+			updateUI(Data,"add",newId)
+			--updateIndex(Data,Data.PetsOwned[newId][8])
+		elseif not Bought and Data == "Gems" then
+		end
+	end
+end)
+
+BuyEgg.Robux.MouseButton1Down:Connect(function()
+	BuyEgg.Bonus.Visible = false
+	if CurrentEggLoaded then
+		Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Robux")
+	end
+end)
+
+PetsFrame:GetPropertyChangedSignal("Visible"):Connect(function()
+	SelectedPetDetails = nil
+	if PetSelected then
+		PetSelected.Visible = false
+	end
+	EndState()
+end)
+
+PetsFrame.Index.MouseButton1Down:Connect(function()
+	Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
+end)
+
+PetsFrame.Edit.MouseButton1Down:Connect(function()
+	if SelectedPetDetails and SelectedPetDetails[1] and SelectedPetDetails[2] then
+		OpenEdit(SelectedPetDetails[1])
+	else
+		State = "NameChange"
+		PetsFrame.Top.Text = "Click on a click to change it's name"
+	end
+end)
+
+function EndState()
+	if State == "Deleting" or State == "EndDelete" then
+		for i,v in pairs (Deleting) do
+			v[2].X.Visible = false
+		end
+		Deleting = {}
+		PetsFrame.DeleteReal.Visible = false
+		PetsFrame.ConfirmDelete.Visible = false
+	elseif State == "NameChange" then
+		EditID = nil
+		PetsFrame.EditName.Visible = false
+		PetsFrame.EditName.NameChange.TextBox.Text = ""
+		PetsFrame.EditName.Icon.Image = ""
+	end
+	PetsFrame.Top.Text = ""
+	State = ""
+end
+
+PetsFrame.Delete.MouseButton1Down:Connect(function()
+	if State == "Deleting" then
+		EndState()
+	else
+		Deleting = {}
+		PetsFrame.Top.Text = "Select pets to delete"
+		PetsFrame.DeleteReal.Visible = true
+		PetsFrame.DeleteReal.Top.Text = "Delete 0"
+		State = "Deleting"
+	end
+end)
+
+PetsFrame.DeleteReal.MouseButton1Down:Connect(function()
+	State = "EndDelete"
+	PetsFrame.DeleteReal.Visible = false
+	PetsFrame.ConfirmDelete.Text.Text = "Are you sure you want to delete "..#Deleting.." poofie(s)?"
+	PetsFrame.ConfirmDelete.Visible = true
+end)
+
+PetsFrame.ConfirmDelete.Cancel.MouseButton1Down:Connect(function()
+	EndState()
+end)
+
+PetsFrame.ConfirmDelete.Confirm.MouseButton1Down:Connect(function()
+	local newtbl = {}
+	for i,v in pairs (Deleting) do
+		table.insert(newtbl,v[1])
+	end
+	local did, data = Remotes.DeletePet:InvokeServer(newtbl)
+	EndState()
+	if did and data then
+		RealData = data
+		for i,v in pairs (newtbl) do
+			updateUI(RealData,"delete",v)
+		end
+	end
+end)
+
+PetsFrame.EditName.Confirm.MouseButton1Down:Connect(function()
+	local newName = PetsFrame.EditName.NameChange.TextBox.Text
+	if #newName > 1 then
+		local data,new = Remotes.PetName:InvokeServer(EditID,newName)
+		if data and new then
+			RealData = data
+			PetsFrame.EditName.NameChange.TextBox.Text = new
+			updateUI(RealData,"update",EditID)
+		end
+	end
+end)
+
+PetsFrame.Search.TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+	local text = PetsFrame.Search.TextBox.Text
+	if #text > 1 then
+		for i,v in pairs (PetsFrame.Pets.Pets:GetChildren()) do
+			if tonumber(v.Name) then
+				local id = tonumber(v.Name)
+				if string.match(string.lower(RealData.PetsOwned[id][1]),string.lower(text)) or string.match(string.lower(RealData.PetsOwned[id][3]),string.lower(text)) then
+					v.Visible = true
+				else
+					v.Visible = false
+				end
+			end
+		end
+	else
+		for i,v in pairs (PetsFrame.Pets.Pets:GetChildren()) do
+			if tonumber(v.Name) then
+				v.Visible = true
+			end
+		end
+	end
+end)
+
+PetsFrame.EditName.Exit.MouseButton1Down:Connect(function()
+	EndState()
+end)
+
+PetsFrame.Best.MouseButton1Down:Connect(function()
+	if clickdb then return end
+	clickdb = true
+	local oldequipped = {}
+	for i,v in pairs (RealData.Equipped) do
+		table.insert(oldequipped,v)
+	end
+	local data,did,except = Remotes.UnequipPet:InvokeServer(RealData.Equipped)
+	if except then
+		for i,v in pairs (except) do
+			table.remove(oldequipped,table.find(oldequipped,v))
+		end
+	end
+	
+	if data and did then
+		RealData = data
+		for i,v in pairs (oldequipped) do
+			updateUI(data,"update",v)
+		end
+	end
+ 		
+	local best = {}
+	local new = {}
+	local c = 0
+	for i,v in pairs (RealData.PetsOwned) do
+		c += 1
+		new[c] = {i,v}
+	end
+	table.sort(new,function(a,b)
+		if a[2][4] == "LEGACY" then return false end
+		if b[2][4] == "LEGACY" then return true end
+		return a[2][6][1]>b[2][6][1]
 	end)
-else
-	print("no proximity prompt")
+	for i = 1,LocalPlayer:GetAttribute("MaxEquip") do
+		local pet = new[i]
+		if pet then
+			table.insert(best,new[i][1])
+		end
+	end
+
+	local data,did,except = Remotes.EquipPet:InvokeServer(best)
+	if except then
+		for i,v in pairs (except) do
+			table.remove(best,table.find(best,v))
+		end
+	end
+	if data and did then
+		RealData = data
+		for i,v in pairs (best) do
+			updateUI(data,"update",v)
+		end
+	end
+	task.wait(.15)
+	clickdb = false
+end)
+
+function openEgg(Image,Name,Rarity,Color)
+	openingEgg = true
+	UI.Left.Visible = false
+	UI.Top.Visible = false
+	UI.Right.Visible = false
+	UI.Bottom.Visible = false
+	BuyEgg.Visible = false
+	PetAdoptionUI.PetName.Visible = false
+	PetAdoptionUI.Icon.Visible = false
+	PetAdoptionUI.Rarity.Visible = false
+	PetAdoptionUI.Rarity.Position = UDim2.fromScale(0.5, 0.132)
+	PetAdoptionUI.Rarity.Size = UDim2.fromScale(0.3, 0.042)
+	PetAdoptionUI.PetName.Position = UDim2.fromScale(0.5, 0.092)
+	PetAdoptionUI.PetName.Size = UDim2.fromScale(0.3, 0.042)
+	PetAdoptionUI.Icon.Size = UDim2.fromScale(0.25, 0.3)
+	local startDistance = -13
+	local EggMesh = Assets.PetEggs:FindFirstChild(CurrentEggLoaded):Clone()
+	if PetAdoptionUI.ViewportFrame:FindFirstChildOfClass("MeshPart") then
+		PetAdoptionUI.ViewportFrame:FindFirstChildOfClass("MeshPart"):Destroy()
+	end
+	PetAdoptionUI.ViewportFrame.Visible = true
+	local cam = PetAdoptionUI.ViewportFrame.CurrentCamera or Instance.new("Camera")
+	PetAdoptionUI.ViewportFrame.CurrentCamera = cam
+	EggMesh.Parent = PetAdoptionUI.ViewportFrame
+	local default =  cam.CFrame * CFrame.new(0,0,startDistance)
+
+	EggMesh.CFrame = default * CFrame.new(0,0,-10)
+	PetAdoptionUI.Visible = true
+	local tweenLeft = TweenService:Create(EggMesh,TweenInfo.new(1,Enum.EasingStyle.Bounce,Enum.EasingDirection.Out),{
+		CFrame = default
+	})
+	tweenLeft:Play()
+	task.wait(.5)
+	local speed = .3
+	Dependency.Sounds.Cracking:Play()
+	for i = 1,2 do
+		local wa = math.random(10,20)/100/speed
+		local tweenLeft = TweenService:Create(EggMesh,TweenInfo.new(wa,Enum.EasingStyle.Bounce,Enum.EasingDirection.Out),{
+			CFrame = default*CFrame.new(0,0,math.random(0,5))*CFrame.Angles(math.rad(math.random(30,60)),0,math.rad(math.random(30,60)))
+		})
+		tweenLeft:Play()
+		task.wait(wa)
+		local wa2 = math.random(10,20)/100/speed
+		local tweenRight = TweenService:Create(EggMesh,TweenInfo.new(wa2,Enum.EasingStyle.Bounce,Enum.EasingDirection.Out),{
+			CFrame = default*CFrame.new(0,0,math.random(0,5))*CFrame.Angles(math.rad(math.random(30,60)*-1),0,math.rad(math.random(30,60)*-1))
+		})
+		tweenRight:Play()
+		task.wait(wa2)
+		speed = speed * 1.5
+	end
+	local wa = math.random(10,20)/100/speed*2
+	local tweenLeft = TweenService:Create(EggMesh,TweenInfo.new(wa,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{
+		CFrame = default*CFrame.new(0,0,11)
+	})
+	tweenLeft:Play()
+	task.wait(wa*.9)
+	PetAdoptionUI.ViewportFrame.Visible = false
+	PetAdoptionUI.PetName.Text = Name
+	PetAdoptionUI.Rarity.Text = Rarity
+	PetAdoptionUI.Rarity.TextColor3 = Color
+	PetAdoptionUI.Icon.Image = Image
+	PetAdoptionUI.PetName.Visible = true
+	PetAdoptionUI.Icon.Visible = true
+	PetAdoptionUI.Rarity.Visible = true
+	PetAdoptionUI.Rarity:TweenSizeAndPosition(UDim2.new(.25,0,.08,0),UDim2.new(.5,0,.225,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
+	PetAdoptionUI.PetName:TweenSizeAndPosition(UDim2.new(.3,0,.108,0),UDim2.new(.5,0,.125,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
+	PetAdoptionUI.Icon:TweenSize(UDim2.new(.35,0,.5,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
+	Dependency.Sounds.Ring:Play()
+	task.wait(1)
+	PetAdoptionUI.Continue.Visible = true
+	PetAdoptionUI.Continue.MouseButton1Down:wait()
+	PetAdoptionUI.Continue.Visible = false
+	PetAdoptionUI.Visible = false
+	PetAdoptionUI.ViewportFrame.Visible = true
+	UI.Left.Visible = true
+	UI.Top.Visible = true
+	UI.Right.Visible = true
+	UI.Bottom.Visible = true
+	BuyEgg.Visible = true
+	PetAdoptionUI.Rarity.Visible = false
+	PetAdoptionUI.PetName.Visible = false
+	PetAdoptionUI.Icon.Visible = false
+	openingEgg = false
 end
 
-Paths.Remotes.ResetProductPurchase.OnClientEvent:Connect(function()
-	Paths.Modules.Buttons:UIOff(Paths.UI.Center.BuyEgg,true)
-	game.Players.LocalPlayer:SetAttribute("BuyingEgg",false)
+PetsFrame.Pets.Pets.UIGridLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	PetsFrame.Pets.Pets.CanvasSize = UDim2.new(0, 0, 0, PetsFrame.Pets.Pets.UIGridLayout.AbsoluteContentSize.Y+(#PetsFrame.Pets.Pets:GetChildren()*2))
+end)
+
+PetsFrame.Pets.Pets:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+	SelectedPetDetails = nil
+	if PetSelected then
+		PetSelected.Visible = false
+	end
+end)
+
+function Remotes.BuyEgg.OnClientInvoke(Type,Data,PetId,PetInfo)
+	if Type == "NewPet" then
+		RealData = Data
+		local PetModel = PetsAssets:FindFirstChild(string.upper(PetInfo[1])):FindFirstChild(string.upper(PetInfo[2]))
+		local info = RealData.PetsOwned[PetId]
+		openEgg(PetModel.Icon.Texture,info[1],info[4],PetDetails.RarityColors[info[4]])
+		updateUI(Data,"add",PetId)
+		--updateIndex(Data,Data.PetsOwned[PetId][8])
+	end
+end
+
+task.spawn(function()
+	local PetData = Remotes.PetsRemote:InvokeServer(LocalPlayer)
+	RealData = PetData
+	loadUI(PetData)
+	PetsFrame.Pets.Pets.CanvasSize = UDim2.new(0, 0, 0, PetsFrame.Pets.Pets.UIGridLayout.AbsoluteContentSize.Y+(#PetsFrame.Pets.Pets:GetChildren()*2))
+	local tycoonData = Remotes.GetStat:InvokeServer("Tycoon")
+	for i,v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
+		if v:IsA("ImageButton") then
+			if tycoonData[v.Name] or v.Name == "1" then
+				v.MouseButton1Down:Connect(function()
+					if tycoonData[v.Name] or v.Name == "1" then
+						Pets.LoadEgg(v:GetAttribute("Egg"),nil)
+					end
+				end)
+			else
+				v.ViewportFrame.ImageColor3 = Color3.new(0,0,0)
+			end
+		end
+	end
+--[[
+	
+	for i,IslandDetails in pairs (PetDetails.ChanceTables) do
+		local newIsland = IndexPage.List.Island:Clone()
+		newIsland.TopText.Text = IslandDetails.Name
+		for i,v in pairs (IslandDetails.Pets) do
+			local Pet = PetDetails.Pets[v.Id]
+			local Rarity = PetDetails.Rarities[v.Percentage]
+			local Template = Dependency.ShopTemplate:Clone()
+			print(Pet[1],Pet[2])
+			local PetModel = PetsAssets:FindFirstChild(string.upper(Pet[1])):FindFirstChild(string.upper(Pet[2]))
+
+			Template.Amount.Text = ""
+			if PetData.Unlocked[v.Id] then
+				Template.BackgroundColor3 = PetDetails.RarityColors[Rarity]
+				Template.UIStroke.Color = PetDetails.RarityColors[Rarity]
+				Template.PetName.Text = Pet[1].. " x"..PetData.Unlocked[v.Id]
+				Template.Icon.ImageColor3 = Color3.new(1,1,1)
+			else
+				Template.BackgroundColor3 = Color3.new()
+				Template.UIStroke.Color = Color3.new()
+				Template.Icon.ImageColor3 = Color3.new(0,0,0)
+				Template.PetName.Text = ""
+			end
+			Template.Icon.Image = PetModel.Icon.Texture
+			Template.Name = v.Id
+			Template.Parent = newIsland.Pets.Pets
+		end
+		newIsland.Visible = true
+		newIsland.Name = IslandDetails.Name
+		newIsland.LayoutOrder = i
+		newIsland.Parent = IndexPage.List
+	end]]
 end)
 
 return Pets

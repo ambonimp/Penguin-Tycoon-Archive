@@ -3,6 +3,7 @@ local DataStoreService = game:GetService("DataStoreService")
 local Pickaxe = {}
 
 local MINE_COOLDOWN = 1
+local MINE_COOLDOWNbase = 1
 
 --- Main Variables ---
 local Paths = require(script.Parent.Parent)
@@ -172,7 +173,7 @@ task.spawn(function()
 		    local Now = os.clock()
 			if Now - LastMined >= MINE_COOLDOWN and Char and MineTrack then
 			    LastMined = Now
-
+                MINE_COOLDOWN = MINE_COOLDOWNbase / Remotes.GetBonus:InvokeServer("Mining","Speed")
  				local InBounds = workspace:GetPartBoundsInRadius((Char:GetPrimaryPartCFrame()*CFrame.new(0,0,-5)).Position,3)
 
 				local Mining, Level
@@ -187,8 +188,8 @@ task.spawn(function()
 
                 if Mining then
                     -- Special effects
-                    local Earnings = Remotes.GetStat:InvokeServer("Income") * Remotes.GetStat:InvokeServer("Income Multiplier") * Modules.MiningDetails[Level].EarningMultiplier * (Paths.Player:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1)
-                    EarningParticle(Earnings)
+                    local Earnings = game.Players.LocalPlayer:GetAttribute("Income") * Remotes.GetStat:InvokeServer("Income Multiplier") * Modules.MiningDetails[Level].EarningMultiplier * (Paths.Player:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1) * Remotes.GetBonus:InvokeServer("Mining","Income")
+                    EarningParticle(math.floor(Earnings))
 
 					Remotes.Pickaxe:FireServer(Mining)
                     local Particles = Mining.PrimaryPart:FindFirstChild("OnMine")
