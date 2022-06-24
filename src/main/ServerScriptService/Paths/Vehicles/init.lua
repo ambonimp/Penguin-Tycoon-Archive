@@ -17,7 +17,7 @@ end
 
 
 --- Variables --
-local AllVehicles = Services.SStorage.Vehicles
+local AllVehicles = Services.RStorage.Assets.Vehicles
 
 local SpawningDBs = {}
 
@@ -190,7 +190,7 @@ function Vehicles:SetupVehicleButton(Player, Button)
 						return
 					end
 				end
-				Vehicles:SpawnVehicle(Player, Button)
+				Vehicles:SpawnButtonVehicle(Player, Button)
 				task.wait(1)
 				SpawningDBs[Player.Name] = nil
 			end
@@ -198,44 +198,48 @@ function Vehicles:SetupVehicleButton(Player, Button)
 	end)
 end
 
-function Vehicles:SpawnVehicle(Player, Button)
+function Vehicles:SpawnButtonVehicle(Player, Button)
 	-- Vehicle variables
 	local Vehicle = Button:GetAttribute("Vehicle")
-	
+	Vehicles:SpawnVehicle(Player, Button:GetAttribute("Vehicle"), Button.Spawn.CFrame)
+end
+
+function Vehicles:SpawnVehicle(Player, Vehicle, CF)
 	-- Get player info
 	local Tycoon = Modules.Ownership:GetPlayerTycoon(Player)
 	local CurrentVehicles = Tycoon.Vehicles
-	
+
 	-- Remove current Vehicle if it's spawned
 	if CurrentVehicles:FindFirstChild(Vehicle) then
 		CurrentVehicles[Vehicle]:Destroy()
 	end
-	
+
 	-- Spawn new Vehicle
 	local Model = AllVehicles[Vehicle]:Clone()
 	local last = Model.MainPart.Anchored
 	Model.MainPart.Anchored = true
 	Model.Parent = CurrentVehicles
-	Model:PivotTo(Button.Spawn.CFrame)
+	Model:PivotTo(CF)
 	Model.MainPart.Anchored = last
-	
+
 	-- Other
 	local Seat = Model:WaitForChild("DriverSeat", 3)
-	
+
 	if Seat then
 		local Prompt = Seat:FindFirstChild("ProximityPrompt")
 		local VehicleType = Model:GetAttribute("VehicleType")
-		
+
 		if Prompt then
 			VehicleModules[VehicleType]:Setup(Model)
 		end
-		
+
 		task.wait(2.5)
 		if Seat.Occupant == nil then
 			Model.MainPart.Anchored = true
 		end
 	end
 end
+
 
 
 

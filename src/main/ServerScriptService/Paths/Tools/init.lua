@@ -17,16 +17,32 @@ for i, v in pairs(Dependency:GetChildren()) do ToolFunctions[v.Name] = require(v
 
 
 --- Tool Functions ---
-function Tools.AddTool(Player, Tool)
+function Tools.AddTool(Player, Tool, Temporary)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	
+
 	if Data then
 		-- If the tool isn't already in the player's inventory then..
 		if not Data["Tools"][Tool] then
 			Data["Tools"][Tool] = true
-			Remotes.Tools:FireClient(Player, "Add Tool", Tool)
+			Remotes.Tools:FireClient(Player, "Add Tool", Tool, Temporary)
 		end
+
 	end
+
+end
+
+function Tools.RemoveTool(Player, Tool)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+
+	if Data then
+		-- If the tool isn't already in the player's inventory then..
+		if Data["Tools"][Tool] then
+			Data["Tools"][Tool] = nil
+			Remotes.Tools:FireClient(Player, "Remove Tool", Tool)
+		end
+
+	end
+
 end
 
 function Tools.UnequipTool(Player)
@@ -62,7 +78,10 @@ function Tools.EquipTool(Player, Tool)
 			
 			for moduleName, module in pairs(ToolFunctions) do
 				if string.match(Tool, moduleName) then
-					module.Equipped(Player)
+					local Equipped = module.Equipped
+					if Equipped then
+						Equipped(Player)
+					end
 				end
 			end
 			

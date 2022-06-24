@@ -16,6 +16,7 @@ function Paths.Initiliaze()
 	Paths.Services.TeleportService = game:GetService("TeleportService");
 	Paths.Services.ContentProvider = game:GetService("ContentProvider");
 	Paths.Services.ContextActionService = game:GetService("ContextActionService");
+	Paths.Services.PhysicsService = game:GetService("PhysicsService")
 
 	Paths.Services.GuiService = game:GetService("GuiService");
 	
@@ -69,13 +70,17 @@ function Paths.Initiliaze()
 	Paths.Modules.GroupReward = require(script.GroupReward)
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
+	Paths.Modules.Maid = require(Paths.Services.RStorage.Modules.Maid)
+	Paths.Modules.Signal = require(Paths.Services.RStorage.Modules.Signal)
 	Paths.Modules.Verification = require(script.Verification)
 	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
 	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
 	Paths.Modules.MiningDetails = require(Paths.Services.RStorage.Modules.MiningDetails)
+	Paths.Modules.VehicleDetails = require(Paths.Services.RStorage.Modules.VehicleDetails)
 	Paths.Modules.DeviceDetector = require(script.DeviceDetector)
 	Paths.Modules.Feedback = require(script.Feedback)
 	
+
 
 	-- Tool Modules
 	Paths.Modules.Tools = require(script.Tools);
@@ -91,6 +96,7 @@ function Paths.Initiliaze()
 	print("ui modules")
 	Paths.Modules.UpdatingUI = require(script.UI.Updating)
 	Paths.Modules.UIAnimations = require(script.UI.Animations)
+	Paths.Modules.Transitions = require(script.UI.Animations)
 	Paths.Modules.Buttons = require(script.UI.Buttons)
 	Paths.Modules.Teleporting = require(script.UI.Teleporting)
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
@@ -126,7 +132,6 @@ function Paths.Initiliaze()
 	-- Other Modules (That have to be required after)
 	Paths.Modules.Tycoon = require(script.Tycoon)
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
-	Paths.Modules.YoutubeMinigame = require(script.Tycoon.YoutubeMinigame)
 	Paths.Modules.TycoonProgressBar = require(script.UI.TycoonProgressBar)
 	
 --- Load Version ---
