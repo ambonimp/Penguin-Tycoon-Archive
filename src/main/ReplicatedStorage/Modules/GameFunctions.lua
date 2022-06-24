@@ -87,7 +87,6 @@ function GameFunctions:GetMoneyProductReward(Product, Income,Player)
 
 		if TotalReward < total then
 			set = true
-			print("Was Less",TotalReward,total,TotalReward + (total-TotalReward))
 			TotalReward = TotalReward + (total-TotalReward)
 		end
 	end

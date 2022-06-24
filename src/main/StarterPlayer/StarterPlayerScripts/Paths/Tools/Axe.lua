@@ -64,7 +64,9 @@ end)
 coroutine.wrap(function()
 	local n1 = 2
 	while true do
+		s = 1
 		if string.match(Paths.Player:GetAttribute("Tool"), "Axe") then
+			s = Remotes.GetBonus:InvokeServer("Woodcutting","Speed")
 			local Char = Paths.Player.Character
 			if Char and Char:FindFirstChild("HumanoidRootPart") then
 				if Char:FindFirstChild("WoodcuttingAnim") == nil then
@@ -90,7 +92,7 @@ coroutine.wrap(function()
 					if n1 > 3 then
 						n1 = 1
 					end
-					Animation:Play(nil,nil,1.25)
+					Animation:Play(nil,nil,1.25 * s)
 					Animation.Looped = false
 				elseif Animation then
 					Animation:Stop()
@@ -124,7 +126,7 @@ coroutine.wrap(function()
 		elseif Animation then
 			Animation:Stop()
 		end
-		task.wait(.5)
+		task.wait(.5/s)
 	end
 end)()
 

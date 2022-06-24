@@ -190,7 +190,7 @@ function loadPlayer(Player)
 						raycastParams.FilterDescendantsInstances = {Player.Character,Model}
 						raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
 						
-						local raycastResult = workspace:Raycast((Player.Character.PrimaryPart.CFrame*cfOffset).Position+Vector3.new(0,100,0), Vector3.new(0,-200,0), raycastParams)
+						local raycastResult = workspace:Raycast((Player.Character.PrimaryPart.CFrame*cfOffset).Position+Vector3.new(0,3.5,0), Vector3.new(0,-200,0), raycastParams)
 						if raycastResult and raycastResult.Material ~= Enum.Material.Water then
 							if moving then
 								if PetAnims[Model].Walk.IsPlaying == false then
@@ -451,7 +451,15 @@ function updateUI(data,kind,ID)
 				OpenEdit(ID)
 				return
 			end
-			if State == "Deleting" then
+			if State == "Deleting" and table.find(RealData.Equipped,ID) then
+				if table.find(RealData.Equipped,ID)  then
+					PetsFrame.Top.Text = "Can't edit an equipped pet"
+					task.wait(4)
+					if PetsFrame.Top.Text == "Can't edit an equipped pet" then
+						PetsFrame.Top.Text = "Select pets to delete"
+					end
+					return
+				end
 				for i,v in pairs (Deleting) do
 					if v[1] == ID and v[2] == Frame then
 						Frame.X.Visible = false
@@ -948,6 +956,7 @@ function openEgg(Image,Name,Rarity,Color)
 	PetAdoptionUI.Rarity:TweenSizeAndPosition(UDim2.new(.25,0,.08,0),UDim2.new(.5,0,.225,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
 	PetAdoptionUI.PetName:TweenSizeAndPosition(UDim2.new(.3,0,.108,0),UDim2.new(.5,0,.125,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
 	PetAdoptionUI.Icon:TweenSize(UDim2.new(.35,0,.5,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
+	Dependency.Sounds.Ring:Play()
 	task.wait(1)
 	PetAdoptionUI.Continue.Visible = true
 	PetAdoptionUI.Continue.MouseButton1Down:wait()
@@ -1001,6 +1010,7 @@ task.spawn(function()
 			local Pet = PetDetails.Pets[v.Id]
 			local Rarity = PetDetails.Rarities[v.Percentage]
 			local Template = Dependency.ShopTemplate:Clone()
+			print(Pet[1],Pet[2])
 			local PetModel = PetsAssets:FindFirstChild(string.upper(Pet[1])):FindFirstChild(string.upper(Pet[2]))
 
 			Template.Amount.Text = ""

@@ -220,5 +220,6 @@ Remotes.UnequipPet.OnServerInvoke = UnequipPet
 Remotes.MergePet.OnServerInvoke = Merge
 Remotes.PetName.OnServerInvoke = EditName
 Remotes.DeletePet.OnServerInvoke = DeletePet
+Remotes.GetBonus.OnServerInvoke = Pets.getBonus
 
 return Pets

@@ -13,7 +13,7 @@ function AnimationService.InitializeAnimation(localPlayer, animationType, priori
 		
 	local animation = animator:LoadAnimation(animationType)
 	animation.Priority = priority
-	animation:play()
+	animation:play(.1,nil,1 * replicatedStorage.Remotes.GetBonus:InvokeServer("Fishing","Speed"))
 	return animation
 end
 

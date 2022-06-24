@@ -195,9 +195,9 @@ function GetDebounceSeconds(player)
 	local debounce
 
 	if rod and (rod == "Gold Fishing Rod" or rod == "Rainbow Fishing Rod") then
-		debounce = 1
+		debounce = 1 / modules.Pets.getBonus(player,"Fishing","Speed")
 	else
-		debounce = 3
+		debounce = 3 / modules.Pets.getBonus(player,"Fishing","Speed")
 	end
 	return debounce
 end

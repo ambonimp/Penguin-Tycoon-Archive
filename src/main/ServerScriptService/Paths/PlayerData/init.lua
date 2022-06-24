@@ -300,18 +300,12 @@ local function SetupNewStats(Player)
 		}
 	end
 
-	if not Data["Pets"] then
-		Data["Pets"] = {
-			Equipped = nil,
+	if not Data["PetsData"] then
+		Data["PetsData"] = {
+			Equipped = {},
 			PetsOwned = {
 			},
-			Food = {
-				--{Name = "Carrot", Amount = 4},
-			},
-			Toys = {
-				--{Name = "Plushy"},
-			},
-			MaxEquip = 6,
+			MaxEquip = 3,
 			Unlocked = {},
 		}
 	end
@@ -512,6 +506,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 				breed, v.RealName,v.Name,"LEGACY",0,{1.05,"All","Income"}
 			}
 		end
+		PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
 		PlayerData.sessionData[Player.Name]["Pets"] = nil
 	end
 	

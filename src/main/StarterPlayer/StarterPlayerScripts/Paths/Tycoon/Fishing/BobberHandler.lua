@@ -121,7 +121,7 @@ function BobberHandler.MoveFrom(character, bobber, isPlayer)
 	-- remove bobber collision
 	bobber.PrimaryPart.CanCollide = false
 	
-	if frameTime < 1 then frameTime = 1 end
+	if frameTime < 1 then frameTime = 1 / remotes.GetBonus:InvokeServer("Fishing","Speed") end
 	
 	for t = 0,1, 0.06 * frameTime do
 		local TargetPosition = funcLib.QuadraticBezier(t , startPos, topPos, endPos)
