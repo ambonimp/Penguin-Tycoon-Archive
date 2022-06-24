@@ -60,12 +60,14 @@ function Character.CharacterAdded(Character)
 				last = Humanoid.SeatPart
 			elseif last and Humanoid.SeatPart == nil then
 				local Model = last.Parent
-				if Model.MainPart:FindFirstChild("AngularVelocity") then
-					Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, 0, 0)
-					Model.MainPart.BodyForce.Force = Vector3.new(0,0,0)
+				if Model:IsDescendantOf(workspace) then
+					if Model.MainPart:FindFirstChild("AngularVelocity") then
+						Model.MainPart.AngularVelocity.AngularVelocity = Vector3.new(0, 0, 0)
+						Model.MainPart.BodyForce.Force = Vector3.new(0,0,0)
+					end
+					Model.MainPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+					Model.MainPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
 				end
-				Model.MainPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
-				Model.MainPart.AssemblyAngularVelocity = Vector3.new(0,0,0)
 
 				last = nil
 			end

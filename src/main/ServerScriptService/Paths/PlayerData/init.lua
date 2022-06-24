@@ -22,6 +22,228 @@ PlayerData.PlayerDataStore = Services.DataStoreService:GetDataStore(Store)
 local DATASTORE_RETRIES = 3
 
 
+
+
+
+--- Functions ---
+local function getData(key)
+	return PlayerData.DataStoreRetry(function()
+		return PlayerData.PlayerDataStore:GetAsync(key)
+	end)
+end
+
+local function Defaults(Player)
+	return {
+		-- Session Stats
+		["Money"] = 50,
+		["Gems"] = (IsTesting or IsQA) and 10000 or 0,
+		["Income"] = 0,
+		["Tycoon"] = {},
+		["Penguins"] = {},
+
+		["My Penguin"] = {
+			["Name"] = Player.DisplayName;
+			["Level"] = 0;
+			["BodyColor"] = "Default";
+			["Accessory"] = "None";
+			["Eyes"] = "Default";
+			["Outfit"] = "None";
+		},
+
+		-- Possessions
+		["PetsData"] = {
+			Equipped = {},
+			PetsOwned = {},
+			MaxEquip = 3,
+			Unlocked = {},
+		},
+
+		["Outfits"] = {
+			["None"] = true,
+		},
+
+		["Tools"] = {
+			["Vehicle Spawner"] = true,
+		},
+
+		["Accessories"] = {
+			["None"] = true;
+		},
+
+		["Emotes"] = {
+			["Sit"] = true;
+			["Wave"] = true;
+			["Sleep"] = true;
+			["Point"] = true;
+			["Salute"] = true;
+			["Whack"] = true;
+			["Dab"] = true;
+			["Wavy"] = true;
+			["Clap"] = true;
+			["Hug"] = true;
+			["Shy"] = true;
+			["Floss"] = true;
+			["Push Ups"] = true;
+			["Stove Opening"] = true;
+			["Dough Flipping"] = true;
+			["Cheering"] = true;
+			["Crying"] = true;
+			["Giving Pizza"] = true;
+			["Vegetable Cutting"] = true;
+		},
+
+		["Equipped Emotes"] = {
+			["1"] = "Sit";
+			["2"] = "Wave";
+			["3"] = "Sleep";
+			["4"] = "Point";
+			["5"] = "Salute";
+		},
+
+		["Eyes"] = {
+			["Default"] = true;
+			["Angry"] = true;
+			["Surprised"] = true;
+			["Unamused"] = true;
+			["Scared"] = true;
+		},
+
+		["Eyes Rotation"] = Modules.AllEyes:ChooseStoreEyes(),
+
+		["Rotation Timer"] = os.time();
+		--["Rotation Index"] = 1;
+		["Accessory Rotation"] = Modules.AllAccessories:ChooseStoreAccessories();
+
+		-- Social Stats
+		["Hearts"] = 0,
+		["Regular Hearts Given"] = {},
+		["VIP Hearts Given"] = {},
+
+		-- Long term stats
+		["Stats"] = {
+			["Total Money"] = 50,
+			["Total Playtime"] = 0,
+			["Total Gems"] = 0,
+		},
+
+		["LastPlayTime"] = os.time()-(30*60),
+
+		-- Fish
+		["Fish Found"] = {},
+		["Enchanted Fish Found"] = {},
+
+		-- Rewards
+		["Discord Verification"] = false,
+		["Twitter Verification"] = false,
+
+		["Group Reward Claimed"] = false,
+		["Applied Boosts"] = {},
+
+		["Gamepasses"] = {},
+		["Applied Gamepasses"] = {},
+
+		["Tycoon Rewards"] = {},
+
+		["Redeemed Codes"] = {},
+
+		-- Settings
+		["Settings"] = {
+			["Chat Tag"] = true,
+			["Music"] = true,
+			["Progress Bar"] = true,
+			["Faster Speed"] = true,
+			["Double Jump"] = true,
+			["Show Hearts"] = true,
+		},
+
+		-- Multipliers
+		["Income Multiplier"] = 1,
+		["Gem Multiplier"] = 1,
+		["Walkspeed Multiplier"] = 1,
+
+
+		["Boosts"] = { --[1]owned, [2]time left in current boost
+			["Super Fishing Luck"] = {0,0},
+			["Ultra Fishing Luck"] = {0,0},
+			["x3 Money"] = {0,0},
+		},
+
+		-- Vehicles
+		["PlaneUnlocked"] = {
+			[1] = false,
+			[2] = {
+				["Wheel 1"] = false,
+				["Wheel 2"] = false,
+				["Propeller"] = false,
+				["Landing Gear"] = false,
+				["Body"] = false,
+				["Seat"] = false,
+				["Wing 1"] = false,
+				["Wing 2"] = false,
+				["Stabilizer 1"] = false,
+				["Stabilizer 2"] = false,
+			},
+		},
+
+		["BoatUnlocked"] = {
+			[1] = false,
+			[2] = {
+				["Hull"] = false,
+				["Windows"] = false,
+				["Deck"] = false,
+				["Lifebuoy"] = false,
+				["Helm"] = false,
+				["Seat"] = false,
+				["Mast"] = false,
+				["Sail 1"] = false,
+				["Sail 2"] = false,
+				["Flag"] = false,
+			},
+		},
+
+		-- Other
+		["Quests"] = {},
+
+		["Playtime"] = {0,0,{}},
+		["Spin"] = {true,0,os.time()},
+
+		-- Minigames
+		["Youtube Minigame Score"] = 0,
+		["YoutubeStats"] = {
+			Likes = 0,
+			Subscribers = 0,
+		},
+
+		["Military Minigame Score"] = math.huge,
+
+		["Mining"] = {
+			Level = 1,
+			Mined = {
+				Coal = 0,
+				Iron = 0,
+				Gold = 0,
+				Amethyst = 0,
+				Ruby = 0,
+				Emerald = 0,
+				Diamond = 0,
+			},
+		}
+	}
+
+end
+
+-- Recursively give player any data fields that they might be missing
+local function Reconcile(Data, Default)
+	for k, v in pairs(Default) do
+		if not Data[k] then
+			Data[k] = Default[k]
+		elseif typeof(v) == "table" then
+			Reconcile(Data[k], v)
+		end
+	end
+
+end
+
 --- Data Functions ---
 function PlayerData.DataStoreRetry(dataStoreFunction)
 	local tries = 0
@@ -38,13 +260,6 @@ function PlayerData.DataStoreRetry(dataStoreFunction)
 	return success, data
 end
 
-
---- Functions ---
-local function getData(key)
-	return PlayerData.DataStoreRetry(function()
-		return PlayerData.PlayerDataStore:GetAsync(key)
-	end)
-end
 
 --- Setting Up Player Data ---
 -- Loads player data or sets new data if they don't have existing data
@@ -63,107 +278,7 @@ function PlayerData:SetupPlayerData(player)
 	else
 		Modules.Save.LastSaved[player.Name] = tick() - 6
 		if not data then--or player.Name == "Kippiiq" then
-			PlayerData.sessionData[player.Name] = {
-				-- Session Stats
-				["Money"] = 50,
-				["Income"] = 0,
-				["Tycoon"] = {},
-				["Penguins"] = {},
-
-				["My Penguin"] = {
-					["Name"] = player.DisplayName;
-					["Level"] = 0;
-					["BodyColor"] = "Default";
-					["Accessory"] = "None";
-					["Eyes"] = "Default";
-				},
-				-- Accessory Info
-				["Accessories"] = {
-					["None"] = true;
-				},
-
-				["Emotes"] = {
-					["Sit"] = true;
-					["Wave"] = true;
-					["Sleep"] = true;
-					["Point"] = true;
-					["Salute"] = true;
-					["Whack"] = true;
-					["Dab"] = true;
-					["Wavy"] = true;
-					["Clap"] = true;
-					["Hug"] = true;
-					["Shy"] = true;
-					["Floss"] = true;
-					["Push Ups"] = true;
-					["Stove Opening"] = true;
-					["Dough Flipping"] = true;
-					["Cheering"] = true;
-					["Crying"] = true;
-					["Giving Pizza"] = true;
-					["Vegetable Cutting"] = true;
-				},
-
-				["Rotation Timer"] = os.time();
-				--["Rotation Index"] = 1;
-				["Accessory Rotation"] = Modules.AllAccessories:ChooseStoreAccessories();
-
-				-- Social Stats
-				["Hearts"] = 0,
-				["Regular Hearts Given"] = {},
-				["VIP Hearts Given"] = {},
-
-				-- Long term stats
-				["Stats"] = {
-					["Total Money"] = 50,
-					["Total Playtime"] = 0,
-				},
-
-				-- Settings
-				["Settings"] = {
-					["Chat Tag"] = true,
-					["Music"] = true,
-					["Progress Bar "] = true,
-					["Faster Speed"] = true,
-					["Double Jump"] = true,
-					["Show Hearts"] = true,
-				},
-
-				-- Other
-				["Income Multiplier"] = 1,
-				["Walkspeed Multiplier"] = 1,
-
-				["Group Reward Claimed"] = false,
-				["Applied Boosts"] = {},
-
-				["Gamepasses"] = {},
-				["Applied Gamepasses"] = {},
-
-				["Redeemed Codes"] = {},
-
-				["Youtube Minigame Score"] = 0,
-				["YoutubeStats"] = {
-					Likes = 0,
-					Subscribers = 0,
-				},
-
-				["Tycoon Rewards"] = {},
-
-				["Mining"] = {
-					Level = 1,
-					Mined = {
-						Coal = 0,
-						Iron = 0,
-						Gold = 0,
-						Amethyst = 0,
-						Ruby = 0,
-						Emerald = 0,
-						Diamond = 0,
-					},
-				}
-
-			}
-
+			PlayerData.sessionData[player.Name] = {}
 		else
 			PlayerData.sessionData[player.Name] = data
 		end
@@ -172,8 +287,6 @@ function PlayerData:SetupPlayerData(player)
 
 end
 
-
---- DATA FUNCTIONS ---
 local function getPlayerIncome(Player)
 	local previousIncome = PlayerData.sessionData[Player.Name]["Income"]
 
@@ -198,235 +311,17 @@ local function getPlayerIncome(Player)
 	Player:SetAttribute("Income",total)
 end
 
-
-
 -- setting up new stats that the player doesn't have by default, or, for non-new players, since they won't get the default data anyway
 local function SetupNewStats(Player)
 	local Data = PlayerData.sessionData[Player.Name]
 	if not Data then return end
-
-	-- Eyes
-	if not Data["Eyes"] then
-		Data["Eyes"] = {
-			["Default"] = true;
-			["Angry"] = true;
-			["Surprised"] = true;
-			["Unamused"] = true;
-			["Scared"] = true;
-		}
-	end
-
-	if not Data["Eyes Rotation"] then
-		Data["Eyes Rotation"] = Modules.AllEyes:ChooseStoreEyes();
-	end
-
-	if not Data["LastPlayTime"] then
-		Data["LastPlayTime"] = os.time()-(30*60)
-	end
-
-	if not Data["Gems"] then
-		if IsTesting or IsQA then
-			Data["Gems"] = 10000
-		else
-			Data["Gems"] = 0
-		end
-		Data["Stats"]["Total Gems"] = 0
-	end
 
 	if IsTesting or IsQA then
 		Data["Money"] = 1000000000
 		Data["Gems"] = 1000000000
 	end
 
-	if not Data["Tools"] then
-		Data["Tools"] = {}
-	end
-
-	if not Data["Fish Found"] then
-		Data["Fish Found"] = {}
-	end
-
-	if not Data["Enchanted Fish Found"] then
-		Data["Enchanted Fish Found"] = {}
-	end
-
-	if not Data["Twitter Verification"] then
-		Data["Twitter Verification"] = false
-	end
-	if not Data["Discord Verification"] then
-		Data["Discord Verification"] = false
-	end
-	if not Data["Emotes"] then
-		Data["Emotes"] = {
-			["Sit"] = true;
-			["Wave"] = true;
-			["Sleep"] = true;
-			["Point"] = true;
-			["Salute"] = true;
-			["Whack"] = true;
-			["Dab"] = true;
-			["Wavy"] = true;
-			["Clap"] = true;
-			["Hug"] = true;
-			["Shy"] = true;
-			["Floss"] = true;
-			["Push Ups"] = true;
-			["Stove Opening"] = true;
-			["Dough Flipping"] = true;
-			["Cheering"] = true;
-			["Crying"] = true;
-			["Giving Pizza"] = true;
-			["Vegetable Cutting"] = true;
-		}
-	end
-
-	if not Data["Emotes"]["Vegetable Cutting"] then
-		Data["Emotes"]["Vegetable Cutting"] = true;
-		Data["Emotes"]["Giving Pizza"] = true;
-		Data["Emotes"]["Crying"] = true;
-		Data["Emotes"]["Stove Opening"] = true;
-		Data["Emotes"]["Dough Flipping"] = true;
-		Data["Emotes"]["Cheering"] = true;
-	end
-
-
-	if not Data["Equipped Emotes"] then
-		Data["Equipped Emotes"] = {
-			["1"] = "Sit";
-			["2"] = "Wave";
-			["3"] = "Sleep";
-			["4"] = "Point";
-			["5"] = "Salute";
-		}
-	end
-
-	if not Data["PetsData"] then
-		Data["PetsData"] = {
-			Equipped = {},
-			PetsOwned = {
-			},
-			MaxEquip = 3,
-			Unlocked = {},
-		}
-	end
-
-	if not Data["Outfits"] then
-		Data["Outfits"] = {
-			["None"] = true,
-		}
-	end
-
-	if not Data["My Penguin"]["Outfit"] then
-		Data["My Penguin"]["Outfit"] = "None"
-	end
-
-	if not Data["Gem Multiplier"] then
-		Data["Gem Multiplier"] = 1
-	end
-
-	if not Data["Boosts"] then
-		Data["Boosts"] = { --[1]owned, [2]time left in current boost
-			["Super Fishing Luck"] = {0,0},
-			["Ultra Fishing Luck"] = {0,0},
-			["x3 Money"] = {0,0},
-		}
-	end
-
-	if not Data["Boosts"]["x3 Money"] then
-		Data["Boosts"]["x3 Money"] = {0,0}
-	end
-
-	if not Data["Boosts"]["Super Fishing Luck"] then
-		Data["Boosts"]["Super Fishing Luck"] = {0,0}
-	end
-
-	if not Data["Boosts"]["Ultra Fishing Luck"] then
-		Data["Boosts"]["Ultra Fishing Luck"] = {0,0}
-	end
-
-	if not Data["Spin"] then
-		Data["Spin"] = {true,0,os.time()}
-	end
-
-	if not Data["Playtime"] then
-		Data["Playtime"] = {0,0,{}}
-	end
-
-	if not Data["BoatUnlocked"] then
-		Data["BoatUnlocked"] = {
-			[1] = false,
-			[2] = {
-				["Hull"] = false,
-				["Windows"] = false,
-				["Deck"] = false,
-				["Lifebuoy"] = false,
-				["Helm"] = false,
-				["Seat"] = false,
-				["Mast"] = false,
-				["Sail 1"] = false,
-				["Sail 2"] = false,
-				["Flag"] = false,
-			},
-		}
-	end
-
-	if not Data["PlaneUnlocked"] then
-		Data["PlaneUnlocked"] = {
-			[1] = false,
-			[2] = {
-				["Wheel 1"] = false,
-				["Wheel 2"] = false,
-				["Propeller"] = false,
-				["Landing Gear"] = false,
-				["Body"] = false,
-				["Seat"] = false,
-				["Wing 1"] = false,
-				["Wing 2"] = false,
-				["Stabilizer 1"] = false,
-				["Stabilizer 2"] = false,
-			},
-		}
-	end
-
-	if not Data["Quests"] then
-		Data["Quests"] = {}
-	end
-
-	if not Data["Youtube Minigame Score"] then
-		Data["Youtube Minigame Score"] = 0
-	end
-
-	if not Data["YoutubeStats"] then
-		Data["YoutubeStats"] = {
-			Likes = 0,
-			Subscribers = 0,
-		}
-	end
-
-	if not Data["Tycoon Rewards"] then
-		Data["Tycoon Rewards"] = {}
-
-	end
-
-	if not Data.Mining then
-		Data["Mining"] = {
-			Level = 1,
-			Mined = {
-				Coal = 0,
-				Iron = 0,
-				Gold = 0,
-				Amethyst = 0,
-				Ruby = 0,
-				Emerald = 0,
-				Diamond = 0,
-			},
-		}
-	end
-
-	if not Data.Settings["Progress Bar"] then
-		Data.Settings["Progress Bar"] = true
-	end
-
+	Reconcile(Data, Defaults(Player))
 end
 
 -- Send back the player stat that the client requests
@@ -439,7 +334,6 @@ Remotes.GetStat.OnServerInvoke = function(player, stat)
 		end
 	end
 end
-
 --- INITIALIZE PLAYER ---
 game.Players.PlayerAdded:Connect(function(Player)
 
@@ -509,8 +403,10 @@ game.Players.PlayerAdded:Connect(function(Player)
 		PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
 		PlayerData.sessionData[Player.Name]["Pets"] = nil
 	end
-	
-	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip) 
+
+	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip)
+
+	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip)
 
 	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
@@ -600,5 +496,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 	-- Setup Chat
 	Modules.Chat:ApplyChatTag(Player)
 end)
+
 
 return PlayerData

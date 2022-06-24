@@ -1,8 +1,7 @@
 local minigame = {}
 
 --- Main Variables ---
---- Main Variables ---
-local Paths = require(script.Parent.Parent)
+local Paths = require(script.Parent.Parent.Parent)
 
 local Services = Paths.Services
 local Modules = Paths.Modules
@@ -11,7 +10,6 @@ local Remotes = Paths.Remotes
 local debounces = {}
 
 local UPLOAD_COOLDOWN = 30
-local MAX_SCORE = 40
 
 -- This event is only fired when the game is finished
 Remotes.YoutubeMinigameFinished.OnServerEvent:Connect(function(player, computer, score, subs, likes)
@@ -34,6 +32,7 @@ Remotes.YoutubeMinigameFinished.OnServerEvent:Connect(function(player, computer,
 
             task.wait(UPLOAD_COOLDOWN * 0.6) -- Shorter to account for latenc
             debounces[player] = false
+
         end
 
     end

@@ -56,6 +56,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Badges = require(Paths.Services.RStorage.Modules.Badges)
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
 	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
+	Paths.Modules.VehicleDetails = require(Paths.Services.RStorage.Modules.VehicleDetails)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Feedback = require(script.Feedback)
 	
@@ -73,7 +74,6 @@ function Paths.Initiliaze()
 	
 	-- Tycoon Modules
 	Paths.Modules.Tycoon = require(script.Tycoon)
-	Paths.Modules.YoutubeMinigame = require(script.Tycoon.YoutubeMinigame)
 	Paths.Modules.Initiate = require(script.Tycoon.Initiate)
 	Paths.Modules.Vehicles = require(script.Vehicles)
 	Paths.Modules.Ownership = require(script.Tycoon.Ownership)
