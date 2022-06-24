@@ -83,6 +83,16 @@ end
 
 local last = nil
 
+function IsValueValid(Stat, Value)
+	if Stat == "Skate Race Record" then
+		return Value > Modules.EventsConfig["Skate Race"].FastestPossible*100
+	elseif Stat == "Sled Race" then
+		return Value > 30
+	end
+
+	return true
+end
+
 function CheckGreastest()
 	local highest = {}
 	for i,v in pairs (game.Players:GetPlayers()) do
@@ -131,6 +141,10 @@ function Leaderboards:beginLeaderboardUpdate()
 								Data["Stats"][Stat] = 12000
 								lbInfo.DataStore:SetAsync(Player.UserId, 12000)
 							end)
+						elseif Stat == "Sled Race" then
+							if Data["Stats"][Stat] < 30 then
+								Data["Stats"][Stat] = 1000000
+							end
 						else
 							PlrStat = math.floor(PlrStat)
 							pcall(function()
@@ -139,13 +153,11 @@ function Leaderboards:beginLeaderboardUpdate()
 								end)
 							end)
 						end
-						if Stat == "Sled Race" and Data["Stats"][Stat] < 30 then
-							Data["Stats"][Stat] = 1000000
-						end
-
 
 					end
+
 				end
+
 			end
 
 			local pages = nil
@@ -162,13 +174,19 @@ function Leaderboards:beginLeaderboardUpdate()
 
 				-- Load players into playerlist
 				for rank, player in ipairs(top) do
+					local Value = player.value
+					if not IsValueValid(Stat, Value) then
+						table.remove(top, rank)
+						continue
+					end
+
 					local userid = player.key
 					local username = "[Failed To Load]"
 					pcall(function()
 						username = game.Players:GetNameFromUserIdAsync(userid)
 					end)
 
-					local Value = player.value
+
 					local ValueFormatted
 
 					if Stat == "Total Playtime" then

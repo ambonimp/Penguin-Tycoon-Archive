@@ -15,6 +15,7 @@ Badges.Purchases = {
 	["Plane#1"] = 2126439191;
 
 	["Path#26"] = 2126696346;
+	["Mining Island!#1"] = 2126876430;
 
 	["New Island!#0"] = 2124907090; -- Starter Island (Given immediately, since its not purchased)
 	["New Island!#1"] = 2124907091;
@@ -48,6 +49,7 @@ Badges.Purchases = {
 	["New Island!#25"] = 2124929786; 
 	["New Island!#26"] = 2124929787;
 	["New Island!#29"] = 2124929788; --Hospital
+
 }
 
 return Badges

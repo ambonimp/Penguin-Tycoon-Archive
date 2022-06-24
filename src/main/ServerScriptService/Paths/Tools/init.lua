@@ -29,7 +29,6 @@ function Tools.AddTool(Player, Tool)
 	end
 end
 
-
 function Tools.UnequipTool(Player)
 	local character = Player.Character
 	

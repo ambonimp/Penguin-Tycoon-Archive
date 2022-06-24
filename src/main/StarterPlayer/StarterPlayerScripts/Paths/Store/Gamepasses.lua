@@ -29,7 +29,8 @@ local AllGamepasses = {
 	{47438416,"Catch fish twice as fast and increase the chance of catching rainbow fish!"}, -- rainbow fishing rod,
 	{47438471,"Double gems from everything!"}, -- x2 gems
 	{47438595,"Ability to use the map in Penguin City!"}, -- map teleport
-	{49090546, "Capture 3 fish per cast!"}
+	{49090546, "Capture 3 fish per cast!"},
+	{52724179, "Double money from ores mined!"} -- Gold Pickaxe
 }
 
 Popups.load(AllGamepasses)
@@ -65,14 +66,23 @@ Remotes.Store.OnClientEvent:Connect(function(PurchaseType, gamepass, purchased)
 end)
 
 -- Load Gamepasses
-coroutine.wrap(function()
+task.spawn(function()
 	task.wait(2)
 	
 	local OwnedPasses = nil
 	repeat OwnedPasses = Remotes.GetStat:InvokeServer("Gamepasses") if not OwnedPasses then wait(1) end until OwnedPasses
 
 	for i, Gamepass in pairs(AllGamepasses) do
-		local Info = Services.MPService:GetProductInfo(Gamepass[1], Enum.InfoType.GamePass)
+		local Info
+		for _ = 1, 5 do
+			local Success, Results = pcall(function()
+				return Services.MPService:GetProductInfo(Gamepass[1], Enum.InfoType.GamePass)
+			end)
+			if Success then
+				Info = Results
+				break
+			end
+		end
 
 		if Info["IsForSale"] then
 			local Template = Dependency.GamepassTemplate:Clone()
@@ -93,9 +103,12 @@ coroutine.wrap(function()
 					Services.MPService:PromptGamePassPurchase(Paths.Player, Gamepass[1])
 				end
 			end)
+
 		end
+
 	end
-end)()
+
+end)
 
 
 return Gamepasses

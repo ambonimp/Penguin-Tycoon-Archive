@@ -51,11 +51,11 @@ local PrevName = "nil"
 CustomizationUI.PenguinNameBG.PenguinName.Changed:Connect(function(property)
 	if property == "Text" then
 		local length = string.len(CustomizationUI.PenguinNameBG.PenguinName.Text)
-		
+
 		if length > 20 then
 			CustomizationUI.PenguinNameBG.PenguinName.Text = PrevName
 		end
-		
+
 		PrevName = CustomizationUI.PenguinNameBG.PenguinName.Text
 	end
 end)
@@ -99,7 +99,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		CustomizationUI.Customization.Buttons.Outfits.Visible = false
 		-- Make plr invis if it's a regular/tycoon penguin
 		Modules.Character:Invisible(true)
-		
+
 	elseif Penguin:GetAttribute("Penguin") then
 		--CameraAngleCF = Penguin.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(10), math.rad(180), 0) * CFrame.new(0, 2, 5) -- viewport angle
 		CameraAngleCF = Penguin.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(5), math.rad(178), math.rad(0)) * CFrame.new(-3, 0.5, 8)
@@ -111,20 +111,20 @@ function Customization:EnterUI(Penguin, PreviousUI)
 	
 	CustomizationUI.PenguinSelected.Value = Penguin
 	
-	
+
 	-- Disable things for entering ui
 	Modules.Character:Freeze()
-	
+
 	if Penguin:FindFirstChild("Info") then
 		Penguin.Info.ProximityPrompt.Enabled = false
 	end
 	UI.Left.GemDisplay.Visible = false
 	UI.Left.Buttons.Visible = false
 	UI.Center.Visible = false
-	UI.Top.MoneyDisplay.BuyMore.Visible = false
-	UI.Top.GemDisplay.BuyMore.Visible = false
-	
-	
+	UI.Top.Currencies.MoneyDisplay.BuyMore.Visible = false
+	UI.Top.Currencies.GemDisplay.BuyMore.Visible = false
+
+
 	-- For regular, tycoon penguins
 	if Penguin:FindFirstChild("Info") then
 		-- Get penguin info
@@ -141,17 +141,17 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		end
 		local Income = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), Level)
 		local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), Level + 1)
-		
+
 		-- Set text
 		CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.Info.PenguinInfo.PenguinName.Text
 		CustomizationUI.PenguinNameBG.PenguinLevel.Text = Penguin.Info.PenguinInfo.PenguinLevel.Text--.. ' <font color="rgb(57,225,91)">(+'..Modules.Format:FormatComma(Income)..")</font>"
-		
+
 		if Level < Modules.GameInfo.MAX_PENGUIN_LEVEL then
 			CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
 		else
 			CustomizationUI.Upgrade.TheText.Text = "Max Level"
 		end
-		
+
 	else -- For the player's penguin
 		local Level = Paths.Player:GetAttribute("Level")
 		CustomizationUI.Instant.Position = UDim2.fromScale(0.645,1.015)
@@ -159,30 +159,30 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		CustomizationUI.Instant.Visible = true
 		local Income = Modules.GameFunctions:GetPlayerPenguinIncome(Level)
 		local UpgradePrice = Modules.GameFunctions:GetPlayerPenguinPrice(Level + 1)
-		
+
 		CustomizationUI.Upgrade.TheText.Text = "N/A"
 		CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.HumanoidRootPart.CustomName.PlrName.Text
 		CustomizationUI.PenguinNameBG.PenguinLevel.Text = "Level "..Level..' <font color="rgb(38,255,14)">(+ $'..Modules.Format:FormatComma(Income)..")</font>"
 		CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
 	end
-	
-	
+
+
 	-- Open Customization UI
 	CustomizationUI.Position = UDim2.new(-1.5, 0, 0.5, 0)
 	CustomizationUI.Visible = true
 	CustomizationUI:TweenPosition(UDim2.new(0.4, 0, 0.5, 0), "Out", "Back", 0.4, true)
-	
-	
+
+
 	-- Tween Camera to the Penguin
 	Modules.Camera:AttachTo(CameraAngleCF, true)
-	
-	
+
+
 	-- Set color selected ui to the color the penguin has (if applicable)
 	SelectedColorUI.Parent = script
 	SelectedAccessoryUI.Parent = script.Parent.PenguinsUI
 	SelectedEyesUI.Parent = script.Parent.PenguinsUI
-	
-	
+
+
 	-- Customization UI checking currently selected items
 	local CurrentHat = Penguin:FindFirstChild("Customization_Accessory")
 
@@ -201,12 +201,12 @@ function Customization:EnterUI(Penguin, PreviousUI)
 	end
 	
 	local PenguinBody = Penguin:WaitForChild("Main", 3)
-	
+
 	if PenguinBody then
 		local PenguinR = math.ceil(PenguinBody.Color.R*255)
 		local PenguinG = math.ceil(PenguinBody.Color.G*255)
 		local PenguinB = math.ceil(PenguinBody.Color.B*255)
-		
+
 		for i, v in pairs(CustomizationUI.Customization.Sections.Color.Colors:GetChildren()) do
 			if i%20 == 0 then task.wait() end
 			if v:IsA("ImageButton") then
@@ -222,34 +222,34 @@ function Customization:ExitUI()
 	-- Make plr visible
 	Modules.Character:Visible()
 	Modules.Character:Unfreeze()
-	
+
 	-- Update viewport in Penguins UI
 	Modules.PenguinsUI:UpdateViewport(CustomizationUI.PenguinSelected.Value)
-	
+
 	-- Tween out UI
 	CustomizationUI:TweenPosition(UDim2.new(-1.5, 0, 0.5, 0), "In", "Back", 0.3, true)
 	UI.Left.GemDisplay.Visible = true
 	UI.Left.Buttons.Visible = true
 	UI.Center.Visible = true
-	UI.Top.MoneyDisplay.BuyMore.Visible = true
-	UI.Top.GemDisplay.BuyMore.Visible = true
-	
+	UI.Top.Currencies.MoneyDisplay.BuyMore.Visible = true
+	UI.Top.Currencies.GemDisplay.BuyMore.Visible = true
+
 	-- Enable penguin buttons
 	for Penguin, v in pairs(Modules.Penguins.Penguins) do
 		if Penguin:WaitForChild("Info", 0.5) then
 			Penguin.Info.ProximityPrompt.Enabled = true
 		end
 	end
-	
+
 	-- Open previous UI if applicable
-	
+
 	task.wait(0.25)
-	
+
 	if UIToReOpen then
 		Modules.Buttons:UIOn(UIToReOpen, true)
 		UIToReOpen = nil
 	end
-	
+
 	CustomizationUI.Visible = false
 
 	-- Place camera back on the character

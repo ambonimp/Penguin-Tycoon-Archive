@@ -34,13 +34,13 @@ local function ButtonClicked(button,Store)
 		-- Out
 		PreviousOpen[Store]:TweenPosition(UDim2.new(0.5, 0, 1.7, 0), "Out", "Quart", 0.2, true)
 		Store.Buttons[PreviousOpen[Store].Name].BackgroundTransparency = 0.8
-		
+
 		-- In
 		Store.Sections[button.Name].Position = UDim2.new(0.5, 0, 1.7, 0)
 		Store.Sections[button.Name]:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), "Out", "Quart", 0.2, true)
 		Store.Sections[button.Name].Visible = true
 		button.BackgroundTransparency = 0.2
-		
+
 		task.wait(0.15)
 		PreviousOpen[Store].Visible = false
 		PreviousOpen[Store] = Store.Sections[button.Name]
@@ -57,7 +57,7 @@ for i, Button in pairs(Store.Buttons:GetChildren()) do
 	if Button:IsA("ImageButton") then
 		Button.MouseButton1Down:Connect(function()
 			ButtonClicked(Button,Store)
-		end)	
+		end)
 	end
 end
 
@@ -77,15 +77,15 @@ UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Dow
 	ButtonClicked(Store.Buttons.Accessories,Store)
 end)
 
-UI.Top.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
+UI.Top.Currencies.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Money,Store)
 end)
 
-UI.Top.GemDisplay.BuyMore.MouseButton1Down:Connect(function()
+UI.Top.Currencies.GemDisplay.BuyMore.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Gems,Store)
 end)
 
-for i,v in pairs (Paths.UI.Top.Boosts:GetChildren()) do
+for i,v in pairs (Paths.UI.Top.Bottom.Boosts:GetChildren()) do
 	if v:IsA("Frame") then
 		v.Button.MouseButton1Down:Connect(function()
 			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Store,true)

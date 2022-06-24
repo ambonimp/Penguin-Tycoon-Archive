@@ -62,12 +62,15 @@ local function WaitForPlayers()
 end
 
 local function StartingCountdown(ChosenEvent)
-	for _, Value in pairs(Participants:GetChildren()) do
-		local Player = game.Players:FindFirstChild(Value.Name)
-		if Player and Player.Character and Player.Character:FindFirstChild("Humanoid") then
+	-- Register Participants
+	for _, Player in ipairs(Players:GetPlayers()) do
+		local Character = Player.Character
+		if Character and Character:FindFirstChild("Humanoid") then
+			local ParticipantValue = Instance.new("StringValue")
+			ParticipantValue.Name = Player.Name
+			ParticipantValue.Parent = Participants
+
 			Player:SetAttribute("Minigame", ChosenEvent)
-		else
-			Value:Destroy()
 		end
 
 	end
@@ -88,7 +91,6 @@ local function StartingCountdown(ChosenEvent)
 	-- Starting Counter
 	for i = 3, 1, -1 do
 		EventValues.TextToDisplay.Value = "Starting in: "..i
-
 		if #Participants:GetChildren() < EventConfig.MinPlayers then
 			return false
 		end
@@ -138,15 +140,9 @@ local function EventLoop()
 
 		EventValues.CurrentEvent.Value = ChosenEvent
 
-		-- Get participants
-		for _, Player in ipairs(Players:GetPlayers()) do
-			local Value = Instance.new("StringValue")
-			Value.Name = Player.Name
-			Value.Parent = Participants
-		end
-
 		-- Start the event if the min amount of players is met
-		if #Participants:GetChildren() >= EventConfig.MinPlayers and #Participants:GetChildren() <= EventConfig.MaxPlayers then
+		local ParticipantCount = #Players:GetPlayers()
+		if ParticipantCount >= EventConfig.MinPlayers and ParticipantCount <= EventConfig.MaxPlayers then
 			workspace:SetAttribute("Minigame", true)
 
 			local Winners, DisplayText

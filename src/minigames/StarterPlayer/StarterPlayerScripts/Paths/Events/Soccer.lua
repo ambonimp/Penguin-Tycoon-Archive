@@ -9,9 +9,14 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 
-local EventInfoUI = Paths.UI.Top.EventInfo
+local EVENT_NAME = script.Name
+
+local Config = Modules.EventsConfig[EVENT_NAME]
 local EventValues = Services.RStorage.Modules.EventsConfig.Values
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
+local Assets = Services.RStorage.Assets[EVENT_NAME]
+
+local EventInfoUI = Paths.UI.Top.EventInfo
 
 
 local setConnection = false
@@ -32,7 +37,7 @@ local Character = Player.Character
 
 
 
-local function addGoal(team,score)
+local function addGoal(team, score)
 	if team == "Red" then
 		RedTeam.Amount.Text = score
 		SoccerUI.RedGoal.Visible = true
@@ -85,6 +90,8 @@ end
 
 -- Events
 function Soccer:InitiateEvent(Event)
+	Character = Player.Character
+
 	if setConnection then return end
 	setConnection = true
 
@@ -121,43 +128,50 @@ function Soccer:EventStarted()
 		end
 
 	end
-
 end
+
+
 
 function Soccer:LeftEvent()
 	EventInfoUI.TextToDisplay.Visible = true
 	SoccerUI.Visible = false
 end
 
-Remotes.SoccerEvent.OnClientEvent:Connect(function(event,team)
-	if workspace.Event:FindFirstChildOfClass("Model") then
-		local character = Player.Character
+Remotes.SoccerEvent.OnClientEvent:Connect(function(Event, ...)
+	Character = Player.Character
 
-		if event == "Scored" then
-			if character and character:GetAttribute("Team") == team then
-				if team == "Red" then
-					workspace.Event:FindFirstChildOfClass("Model").BlueConfetti.Cheering:Play()
-				else
-					workspace.Event:FindFirstChildOfClass("Model").RedConfetti.Cheering:Play()
-				end
-			elseif character and Player.Character:GetAttribute("Team") ~= team then
-				if team == "Red" then
-					workspace.Event:FindFirstChildOfClass("Model").RedConfetti.Oof:Play()
-				else
-					workspace.Event:FindFirstChildOfClass("Model").BlueConfetti.Oof:Play()
-				end
-			end
+	local Params = table.pack(...)
+	if Event == "Scored" then
+		local Team = Params[1]
+		local Scorer = Params[2]
 
-		elseif event == "hit" then
-			local ball = team
-
-			if ball then
-				ball.Dive:Play()
-			end
-
+		if Participants:FindFirstChild(Player.Name) then
+			local sound = Character:GetAttribute("Team") == Team and "Cheering" or "Oof"
+			workspace.Event:FindFirstChildOfClass("Model")[Team .. "Confetti"][sound]:Play()
 		end
 
+		if Scorer then
+			local Notif = Assets.ScoreNotif:Clone()
+			Notif.Text = string.format('<font color="#fcc203"> %s </font> just scored for the <font color="%s">%s team</font>', Scorer, Team == "Red" and "#ff3b3b" or "#3b9aff", string.lower(Team))
+			Notif.Parent = SoccerUI
+			Notif:TweenPosition(UDim2.fromScale(0.5, 0.8), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 1, false, function()
+				task.wait(4)
+				Notif:Destroy()
+			end)
+		end
+
+		local Score = EventValues["Score" .. Team].Value
+		if Score > 0 then
+			addGoal(Team, Score)
+		end
+
+	elseif Event == "Hit" then
+		local Ball = Params[1]
+		if Ball then
+			Ball.Dive:Play()
+		end
 	end
+
 
 end)
 
@@ -173,20 +187,6 @@ end
 EventValues.SoccerTime.Changed:Connect(function()
 	SoccerUI.Timer.Text = EventValues.SoccerTime.Value
 end)
-
-
-EventValues.ScoreBlue.Changed:Connect(function()
-	if EventValues.ScoreBlue.Value > 0 then
-		addGoal("Blue", EventValues.ScoreBlue.Value)
-	end
-end)
-
-EventValues.ScoreRed.Changed:Connect(function()
-	if EventValues.ScoreRed.Value > 0 then
-		addGoal("Red",EventValues.ScoreRed.Value)
-	end
-end)
-
 
 
 -- Jumping

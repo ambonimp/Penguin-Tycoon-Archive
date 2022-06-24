@@ -193,6 +193,34 @@ function Teleporting:RefreshFriends()
 	end
 end
 
+local ProximityPrompt
+--[[
+if workspace:FindFirstChild("Portals") then
+	ProximityPrompt = workspace.Portals.Portal.PrimaryPart.ProximityPrompt
+elseif Paths.Tycoon then
+	ProximityPrompt = Paths.Tycoon:WaitForChild("PenguinCity").PrimaryPart.ProximityPrompt
+end
+
+if ProximityPrompt then
+	ProximityPrompt.Triggered:Connect(function(player)
+		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
+			Teleporting:OpenConfirmation()
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
+		end
+	end)
+end
+]]
+--[[ if Paths.Tycoon then
+	local BillBoard = Paths.Tycoon:WaitForChild("Board")
+	local UI = BillBoard.PrimaryPart.SurfaceGui
+	UI.Parent = Paths.Player.PlayerGui
+	UI.Adornee = BillBoard.PrimaryPart
+	UI.Confirm.MouseButton1Down:Connect(function()
+		Teleporting:OpenConfirmation()
+		Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
+	end)
+end
+--]]
 
 coroutine.wrap(function()
 	Teleporting:RefreshFriends()

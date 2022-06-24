@@ -24,7 +24,7 @@ local DATASTORE_RETRIES = 3
 
 --- Data Functions ---
 function PlayerData.DataStoreRetry(dataStoreFunction)
-	local tries = 0	
+	local tries = 0
 	local success = true
 	local data = nil
 	repeat
@@ -50,7 +50,7 @@ end
 -- Loads player data or sets new data if they don't have existing data
 function PlayerData:SetupPlayerData(player)
 	local success, data = getData(player.UserId)
-	
+
 	--local isBanned = Commands:IsBanned(player.UserId)
 	if not success then--or isBanned then
 		PlayerData.sessionData[player.Name] = nil
@@ -69,7 +69,7 @@ function PlayerData:SetupPlayerData(player)
 				["Income"] = 0,
 				["Tycoon"] = {},
 				["Penguins"] = {},
-				
+
 				["My Penguin"] = {
 					["Name"] = player.DisplayName;
 					["Level"] = 0;
@@ -81,7 +81,7 @@ function PlayerData:SetupPlayerData(player)
 				["Accessories"] = {
 					["None"] = true;
 				},
-				
+
 				["Emotes"] = {
 					["Sit"] = true;
 					["Wave"] = true;
@@ -103,11 +103,11 @@ function PlayerData:SetupPlayerData(player)
 					["Giving Pizza"] = true;
 					["Vegetable Cutting"] = true;
 				},
-				
+
 				["Rotation Timer"] = os.time();
 				--["Rotation Index"] = 1;
 				["Accessory Rotation"] = Modules.AllAccessories:ChooseStoreAccessories();
-				
+
 				-- Social Stats
 				["Hearts"] = 0,
 				["Regular Hearts Given"] = {},
@@ -119,10 +119,11 @@ function PlayerData:SetupPlayerData(player)
 					["Total Playtime"] = 0,
 				},
 
-				-- Settings 
+				-- Settings
 				["Settings"] = {
 					["Chat Tag"] = true,
 					["Music"] = true,
+					["Progress Bar "] = true,
 					["Faster Speed"] = true,
 					["Double Jump"] = true,
 					["Show Hearts"] = true,
@@ -131,7 +132,7 @@ function PlayerData:SetupPlayerData(player)
 				-- Other
 				["Income Multiplier"] = 1,
 				["Walkspeed Multiplier"] = 1,
-				
+
 				["Group Reward Claimed"] = false,
 				["Applied Boosts"] = {},
 
@@ -144,31 +145,49 @@ function PlayerData:SetupPlayerData(player)
 				["YoutubeStats"] = {
 					Likes = 0,
 					Subscribers = 0,
+				},
+
+				["Tycoon Rewards"] = {},
+
+				["Mining"] = {
+					Level = 1,
+					Mined = {
+						Coal = 0,
+						Iron = 0,
+						Gold = 0,
+						Amethyst = 0,
+						Ruby = 0,
+						Emerald = 0,
+						Diamond = 0,
+					},
 				}
 
 			}
+
 		else
 			PlayerData.sessionData[player.Name] = data
 		end
+
 	end
+
 end
 
 
 --- DATA FUNCTIONS ---
 local function getPlayerIncome(Player)
 	local previousIncome = PlayerData.sessionData[Player.Name]["Income"]
-	
+
 	local levelIncome = Modules.GameFunctions:GetPlayerPenguinIncome(PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
 	local total = levelIncome
 	for i,v in pairs (PlayerData.sessionData[Player.Name]["Tycoon"]) do
-		local item = game.ServerStorage:WaitForChild("Template"):WaitForChild("Buttons"):FindFirstChild(i)
+		local item = game.ReplicatedStorage:WaitForChild("Template"):WaitForChild("Buttons"):FindFirstChild(i)
 		if item == nil then
-			item = game.ServerStorage:WaitForChild("Template"):WaitForChild("Upgrades"):FindFirstChild("Island1"):FindFirstChild(i)
+			item = game.ReplicatedStorage:WaitForChild("Template"):WaitForChild("Upgrades"):FindFirstChild("Island1"):FindFirstChild(i)
 		end
 		if item ~= nil then
 			local income = item:GetAttribute("Income")
 			if item:GetAttribute("Type") == "Penguin" then
-				income = Modules.GameFunctions:GetPenguinIncome(income,PlayerData.sessionData[Player.Name]["Penguins"][i].Level) 
+				income = Modules.GameFunctions:GetPenguinIncome(income,PlayerData.sessionData[Player.Name]["Penguins"][i].Level)
 			end
 			total = total + income
 		else
@@ -176,7 +195,7 @@ local function getPlayerIncome(Player)
 		end
 	end
 	PlayerData.sessionData[Player.Name]["Income"] = total
-	Player:SetAttribute("Income",total) 
+	Player:SetAttribute("Income",total)
 end
 
 
@@ -196,11 +215,11 @@ local function SetupNewStats(Player)
 			["Scared"] = true;
 		}
 	end
-	
+
 	if not Data["Eyes Rotation"] then
 		Data["Eyes Rotation"] = Modules.AllEyes:ChooseStoreEyes();
 	end
-	
+
 	if not Data["LastPlayTime"] then
 		Data["LastPlayTime"] = os.time()-(30*60)
 	end
@@ -213,7 +232,7 @@ local function SetupNewStats(Player)
 		end
 		Data["Stats"]["Total Gems"] = 0
 	end
-	
+
 	if IsTesting or IsQA then
 		Data["Money"] = 1000000000
 		Data["Gems"] = 1000000000
@@ -260,7 +279,7 @@ local function SetupNewStats(Player)
 			["Vegetable Cutting"] = true;
 		}
 	end
-	
+
 	if not Data["Emotes"]["Vegetable Cutting"] then
 		Data["Emotes"]["Vegetable Cutting"] = true;
 		Data["Emotes"]["Giving Pizza"] = true;
@@ -269,8 +288,8 @@ local function SetupNewStats(Player)
 		Data["Emotes"]["Dough Flipping"] = true;
 		Data["Emotes"]["Cheering"] = true;
 	end
-		
-	
+
+
 	if not Data["Equipped Emotes"] then
 		Data["Equipped Emotes"] = {
 			["1"] = "Sit";
@@ -280,11 +299,17 @@ local function SetupNewStats(Player)
 			["5"] = "Salute";
 		}
 	end
-	
-	if not Data["PetsData"] then
-		Data["PetsData"] = {
-			Equipped = {}, 
+
+	if not Data["Pets"] then
+		Data["Pets"] = {
+			Equipped = nil,
 			PetsOwned = {
+			},
+			Food = {
+				--{Name = "Carrot", Amount = 4},
+			},
+			Toys = {
+				--{Name = "Plushy"},
 			},
 			MaxEquip = 6,
 			Unlocked = {},
@@ -307,7 +332,7 @@ local function SetupNewStats(Player)
 
 	if not Data["Boosts"] then
 		Data["Boosts"] = { --[1]owned, [2]time left in current boost
-			["Super Fishing Luck"] = {0,0}, 
+			["Super Fishing Luck"] = {0,0},
 			["Ultra Fishing Luck"] = {0,0},
 			["x3 Money"] = {0,0},
 		}
@@ -326,7 +351,7 @@ local function SetupNewStats(Player)
 	end
 
 	if not Data["Spin"] then
-		Data["Spin"] = {true,0,os.time()} 
+		Data["Spin"] = {true,0,os.time()}
 	end
 
 	if not Data["Playtime"] then
@@ -368,7 +393,7 @@ local function SetupNewStats(Player)
 			},
 		}
 	end
-	
+
 	if not Data["Quests"] then
 		Data["Quests"] = {}
 	end
@@ -384,10 +409,33 @@ local function SetupNewStats(Player)
 		}
 	end
 
+	if not Data["Tycoon Rewards"] then
+		Data["Tycoon Rewards"] = {}
+
+	end
+
+	if not Data.Mining then
+		Data["Mining"] = {
+			Level = 1,
+			Mined = {
+				Coal = 0,
+				Iron = 0,
+				Gold = 0,
+				Amethyst = 0,
+				Ruby = 0,
+				Emerald = 0,
+				Diamond = 0,
+			},
+		}
+	end
+
+	if not Data.Settings["Progress Bar"] then
+		Data.Settings["Progress Bar"] = true
+	end
 
 end
 
--- Send back the player stat that the client requests 
+-- Send back the player stat that the client requests
 Remotes.GetStat.OnServerInvoke = function(player, stat)
 	if PlayerData.sessionData[player.name] ~= nil then
 		if stat == "All" then
@@ -400,19 +448,19 @@ end
 
 --- INITIALIZE PLAYER ---
 game.Players.PlayerAdded:Connect(function(Player)
-	
+
 	local PolicyService = game:GetService("PolicyService")
 
 
 	-- Setup Data
 	PlayerData:SetupPlayerData(Player)
 	SetupNewStats(Player)
-	
-	
+
+
 	-- Badges
 	Modules.Badges:AwardBadge(Player.UserId, 2124902910) -- Welcome
 	Modules.Badges:AwardBadge(Player.UserId, 2124907090) -- Island 1
-	
+
 	coroutine.wrap(function()
 		for Item, Owned in pairs(PlayerData.sessionData[Player.Name]["Tycoon"]) do
 			if Modules.Badges.Purchases[Item] and Owned then
@@ -420,17 +468,17 @@ game.Players.PlayerAdded:Connect(function(Player)
 			end
 		end
 	end)()
-	
-	
-	
+
+
+
 	-- Initialize Character Functions
 	local OldChar = nil
 	Player.CharacterAdded:Connect(function(Character)
 		Modules.Character:Spawned(Player, Character, OldChar)
 		OldChar = Character
 	end)
-	
-	
+
+
 	-- Group reward
 	pcall(function()
 		if Player:IsInGroup(12843903) and not PlayerData.sessionData[Player.Name]["Group Reward Claimed"] then
@@ -457,7 +505,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Player:SetAttribute("Next5Gems", PlayerData.sessionData[Player.Name]["NextGemReward"])
 		Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "tycoon"
 	end]]
-
 	if PlayerData.sessionData[Player.Name]["Pets"] then
 		for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets"].PetsOwned) do
 			local breed = string.split(v.RealName," ")[2]
@@ -474,7 +521,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
 		PlayerData.sessionData[Player.Name]["Spin"][1] = true
 	end
-	
+
 	if PlayerData.sessionData[Player.Name]["Quests"].Timer then
 		if os.time() >= PlayerData.sessionData[Player.Name]["Quests"].Timer then
 			Modules.Quests.getNewQuests(Player)
@@ -507,22 +554,22 @@ game.Players.PlayerAdded:Connect(function(Player)
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
 	NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
-	
-	
+
+
 	-- Updating Leaderstats
 	Player:GetAttributeChangedSignal("Money"):Connect(function()
 		--MoneyStat.Value = PlayerData.sessionData[Player.Name]["Money"]
 		NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
 	end)
-	
+
 	Player:GetAttributeChangedSignal("Income"):Connect(function()
 		IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"]
 	end)
-	
+
 	Player:SetAttribute("Loaded",true)
 	-- Initialize Tycoon
 	Modules.Tycoon:InitializePlayer(Player)
-	
+
 
 	-- Check Gamepasses
 	Modules.Gamepasses:CheckGamepasses(Player)
@@ -536,7 +583,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 				local hum = Player.Character:WaitForChild("Humanoid")
 				boat.Seat:Sit(hum)
 				boat.Seat.ProximityPrompt.Enabled = false
-			end 
+			end
 		end)
 	end
 	task.spawn(function()
@@ -551,7 +598,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 			end
 		end
 	end)
-	
+
 	--Modules.Vehicles:SetUpSailboatBuild(Player)
 	Modules.Chat:ApplyChatTag(Player)
 	task.wait(5)

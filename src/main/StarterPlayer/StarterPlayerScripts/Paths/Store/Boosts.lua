@@ -66,7 +66,7 @@ function Boosts:StartBoost(Boost)
 	local Template = Store.Sections.Boosts.Holder.Boosts:FindFirstChild(NameToID[Boost])
 	local timeLeft = OwnedBoosts[Boost][2]
 	Template.Use.TheText.Text = "Use ("..OwnedBoosts[Boost][1]..")"
-	local topUI = Paths.UI.Top.Boosts:FindFirstChild(Boost)
+	local topUI = Paths.UI.Top.Bottom.Boosts:FindFirstChild(Boost)
 	topUI.Visible = true
 	Template:SetAttribute("Enabled",true)
 	while timeLeft > 0 and Template:GetAttribute("Enabled") do

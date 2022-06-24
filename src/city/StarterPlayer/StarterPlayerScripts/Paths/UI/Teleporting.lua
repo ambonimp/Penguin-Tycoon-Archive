@@ -114,7 +114,7 @@ end)
 
 -- Different teleport locations/buttonns
 TeleportButton.MouseButton1Down:Connect(function()
-	Teleporting:OpenConfirmation("Penguin Tycoon")
+	Teleporting:OpenConfirmation(game.PlaceId == PlaceIds["Penguin City"] and "Penguin Tycoon" or "Penguin City")
 end)
 
 
@@ -183,23 +183,6 @@ local function FriendTemplate(Info)
 	end)
 
 	Template.Parent = Confirmation.FriendsList.List
-end
-
-
-local function iterPageItems(pages)
-	return coroutine.wrap(function()
-		local pagenum = 1
-		while true do
-			for _, item in ipairs(pages:GetCurrentPage()) do
-				coroutine.yield(item, pagenum)
-			end
-			if pages.IsFinished then
-				break
-			end
-			pages:AdvanceToNextPageAsync()
-			pagenum = pagenum + 1
-		end
-	end)
 end
 
 
@@ -275,31 +258,40 @@ if Portals then
 
 end
 
-local MinigamesUI = Paths.UI.Center.Minigames.Frame
-
-Paths.UI.Top.Minigames.MouseButton1Down:Connect(function()
+-- Minigames
+local MinigameButton = Paths.UI.Top:FindFirstChild("Minigames") or  Paths.UI.Top.EventInfo.Minigames
+local MinigameFrame = Paths.UI.Center.Minigames
+MinigameButton.MouseButton1Down:Connect(function()
 	if Paths.UI.Center.Minigames.Visible then
-		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Minigames,true)
+		Paths.Modules.Buttons:UIOff(MinigameFrame,true)
 	else
-		Paths.Modules.Buttons:UIOn(Paths.UI.Center.Minigames,true)
+		Paths.Modules.Buttons:UIOn(MinigameFrame,true)
 	end
 end)
 
-for i,v in pairs (MinigamesUI:GetChildren()) do
-	local data = Locations[v.Name]
-	if data then
-		v.MinigameName.Text = v.Name
-		v.Description.Text = data.Description
-		v.Thumbnail.Image = data.Thumbnail
-		v.Play.MouseButton1Click:Connect(function()
-			v.Play.TheText.Text = "Teleporting.."
-			local didTp = Teleporting:TeleportTo(data.PlaceId)
-			if didTp == false then
-				v.Play.TheText.Text = "Error.."
+for PlaceId, Minigame in pairs(EventsConfig.Names) do
+	local Location = Locations[Minigame]
+
+	if Location then
+		local Label = Dependency.MinigameTemplate:Clone()
+		Label:FindFirstChild("Name").Text = Minigame
+		Label.Description.Text = Location.Description
+		Label.Thumbnail.Image = Location.Thumbnail
+		Label.Parent = MinigameFrame.List
+
+		local PlayBtn =Label.Play
+		PlayBtn.MouseButton1Click:Connect(function()
+			PlayBtn.TextLabel.Text = "Teleporting.."
+			if not Teleporting:TeleportTo(PlaceId) then
+				PlayBtn.TextLabel.Text  = "Error.."
 			end
+
 		end)
+
 	end
+
 end
+
 
 coroutine.wrap(function()
 	Teleporting:RefreshFriends()

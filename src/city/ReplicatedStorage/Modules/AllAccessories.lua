@@ -65,22 +65,24 @@ Accessories.Unlockables = {
 	["Adventurer#1"] = "Adventurer Hat";
 	["Witch#1"] = "Witch Hat";
 	["Shroom#1"] = "Mushroom Hat";
+	["Nurse#1"] = "Bowl Hat";
 	["Youtuber#1"] = "Cap";
 	-- Pick-up Unlockables
 	["Bunny Ears"] = true;
 	["Feather Hat"] = true;
 	["Pirate Captain Hat"] = true;
 	["Straw Hat"] = true;
+
 }
 
 
 Accessories.All = {	
 	--- Default Hat(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
+	--Rewards
 	["Jellyfish Hat"] = {Rarity = "Free", IsForSale = false};
 	["Traffic Cone"] = {Rarity = "Free", IsForSale = false};
 	["Shark Hat"] = {Rarity = "Free", IsForSale = false};
-
 	--- Unlockable Hats ---
 	-- Collectable
 	["Pirate Captain Hat"] = {Rarity = "Free", IsForSale = false};
@@ -160,6 +162,10 @@ Accessories.All = {
 	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
 	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
 	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false};
+
+	-- Mining Hats ===
+	["Hard Hat"] = {Rarity = "Free", IsForSale = false};
+
 }
 
 return Accessories

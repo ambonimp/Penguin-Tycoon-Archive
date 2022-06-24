@@ -76,11 +76,11 @@ local partsMadeInvisible = {}
 local camera = workspace.CurrentCamera
 
 
-local psuedoFrame = ui.Full:WaitForChild(script.Name) -- We pretend it's on the screen
-local gameScreen = psuedoFrame.Play
-local startScreen = psuedoFrame.Start
-local editingscreen = psuedoFrame.Edit
-local resultsScreen = psuedoFrame.Results
+local frame = ui.Full:WaitForChild(script.Name) -- We pretend it's on the screen
+local gameScreen = frame.Play
+local startScreen = frame.Start
+local editingscreen = frame.Edit
+local resultsScreen = frame.Results
 
 
 -- Fish currently in play
@@ -281,7 +281,7 @@ function spawnCollectable(typ)
 	if services.InputService.GamepadEnabled then
 		local keyCode = KEYBINDS[id % 4 + 1]
 		inputLbl.KeyCode.Text = string.gsub(keyCode.Name, "Button", "")
-		inputLbl:SetAttribute("KeyCode", keyCode.Name)
+		collectable:SetAttribute("KeyCode", keyCode.Name)
 
 		inputLbl.Touch.Visible = false
 		inputLbl.KeyCode.Visible = true
@@ -380,19 +380,20 @@ function play()
 
 	-- Collecting
 	for i, keycode in ipairs(KEYBINDS) do
-		services.ContextActionService:BindAction("MinigameInput" .. i, function(_, state)
+		services.ContextActionService:BindActionAtPriority("MinigameInput" .. i, function(_, state)
 			if state == Enum.UserInputState.Begin then
 				for j = identifier, identifier - 4, -1 do
 					-- TODO: Could be done better with some math
-					local collectable = collectables[i]
-					if collectable and collectable:GetAttribute("KeyBind") == keycode.Name then
-						collectCollectable(j)
+					local collectable = collectables[j]
+					if collectable then
+						if collectable:GetAttribute("KeyCode") == keycode.Name then
+							collectCollectable(j)
+						end
 					end
 				end
 			end
-		end, false, keycode)
+		end, false, Enum.ContextActionPriority.High.Value, keycode)
 	end
-
 
 	-- Fish spawning
 	for i = 1, 4 do
@@ -425,8 +426,9 @@ function results()
 
 	local rewardLbl = resultsScreen.Reward
 	local gemsEarned = if score == MAX_SCORE then 3 else (if score >= 25 then 2 else (if score >= 10 then 1 else 0))
-	rewardLbl.TextLabel.Text = "Gems Won: " .. gemsEarned
+	rewardLbl.TextLabel.Text = "Gems Won: " .. gemsEarned *  remotes.GetStat:InvokeServer("Gem Multiplier")
 
+	warn("Client", gemsEarned * remotes.GetStat:InvokeServer("Gem Multiplier"))
 
 	local subs = rand:NextInteger(6000, 10000)
 	local count1 = tweenNumber(scoreLbl.Bonus.TextLabel, subs, function(x)
@@ -461,7 +463,9 @@ function results()
 	end)
 
 	-- Close everything
-	resultsScreen.Upload.MouseButton1Down:Connect(function()
+	local uploadConn
+	uploadConn = resultsScreen.Upload.MouseButton1Down:Connect(function()
+		uploadConn:Disconnect()
 		active = false
 
 		count1:Cancel()
@@ -513,7 +517,7 @@ function open()
     statsLbl.Subscribers.Value.Text = toSuffix(stats.Subscribers)
 
 	toggleOtherUI(false)
-	psuedoFrame.Visible = true
+	frame.Visible = true
 	startScreen.Visible = true
 	gameScreen.Visible = false
 
@@ -523,6 +527,7 @@ function close()
 	currentComputer = nil
 
 	-- Reset character
+	character = player.Character
 	local humanoid = character.Humanoid
 	character.PrimaryPart.Anchored = false
 	humanoid.Sit = false
@@ -537,7 +542,7 @@ function close()
 
 	-- Reset ui
 	toggleOtherUI(true)
-	psuedoFrame.Visible = false
+	frame.Visible = false
 	gameScreen.Visible = false
 	startScreen.Visible = false
 	editingscreen.Visible = false
@@ -547,7 +552,6 @@ end
 
 local function loadComputer(computer)
 	table.insert(computers, computer)
-	currentComputer = computer.Name
 
 	local screen = computer:WaitForChild("Screen")
 	local seat = computer:WaitForChild("Seat") -- Created on the client so no one else can use it
@@ -584,13 +588,14 @@ local function loadComputer(computer)
 			-- Position camera so can display ui on screen
 			camera.CameraType = Enum.CameraType.Scriptable
 
-			local scale = 1 + (1 - psuedoFrame.Size.Y.Scale)
+			local scale = 1 + (1 - frame.Size.Y.Scale)
 			local screenSize = screen.Size * scale
 			local deph = (screenSize.Y / 2) / math.tan(math.rad(camera.FieldOfView / 2)) + (screenSize.Z / 2)
 
 			local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 			local transition = services.TweenService:Create(camera, tweenInfo, {CFrame = screen.CFrame * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, deph)})
 			transition.Completed:Connect(function()
+				currentComputer = computer.Name
 				open()
 			end)
 

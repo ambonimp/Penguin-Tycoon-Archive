@@ -28,6 +28,7 @@ local AllGamepasses = {
 	47438471, -- x2 gems
 	47438595, -- map teleport
 	49090546, -- x3 fish capture
+	52724179, -- Golden Pickaxe
 }
 
 local GamepassButtons = {
@@ -36,7 +37,8 @@ local GamepassButtons = {
 	[41205759] = "Powered Glider#1",
 	[43183311] = "Gold Axe#1",
 	[45764173] = "Jet Plane#1",
-	[47438416] = "Rainbow Fishing Rod#1"
+	[47438416] = "Rainbow Fishing Rod#1",
+	[52724179] = "Gold Pickaxe#1",
 }
 
 
@@ -78,9 +80,12 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 			-- Gold Fishing Rod
 			elseif gamepass == 28927736 then
 				Modules.Tools.AddTool(Player, "Gold Fishing Rod")
+			elseif gamepass == 52724179 then
+				Modules.Tools.AddTool(Player, "Gold Pickaxe")
 			elseif gamepass == 47438416 then
 				Modules.Tools.AddTool(Player, "Rainbow Fishing Rod")
 			end
+
 		end
 		
 		-- Gamepass buttons/tycoon item

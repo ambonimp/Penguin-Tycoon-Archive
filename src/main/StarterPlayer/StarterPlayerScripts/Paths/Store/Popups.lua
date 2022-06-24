@@ -6,8 +6,8 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local UI = Paths.UI
 
-local PopupUI = UI.Top.Popup
-local PopupRegularUI = UI.Top.PopupRegular
+local PopupUI = UI.Top.Bottom.Popups.Popup
+local PopupRegularUI = UI.Top.Bottom.Popups.PopupRegular
 
 local currentPass = nil
 Popups.Gamepasses = {}
@@ -61,6 +61,7 @@ local nameToId = {
 	["RainbowRod"] = 47438416,
 	["Gems"] = 47438471,
 	["Fish"] = 49090546,
+	["Mining"] = 52724179,
 }
 
 function Popups.getAction()
@@ -98,6 +99,11 @@ function Popups.getAction()
 		if not ownsG then
 			return "Glider"
 		end
+	elseif Tool and (Tool == "Pickaxe" or Tool == "Gold Pickaxe") then
+		local ownsGold = Popups.ownsGamepass("Mining")
+		if not ownsGold then
+			return "Mining"
+		end
 	end
 
 	--Check vehicle
@@ -115,7 +121,7 @@ function Popups.getAction()
 		end
 	end
 
-	
+
 
 	return nil
 end

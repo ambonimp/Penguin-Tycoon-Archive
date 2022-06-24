@@ -20,8 +20,8 @@ function UpdatingUI:Initiate()
 	
 	
 	-- Initiating Stats
-	UI.Top.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(PreviousMoney)
-	UI.Top.GemDisplay.Amount.Text = Modules.Format:FormatComma(PreviousGems)
+	UI.Top.Currencies.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(PreviousMoney)
+	UI.Top.Currencies.GemDisplay.Amount.Text = Modules.Format:FormatComma(PreviousGems)
 	
 	
 --- Updating Stats ---
