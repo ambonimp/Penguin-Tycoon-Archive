@@ -203,9 +203,9 @@ end
 function VerifyFishTimer()
 	local debounce 
 	if LastUpdate.EquippedTool and (LastUpdate.EquippedTool == 'Gold Fishing Rod' or LastUpdate.EquippedTool == 'Rainbow Fishing Rod') then
-		debounce = 1.5
+		debounce = 1.5 / remotes.GetBonus:InvokeServer("Fishing","Speed")
 	else
-		debounce = 3
+		debounce = 3 / remotes.GetBonus:InvokeServer("Fishing","Speed")
 	end
 	if LastUpdate.isAFKFishing then
 		debounce = debounce * 1.5

@@ -134,6 +134,7 @@ function Paths.Initiliaze()
 	
 	print("Load pets module")
 	-- Pets
+	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
 	Paths.Modules.Pets = require(script.Pets)
 end
 

@@ -101,6 +101,8 @@ function Character:Spawn(Player, Type)
 		Penguin.Humanoid.WalkSpeed *= Data["Walkspeed Multiplier"]
 	end
 
+	Penguin.Humanoid.WalkSpeed *= Modules.Pets.getBonus(Player,"Walk","Speed")
+
 	local lastChange = os.time()
 	Penguin:GetAttributeChangedSignal("PetAnimation"):Connect(function()
 		local lastc = lastChange
@@ -112,6 +114,15 @@ function Character:Spawn(Player, Type)
 				Penguin:SetAttribute("PetAnimation","none")
 			end
 		end
+	end)
+	local c
+	c = Player:GetAttributeChangedSignal("PetsEquipped"):Connect(function()
+		Penguin.Humanoid.WalkSpeed = 32
+		if Data["Settings"]["Faster Speed"] then
+			Penguin.Humanoid.WalkSpeed *= Data["Walkspeed Multiplier"]
+		end
+	
+		Penguin.Humanoid.WalkSpeed *= Modules.Pets.getBonus(Player,"Walk","Speed")
 	end)
 
 	-- Insert custom nameplate
@@ -125,6 +136,7 @@ function Character:Spawn(Player, Type)
 	
 	-- connect character functions
 	Penguin.Humanoid.Died:Connect(function()
+		c:Disconnect()
 		Modules.Tools.UnequipTool(Player)
 	end)
 	

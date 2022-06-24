@@ -167,6 +167,8 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
                 if added < 10 then
                     added = 10
                 end
+                local mult = Paths.Modules.Pets.getBonus(Player,"Woodcutting","Income")
+                added = math.floor(added*mult)
                 Modules.Income:AddMoney(Player,added,true)
                 Remotes.Axe:FireClient(Player,added)
             elseif Player:GetAttribute("Income") then
@@ -174,6 +176,8 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
                 if added < 10 then
                     added = 10
                 end
+                local mult = Paths.Modules.Pets.getBonus(Player,"Woodcutting","Income")
+                added = math.floor(added*mult)
                 Modules.Income:AddMoney(Player,added,true)
                 Remotes.Axe:FireClient(Player,added)
             end

@@ -300,17 +300,13 @@ local function SetupNewStats(Player)
 		}
 	end
 
-	if not Data["Pets"] then
-		Data["Pets"] = {
-			Equipped = nil,
+	if not Data["PetsData"] then
+		Data["PetsData"] = {
+			Equipped = {},
 			PetsOwned = {
 			},
-			Food = {
-				--{Name = "Carrot", Amount = 4},
-			},
-			Toys = {
-				--{Name = "Plushy"},
-			},
+			MaxEquip = 3,
+			Unlocked = {},
 		}
 	end
 
@@ -503,16 +499,18 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Player:SetAttribute("Next5Gems", PlayerData.sessionData[Player.Name]["NextGemReward"])
 		Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "tycoon"
 	end]]
-
-
-	if PlayerData.sessionData[Player.Name]["Pets"].Equipped then
-		Player:SetAttribute("Pet", PlayerData.sessionData[Player.Name]["Pets"].Equipped.RealName)
-		Player:SetAttribute("PetID", PlayerData.sessionData[Player.Name]["Pets"].Equipped.ID)
-		Player:SetAttribute("PetName", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Name)
-		Player:SetAttribute("PetHunger", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Hunger)
-		Player:SetAttribute("PetEntertainment", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Entertainment)
-		Player:SetAttribute("PetHappiness", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Happiness)
+	if PlayerData.sessionData[Player.Name]["Pets"] then
+		for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets"].PetsOwned) do
+			local breed = string.split(v.RealName," ")[2]
+			PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[v.ID] = {
+				breed, v.RealName,v.Name,"LEGACY",0,{1.05,"All","Income"}
+			}
+		end
+		PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
+		PlayerData.sessionData[Player.Name]["Pets"] = nil
 	end
+	
+	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip) 
 
 	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)

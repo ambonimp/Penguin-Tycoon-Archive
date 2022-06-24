@@ -89,6 +89,8 @@ function Income:IncomeLoop()
 				
 				if PlayerIncome > 0 then
 					-- Add Money
+					local mult = Paths.Modules.Pets.getBonus(Player,"Paycheck","Income")
+					PlayerIncome = math.floor(PlayerIncome * mult)
 					Income:AddMoney(Player, PlayerIncome)
 				end
 				
