@@ -29,6 +29,8 @@ local function onPromptTriggered(promptObject, player)
     if player == game.Players.LocalPlayer then
         if promptObject.ActionText == "Open Fish Index" then
             Paths.Modules.Buttons:UIOn(Paths.UI.Center.Index,true)
+        elseif promptObject.ActionText == "Get A Poofie!" then
+            Paths.Modules.Buttons:UIOn(Paths.UI.Center.UnlockedEggs,true)
         end
     end
 end

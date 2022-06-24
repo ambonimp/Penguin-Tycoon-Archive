@@ -630,13 +630,16 @@ function OpenEdit(ID)
 end
 
 function Pets.LoadEgg(Island,Prompt)
+	Paths.Modules.Buttons:UIOff(Paths.UI.Center.UnlockedEggs,true)
 	if CurrentEggLoaded == Island then 
 		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
 		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
 		return 
 	end
-	Prompt.Enabled = false
-	PromptObj = Prompt
+	if Prompt then
+		Prompt.Enabled = false
+		PromptObj = Prompt
+	end
 	CurrentEggLoaded = Island
 	local IslandDetails = PetDetails.ChanceTables[PetDetails.EggNameToId[Island]]
 
@@ -1008,6 +1011,20 @@ task.spawn(function()
 	RealData = PetData
 	loadUI(PetData)
 	PetsFrame.Pets.Pets.CanvasSize = UDim2.new(0, 0, 0, PetsFrame.Pets.Pets.UIGridLayout.AbsoluteContentSize.Y+(#PetsFrame.Pets.Pets:GetChildren()*2))
+	local tycoonData = Remotes.GetStat:InvokeServer("Tycoon")
+	for i,v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
+		if v:IsA("ImageButton") then
+			if tycoonData[v.Name] or v.Name == "1" then
+				v.MouseButton1Down:Connect(function()
+					if tycoonData[v.Name] or v.Name == "1" then
+						Pets.LoadEgg(v:GetAttribute("Egg"),nil)
+					end
+				end)
+			else
+				v.ViewportFrame.ImageColor3 = Color3.new(0,0,0)
+			end
+		end
+	end
 --[[
 	
 	for i,IslandDetails in pairs (PetDetails.ChanceTables) do
