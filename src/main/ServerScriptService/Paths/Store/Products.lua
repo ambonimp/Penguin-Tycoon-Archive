@@ -32,7 +32,7 @@ local TycoonProducts = {
 	[1229624896] = "Massage Table#1", [1229625136] = "Beehive#1", [1229627953] = "Ice Cream Stand#1", [1229628483] = "Tiki Bar#1", [1229629428] = "Luxury Boat#1", 
 	[1232236945] = "Planets#1", [1233161301] = "Watch Tower#1", [1234046860] = "Globe#1", [1234046883] = "Space Rocks#1", [1240569736] = "Powered Glider#1",
 	[1254284581] = "Table#2",[1255289603] = "Mammoth#1",[1255290553] = "Skull#1",[1259073561] = "Witch's Garden#1",[1262257357] = "Helicopter#1",[1269810293] = "Icons#1",
-	[1269812728] = "Car#1",
+	[1269812728] = "Car#1",[1274238094] = "Big Skull#1",
 }
 
 local EggProducts = {
