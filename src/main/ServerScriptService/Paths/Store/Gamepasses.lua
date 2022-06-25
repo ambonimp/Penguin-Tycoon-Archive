@@ -78,13 +78,19 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 			elseif gamepass == 26269102 then 
 				Modules.Chat:ApplyChatTag(Player)
 				
-			-- Gold Fishing Rod
+			-- Tool upgrades
 			elseif gamepass == 28927736 then
 				Modules.Tools.AddTool(Player, "Gold Fishing Rod")
 			elseif gamepass == 52724179 then
 				Modules.Tools.AddTool(Player, "Gold Pickaxe")
 			elseif gamepass == 47438416 then
 				Modules.Tools.AddTool(Player, "Rainbow Fishing Rod")
+
+			-- Pet storage gamepasses
+			elseif gamepass == 55102286 then
+				Data["PetsData"].MaxOwned = 300
+			elseif gamepass == 55102169 then
+				Data["PetsData"].MaxOwned = 100
 			end
 
 		end

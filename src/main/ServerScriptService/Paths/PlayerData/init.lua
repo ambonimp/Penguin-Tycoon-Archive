@@ -56,6 +56,7 @@ local function Defaults(Player)
 			PetsOwned = {},
 			MaxEquip = 3,
 			Unlocked = {},
+			MaxOwned = 50,
 		},
 
 		["Outfits"] = {

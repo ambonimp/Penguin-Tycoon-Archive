@@ -65,7 +65,7 @@ function EditName(Player,ID,NewName)
 	return false
 end
 
-function DeletePet(Player,IDs) 
+function DeletePet(Player,IDs)
 	if Modules.PlayerData.sessionData[Player.Name] then
 		local data = Modules.PlayerData.sessionData[Player.Name]["PetsData"]
 		for i,v in pairs (IDs) do
@@ -91,7 +91,7 @@ function Merge(Player,ID1,ID2)
 					Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[ID1][6][1] += (.025*Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[ID1][5])
 					DeletePet(Player,{ID2})
 					return true,Modules.PlayerData.sessionData[Player.Name]["PetsData"],ID1,ID2
-				else 
+				else
 					return false,"Not same level"
 				end
 			else
@@ -106,7 +106,7 @@ end
 function getRandomPet(chanceTable)
 	local randomNumber = rand:NextNumber(0, 1)
 	local previousValue
-	
+
 	for i, entry in ipairs(chanceTable) do
 		if i == 1 then
 			previousValue = 0
@@ -120,18 +120,41 @@ function getRandomPet(chanceTable)
 	end
 end
 
-function givePet(Player,PetId,chosen,IslandId)
-	local petInfo = PetDetails.Pets[PetId]
-	local newId = getEmptyNum(Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned)
-	Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[newId] = {
-		petInfo[1],petInfo[2],petInfo[1],PetDetails.Rarities[chosen.Percentage],1,{petInfo[3],petInfo[4],petInfo[5]},PetId,IslandId
-	}
-	if Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked[chosen.Id] then
-		Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked[chosen.Id] += 1
-	else
-		Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked[chosen.Id] = 1
+function givePet(Player, PetId, Chosen, IslandId)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+	if Data then
+		Data = Data["PetsData"]
+		if #Data.PetsOwned >= Data.MaxOwned then return  end
+
+		local petInfo = PetDetails.Pets[PetId]
+		local newId = getEmptyNum(Data.PetsOwned)
+
+		Data.PetsOwned[newId] = {
+			petInfo[1],
+			petInfo[2],
+			petInfo[1],
+			PetDetails.Rarities[Chosen.Percentage],
+			1,
+			{
+				petInfo[3],
+				petInfo[4],
+				petInfo[5]
+			},
+			PetId,IslandId
+		}
+
+		warn(Chosen.Id, typeof(Chosen.Id))
+		if Data.Unlocked[Chosen.Id] then
+			Data.Unlocked[Chosen.Id] += 1
+		else
+			Data.Unlocked[Chosen.Id] = 1
+		end
+
+		warn("THIS2: ", Data.Unlocked)
+
+		return newId, petInfo
 	end
-	return newId,petInfo
+
 end
 
 function Pets.BuyRobuxPet(Player,IslandId)
@@ -144,21 +167,29 @@ end
 function BuyEgg(Player,Island,Type)
 	if Modules.PlayerData.sessionData[Player.Name] then
 		local ChanceTable = PetDetails.ChanceTables[PetDetails.EggNameToId[Island]]
+
 		if Type == "Robux" then
 			Services.MPService:PromptProductPurchase(Player, ChanceTable.ProductId)
 		elseif Type == "Gems" then
 			local Price = ChanceTable.PriceGems
+
 			if Modules.PlayerData.sessionData[Player.Name]["Gems"] >= Price then
 				local chosen = getRandomPet(ChanceTable.Pets)
 				local newId,petInfo = givePet(Player,chosen.Id,chosen,PetDetails.EggNameToId[Island])
 				Modules.PlayerData.sessionData[Player.Name]["Gems"] -= Price
 				Player:SetAttribute("Gems", Modules.PlayerData.sessionData[Player.Name]["Gems"])
-				return true,Modules.PlayerData.sessionData[Player.Name]["PetsData"],petInfo,newId
+
+				warn(Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked)
+
+				return true, Modules.PlayerData.sessionData[Player.Name]["PetsData"], petInfo, newId
 			else
 				return false,"gems"
 			end
+
 		end
+
 	end
+
 	return nil
 end
 
@@ -208,7 +239,7 @@ function UnequipPet(Player,PetIDs)
 			Player:SetAttribute("PetsEquipped",tick())
 			return Modules.PlayerData.sessionData[Player.Name]["PetsData"],true,except
 		end
-		
+
 	end
 	return false
 end
