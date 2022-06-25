@@ -39,6 +39,13 @@ local MergeSelected = {}
 local RealData = nil
 local PromptObj = nil
 
+local SMALL_GAMEPASS = 55102169
+local HUGE_GAMEPASS = 55102286
+
+local function UpdateStorage()
+	PetsFrame.Capacity.TextLabel.Text = #RealData.PetsOwned .. "/" .. RealData.MaxOwned
+end
+
 function tweenModel(model,cf)
 	local c = TweenValues[model] or Instance.new("CFrameValue")
 	TweenValues[model] = c
@@ -338,6 +345,8 @@ function openSelected(x,y)
 end
 
 PetsFrame.Merge.MouseButton1Down:Connect(function()
+	Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets, true)
+
 	MergeSelected = {}
 	UI.Center.Merge.Merge1.Icon.Image = ""
 	UI.Center.Merge.Merge2.Icon.Image = ""
@@ -387,6 +396,9 @@ UI.Center.Merge.Merge.MouseButton1Down:Connect(function()
 		UI.Center.Merge.Merge1.Text.Text = "Lvl. 0"
 		UI.Center.Merge.Merge2.Text.Text = "Lvl. 0"
 		UI.Center.Merge.Merge3.Text.Text = "Lvl. 0"
+
+		UpdateStorage()
+
 	end
 	task.wait(.15)
 	clickdb = false
@@ -398,20 +410,32 @@ function changeFrameColors(frame,color1,color2)
 end
 
 function updateIndex(data,islandId)
+	-- warn("Nice", islandId, data)
+
 	local island = PetDetails.ChanceTables[islandId]
+
 	local frame = IndexPage.List:FindFirstChild(island.Name)
 	if frame then
 		local Pets = frame.Pets.Pets:GetChildren()
+
+		warn("Client:", data.Unlocked)
+		warn(" ")
+
 		for i,v in pairs (Pets) do
-			if tonumber(v.Name) and data.Unlocked[tonumber(v.Name)] then
+			local PetId = tonumber(v.Name)
+
+			if PetId and data.Unlocked[PetId] then
 				local Rarity = PetDetails.Rarities[island.Pets[tonumber(v.Name)].Percentage]
 				v.Icon.ImageColor3 = Color3.new(1,1,1)
 				v.PetName.Text = PetDetails.Pets[tonumber(v.Name)][1].." x"..data.Unlocked[tonumber(v.Name)]
 				v.BackgroundColor3 = PetDetails.RarityColors[Rarity]
 				v.UIStroke.Color = PetDetails.RarityColors[Rarity]
 			end
+
 		end
+
 	end
+
 end
 
 function addPetToViewport(Model,ViewPort)
@@ -458,9 +482,9 @@ function updateUI(data,kind,ID)
 				OpenEdit(ID)
 				return
 			end
-			if State == "Deleting" and table.find(RealData.Equipped,ID) then
+			if State == "Deleting" then
 				if table.find(RealData.Equipped,ID)  then
-					PetsFrame.Top.Text = "Can't edit an equipped pet"
+					PetsFrame.Top.Text = "Can't delete an equipped pet"
 					task.wait(4)
 					if PetsFrame.Top.Text == "Can't edit an equipped pet" then
 						PetsFrame.Top.Text = "Select pets to delete"
@@ -480,6 +504,7 @@ function updateUI(data,kind,ID)
 				PetsFrame.DeleteReal.Top.Text = "Delete "..#Deleting
 				return
 			end
+
 			if PetSelected and PetSelected.Visible then
 				PetSelected.Visible = false
 			end
@@ -604,6 +629,7 @@ function loadUI(data)
 	for i,v in pairs (data.PetsOwned) do
 		updateUI(data,"add",i)
 	end
+	UpdateStorage()
 end
 
 function OpenEdit(ID)
@@ -705,24 +731,57 @@ end)
 BuyEgg.Gems.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 	if CurrentEggLoaded then
-		local Bought,Data,NewPetInfo,newId = Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Gems")
-		if Bought then
-			RealData = Data
-			local PetModel = PetsAssets:FindFirstChild(string.upper(NewPetInfo[1])):FindFirstChild(string.upper(NewPetInfo[2]))
-			local info = RealData.PetsOwned[newId]
-			openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]])
-			updateUI(Data,"add",newId)
-			updateIndex(Data,Data.PetsOwned[newId][8])
-		elseif not Bought and Data == "Gems" then
+		if #RealData.PetsOwned < RealData.MaxOwned then
+			local Bought,Data,NewPetInfo,newId = Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Gems")
+			if Bought then
+				RealData = Data
+				local PetModel = PetsAssets:FindFirstChild(string.upper(NewPetInfo[1])):FindFirstChild(string.upper(NewPetInfo[2]))
+				local info = RealData.PetsOwned[newId]
+				openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]])
+				updateUI(Data,"add",newId)
+				updateIndex(Data, Data.PetsOwned[newId][8])
+
+			elseif not Bought and Data == "Gems" then
+
+			end
+		else
+			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
+			if not Gamepasses[tostring(HUGE_GAMEPASS)] then
+				if not Gamepasses[tostring(SMALL_GAMEPASS)] then
+					Services.MPService:PromptGamePassPurchase(Paths.Player, SMALL_GAMEPASS)
+				else
+					Services.MPService:PromptGamePassPurchase(Paths.Player, HUGE_GAMEPASS)
+				end
+
+			end
+
 		end
+
 	end
+
 end)
 
 BuyEgg.Robux.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 	if CurrentEggLoaded then
-		Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Robux")
+		if #RealData.PetsOwned < RealData.MaxOwned then
+			Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Robux")
+		else
+			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
+
+			if not Gamepasses[tostring(HUGE_GAMEPASS)] then
+				if not Gamepasses[tostring(SMALL_GAMEPASS)] then
+					Services.MPService:PromptGamePassPurchase(Paths.Player, SMALL_GAMEPASS)
+				else
+					Services.MPService:PromptGamePassPurchase(Paths.Player, HUGE_GAMEPASS)
+				end
+
+			end
+
+		end
+
 	end
+
 end)
 
 PetsFrame:GetPropertyChangedSignal("Visible"):Connect(function()
@@ -793,6 +852,7 @@ PetsFrame.ConfirmDelete.Confirm.MouseButton1Down:Connect(function()
 		table.insert(newtbl,v[1])
 	end
 	local did, data = Remotes.DeletePet:InvokeServer(newtbl)
+	UpdateStorage()
 	EndState()
 	if did and data then
 		RealData = data
@@ -800,6 +860,7 @@ PetsFrame.ConfirmDelete.Confirm.MouseButton1Down:Connect(function()
 			updateUI(RealData,"delete",v)
 		end
 	end
+
 end)
 
 PetsFrame.EditName.Confirm.MouseButton1Down:Connect(function()
@@ -896,6 +957,22 @@ PetsFrame.Best.MouseButton1Down:Connect(function()
 	task.wait(.15)
 	clickdb = false
 end)
+
+-- Capacity
+UI.Right.Buttons.Backpack.MouseButton1Down:Connect(function()
+	if not PetsFrame.Visible then
+		UpdateStorage()
+	end
+end)
+
+PetsFrame.Capacity.More.MouseButton1Down:Connect(function()
+	Modules.Buttons:UIOff(PetsFrame, true)
+
+	Modules.Store.ButtonClicked({Name = "Gamepasses"}, UI.Center.Store)
+	Modules.Buttons:UIOn(UI.Center.Store, true)
+	 -- TODO: Point there with the UI
+end)
+
 
 function openEgg(Image,Name,Rarity,Color)
 	openingEgg = true
@@ -1010,7 +1087,6 @@ task.spawn(function()
 	loadUI(PetData)
 	PetsFrame.Pets.Pets.CanvasSize = UDim2.new(0, 0, 0, PetsFrame.Pets.Pets.UIGridLayout.AbsoluteContentSize.Y+(#PetsFrame.Pets.Pets:GetChildren()*2))
 
-	
 	for i,IslandDetails in pairs (PetDetails.ChanceTables) do
 		local newIsland = IndexPage.List.Island:Clone()
 		newIsland.TopText.Text = IslandDetails.Name
@@ -1018,7 +1094,7 @@ task.spawn(function()
 			local Pet = PetDetails.Pets[v.Id]
 			local Rarity = PetDetails.Rarities[v.Percentage]
 			local Template = Dependency.ShopTemplate:Clone()
-			print(Pet[1],Pet[2])
+			-- print(Pet[1],Pet[2])
 			local PetModel = PetsAssets:FindFirstChild(string.upper(Pet[1])):FindFirstChild(string.upper(Pet[2]))
 
 			Template.Amount.Text = ""
