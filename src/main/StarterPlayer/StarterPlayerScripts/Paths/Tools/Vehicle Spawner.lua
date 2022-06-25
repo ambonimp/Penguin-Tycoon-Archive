@@ -28,6 +28,8 @@ local Camera = workspace.CurrentCamera
 local Equipped = false
 local Placement = Modules.Maid.new()
 
+local DisabledPrompts
+
 
 local function BindControl(Handler, Button, Gamepad, Keyboard)
     Placement:GiveTask(Button.MouseButton1Down:Connect(Handler))
@@ -60,7 +62,7 @@ local function BindControl(Handler, Button, Gamepad, Keyboard)
 			if state == Enum.UserInputState.Begin then
 				Handler()
 			end
-		end, false, Enum.ContextActionPriority.High.Value, table.unpack(table.pack(Gamepad, Keyboard)))
+		end, false, Enum.ContextActionPriority.High.Value, Gamepad, Keyboard)
 
         Placement:GiveTask(function()
             Services.ContextActionService:UnbindAction(Button.Name)
@@ -69,6 +71,32 @@ local function BindControl(Handler, Button, Gamepad, Keyboard)
     end
 
 end
+
+local function ToggleProximityPrompts(Toggle)
+    if Toggle then
+        for Prompt, Parent in ipairs(DisabledPrompts) do
+            Prompt.Parent = Parent
+        end
+    else
+        DisabledPrompts = {}
+        for _, Prompt in ipairs(workspace:GetDescendants()) do
+            if Prompt:IsA("ProximityPrompt") then
+                DisabledPrompts[Prompt] = Prompt.Parent
+                Prompt.Parent = Services.RStorage
+            end
+        end
+
+        Placement:GiveTask(workspace.DescendantAdded:Connect(function(Prompt)
+            if Prompt:IsA("ProximityPrompt") then
+                DisabledPrompts[Prompt] = Prompt.Parent
+                Prompt.Parent = Services.RStorage
+            end
+        end))
+
+    end
+
+end
+
 
 local function UnlockVehicle(Spawner, DisplayName, Details)
     Spawner.Parent.LayoutOrder = Details.LayoutOrder
@@ -155,6 +183,8 @@ for Id, Details in pairs(Modules.VehicleDetails) do
             local Character = Paths.Player.Character
             if Character then
                 -- Hide interface
+                ToggleProximityPrompts(false)
+
                 Modules.Buttons:UIOff(Menu, true)
                 Modules.Buttons:UIOn(PlacingScreen, false)
 
@@ -223,7 +253,10 @@ for Id, Details in pairs(Modules.VehicleDetails) do
 
                         -- Boats must spawn on water
                         if CanPlace and Type == "Boat" then
-                            CanPlace = workspace:Raycast(CF.Position, Vector3.new(0, -Size.Y*0.6, 0), RParams).Instance == workspace.Terrain
+                            local Results = workspace:Raycast(CF.Position, Vector3.new(0, -Size.Y*0.6, 0), RParams)
+                            if Results then
+                                CanPlace = Results.Instance == workspace.Terrain
+                            end
                         end
 
                         local HColor = CanPlace and Color3.fromRGB(100, 215, 24) or Color3.fromRGB(255, 0, 0)
@@ -253,7 +286,7 @@ for Id, Details in pairs(Modules.VehicleDetails) do
                 BindControl(function()
                     Modules.Buttons:UIOn(Menu, true)
                     Placement:Destroy()
-                end, PlacingScreen.Cancel, Enum.KeyCode.ButtonB)
+                end, PlacingScreen.Cancel, Enum.KeyCode.ButtonB, Enum.KeyCode.Backspace)
 
 
 
@@ -263,7 +296,10 @@ for Id, Details in pairs(Modules.VehicleDetails) do
 
                 Placement:GiveTask(function()
                     game:GetService("GuiService").AutoSelectGuiEnabled = true
+
+                    -- Interface
                     Modules.Buttons:UIOff(PlacingScreen, false)
+                    ToggleProximityPrompts(true)
 
                 	Paths.UI.Left.Visible = true
                     Paths.UI.Right.Visible = true
