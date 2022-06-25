@@ -14,7 +14,7 @@ local UI = Paths.UI
 local UPGRADE_NAME = "Sergeant#1"
 local DETAILS = {
     {Weapon = "Snowball Launcher",Instructions = "Shoot all of the penguins with the snowball launcher to get to the next stage!"},
-    {Weapon = "Snow Grenade", Instructions = "Throw snownades at the polar bears to get to the next section!"},
+    {Weapon = "Snow Grenade", Instructions = "Throw snownades at the polar bears to get to the next stage!"},
     {Weapon = "Snowball Launcher", Instructions = "Kill the Boss Penguin to free the captured penguin!"}
 }
 
@@ -36,6 +36,7 @@ local Round = Modules.Maid.new()
 local Map
 local ElepasedTime
 
+local Pointer
 
 local ReturnCFrame
 
@@ -78,7 +79,26 @@ local function ToggleOtherUI(toggle)
 
 end
 
+local function PointTo(Destination)
+    local Att0 = Instance.new("Attachment")
+    Att0.Parent = Character.Main
 
+    local Att1 = Instance.new("Attachment")
+    Att1.Position -= Vector3.new(0, Destination.Size.Y * 0.4, 0)
+    Att1.Parent = Destination
+
+    local Beam = Services.RStorage.ClientDependency.Help.Pointer:Clone()
+    Beam.Parent = Destination
+    Beam.Attachment0 = Att0
+    Beam.Attachment1 = Att1
+
+    Pointer = Round:GiveTask(function()
+        Att0:Destroy()
+        Att1:Destroy()
+        Beam:Destroy()
+    end)
+
+end
 
 -- Minigame Functions --
 local function Level(Lvl)
@@ -132,6 +152,7 @@ local function Level(Lvl)
 
         local Tool = Details.Weapon
         Modules.Tools.UnhideTools({[Tool] = true})
+        Remotes.Tools:FireServer("Equip Tool", Tool) -- Auto equips tool
 
         local ToolHandler = Modules.Tools.Handlers[Tool]
         ToolHandler.Damageables = Enemies
@@ -147,12 +168,14 @@ local function Level(Lvl)
                     -- Onto the next level
                     LevelCompleted = true
                     Zone.Exit.Model:Destroy() -- Tween it going down
+                    PointTo(Zone.Exit.PrimaryPart)
 
                     local NewZoneTask
                     NewZoneTask= Round:GiveTask(Zone.Exit.PrimaryPart.Touched:Connect(function(Touched)
                         if Touched.Parent == Character then
                             Round[NewZoneTask] = nil
                             Level(Lvl + 1)
+                            Round[Pointer] = nil
                         end
 
                     end))
@@ -168,6 +191,7 @@ local function Level(Lvl)
                     Enemy:Destroy()
 
                     local Cage = Zone.Cage
+                    PointTo(Cage.PrimaryPart)
 
                     local Prompt = Instance.new("ProximityPrompt")
                     Prompt.HoldDuration = 0.25
@@ -178,10 +202,11 @@ local function Level(Lvl)
                     Round:GiveTask(Prompt)
 
                     Prompt.Triggered:Connect(function()
+                        Round[Pointer] = nil
                         Cage:Destroy()
 
                         local RewardLbl = ResultFrame.Reward
-                        RewardLbl.Value.Text = if ElepasedTime <= 35 then 3 else (if ElepasedTime <= 45 then 2 else (if ElepasedTime <= 60 then 1 else 0))
+                        RewardLbl.Value.Text = if ElepasedTime <= 35 then 3 else (if ElepasedTime <= 45 then 2 else (if ElepasedTime <= 60 then 1 else 0)) .. " Gems"
 
                         local ScoreLbl = ResultFrame.Time
                         ScoreLbl.Value.Text = Timer.Text
