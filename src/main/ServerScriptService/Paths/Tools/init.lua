@@ -26,7 +26,6 @@ function Tools.AddTool(Player, Tool, Temporary)
 			Data["Tools"][Tool] = true
 			Remotes.Tools:FireClient(Player, "Add Tool", Tool, Temporary)
 		end
-
 	end
 
 end
@@ -40,7 +39,8 @@ function Tools.RemoveTool(Player, Tool)
 			Data["Tools"][Tool] = nil
 			Remotes.Tools:FireClient(Player, "Remove Tool", Tool)
 		end
-
+	else
+		warn(Tool, "On no")
 	end
 
 end

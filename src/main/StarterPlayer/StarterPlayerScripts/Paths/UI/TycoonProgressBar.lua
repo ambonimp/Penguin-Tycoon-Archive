@@ -127,7 +127,7 @@ function Progress()
         end
     end
 
-    print("Progress:", Unlocked, Unlockables)
+   --  print("Progress:", Unlocked, Unlockables)
     UpdateBar(true)
 
     return Unlocked, Unlockables

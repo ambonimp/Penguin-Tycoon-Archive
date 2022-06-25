@@ -11,7 +11,7 @@ local UI = Paths.UI
 
 
 
-local UPGRADE_NAME = "Storage#2"
+local UPGRADE_NAME = "Sergeant#1"
 local DETAILS = {
     {Weapon = "Snowball Launcher",Instructions = "Shoot all of the penguins with the snowball launcher to get to the next stage!"},
     {Weapon = "Snow Grenade", Instructions = "Throw snownades at the polar bears to get to the next section!"},
@@ -19,7 +19,6 @@ local DETAILS = {
 }
 
 local BOSS_HEALTH = 15
-local MIN_SCORE = 35
 
 local Assets = Services.RStorage.Assets.MilitaryMinigame
 
@@ -86,7 +85,6 @@ local function Level(Lvl)
     local Details = DETAILS[Lvl]
     local LevelCompleted
 
-    ToggleOtherUI(false)
 
     InstructionFrame.Body.Text = Details.Instructions
     InstructionFrame.Visible = true
@@ -105,7 +103,7 @@ local function Level(Lvl)
 
         -- Countdown
         task.spawn(function()
-            while not LevelCompleted do
+            while not LevelCompleted and Map:IsDescendantOf(workspace) do
                 ElepasedTime += task.wait()
                 Timer.Text =  string.format("%.2fs", ElepasedTime)
             end
@@ -181,19 +179,21 @@ local function Level(Lvl)
 
                     Prompt.Triggered:Connect(function()
                         Cage:Destroy()
-                        Remotes.MilitaryMinigame:InvokeServer("OnRoundCompleted", ElepasedTime)
 
                         local RewardLbl = ResultFrame.Reward
-                        RewardLbl.Value.Text = if ElepasedTime <= MIN_SCORE then 3 else (if ElepasedTime <= 45 then 2 else (if ElepasedTime <= 60 then 1 else 0))
+                        RewardLbl.Value.Text = if ElepasedTime <= 35 then 3 else (if ElepasedTime <= 45 then 2 else (if ElepasedTime <= 60 then 1 else 0))
 
                         local ScoreLbl = ResultFrame.Time
                         ScoreLbl.Value.Text = Timer.Text
                         ScoreLbl.NewHighscore.Visible = ElepasedTime < Remotes.GetStat:InvokeServer("Military Minigame Score")
 
+
                         ResultFrame.Visible = true
                         Modules.Buttons:UIOn(CenterFrames, true)
 
                         Round:GiveTask(ResultFrame.Claim.MouseButton1Down:Connect(function()
+                            Remotes.MilitaryMinigame:InvokeServer("OnRoundCompleted", ElepasedTime)
+
                             Modules.Buttons:UIOff(CenterFrames, true)
 
                             Modules.UIAnimations.BlinkTransition(function()
@@ -232,7 +232,7 @@ local function LoadUpgrade(Upgrade)
 	Prompt.MaxActivationDistance = 15
 	Prompt.RequiresLineOfSight = false
 	Prompt.ActionText = "Save the penguins"
-	Prompt.Parent = Upgrade.PrimaryPart
+	Prompt.Parent = Upgrade:WaitForChild("LapTop"):WaitForChild("Hitbox")
 
     Prompt.Triggered:Connect(function()
         Character = Paths.Player.Character
@@ -241,10 +241,11 @@ local function LoadUpgrade(Upgrade)
 
             -- Initialize round
             ElepasedTime = 0
-            Remotes.MilitaryMinigame:InvokeServer("OnRoundBegan")
+            if not Remotes.MilitaryMinigame:InvokeServer("OnRoundBegan") then return end
             Modules.Tools.HideTools()
 
             -- Hide all other players
+            HiddenParts = {}
             for _, Player in pairs(game.Players:GetPlayers()) do
                 if Player ~= Paths.Player then
                     HidePlayer(Player)
@@ -263,6 +264,9 @@ local function LoadUpgrade(Upgrade)
             end, true)
 
 
+            -- Open
+            ToggleOtherUI(false)
+
             StartFrame.Visible = true
             Modules.Buttons:UIOn(CenterFrames, true)
 
@@ -273,6 +277,7 @@ local function LoadUpgrade(Upgrade)
                 Level(1)
 
             end))
+
 
             -- Offloading
             -- If character resets, round is over
@@ -291,6 +296,8 @@ local function LoadUpgrade(Upgrade)
                 InstructionFrame.Visible = false
                 ResultFrame.Visible = false
 
+                RoundFrame.Visible = false
+
                 Modules.Tools.UnhideTools()
                 ToggleOtherUI(true)
 
@@ -304,7 +311,6 @@ local function LoadUpgrade(Upgrade)
             end)
 
     		Prompt.Enabled = true
-
 
         end
 
@@ -324,5 +330,6 @@ else
     end)
 
 end
+
 
 return Minigame

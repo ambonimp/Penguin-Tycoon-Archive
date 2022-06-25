@@ -28,6 +28,8 @@ local Camera = workspace.CurrentCamera
 local Equipped = false
 local Placement = Modules.Maid.new()
 
+local DisabledPrompts
+
 
 local function BindControl(Handler, Button, Gamepad, Keyboard)
     Placement:GiveTask(Button.MouseButton1Down:Connect(Handler))
@@ -60,7 +62,7 @@ local function BindControl(Handler, Button, Gamepad, Keyboard)
 			if state == Enum.UserInputState.Begin then
 				Handler()
 			end
-		end, false, Enum.ContextActionPriority.High.Value, table.unpack(table.pack(Gamepad, Keyboard)))
+		end, false, Enum.ContextActionPriority.High.Value, Gamepad, Keyboard)
 
         Placement:GiveTask(function()
             Services.ContextActionService:UnbindAction(Button.Name)
@@ -69,6 +71,32 @@ local function BindControl(Handler, Button, Gamepad, Keyboard)
     end
 
 end
+
+local function ToggleProximityPrompts(Toggle)
+    if Toggle then
+        for Prompt, Parent in ipairs(DisabledPrompts) do
+            Prompt.Parent = Parent
+        end
+    else
+        DisabledPrompts = {}
+        for _, Prompt in ipairs(workspace:GetDescendants()) do
+            if Prompt:IsA("ProximityPrompt") then
+                DisabledPrompts[Prompt] = Prompt.Parent
+                Prompt.Parent = Services.RStorage
+            end
+        end
+
+        Placement:GiveTask(workspace.DescendantAdded:Connect(function(Prompt)
+            if Prompt:IsA("ProximityPrompt") then
+                DisabledPrompts[Prompt] = Prompt.Parent
+                Prompt.Parent = Services.RStorage
+            end
+        end))
+
+    end
+
+end
+
 
 local function UnlockVehicle(Spawner, DisplayName, Details)
     Spawner.Parent.LayoutOrder = Details.LayoutOrder
@@ -83,7 +111,7 @@ local function UnlockVehicle(Spawner, DisplayName, Details)
 end
 
 
-local function OnToolEquipped()
+function VehicleSpawner.Equipped()
     if not Remotes.GetStat:InvokeServer("Gamepasses")[tostring(GAMEPASS)] then
         Services.MPService:PromptGamePassPurchase(Paths.Player, GAMEPASS)
         Remotes.Tools:FireServer("Equip Tool", TOOL)
@@ -93,7 +121,7 @@ local function OnToolEquipped()
     end
 end
 
-local function OnToolUnequipped()
+function VehicleSpawner.Unequipped()
     Equipped = false
     if Paths.Player:GetAttribute("Tool") == TOOL then
         Remotes.Tools:FireServer("Equip Tool", TOOL)
@@ -155,13 +183,14 @@ for Id, Details in pairs(Modules.VehicleDetails) do
             local Character = Paths.Player.Character
             if Character then
                 -- Hide interface
+                ToggleProximityPrompts(false)
+
                 Modules.Buttons:UIOff(Menu, true)
                 Modules.Buttons:UIOn(PlacingScreen, false)
 
                 Paths.UI.Left.Visible = false
                 Paths.UI.Right.Visible = false
                 Paths.UI.Bottom.Visible = false
-                Paths.UI.BLCorner.Visible = false
                 Paths.UI.Top.Visible = false
 
                 -- Placement
@@ -224,7 +253,10 @@ for Id, Details in pairs(Modules.VehicleDetails) do
 
                         -- Boats must spawn on water
                         if CanPlace and Type == "Boat" then
-                            CanPlace = workspace:Raycast(CF.Position, Vector3.new(0, -Size.Y*0.6, 0), RParams).Instance == workspace.Terrain
+                            local Results = workspace:Raycast(CF.Position, Vector3.new(0, -Size.Y*0.6, 0), RParams)
+                            if Results then
+                                CanPlace = Results.Instance == workspace.Terrain
+                            end
                         end
 
                         local HColor = CanPlace and Color3.fromRGB(100, 215, 24) or Color3.fromRGB(255, 0, 0)
@@ -241,7 +273,7 @@ for Id, Details in pairs(Modules.VehicleDetails) do
                 BindControl(function()
                     if CanPlace then
                         Remotes.VehicleSpawned:FireServer(Id, CF)
-                        OnToolUnequipped()
+                        VehicleSpawner.Unequipped()
                     end
                 end, PlacingScreen.Place, Enum.KeyCode.ButtonL2, Enum.UserInputType.MouseButton1)
 
@@ -254,7 +286,7 @@ for Id, Details in pairs(Modules.VehicleDetails) do
                 BindControl(function()
                     Modules.Buttons:UIOn(Menu, true)
                     Placement:Destroy()
-                end, PlacingScreen.Cancel, Enum.KeyCode.ButtonB)
+                end, PlacingScreen.Cancel, Enum.KeyCode.ButtonB, Enum.KeyCode.Backspace)
 
 
 
@@ -264,12 +296,14 @@ for Id, Details in pairs(Modules.VehicleDetails) do
 
                 Placement:GiveTask(function()
                     game:GetService("GuiService").AutoSelectGuiEnabled = true
+
+                    -- Interface
                     Modules.Buttons:UIOff(PlacingScreen, false)
+                    ToggleProximityPrompts(true)
 
                 	Paths.UI.Left.Visible = true
                     Paths.UI.Right.Visible = true
                 	Paths.UI.Bottom.Visible = true
-                	Paths.UI.BLCorner.Visible = true
                     Paths.UI.Top.Visible = true
 
                 end)
@@ -283,19 +317,8 @@ for Id, Details in pairs(Modules.VehicleDetails) do
 end
 
 -- Events
-Paths.Player:GetAttributeChangedSignal("Tool"):Connect(function()
-    local Tool = Paths.Player:GetAttribute("Tool")
-
-    if Tool == script.Name and not Equipped then
-        OnToolEquipped()
-    elseif Tool == "None" and Equipped then
-        OnToolUnequipped()
-    end
-
-end)
-
 Menu.Exit.MouseButton1Down:Connect(function()
-    OnToolUnequipped()
+    VehicleSpawner.Unequipped()
 end)
 
 return VehicleSpawner

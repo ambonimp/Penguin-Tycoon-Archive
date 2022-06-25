@@ -296,7 +296,6 @@ Services.InputService.InputBegan:Connect(function(input, gameProcessed)
 	if KeyPressed and KEYBINDS[KeyPressed] then
 		for _, v in pairs(Paths.UI.Tools:GetChildren()) do
 			if v:IsA("ImageButton") and v.LayoutOrder == KEYBINDS[KeyPressed] then
-				warn(KeyPressed)
 				ActivateTool(v.Name)
 			end
 
