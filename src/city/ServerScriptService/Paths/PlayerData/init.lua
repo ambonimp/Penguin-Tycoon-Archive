@@ -270,8 +270,8 @@ local function SetupNewStats(Player)
 		}
 	end
 
-	if not Data["PetsData"] then
-		Data["PetsData"] = {
+	if not Data["Pets_Data"] then
+		Data["Pets_Data"] = {
 			Equipped = {},
 			PetsOwned = {
 			},
@@ -342,15 +342,26 @@ game.Players.PlayerAdded:Connect(function(Player)
 	if PlayerData.sessionData[Player.Name]["Pets"] then
 		for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets"].PetsOwned) do
 			local breed = string.split(v.RealName," ")[2]
-			PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[v.ID] = {
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[tostring(v.ID)] = {
 				breed, v.RealName,v.Name,"LEGACY",0,{1.05,"All","Income"}
 			}
 		end
 		PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
 		PlayerData.sessionData[Player.Name]["Pets"] = nil
 	end
-	Player:SetAttribute("MaxPetsOwned",PlayerData.sessionData[Player.Name]["PetsData"].MaxOwned)
-	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip) 
+
+	for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned) do
+		if typeof(i) == "number" then
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[i] = nil
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[tostring(i)] = v
+		end
+	end
+
+	PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
+	PlayerData.sessionData[Player.Name]["Pets"] = nil
+
+	Player:SetAttribute("MaxPetsOwned",PlayerData.sessionData[Player.Name]["Pets_Data"].MaxOwned)
+	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["Pets_Data"].MaxEquip)
 
 	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)

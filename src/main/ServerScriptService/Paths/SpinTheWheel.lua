@@ -8,7 +8,7 @@ local Remotes = Paths.Remotes
 
 Spin.SpinTime = (12*60*60)
 if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
-	Spin.SpinTime = 1*60
+	-- Spin.SpinTime = 2*60
 end
 
 local Rand = Random.new()

@@ -34,7 +34,7 @@ local AllGamepasses = {
 function Gamepasses:ApplyGamepass(playerName, gamepass)
 	local Data = Modules.PlayerData.sessionData[playerName]
 	local Player = game.Players:FindFirstChild(playerName)
-	
+
 	if Data and Player then
 		local AppliedPasses = Data["Applied Gamepasses"]
 		if gamepass == 49090546 then
@@ -55,7 +55,7 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				Data["Walkspeed Multiplier"] *= 1.6
 				
 				local Char = Player.Character
-				
+
 				if Char and Char:FindFirstChild("Humanoid") then
 					Char.Humanoid.WalkSpeed *= 1.6
 				end
@@ -73,11 +73,11 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				end
 			-- Pet storage gamepasses
 			elseif gamepass == 55102286 then
-				Data["PetsData"].MaxOwned += 300
-				Player:SetAttribute("MaxPetsOwned",Data["PetsData"].MaxOwned)
+				Data["Pets_Data"].MaxOwned += 300
+				Player:SetAttribute("MaxPetsOwned",Data["Pets_Data"].MaxOwned)
 			elseif gamepass == 55102169 then
-				Data["PetsData"].MaxOwned += 100
-				Player:SetAttribute("MaxPetsOwned",Data["PetsData"].MaxOwned)
+				Data["Pets_Data"].MaxOwned += 100
+				Player:SetAttribute("MaxPetsOwned",Data["Pets_Data"].MaxOwned)
 			end
 		end
 	end
@@ -88,11 +88,11 @@ function Gamepasses:AwardGamepass(playerName, gamepass)
 	if game.Players:FindFirstChild(playerName) then
 		local Player = game.Players:FindFirstChild(playerName)
 		local Data = Modules.PlayerData.sessionData[playerName]
-		
+
 		if Data and Player then
 			-- Give Gamepass to player's inventory
 			Data["Gamepasses"][tostring(gamepass)] = true
-			
+
 			-- Apply the gamepass' function
 			Gamepasses:ApplyGamepass(playerName, gamepass)
 		end
@@ -118,18 +118,18 @@ end
 
 function Gamepasses:PlayerOwnsPass(player, passId)
 	local Data = Modules.PlayerData.sessionData[player.Name]
-	
+
 	if Data then
-		if Data["Gamepasses"][tostring(passId)] == true then 
-			return true 
+		if Data["Gamepasses"][tostring(passId)] == true then
+			return true
 		end
-			
-		local Success, IsOwned = pcall(function() 
-			return Services.MPService:UserOwnsGamePassAsync(player.UserId, passId) 
+
+		local Success, IsOwned = pcall(function()
+			return Services.MPService:UserOwnsGamePassAsync(player.UserId, passId)
 		end)
-		
+
 		if Success and IsOwned then return true end
-		
+
 		return false
 	end
 end

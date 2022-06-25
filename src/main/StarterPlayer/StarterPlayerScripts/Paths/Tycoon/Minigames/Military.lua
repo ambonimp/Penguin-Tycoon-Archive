@@ -13,7 +13,7 @@ local UI = Paths.UI
 
 local UPGRADE_NAME = "Sergeant#1"
 local DETAILS = {
-    {Weapon = "Snowball Launcher",Instructions = "Shoot all of the penguins with the snowball launcher to get to the next stage!"},
+    {Weapon = "Snowball Launcher", Instructions = "Shoot all of the penguins with the snowball launcher to get to the next stage!"},
     {Weapon = "Snow Grenade", Instructions = "Throw snownades at the polar bears to get to the next stage!"},
     {Weapon = "Snowball Launcher", Instructions = "Kill the Boss Penguin to free the captured penguin!"}
 }
@@ -41,8 +41,7 @@ local Pointer
 local ReturnCFrame
 
 -- Utility Functions --
-local function HidePlayer(Player)
-    local Char = Player.Character
+function HideCharacter(Char)
     if Char then
         for _, BasePart in pairs(Char:GetDescendants()) do
             if BasePart:IsA("BasePart") then
@@ -51,15 +50,19 @@ local function HidePlayer(Player)
             end
         end
 
-        Char.DescendantAdded:Connect(function(Added)
+        Round:GiveTask(Char.DescendantAdded:Connect(function(Added)
             if Added:IsA("BasePart") then
                 HiddenParts[Added] = Added.Transparency
                 Added.Transparency = 1
             end
-        end)
+        end))
 
     end
+end
 
+local function HidePlayer(Player)
+    HideCharacter(Player.Character)
+    Round:GiveTask(Player.CharacterAdded:Connect(HideCharacter))
 end
 
 local function ToggleOtherUI(toggle)
@@ -77,6 +80,16 @@ local function ToggleOtherUI(toggle)
 	UI.Top.Visible = toggle
 	-- UI.Bottom.Visible = toggle
 
+end
+
+local function ToggleShiftlock(Toggle)
+    if Toggle then
+        Paths.Player:SetAttribute("Shiftlock", true)
+        Character.Humanoid.CameraOffset = Vector3.new(3, 3, 0)
+    else
+        Paths.Player:SetAttribute("Shiftlock", false)
+        Character.Humanoid.CameraOffset = Vector3.new(0, 0, 0)
+    end
 end
 
 local function PointTo(Destination)
@@ -105,149 +118,139 @@ local function Level(Lvl)
     local Details = DETAILS[Lvl]
     local LevelCompleted
 
+    RoundFrame.Instructions.Text = Details.Instructions
 
-    InstructionFrame.Body.Text = Details.Instructions
-    InstructionFrame.Visible = true
-    Modules.Buttons:UIOn(CenterFrames, true)
+    local Timer = RoundFrame.Timer.TextLabel
+    Timer.Text = "0s"
+    RoundFrame.Visible = true
 
-    local StartTask
-    StartTask = Round:GiveTask(InstructionFrame.Start.MouseButton1Down:Connect(function()
-        Round[StartTask] = nil
+    -- Countdown
+    task.spawn(function()
+        while not LevelCompleted and Map:IsDescendantOf(workspace) do
+            ElepasedTime += task.wait()
+            Timer.Text =  string.format("%.2fs", ElepasedTime)
+        end
+    end)
 
-        Modules.Buttons:UIOff(CenterFrames, true)
-        InstructionFrame.Visible = false
 
-        local Timer = RoundFrame.Timer.TextLabel
-        Timer.Text = "0s"
-        RoundFrame.Visible = true
+    local Zone = Map.Levels[Lvl]
 
-        -- Countdown
-        task.spawn(function()
-            while not LevelCompleted and Map:IsDescendantOf(workspace) do
-                ElepasedTime += task.wait()
-                Timer.Text =  string.format("%.2fs", ElepasedTime)
+    -- Attacking
+    local Hit = 0
+    local Enemies = Zone.Enemies:GetChildren()
+
+    for _, Enemy in Enemies do
+        local Highlight = Assets.Highlight:Clone()
+        Highlight.Parent = Enemy
+    end
+
+    local Healthbar
+    if Lvl == 3 then
+        Healthbar = Assets.Healthbar:Clone()
+        Healthbar.Parent = Enemies[1]
+
+        Healthbar = Healthbar.BASE
+    end
+
+
+    local Tool = Details.Weapon
+    Modules.Tools.UnhideTools({[Tool] = true})
+    Remotes.Tools:FireServer("Equip Tool", Tool) -- Auto equips tool
+
+    local ToolHandler = Modules.Tools.Handlers[Tool]
+    ToolHandler.Damageables = Enemies
+
+    local HitTask
+    HitTask = Round:GiveTask(ToolHandler.Hit:Connect(function(Enemy)
+        Hit += 1
+
+        if Lvl < 3 then
+            Enemy:Destroy()
+
+            if Hit == #Enemies then
+                -- Onto the next level
+                LevelCompleted = true
+                Zone.Exit.Model:Destroy() -- Tween it going down
+                PointTo(Zone.Exit.PrimaryPart)
+
+                local NewZoneTask
+                NewZoneTask= Round:GiveTask(Zone.Exit.PrimaryPart.Touched:Connect(function(Touched)
+                    if Touched.Parent == Character then
+                        Round[NewZoneTask] = nil
+                        Level(Lvl + 1)
+                        Round[Pointer] = nil
+                    end
+
+                end))
+
             end
-        end)
 
+        else
+            local Health = BOSS_HEALTH - Hit
+            Healthbar.Bar:TweenSize(UDim2.fromScale(math.max(0, Health/BOSS_HEALTH), 1), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.2, true)
 
-        local Zone = Map.Levels[Lvl]
-
-        -- Attacking
-        local Hit = 0
-        local Enemies = Zone.Enemies:GetChildren()
-
-        for _, Enemy in Enemies do
-            local Highlight = Assets.Highlight:Clone()
-            Highlight.Parent = Enemy
-        end
-
-        local Healthbar
-        if Lvl == 3 then
-            Healthbar = Assets.Healthbar:Clone()
-            Healthbar.Parent = Enemies[1]
-
-            Healthbar = Healthbar.BASE
-        end
-
-
-        local Tool = Details.Weapon
-        Modules.Tools.UnhideTools({[Tool] = true})
-        Remotes.Tools:FireServer("Equip Tool", Tool) -- Auto equips tool
-
-        local ToolHandler = Modules.Tools.Handlers[Tool]
-        ToolHandler.Damageables = Enemies
-
-        local HitTask
-        HitTask = Round:GiveTask(ToolHandler.Hit:Connect(function(Enemy)
-            Hit += 1
-
-            if Lvl < 3 then
+            if Health == 0 then
+                LevelCompleted = true
                 Enemy:Destroy()
 
-                if Hit == #Enemies then
-                    -- Onto the next level
-                    LevelCompleted = true
-                    Zone.Exit.Model:Destroy() -- Tween it going down
-                    PointTo(Zone.Exit.PrimaryPart)
+                local Cage = Zone.Cage
+                PointTo(Cage.PrimaryPart)
 
-                    local NewZoneTask
-                    NewZoneTask= Round:GiveTask(Zone.Exit.PrimaryPart.Touched:Connect(function(Touched)
-                        if Touched.Parent == Character then
-                            Round[NewZoneTask] = nil
-                            Level(Lvl + 1)
-                            Round[Pointer] = nil
-                        end
+                ToggleShiftlock(false)
+
+                local Prompt = Instance.new("ProximityPrompt")
+                Prompt.HoldDuration = 0.25
+                Prompt.MaxActivationDistance = 15
+                Prompt.RequiresLineOfSight = false
+                Prompt.ActionText = "Rescue the penguin"
+                Prompt.Parent = Cage.PrimaryPart
+                Round:GiveTask(Prompt)
+
+                Prompt.Triggered:Connect(function()
+                    Round[Pointer] = nil
+                    Cage:Destroy()
+
+                    local RewardLbl = ResultFrame.Reward
+                    RewardLbl.Value.Text = if ElepasedTime <= 45 then 3 else (if ElepasedTime <= 50 then 2 else (if ElepasedTime <= 60 then 1 else 0)) .. " Gems"
+
+                    local ScoreLbl = ResultFrame.Time
+                    ScoreLbl.Value.Text = Timer.Text
+                    ScoreLbl.NewHighscore.Visible = ElepasedTime < Remotes.GetStat:InvokeServer("Military Minigame Score")
+
+
+                    ResultFrame.Visible = true
+                    Modules.Buttons:UIOn(CenterFrames, true)
+
+                    Round:GiveTask(ResultFrame.Claim.MouseButton1Down:Connect(function()
+                        Remotes.MilitaryMinigame:InvokeServer("OnRoundCompleted", ElepasedTime)
+
+                        Modules.Buttons:UIOff(CenterFrames, true)
+
+                        Modules.UIAnimations.BlinkTransition(function()
+                            Character:SetPrimaryPartCFrame(ReturnCFrame)
+                        end, true)
+
+                        Round:Destroy()
 
                     end))
 
-                end
-
-            else
-                local Health = BOSS_HEALTH - Hit
-                Healthbar.Bar:TweenSize(UDim2.fromScale(math.max(0, Health/BOSS_HEALTH), 1), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.2, true)
-
-                if Health == 0 then
-                    LevelCompleted = true
-                    Enemy:Destroy()
-
-                    local Cage = Zone.Cage
-                    PointTo(Cage.PrimaryPart)
-
-                    local Prompt = Instance.new("ProximityPrompt")
-                    Prompt.HoldDuration = 0.25
-                    Prompt.MaxActivationDistance = 15
-                    Prompt.RequiresLineOfSight = false
-                    Prompt.ActionText = "Rescue penguins"
-                    Prompt.Parent = Cage.PrimaryPart
-                    Round:GiveTask(Prompt)
-
-                    Prompt.Triggered:Connect(function()
-                        Round[Pointer] = nil
-                        Cage:Destroy()
-
-                        local RewardLbl = ResultFrame.Reward
-                        RewardLbl.Value.Text = if ElepasedTime <= 35 then 3 else (if ElepasedTime <= 45 then 2 else (if ElepasedTime <= 60 then 1 else 0)) .. " Gems"
-
-                        local ScoreLbl = ResultFrame.Time
-                        ScoreLbl.Value.Text = Timer.Text
-                        ScoreLbl.NewHighscore.Visible = ElepasedTime < Remotes.GetStat:InvokeServer("Military Minigame Score")
-
-
-                        ResultFrame.Visible = true
-                        Modules.Buttons:UIOn(CenterFrames, true)
-
-                        Round:GiveTask(ResultFrame.Claim.MouseButton1Down:Connect(function()
-                            Remotes.MilitaryMinigame:InvokeServer("OnRoundCompleted", ElepasedTime)
-
-                            Modules.Buttons:UIOff(CenterFrames, true)
-
-                            Modules.UIAnimations.BlinkTransition(function()
-                                Character:SetPrimaryPartCFrame(ReturnCFrame)
-                            end, true)
-
-                            Round:Destroy()
-
-                        end))
-
-                    end)
-
-                end
+                end)
 
             end
 
-            if LevelCompleted then
-                Round[HitTask] = nil
+        end
 
-                Zone.Barriers:Destroy()
+        if LevelCompleted then
+            Round[HitTask] = nil
 
-                Modules.Tools:HideTools()
-                RoundFrame.Visible = false
+            Zone.Barriers:Destroy()
 
-            end
-
-        end))
+            Modules.Tools:HideTools()
+            RoundFrame.Visible = false
+        end
 
     end))
+
 
 end
 
@@ -256,7 +259,7 @@ local function LoadUpgrade(Upgrade)
 	Prompt.HoldDuration = 0.25
 	Prompt.MaxActivationDistance = 15
 	Prompt.RequiresLineOfSight = false
-	Prompt.ActionText = "Save the penguins"
+	Prompt.ActionText = "Penguin Rescue"
 	Prompt.Parent = Upgrade:WaitForChild("LapTop"):WaitForChild("Hitbox")
 
     Prompt.Triggered:Connect(function()
@@ -276,6 +279,7 @@ local function LoadUpgrade(Upgrade)
                     HidePlayer(Player)
                 end
             end
+
             Round:GiveTask(game.Players.PlayerAdded:Connect(HidePlayer))
 
             -- Create map, client side and teleport player there
@@ -300,6 +304,7 @@ local function LoadUpgrade(Upgrade)
                 Modules.Buttons:UIOff(CenterFrames, true)
 
                 Level(1)
+                ToggleShiftlock(true)
 
             end))
 
@@ -318,13 +323,13 @@ local function LoadUpgrade(Upgrade)
                     Modules.Buttons:UIOff(CenterFrames, true)
                 end
 
-                InstructionFrame.Visible = false
                 ResultFrame.Visible = false
 
                 RoundFrame.Visible = false
 
                 Modules.Tools.UnhideTools()
                 ToggleOtherUI(true)
+                ToggleShiftlock(false)
 
                 for HiddenPart, Transparency in HiddenParts do
                     if HiddenPart:IsDescendantOf(workspace) then

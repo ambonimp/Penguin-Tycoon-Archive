@@ -15,7 +15,7 @@ local Day = os.date("%A")
 local Mult = 1
 
 if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
-	Mult = 2
+	Mult = 4
 else
 	Mult = 1
 end
@@ -57,7 +57,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 	local Day = os.date("%A")
 	local add = ""
 	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday") and Change > 0 then
-		add = " (X2 DAY)"
+		add = " (X4 DAY)"
 	end
 	if game.Players.LocalPlayer:GetAttribute("x3MoneyBoost") then
 		add = add.." (x3)"

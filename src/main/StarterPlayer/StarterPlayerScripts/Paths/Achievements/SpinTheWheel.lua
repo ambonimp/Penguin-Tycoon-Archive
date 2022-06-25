@@ -1,3 +1,4 @@
+local DataStoreService = game:GetService("DataStoreService")
 local TweenService = game:GetService("TweenService")
 local SpinTheWheel = {}
 
@@ -23,7 +24,7 @@ local winText = {
 	[3] = "You received 10 gems!!",
 	[4] = "You received 30 gems!",
 	[6] = "You received x1 Ultra Fish Luck Boost!",
-	
+
 }
 local positions = {
 	[8] = {-25,-65},
@@ -40,7 +41,7 @@ UI.Wheel.Rotation = rotations[math.random(1,#rotations)]
 
 function spinWheel()
 	spinning = true
-	
+
 	local result = Remotes.SpinTheWheel:InvokeServer("GetResult")
 	local low = math.min(positions[result][1],positions[result][2])
 	local high = math.max(positions[result][1],positions[result][2])
@@ -76,12 +77,12 @@ function spinWheel()
 				Paths.Audio.Tick:Play()
 			end
 		end
-		
+
 		task.wait()
 	end
 	local check,am = Remotes.SpinTheWheel:InvokeServer("ClaimReward")
 	spinning = false
-	
+
 	if check == "Owned" then
 		local text = "Already owned! You received "..am.." gems instead!"
 		Paths.Modules.Setup:Notification(text,Color3.new(0.945098, 0.525490, 0.282352),7)
@@ -149,9 +150,9 @@ task.spawn(function()
 			local tLeft = nextReward - os.time()
 			UI.FreeSpin.Text = "Next Free Spin: "..toHMS(tLeft)
 			task.wait(1)
-		end 
+		end
 		task.wait(3)
-		if spinning then 
+		if spinning then
 			repeat task.wait()
 			until not spinning
 		end
@@ -161,7 +162,7 @@ task.spawn(function()
 		nextReward = Remotes.SpinTheWheel:InvokeServer("CheckGift")
 		start()
 	 end
-	 
+
 	 start()
 end)
 

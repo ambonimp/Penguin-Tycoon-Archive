@@ -74,7 +74,7 @@ end
 
 local function ToggleProximityPrompts(Toggle)
     if Toggle then
-        for Prompt, Parent in ipairs(DisabledPrompts) do
+        for Prompt, Parent in pairs(DisabledPrompts) do
             Prompt.Parent = Parent
         end
     else

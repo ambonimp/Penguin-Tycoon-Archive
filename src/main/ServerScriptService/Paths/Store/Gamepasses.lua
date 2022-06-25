@@ -52,7 +52,7 @@ local GamepassButtons = {
 function Gamepasses:ApplyGamepass(playerName, gamepass)
 	local Data = Modules.PlayerData.sessionData[playerName]
 	local Player = game.Players:FindFirstChild(playerName)
-	
+
 	if Data and Player then
 		local AppliedPasses = Data["Applied Gamepasses"]
 		-- If the Gamepass isn't already applied then apply it
@@ -65,21 +65,21 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				--x2 income
 			elseif gamepass == 25313170 then
 				Data["Income Multiplier"] *= 2
-				
+
 			-- Faster Speed
 			elseif gamepass == 26268187 then
 				Data["Walkspeed Multiplier"] *= 1.6
-				
+
 				local Char = Player.Character
-				
+
 				if Char and Char:FindFirstChild("Humanoid") then
 					Char.Humanoid.WalkSpeed *= 1.6
 				end
-				
+
 			-- VIP
-			elseif gamepass == 26269102 then 
+			elseif gamepass == 26269102 then
 				Modules.Chat:ApplyChatTag(Player)
-				
+
 			-- Tool upgrades
 			elseif gamepass == 28927736 then
 				Modules.Tools.AddTool(Player, "Gold Fishing Rod")
@@ -90,17 +90,17 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 
 			-- Pet storage gamepasses
 			elseif gamepass == 55102286 then
-				Data["PetsData"].MaxOwned += 300
-				Player:SetAttribute("MaxPetsOwned",Data["PetsData"].MaxOwned)
+				Data["Pets_Data"].MaxOwned += 300
+				Player:SetAttribute("MaxPetsOwned",Data["Pets_Data"].MaxOwned)
 			elseif gamepass == 55102169 then
-				Data["PetsData"].MaxOwned += 100
-				Player:SetAttribute("MaxPetsOwned",Data["PetsData"].MaxOwned)
+				Data["Pets_Data"].MaxOwned += 100
+				Player:SetAttribute("MaxPetsOwned",Data["Pets_Data"].MaxOwned)
 			end
 
 		end
-		
+
 		-- Gamepass buttons/tycoon item
-		
+
 	end
 end
 
@@ -111,11 +111,11 @@ function Gamepasses:AwardGamepass(playerName, gamepass)
 	if game.Players:FindFirstChild(playerName) then
 		local Player = game.Players:FindFirstChild(playerName)
 		local Data = Modules.PlayerData.sessionData[playerName]
-		
+
 		if Data and Player then
 			-- Give Gamepass to player's inventory
 			Data["Gamepasses"][tostring(gamepass)] = true
-			
+
 			-- Apply the gamepass' function
 			Gamepasses:ApplyGamepass(playerName, gamepass)
 		end
@@ -127,7 +127,7 @@ end
 -- Player: Object
 function Gamepasses:CheckGamepasses(Player)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	
+
 	if Data then
 		local PlayerPasses = Data["Gamepasses"]
 		local AppliedPasses = Data["Applied Gamepasses"]
@@ -144,7 +144,7 @@ function Gamepasses:CheckGamepasses(Player)
 					end
 			elseif Gamepasses:PlayerOwnsPass(Player, Gamepass) and GamepassButtons[tonumber(Gamepass)] and not Data["Tycoon"][GamepassButtons[tonumber(Gamepass)]] then
 				Data["Tycoon"][GamepassButtons[tonumber(Gamepass)]] = true
-				
+
 				local Tycoon = Modules.Ownership:GetPlayerTycoon(Player)
 				if Tycoon.Buttons:FindFirstChild(GamepassButtons[tonumber(Gamepass)]) then
 					Modules.Placement:AnimateOut(Tycoon.Buttons[GamepassButtons[tonumber(Gamepass)]])
@@ -158,18 +158,18 @@ end
 -- Checks and returns whether the player: Object owns the gamepass of passId: Integer
 function Gamepasses:PlayerOwnsPass(player, passId)
 	local Data = Modules.PlayerData.sessionData[player.Name]
-	
+
 	if Data then
-		if Data["Gamepasses"][tostring(passId)] == true then 
-			return true 
+		if Data["Gamepasses"][tostring(passId)] == true then
+			return true
 		end
-			
-		local Success, IsOwned = pcall(function() 
-			return Services.MPService:UserOwnsGamePassAsync(player.UserId, passId) 
+
+		local Success, IsOwned = pcall(function()
+			return Services.MPService:UserOwnsGamePassAsync(player.UserId, passId)
 		end)
-		
+
 		if Success and IsOwned then return true end
-		
+
 		return false
 	end
 end
@@ -197,7 +197,7 @@ Services.MPService.PromptGamePassPurchaseFinished:Connect(function(player, gamep
 			end
 		end)
 		local success, msg = pcall(function()
-			
+
 			EventHandler:Fire("transactionCompleted", player, {
 				productId = gamepass,
 				productDetails = productData,

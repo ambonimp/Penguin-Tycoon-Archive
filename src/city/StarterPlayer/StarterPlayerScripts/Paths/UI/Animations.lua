@@ -16,7 +16,7 @@ local Day = os.date("%A")
 local Mult = 1
 
 if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
-	Mult = 2
+	Mult = 4
 else
 	Mult = 1
 end

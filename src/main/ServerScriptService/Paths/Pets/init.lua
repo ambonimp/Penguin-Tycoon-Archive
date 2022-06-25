@@ -21,7 +21,7 @@ end
 
 function Pets.getBonus(Player,BonusKind,BonusType)
 	if Modules.PlayerData.sessionData[Player.Name] then
-		local data = Modules.PlayerData.sessionData[Player.Name]["PetsData"]
+		local data = Modules.PlayerData.sessionData[Player.Name]["Pets_Data"]
 		local current = 1
 		for i,id in pairs (data.Equipped) do
 			if data.PetsOwned[id] and (data.PetsOwned[id][6][2] == BonusKind or data.PetsOwned[id][6][2] == "All") and data.PetsOwned[id][6][3] == BonusType then
@@ -35,13 +35,13 @@ end
 
 function GetData(Player,ToRetrieve) --Returns a specific players Data
 	if Modules.PlayerData.sessionData[ToRetrieve.Name] then
-		return Modules.PlayerData.sessionData[ToRetrieve.Name]["PetsData"]
+		return Modules.PlayerData.sessionData[ToRetrieve.Name]["Pets_Data"]
 	end
 	while ToRetrieve and Modules.PlayerData.sessionData[ToRetrieve.Name] == nil do
 		task.wait()
 	end
 	if Modules.PlayerData.sessionData[ToRetrieve.Name]then
-		return Modules.PlayerData.sessionData[ToRetrieve.Name]["PetsData"]
+		return Modules.PlayerData.sessionData[ToRetrieve.Name]["Pets_Data"]
 	else
 		return nil
 	end
@@ -49,7 +49,7 @@ end
 
 function EditName(Player,ID,NewName)
 	if Modules.PlayerData.sessionData[Player.Name] then
-		local data = Modules.PlayerData.sessionData[Player.Name]["PetsData"]
+		local data = Modules.PlayerData.sessionData[Player.Name]["Pets_Data"]
 		if data.PetsOwned[ID] then
 			local text
 			local s,m = pcall(function()
@@ -58,8 +58,8 @@ function EditName(Player,ID,NewName)
 			if s == false then
 				text = "####"
 			end
-			Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[ID][3] = text
-			return Modules.PlayerData.sessionData[Player.Name]["PetsData"],text
+			Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[ID][3] = text
+			return Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],text
 		end
 	end
 	return false
@@ -67,30 +67,30 @@ end
 
 function DeletePet(Player,IDs)
 	if Modules.PlayerData.sessionData[Player.Name] then
-		local data = Modules.PlayerData.sessionData[Player.Name]["PetsData"]
+		local data = Modules.PlayerData.sessionData[Player.Name]["Pets_Data"]
 		for i,v in pairs (IDs) do
 			if data.PetsOwned[v] then
 				data.PetsOwned[v] = nil
 			end
 		end
-		return true,Modules.PlayerData.sessionData[Player.Name]["PetsData"]
+		return true,Modules.PlayerData.sessionData[Player.Name]["Pets_Data"]
 	end
 	return false
 end
 
 function Merge(Player,ID1,ID2)
 	if Modules.PlayerData.sessionData[Player.Name] then
-		local data = Modules.PlayerData.sessionData[Player.Name]["PetsData"]
+		local data = Modules.PlayerData.sessionData[Player.Name]["Pets_Data"]
 		if data.PetsOwned[ID1] and data.PetsOwned[ID2] then
 			if table.find(data.Equipped,ID1) or table.find(data.Equipped,ID2) then
 				return false,"Equipped"
 			end
 			if data.PetsOwned[ID1][1] == data.PetsOwned[ID2][1] and data.PetsOwned[ID1][2] == data.PetsOwned[ID2][2] then
 				if data.PetsOwned[ID1][5] == data.PetsOwned[ID2][5] then
-					Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[ID1][5] += 1
-					Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[ID1][6][1] += (.025*Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[ID1][5])
+					Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[ID1][5] += 1
+					Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[ID1][6][1] += (.025*Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[ID1][5])
 					DeletePet(Player,{ID2})
-					return true,Modules.PlayerData.sessionData[Player.Name]["PetsData"],ID1,ID2
+					return true,Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],ID1,ID2
 				else
 					return false,"Not same level"
 				end
@@ -123,8 +123,8 @@ end
 function givePet(Player, PetId, Chosen, IslandId)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	if Data then
-		Data = Data["PetsData"]
-		if #Data.PetsOwned >= Data.MaxOwned then return  end
+		Data = Data["Pets_Data"]
+		if #Data.PetsOwned >= Data.MaxOwned then return warn("WHOA") end
 
 		local petInfo = PetDetails.Pets[PetId]
 		local newId = getEmptyNum(Data.PetsOwned)
@@ -153,6 +153,9 @@ function givePet(Player, PetId, Chosen, IslandId)
 		warn("THIS2: ", Data.Unlocked)
 		print(Data)
 		return newId, petInfo
+
+	else
+		warn("THIS THIS")
 	end
 
 end
@@ -161,7 +164,7 @@ function Pets.BuyRobuxPet(Player,IslandId)
 	local ChanceTable = PetDetails.ChanceTables[IslandId]
 	local chosen = getRandomPet(ChanceTable.Pets)
 	local petId, petInfo = givePet(Player,chosen.Id,chosen,IslandId)
-	Remotes.BuyEgg:InvokeClient(Player,"NewPet",Modules.PlayerData.sessionData[Player.Name]["PetsData"],petId,petInfo)
+	Remotes.BuyEgg:InvokeClient(Player,"NewPet",Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],petId,petInfo)
 end
 
 function BuyEgg(Player,Island,Type)
@@ -179,9 +182,9 @@ function BuyEgg(Player,Island,Type)
 				Modules.PlayerData.sessionData[Player.Name]["Gems"] -= Price
 				Player:SetAttribute("Gems", Modules.PlayerData.sessionData[Player.Name]["Gems"])
 
-				warn(Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked)
+				warn(Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].Unlocked)
 
-				return true, Modules.PlayerData.sessionData[Player.Name]["PetsData"], petInfo, newId
+				return true, Modules.PlayerData.sessionData[Player.Name]["Pets_Data"], petInfo, newId
 			else
 				return false,"gems"
 			end
@@ -195,13 +198,13 @@ end
 
 function EquipPet(Player,PetIDs)
 	if Modules.PlayerData.sessionData[Player.Name] then
-		local data = Modules.PlayerData.sessionData[Player.Name]["PetsData"]
+		local data = Modules.PlayerData.sessionData[Player.Name]["Pets_Data"]
 		if #data.Equipped < Player:GetAttribute("MaxEquip") then
 			local except = {}
 			for i,PetID in pairs (PetIDs) do
 				if data.PetsOwned[PetID] then
 					if table.find(data.Equipped,PetID) == nil and #data.Equipped < Player:GetAttribute("MaxEquip") then
-						table.insert(Modules.PlayerData.sessionData[Player.Name]["PetsData"].Equipped,PetID)
+						table.insert(Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].Equipped,PetID)
 					else
 						table.insert(except,PetID)
 					end
@@ -213,7 +216,7 @@ function EquipPet(Player,PetIDs)
 				return false
 			end
 			Player:SetAttribute("PetsEquipped",tick())
-			return Modules.PlayerData.sessionData[Player.Name]["PetsData"],true,except
+			return Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],true,except
 		end
 	end
 	return false
@@ -221,12 +224,12 @@ end
 
 function UnequipPet(Player,PetIDs)
 	if Modules.PlayerData.sessionData[Player.Name] then
-		local data = Modules.PlayerData.sessionData[Player.Name]["PetsData"]
+		local data = Modules.PlayerData.sessionData[Player.Name]["Pets_Data"]
 		for i,PetID in pairs (PetIDs) do
 			local except = {}
 			if data.PetsOwned[PetID] then
 				if table.find(data.Equipped,PetID) then
-					table.remove(Modules.PlayerData.sessionData[Player.Name]["PetsData"].Equipped,table.find(data.Equipped,PetID))
+					table.remove(Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].Equipped,table.find(data.Equipped,PetID))
 				else
 					table.insert(except,PetID)
 				end
@@ -237,7 +240,7 @@ function UnequipPet(Player,PetIDs)
 				return false
 			end
 			Player:SetAttribute("PetsEquipped",tick())
-			return Modules.PlayerData.sessionData[Player.Name]["PetsData"],true,except
+			return Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],true,except
 		end
 
 	end

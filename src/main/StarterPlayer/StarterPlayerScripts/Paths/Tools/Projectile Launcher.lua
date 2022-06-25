@@ -74,39 +74,22 @@ function Launcher.new(Name, OnHit)
 
             -- Camera/Mouse  lock
             local Main = Character.Main
-            Humanoid.AutoRotate = true
             local MainNozzleOffset = math.abs(GetYAngleBetweenPoints(Main.CFrame, Nozzle.WorldPosition))
-            warn(math.deg(MainNozzleOffset))
-
-            local LookY = GetYAngle(Main.CFrame) -- Horizontal angle. Starts off how character is rotated.
-            local LookX = 0 -- Vertical angle
+            -- warn(math.deg(MainNozzleOffset))
 
             local ArmR = Main["Arm R"]
             local ArmL = Main["Arm L"]
             local RArmCFrame = CFrame.new(ArmR.C0.Position) * CFrame.fromEulerAnglesYXZ(0, table.unpack(table.pack(ArmR.C0:ToEulerAnglesYXZ()), 2))
             local LArmCFrame = CFrame.new(ArmL.C0.Position) * CFrame.fromEulerAnglesYXZ(ArmR.C0:ToEulerAnglesYXZ() - ArmL.C0:ToEulerAnglesYXZ(), table.unpack(table.pack(ArmL.C0:ToEulerAnglesYXZ()), 2))
 
-            -- Get input
-            Services.ContextActionService:BindAction("Camera" .. Name, function(_, _, Input)
-                if Input.UserInputState == Enum.UserInputState.Change then
-                    local Delta =  Input.Delta
-                    LookX = math.clamp(LookX - Delta.Y * 0.01, -math.rad(45), math.rad(45))
-                    LookY -= Delta.X * 0.005
-                end
-            end, false, Enum.UserInputType.MouseMovement, Enum.UserInputType.Touch, Enum.UserInputType.Gamepad1)
-
             -- Update
             Pointing = Services.RunService.RenderStepped:Connect(function(dt)
                 local Alpha = dt * 8
 
-                Services.InputService.MouseBehavior = Enum.MouseBehavior.LockCenter
-                Camera.CameraType = Enum.CameraType.Scriptable
+                -- ArmR.C0 = ArmR.C0:Lerp(RArmCFrame * CFrame.fromEulerAnglesYXZ(LookX, 0, 0), Alpha)
+                -- ArmL.C0 = ArmL.C0:Lerp(LArmCFrame * CFrame.fromEulerAnglesYXZ(LookX, 0, 0), Alpha)
+                -- Main.CFrame = CFrame.new(Main.Position) * CFrame.fromEulerAnglesYXZ(0, LookY, 0)
 
-                ArmR.C0 = ArmR.C0:Lerp(RArmCFrame * CFrame.fromEulerAnglesYXZ(LookX, 0, 0), Alpha)
-                ArmL.C0 = ArmL.C0:Lerp(LArmCFrame * CFrame.fromEulerAnglesYXZ(LookX, 0, 0), Alpha)
-                Main.CFrame = CFrame.new(Main.Position) * CFrame.fromEulerAnglesYXZ(0, LookY, 0)
-
-                Camera.CFrame = Main.CFrame * CFrame.fromEulerAnglesYXZ(0, MainNozzleOffset, 0) * CFrame.fromEulerAnglesYXZ(LookX, 0, 0) * CAMERA_OFFSET
             end)
 
             -- Shooting
@@ -121,7 +104,8 @@ function Launcher.new(Name, OnHit)
                         ShootTrack.Stopped:Wait()
 
                         -- Create and launch projectile
-                        local C0 = CFrame.new(Nozzle.WorldPosition) * CFrame.fromEulerAnglesYXZ(LookX, GetYAngle(Main.CFrame) + MainNozzleOffset, 0)
+                        local LookX = Camera.CFrame:ToEulerAnglesYXZ()
+                        local C0 = CFrame.new(Nozzle.WorldPosition) * Camera.CFrame.Rotation
 
                         local Projectile = Assets[Name].Projectile:Clone()
                         Projectile.Anchored = true
@@ -173,11 +157,12 @@ function Launcher.new(Name, OnHit)
 
                 end
 
-            end, Enum.ContextActionPriority.High.Value, true, Enum.UserInputType.MouseButton1, Enum.UserInputType.Touch, Enum.KeyCode.ButtonR2)
+            end, Enum.ContextActionPriority.High.Value, true, Enum.UserInputType.MouseButton1, Enum.KeyCode.ButtonR2)
 
-            local Button = Services.ContextActionService:GetButton(script.Name)
+            local Button = Services.ContextActionService:GetButton(Name)
             if Button then
-                warn("COOL")
+                local Icon = Button:WaitForChild("ActionIcon")
+                Icon.Image = "rbxassetid://10001729216"
             end
 
         end,
@@ -186,17 +171,7 @@ function Launcher.new(Name, OnHit)
             if IdleTrack then IdleTrack:Stop() end
             Pointing:Disconnect()
 
-            Humanoid.AutoRotate = true
-
-            Services.InputService.MouseBehavior = Enum.MouseBehavior.Default
-
             Services.ContextActionService:UnbindAction(Name)
-            Services.ContextActionService:UnbindAction("Camera" .. Name)
-
-
-
-            Modules.Camera:ResetToCharacter()
-
         end,
 
     }

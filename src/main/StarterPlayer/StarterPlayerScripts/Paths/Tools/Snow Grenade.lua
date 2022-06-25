@@ -21,7 +21,7 @@ task.spawn(function()
         if Launcher.Damageables then
             local Registered = {}
             -- Explosion
-            for _, Hit in workspace:GetPartBoundsInRadius(Position, 5, OverlapParams.new()) do
+            for _, Hit in workspace:GetPartBoundsInRadius(Position, 8, OverlapParams.new()) do
                 for _, Model in ipairs(Launcher.Damageables) do
                     if not Registered[Model] and Hit:IsDescendantOf(Model) then
                         Launcher.Hit:Fire(Model)

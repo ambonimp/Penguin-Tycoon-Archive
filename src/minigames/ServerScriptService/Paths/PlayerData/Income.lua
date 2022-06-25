@@ -25,7 +25,7 @@ local Day = os.date("%A")
 local Mult = 1
 
 if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
-	Mult = 2
+	Mult = 4
 else
 	Mult = 1
 end
@@ -99,7 +99,7 @@ function Income:GemLoop()
 		task.wait(1)
 		Day = os.date("%A")
 		if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
-			Mult = 2
+			Mult = 4
 		else
 			Mult = 1
 		end

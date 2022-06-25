@@ -237,7 +237,9 @@ function Customization:ExitUI()
 	-- Enable penguin buttons
 	for Penguin, v in pairs(Modules.Penguins.Penguins) do
 		if Penguin:WaitForChild("Info", 0.5) then
-			Penguin.Info.ProximityPrompt.Enabled = true
+			if Penguin:FindFirstChild("Info") then
+				Penguin.Info.ProximityPrompt.Enabled = false
+			end
 		end
 	end
 

@@ -37,8 +37,9 @@ function Income:AddMoney(Player, Amount,isBought)
 
 	if Data then
 		if isBought == nil then
-			Amount = Amount*Mult
+			Amount = Amount * Mult
 		end
+
 		if Player:GetAttribute("x3MoneyBoost") then
 			Amount = Amount*3
 		end
@@ -108,7 +109,7 @@ function Income:GemLoop()
 		task.wait(1)
 		Day = os.date("%A")
 		if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
-			Mult = 2
+			Mult = 4
 		else
 			Mult = 1
 		end

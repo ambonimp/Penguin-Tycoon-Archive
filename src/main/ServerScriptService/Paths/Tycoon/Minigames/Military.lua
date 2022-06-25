@@ -33,25 +33,26 @@ Remotes.MilitaryMinigame.OnServerInvoke = function(Player, Event, ...)
 
         return true
     elseif Event == "OnRoundCompleted" then
-        local Time = Params[1]
+        local ElepasedTime = Params[1]
         RemoveTools(Player)
 
-        if Data["Military Minigame Score"] > Time then
-            Data["Military Minigame Score"] = Time
+        if Data["Military Minigame Score"] > ElepasedTime then
+            Data["Military Minigame Score"] = ElepasedTime
         end
 
-        local Reward =  if Time <= 35 then 3 else (if Time <= 45 then 2 else (if Time <= 60 then 1 else 0))
+        local Reward =  if ElepasedTime <= 45 then 3 else (if ElepasedTime <= 50 then 2 else (if ElepasedTime <= 60 then 1 else 0))
         Modules.Income:AddGems(Player, Reward, "Military Minigame")
 
 
     elseif Event == "OnRoundCancelled" then
         RemoveTools(Player)
-
     end
 
 end
 
 game.Players.PlayerAdded:Connect(RemoveTools)
+
+
 
 
 

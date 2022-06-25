@@ -39,6 +39,21 @@ local MergeSelected = {}
 local RealData = nil
 local PromptObj = nil
 
+local SMALL_GAMEPASS = 55102169
+local HUGE_GAMEPASS = 55102286
+
+local function getTotalPets()
+	return #PetsFrame.Pets.Pets:GetChildren()-1
+end
+
+local function UpdateStorage()
+	PetsFrame.Capacity.TextLabel.Text = #RealData.PetsOwned .. "/" .. LocalPlayer:GetAttribute("MaxPetsOwned")
+end
+
+LocalPlayer:GetAttributeChangedSignal("MaxPetsOwned"):Connect(function()
+	UpdateStorage()
+end)
+
 function tweenModel(model,cf)
 	local c = TweenValues[model] or Instance.new("CFrameValue")
 	TweenValues[model] = c
@@ -683,6 +698,7 @@ function Pets.LoadEgg(Island,Prompt)
 	Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
 end
 
+
 BuyEgg.Bonus.Exit.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 end)
@@ -708,24 +724,57 @@ end)
 BuyEgg.Gems.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 	if CurrentEggLoaded then
-		local Bought,Data,NewPetInfo,newId = Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Gems")
-		if Bought then
-			RealData = Data
-			local PetModel = PetsAssets:FindFirstChild(string.upper(NewPetInfo[1])):FindFirstChild(string.upper(NewPetInfo[2]))
-			local info = RealData.PetsOwned[newId]
-			openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]])
-			updateUI(Data,"add",newId)
-			--updateIndex(Data,Data.PetsOwned[newId][8])
-		elseif not Bought and Data == "Gems" then
+		if getTotalPets() < LocalPlayer:GetAttribute("MaxPetsOwned") then
+			local Bought,Data,NewPetInfo,newId = Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Gems")
+			if Bought then
+				RealData = Data
+				local PetModel = PetsAssets:FindFirstChild(string.upper(NewPetInfo[1])):FindFirstChild(string.upper(NewPetInfo[2]))
+				local info = RealData.PetsOwned[tostring(newId)]
+				openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]])
+				updateUI(Data,"add",newId)
+				updateIndex(Data, Data.PetsOwned[tostring(newId)][8])
+
+			elseif not Bought and Data == "Gems" then
+
+			end
+		else
+			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
+			if not Gamepasses[tostring(HUGE_GAMEPASS)] then
+				if not Gamepasses[tostring(SMALL_GAMEPASS)] then
+					Services.MPService:PromptGamePassPurchase(Paths.Player, SMALL_GAMEPASS)
+				else
+					Services.MPService:PromptGamePassPurchase(Paths.Player, HUGE_GAMEPASS)
+				end
+
+			end
+
 		end
+
 	end
+
 end)
 
 BuyEgg.Robux.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 	if CurrentEggLoaded then
-		Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Robux")
+		if getTotalPets() < LocalPlayer:GetAttribute("MaxPetsOwned") then
+			Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Robux")
+		else
+			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
+
+			if not Gamepasses[tostring(HUGE_GAMEPASS)] then
+				if not Gamepasses[tostring(SMALL_GAMEPASS)] then
+					Services.MPService:PromptGamePassPurchase(Paths.Player, SMALL_GAMEPASS)
+				else
+					Services.MPService:PromptGamePassPurchase(Paths.Player, HUGE_GAMEPASS)
+				end
+
+			end
+
+		end
+
 	end
+
 end)
 
 PetsFrame:GetPropertyChangedSignal("Visible"):Connect(function()
@@ -796,6 +845,7 @@ PetsFrame.ConfirmDelete.Confirm.MouseButton1Down:Connect(function()
 		table.insert(newtbl,v[1])
 	end
 	local did, data = Remotes.DeletePet:InvokeServer(newtbl)
+	UpdateStorage()
 	EndState()
 	if did and data then
 		RealData = data
@@ -803,6 +853,7 @@ PetsFrame.ConfirmDelete.Confirm.MouseButton1Down:Connect(function()
 			updateUI(RealData,"delete",v)
 		end
 	end
+
 end)
 
 PetsFrame.EditName.Confirm.MouseButton1Down:Connect(function()
@@ -823,7 +874,7 @@ PetsFrame.Search.TextBox:GetPropertyChangedSignal("Text"):Connect(function()
 		for i,v in pairs (PetsFrame.Pets.Pets:GetChildren()) do
 			if tonumber(v.Name) then
 				local id = tonumber(v.Name)
-				if string.match(string.lower(RealData.PetsOwned[id][1]),string.lower(text)) or string.match(string.lower(RealData.PetsOwned[id][3]),string.lower(text)) then
+				if string.match(string.lower(RealData.PetsOwned[tostring(id)][1]),string.lower(text)) or string.match(string.lower(RealData.PetsOwned[tostring(id)][3]),string.lower(text)) then
 					v.Visible = true
 				else
 					v.Visible = false
@@ -840,6 +891,7 @@ PetsFrame.Search.TextBox:GetPropertyChangedSignal("Text"):Connect(function()
 end)
 
 PetsFrame.EditName.Exit.MouseButton1Down:Connect(function()
+	PetsFrame.EditName.Visible = false
 	EndState()
 end)
 
@@ -898,6 +950,22 @@ PetsFrame.Best.MouseButton1Down:Connect(function()
 	task.wait(.15)
 	clickdb = false
 end)
+
+-- Capacity
+UI.Bottom.Buttons.Backpack.MouseButton1Down:Connect(function()
+	if not PetsFrame.Visible then
+		UpdateStorage()
+	end
+end)
+
+PetsFrame.Capacity.More.MouseButton1Down:Connect(function()
+	Modules.Buttons:UIOff(PetsFrame, true)
+
+	Modules.Store.ButtonClicked({Name = "Gamepasses"}, UI.Center.Store)
+	Modules.Buttons:UIOn(UI.Center.Store, true)
+	 -- TODO: Point there with the UI
+end)
+
 
 function openEgg(Image,Name,Rarity,Color)
 	openingEgg = true
@@ -999,10 +1067,10 @@ function Remotes.BuyEgg.OnClientInvoke(Type,Data,PetId,PetInfo)
 	if Type == "NewPet" then
 		RealData = Data
 		local PetModel = PetsAssets:FindFirstChild(string.upper(PetInfo[1])):FindFirstChild(string.upper(PetInfo[2]))
-		local info = RealData.PetsOwned[PetId]
+		local info = RealData.PetsOwned[tostring(PetId)]
 		openEgg(PetModel.Icon.Texture,info[1],info[4],PetDetails.RarityColors[info[4]])
 		updateUI(Data,"add",PetId)
-		--updateIndex(Data,Data.PetsOwned[PetId][8])
+		updateIndex(Data,Data.PetsOwned[tostring(PetId)][8])
 	end
 end
 

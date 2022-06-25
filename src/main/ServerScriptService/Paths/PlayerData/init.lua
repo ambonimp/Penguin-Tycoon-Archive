@@ -51,7 +51,7 @@ local function Defaults(Player)
 		},
 
 		-- Possessions
-		["PetsData"] = {
+		["Pets_Data"] = {
 			Equipped = {},
 			PetsOwned = {},
 			MaxEquip = 3,
@@ -206,7 +206,11 @@ local function Defaults(Player)
 		["Quests"] = {},
 
 		["Playtime"] = {0,0,{}},
-		["Spin"] = {true,0,os.time()},
+		["Spin"] = {
+			true,
+			0,
+			os.time()
+		},
 
 		-- Minigames
 		["Youtube Minigame Score"] = 0,
@@ -236,8 +240,8 @@ end
 -- Recursively give player any data fields that they might be missing
 local function Reconcile(Data, Default)
 	for k, v in pairs(Default) do
-		if not Data[k] then
-			Data[k] = Default[k]
+		if Data[k] == nil then
+			Data[k] = v
 		elseif typeof(v) == "table" then
 			Reconcile(Data[k], v)
 		end
@@ -397,7 +401,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	if PlayerData.sessionData[Player.Name]["Pets"] then
 		for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets"].PetsOwned) do
 			local breed = string.split(v.RealName," ")[2]
-			PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[v.ID] = {
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[tostring(v.ID)] = {
 				breed, v.RealName,v.Name,"LEGACY",0,{1.05,"All","Income"}
 			}
 		end
@@ -405,10 +409,17 @@ game.Players.PlayerAdded:Connect(function(Player)
 		PlayerData.sessionData[Player.Name]["Pets"] = nil
 	end
 
-	Player:SetAttribute("MaxPetsOwned",PlayerData.sessionData[Player.Name]["PetsData"].MaxOwned)
-	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip)
+	for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned) do
+		if typeof(i) == "number" then
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[i] = nil
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[tostring(i)] = v
+		end
+	end
 
-	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
+	Player:SetAttribute("MaxPetsOwned",PlayerData.sessionData[Player.Name]["Pets_Data"].MaxOwned)
+	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["Pets_Data"].MaxEquip)
+
+	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] then --- (game.PlaceId == 9118436978 or game.PlaceId == 9118461324)
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
 		PlayerData.sessionData[Player.Name]["Spin"][1] = true
 	end

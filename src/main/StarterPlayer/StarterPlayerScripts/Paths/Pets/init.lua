@@ -111,7 +111,7 @@ function loadPlayer(Player)
 					v.Massless = true
 				end
 			end
-			
+
 			att1.Parent = PetModel.PrimaryPart
 			att2.Parent = newPart
 
@@ -212,7 +212,7 @@ function loadPlayer(Player)
 						local raycastParams = RaycastParams.new()
 						raycastParams.FilterDescendantsInstances = {Player.Character,Model}
 						raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-						
+
 						local raycastResult = workspace:Raycast((Player.Character.PrimaryPart.CFrame*cfOffset).Position+Vector3.new(0,3.5,0), Vector3.new(0,-200,0), raycastParams)
 						if raycastResult and raycastResult.Material ~= Enum.Material.Water then
 							if moving then
@@ -232,7 +232,7 @@ function loadPlayer(Player)
 							--	Model,
 							--	CFrame.new(raycastResult.Position+Vector3.new(0,Model.PrimaryPart.Size.Y/2,0)) * rot
 							--)
-							
+
 							if i == #PetTable then
 								lastPos = Player.Character:GetPrimaryPartCFrame()
 							end
@@ -247,7 +247,7 @@ function loadPlayer(Player)
 			end
 		end
 	end)
-		
+
 	local loaded = false
 	local lastRetreival = tick()-5
 	local function loadPets(from)
@@ -281,7 +281,7 @@ function loadPlayer(Player)
 	end
 
 	Player:GetAttributeChangedSignal("PetsEquipped"):Connect(function()
-		if Player ~= LocalPlayer then 
+		if Player ~= LocalPlayer then
 			local dis = getDis(Player.Character,LocalPlayer.Character)
 			if dis > 0 and dis < 100 then
 				loadPets("changed attribute")
@@ -293,7 +293,7 @@ function loadPlayer(Player)
 
 	Player.CharacterAdded:Connect(function()
 		PetTable = {}
-		if Player ~= LocalPlayer then 
+		if Player ~= LocalPlayer then
 			local dis = getDis(Player.Character,LocalPlayer.Character)
 			if dis > 0 and dis < 100 then
 				loadPets("new character")
@@ -401,7 +401,7 @@ UI.Center.Merge.Merge.MouseButton1Down:Connect(function()
 		UI.Center.Merge.Merge1.Icon.Image = ""
 		UI.Center.Merge.Merge2.Icon.Image = ""
 		UI.Center.Merge.Merge3.Icon.Image = ""
-	
+
 		UI.Center.Merge.Merge1.Text.Text = "Lvl. 0"
 		UI.Center.Merge.Merge2.Text.Text = "Lvl. 0"
 		UI.Center.Merge.Merge3.Text.Text = "Lvl. 0"
@@ -429,7 +429,7 @@ function updateIndex(data,islandId)
 
 		warn("Client:", data.Unlocked)
 		warn(" ")
- 
+
 		for i,v in pairs (Pets) do
 			local PetId = tonumber(v.Name)
 			if PetId and data.Unlocked[tostring(PetId)] then
@@ -458,18 +458,18 @@ end
 function addPetToViewport(Model,ViewPort)
 	local camera = ViewPort.CurrentCamera or Instance.new("Camera")
 	camera.Parent = ViewPort.WorldModel
-	
+
 	--remove any pre-exisitng models in the viewport
 	if ViewPort.WorldModel:FindFirstChildOfClass("Model") then
 		ViewPort.WorldModel:FindFirstChildOfClass("Model"):Destroy()
 	end
-	
+
 	local newModel = Model:Clone()
 	newModel.Parent = ViewPort.WorldModel
-	
+
 	--set camera in front and rotate towards model
-	camera.CFrame = CFrame.new((newModel:GetPrimaryPartCFrame()*CFrame.new(0,0,-(newModel:GetExtentsSize().Y)*1.1)).Position,newModel:GetPrimaryPartCFrame().Position) 
-	
+	camera.CFrame = CFrame.new((newModel:GetPrimaryPartCFrame()*CFrame.new(0,0,-(newModel:GetExtentsSize().Y)*1.1)).Position,newModel:GetPrimaryPartCFrame().Position)
+
 	ViewPort.CurrentCamera = camera
 end
 
@@ -478,6 +478,8 @@ function updateUI(data,kind,ID)
 	UpdateStorage()
 	if kind == "add" then
 		local petDetails = data.PetsOwned[tostring(ID)]---LocalPlayer:GetAttribute("MaxPetsOwned")
+		if not petDetails then return end
+
 		local PetModel = nil
 		local Frame = Example:Clone()
 		Frame.PetName.Text = petDetails[3]
@@ -532,7 +534,7 @@ function updateUI(data,kind,ID)
 			local mPos = Paths.Services.InputService:GetMouseLocation()
 			openSelected(mPos.X,mPos.Y)
 		end)
-		
+
 		Frame.Equip.MouseButton1Down:Connect(function()
 			if clickdb then return end
 			clickdb = true
@@ -596,7 +598,7 @@ function updateUI(data,kind,ID)
 							UI.Center.Merge.Warn.Text = "Merging creates a stronger poofie"
 						end
 					end
-					
+
 				elseif MergeSelected[1] == nil then
 					MergeSelected[1] = ID
 					UI.Center.Merge.Merge1.Icon.Image = PetModel.Icon.Texture
@@ -675,10 +677,10 @@ function OpenEdit(ID)
 end
 
 function Pets.LoadEgg(Island,Prompt)
-	if CurrentEggLoaded == Island then 
+	if CurrentEggLoaded == Island then
 		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
 		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
-		return 
+		return
 	end
 	Prompt.Enabled = false
 	PromptObj = Prompt
@@ -694,7 +696,7 @@ function Pets.LoadEgg(Island,Prompt)
 			v:Destroy()
 		end
 	end
- 
+
 	for i,v in pairs (IslandDetails.Pets) do
 		local Pet = PetDetails.Pets[v.Id]
 		local Template = Dependency.ShopTemplate:Clone()
@@ -706,8 +708,8 @@ function Pets.LoadEgg(Island,Prompt)
 		else
 			Template.Amount.Text = (v.Percentage*100).."%"
 		end
-		
-		Template:FindFirstChild(PetDetails.Rarities[v.Percentage]).Visible = true 
+
+		Template:FindFirstChild(PetDetails.Rarities[v.Percentage]).Visible = true
 		Template.PetName.Text = Pet[1]
 		Template.Icon.Image = PetModel.Icon.Texture
 
@@ -934,14 +936,14 @@ PetsFrame.Best.MouseButton1Down:Connect(function()
 			table.remove(oldequipped,table.find(oldequipped,v))
 		end
 	end
-	
+
 	if data and did then
 		RealData = data
 		for i,v in pairs (oldequipped) do
 			updateUI(data,"update",v)
 		end
 	end
- 		
+
 	local best = {}
 	local new = {}
 	local c = 0
@@ -987,9 +989,13 @@ end)
 PetsFrame.Capacity.More.MouseButton1Down:Connect(function()
 	Modules.Buttons:UIOff(PetsFrame, true)
 
-	Modules.Store.ButtonClicked({Name = "Gamepasses"}, UI.Center.Store)
-	Modules.Buttons:UIOn(UI.Center.Store, true)
-	 -- TODO: Point there with the UI
+	local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
+	if not Gamepasses[tostring(SMALL_GAMEPASS)] then
+		Services.MPService:PromptGamePassPurchase(Paths.Player, SMALL_GAMEPASS)
+	elseif not Gamepasses[tostring(HUGE_GAMEPASS)] then
+		Services.MPService:PromptGamePassPurchase(Paths.Player, HUGE_GAMEPASS)
+	end
+
 end)
 
 
