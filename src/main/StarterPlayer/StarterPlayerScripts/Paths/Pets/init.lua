@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Pets = {}
 local Paths = require(script.Parent)
@@ -42,9 +43,17 @@ local PromptObj = nil
 local SMALL_GAMEPASS = 55102169
 local HUGE_GAMEPASS = 55102286
 
-local function UpdateStorage()
-	PetsFrame.Capacity.TextLabel.Text = #RealData.PetsOwned .. "/" .. RealData.MaxOwned
+local function getTotalPets()
+	return #PetsFrame.Pets.Pets:GetChildren()-1
 end
+
+local function UpdateStorage()
+	PetsFrame.Capacity.TextLabel.Text = getTotalPets() .. "/" .. LocalPlayer:GetAttribute("MaxPetsOwned")
+end
+
+LocalPlayer:GetAttributeChangedSignal("MaxPetsOwned"):Connect(function()
+	UpdateStorage()
+end)
 
 function tweenModel(model,cf)
 	local c = TweenValues[model] or Instance.new("CFrameValue")
@@ -247,7 +256,7 @@ function loadPlayer(Player)
 		if PetData then
 			if lastData then
 				for i,v1 in pairs (PetData.Equipped) do
-					EquipPet(PetData.PetsOwned[v1],v1)
+					EquipPet(PetData.PetsOwned[tostring(v1)],v1)
 				end
 				for i,v1 in pairs (lastData.Equipped) do
 					if table.find(PetData.Equipped,v1) == nil then
@@ -265,7 +274,7 @@ function loadPlayer(Player)
 				end
 			else
 				for i,v in pairs (PetData.Equipped) do
-					EquipPet(PetData.PetsOwned[v],v)
+					EquipPet(PetData.PetsOwned[tostring(v)],v)
 				end
 			end
 		end
@@ -411,7 +420,7 @@ end
 
 function updateIndex(data,islandId)
 	-- warn("Nice", islandId, data)
-
+	print(data,islandId)
 	local island = PetDetails.ChanceTables[islandId]
 
 	local frame = IndexPage.List:FindFirstChild(island.Name)
@@ -420,14 +429,22 @@ function updateIndex(data,islandId)
 
 		warn("Client:", data.Unlocked)
 		warn(" ")
-
+ 
 		for i,v in pairs (Pets) do
 			local PetId = tonumber(v.Name)
-
-			if PetId and data.Unlocked[PetId] then
-				local Rarity = PetDetails.Rarities[island.Pets[tonumber(v.Name)].Percentage]
+			if PetId and data.Unlocked[tostring(PetId)] then
+				local pet = nil
+				for i,v in pairs (island.Pets) do
+					print(i,v,PetId)
+					if v.Id == PetId then
+						pet = v
+						break
+					end
+				end
+				print(pet)
+				local Rarity = PetDetails.Rarities[pet.Percentage]
 				v.Icon.ImageColor3 = Color3.new(1,1,1)
-				v.PetName.Text = PetDetails.Pets[tonumber(v.Name)][1].." x"..data.Unlocked[tonumber(v.Name)]
+				v.PetName.Text = PetDetails.Pets[PetId][1].." x"..data.Unlocked[tostring(PetId)]
 				v.BackgroundColor3 = PetDetails.RarityColors[Rarity]
 				v.UIStroke.Color = PetDetails.RarityColors[Rarity]
 			end
@@ -458,8 +475,9 @@ end
 
 
 function updateUI(data,kind,ID)
+	UpdateStorage()
 	if kind == "add" then
-		local petDetails = data.PetsOwned[ID]
+		local petDetails = data.PetsOwned[tostring(ID)]---LocalPlayer:GetAttribute("MaxPetsOwned")
 		local PetModel = nil
 		local Frame = Example:Clone()
 		Frame.PetName.Text = petDetails[3]
@@ -510,7 +528,7 @@ function updateUI(data,kind,ID)
 			end
 			ButtonClick:Play()
 			if SelectedPetDetails and SelectedPetDetails[1] == ID then SelectedPetDetails = nil return end
-			SelectedPetDetails = {ID,RealData.PetsOwned[ID]}
+			SelectedPetDetails = {ID,RealData.PetsOwned[tostring(ID)]}
 			local mPos = Paths.Services.InputService:GetMouseLocation()
 			openSelected(mPos.X,mPos.Y)
 		end)
@@ -564,13 +582,13 @@ function updateUI(data,kind,ID)
 					return
 				end
 				if MergeSelected[1] and MergeSelected[1] ~= ID and MergeSelected[2] == nil then
-					if RealData.PetsOwned[ID][1] == RealData.PetsOwned[MergeSelected[1]][1] and RealData.PetsOwned[ID][2] == RealData.PetsOwned[MergeSelected[1]][2] and RealData.PetsOwned[ID][5] == RealData.PetsOwned[MergeSelected[1]][5] then
+					if RealData.PetsOwned[tostring(ID)][1] == RealData.PetsOwned[tostring(MergeSelected[1])][1] and RealData.PetsOwned[tostring(ID)][2] == RealData.PetsOwned[tostring(MergeSelected[1])][2] and RealData.PetsOwned[tostring(ID)][5] == RealData.PetsOwned[tostring(MergeSelected[1])][5] then
 						MergeSelected[2] = ID
 						UI.Center.Merge.Merge2.Icon.Image = PetModel.Icon.Texture
-						UI.Center.Merge.Merge2.Text.Text = "Lvl.".. RealData.PetsOwned[ID][5]
+						UI.Center.Merge.Merge2.Text.Text = "Lvl.".. RealData.PetsOwned[tostring(ID)][5]
 
 						UI.Center.Merge.Merge3.Icon.Image = PetModel.Icon.Texture
-						UI.Center.Merge.Merge3.Text.Text = "Lvl.".. RealData.PetsOwned[ID][5]+1
+						UI.Center.Merge.Merge3.Text.Text = "Lvl.".. RealData.PetsOwned[tostring(ID)][5]+1
 					else
 						UI.Center.Merge.Warn.Text = "Can only merge same level and same poofie type."
 						task.wait(4)
@@ -582,7 +600,7 @@ function updateUI(data,kind,ID)
 				elseif MergeSelected[1] == nil then
 					MergeSelected[1] = ID
 					UI.Center.Merge.Merge1.Icon.Image = PetModel.Icon.Texture
-					UI.Center.Merge.Merge1.Text.Text = "Lvl.".. RealData.PetsOwned[ID][5]
+					UI.Center.Merge.Merge1.Text.Text = "Lvl.".. RealData.PetsOwned[tostring(ID)][5]
 				end
 			end)
 		end
@@ -594,7 +612,7 @@ function updateUI(data,kind,ID)
 			UI.Center.Merge.Pets.Pets:FindFirstChild(ID):Destroy()
 		end
 	elseif kind == "update" then
-		local petDetails = data.PetsOwned[ID]
+		local petDetails = data.PetsOwned[tostring(ID)]
 		if PetsFrame.Pets.Pets:FindFirstChild(ID) then
 			local Frame = PetsFrame.Pets.Pets:FindFirstChild(ID)
 			Frame.PetName.Text = petDetails[3]
@@ -627,6 +645,7 @@ end
 
 function loadUI(data)
 	for i,v in pairs (data.PetsOwned) do
+		print("load",i,v)
 		updateUI(data,"add",i)
 	end
 	UpdateStorage()
@@ -637,7 +656,7 @@ function OpenEdit(ID)
 	PetsFrame.Top.Text = ""
 	EditID = ID
 	local Frame = PetsFrame.EditName
-	local PetData = RealData.PetsOwned[ID]
+	local PetData = RealData.PetsOwned[tostring(ID)]
 	local PetModel = nil
 	if PetData[4] ~= "LEGACY" then
 		Frame.ViewportFrame.Visible = false
@@ -731,15 +750,15 @@ end)
 BuyEgg.Gems.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 	if CurrentEggLoaded then
-		if #RealData.PetsOwned < RealData.MaxOwned then
+		if getTotalPets() < LocalPlayer:GetAttribute("MaxPetsOwned") then
 			local Bought,Data,NewPetInfo,newId = Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Gems")
 			if Bought then
 				RealData = Data
 				local PetModel = PetsAssets:FindFirstChild(string.upper(NewPetInfo[1])):FindFirstChild(string.upper(NewPetInfo[2]))
-				local info = RealData.PetsOwned[newId]
+				local info = RealData.PetsOwned[tostring(newId)]
 				openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]])
 				updateUI(Data,"add",newId)
-				updateIndex(Data, Data.PetsOwned[newId][8])
+				updateIndex(Data, Data.PetsOwned[tostring(newId)][8])
 
 			elseif not Bought and Data == "Gems" then
 
@@ -764,7 +783,7 @@ end)
 BuyEgg.Robux.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 	if CurrentEggLoaded then
-		if #RealData.PetsOwned < RealData.MaxOwned then
+		if getTotalPets() < LocalPlayer:GetAttribute("MaxPetsOwned") then
 			Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Robux")
 		else
 			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
@@ -881,7 +900,7 @@ PetsFrame.Search.TextBox:GetPropertyChangedSignal("Text"):Connect(function()
 		for i,v in pairs (PetsFrame.Pets.Pets:GetChildren()) do
 			if tonumber(v.Name) then
 				local id = tonumber(v.Name)
-				if string.match(string.lower(RealData.PetsOwned[id][1]),string.lower(text)) or string.match(string.lower(RealData.PetsOwned[id][3]),string.lower(text)) then
+				if string.match(string.lower(RealData.PetsOwned[tostring(id)][1]),string.lower(text)) or string.match(string.lower(RealData.PetsOwned[tostring(id)][3]),string.lower(text)) then
 					v.Visible = true
 				else
 					v.Visible = false
@@ -1074,10 +1093,10 @@ function Remotes.BuyEgg.OnClientInvoke(Type,Data,PetId,PetInfo)
 	if Type == "NewPet" then
 		RealData = Data
 		local PetModel = PetsAssets:FindFirstChild(string.upper(PetInfo[1])):FindFirstChild(string.upper(PetInfo[2]))
-		local info = RealData.PetsOwned[PetId]
+		local info = RealData.PetsOwned[tostring(PetId)]
 		openEgg(PetModel.Icon.Texture,info[1],info[4],PetDetails.RarityColors[info[4]])
 		updateUI(Data,"add",PetId)
-		updateIndex(Data,Data.PetsOwned[PetId][8])
+		updateIndex(Data,Data.PetsOwned[tostring(PetId)][8])
 	end
 end
 
@@ -1098,10 +1117,10 @@ task.spawn(function()
 			local PetModel = PetsAssets:FindFirstChild(string.upper(Pet[1])):FindFirstChild(string.upper(Pet[2]))
 
 			Template.Amount.Text = ""
-			if PetData.Unlocked[v.Id] then
+			if PetData.Unlocked[tostring(v.Id)] then
 				Template.BackgroundColor3 = PetDetails.RarityColors[Rarity]
 				Template.UIStroke.Color = PetDetails.RarityColors[Rarity]
-				Template.PetName.Text = Pet[1].. " x"..PetData.Unlocked[v.Id]
+				Template.PetName.Text = Pet[1].. " x"..PetData.Unlocked[tostring(v.Id)]
 				Template.Icon.ImageColor3 = Color3.new(1,1,1)
 			else
 				Template.BackgroundColor3 = Color3.new()

@@ -277,6 +277,7 @@ local function SetupNewStats(Player)
 			},
 			MaxEquip = 3,
 			Unlocked = {},
+			MaxOwned = 50,
 		}
 	end
 
@@ -348,7 +349,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 		PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
 		PlayerData.sessionData[Player.Name]["Pets"] = nil
 	end
-	
+	Player:SetAttribute("MaxPetsOwned",PlayerData.sessionData[Player.Name]["PetsData"].MaxOwned)
 	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["PetsData"].MaxEquip) 
 
 	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then

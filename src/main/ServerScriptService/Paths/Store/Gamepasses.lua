@@ -30,6 +30,8 @@ local AllGamepasses = {
 	49090546, -- x3 fish capture
 	52724179, -- Golden Pickaxe
 	26269102, -- Vehicle spawner
+	55102286, -- pets +100
+	55102169, -- pets +300
 }
 
 local GamepassButtons = {
@@ -88,9 +90,11 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 
 			-- Pet storage gamepasses
 			elseif gamepass == 55102286 then
-				Data["PetsData"].MaxOwned = 300
+				Data["PetsData"].MaxOwned += 300
+				Player:SetAttribute("MaxPetsOwned",Data["PetsData"].MaxOwned)
 			elseif gamepass == 55102169 then
-				Data["PetsData"].MaxOwned = 100
+				Data["PetsData"].MaxOwned += 100
+				Player:SetAttribute("MaxPetsOwned",Data["PetsData"].MaxOwned)
 			end
 
 		end

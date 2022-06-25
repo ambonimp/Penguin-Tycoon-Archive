@@ -126,6 +126,8 @@ function givePet(Player,PetId,chosen,IslandId)
 	Modules.PlayerData.sessionData[Player.Name]["PetsData"].PetsOwned[newId] = {
 		petInfo[1],petInfo[2],petInfo[1],PetDetails.Rarities[chosen.Percentage],1,{petInfo[3],petInfo[4],petInfo[5]},PetId,IslandId
 	}
+	
+	print("GAVE PET,",petInfo[1],chosen.Id,Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked,Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked[chosen.Id])
 	if Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked[chosen.Id] then
 		Modules.PlayerData.sessionData[Player.Name]["PetsData"].Unlocked[chosen.Id] += 1
 	else

@@ -31,7 +31,9 @@ local AllGamepasses = {
 	{47438595,"Ability to use the map in Penguin City!"}, -- map teleport
 	{49090546, "Capture 3 fish per cast!"},
 	{52724179, "Double money from ores mined!"}, -- Gold Pickaxe
-	{54396254, "Spawn your vehicles from anywhere"} -- Vehicle spawner
+	{54396254, "Spawn your vehicles from anywhere"}, -- Vehicle spawner
+	{55102169, "Add 100 pet storage space!"},
+	{55102286, "Add 300 pet storage space!"}
 }
 
 Popups.load(AllGamepasses)

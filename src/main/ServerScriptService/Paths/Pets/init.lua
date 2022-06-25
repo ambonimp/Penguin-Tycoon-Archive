@@ -13,8 +13,8 @@ local rand = Random.new()
 
 function getEmptyNum(data)
 	for i=1,math.huge do
-		if data[i] == nil then
-			return i
+		if data[tostring(i)] == nil then
+			return tostring(i)
 		end
 	end
 end
@@ -144,14 +144,14 @@ function givePet(Player, PetId, Chosen, IslandId)
 		}
 
 		warn(Chosen.Id, typeof(Chosen.Id))
-		if Data.Unlocked[Chosen.Id] then
-			Data.Unlocked[Chosen.Id] += 1
+		if Data.Unlocked[tostring(Chosen.Id)] then
+			Data.Unlocked[tostring(Chosen.Id)] += 1
 		else
-			Data.Unlocked[Chosen.Id] = 1
+			Data.Unlocked[tostring(Chosen.Id)] = 1
 		end
 
 		warn("THIS2: ", Data.Unlocked)
-
+		print(Data)
 		return newId, petInfo
 	end
 

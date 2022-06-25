@@ -39,6 +39,17 @@ local MergeSelected = {}
 local RealData = nil
 local PromptObj = nil
 
+local SMALL_GAMEPASS = 55102169
+local HUGE_GAMEPASS = 55102286
+
+local function UpdateStorage()
+	PetsFrame.Capacity.TextLabel.Text = #RealData.PetsOwned .. "/" .. LocalPlayer:GetAttribute("MaxPetsOwned")
+end
+
+LocalPlayer:GetAttributeChangedSignal("MaxPetsOwned"):Connect(function()
+	UpdateStorage()
+end)
+
 function tweenModel(model,cf)
 	local c = TweenValues[model] or Instance.new("CFrameValue")
 	TweenValues[model] = c

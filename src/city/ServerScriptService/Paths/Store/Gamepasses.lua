@@ -24,6 +24,8 @@ local AllGamepasses = {
 	47438471, -- x2 gems
 	47438595, -- map teleport
 	49090546, -- x3 fish capture
+	55102286, -- pets +100
+	55102169, -- pets +300
 }
 
 
@@ -69,6 +71,13 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				if Player:GetAttribute("Tool") ~= "None" then
 					Modules.Tools.EquipTool(Player,"Gold Fishing Rod")
 				end
+			-- Pet storage gamepasses
+			elseif gamepass == 55102286 then
+				Data["PetsData"].MaxOwned += 300
+				Player:SetAttribute("MaxPetsOwned",Data["PetsData"].MaxOwned)
+			elseif gamepass == 55102169 then
+				Data["PetsData"].MaxOwned += 100
+				Player:SetAttribute("MaxPetsOwned",Data["PetsData"].MaxOwned)
 			end
 		end
 	end
