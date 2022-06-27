@@ -217,7 +217,7 @@ function showRegular(name)
 	end)
 	PopupRegularUI.Visible = true
 end
-
+--[[
 task.spawn(function()
 	repeat task.wait(1) until Paths.Tycoon
 	lastGems = Paths.Player:GetAttribute("Gems") or 0
@@ -242,6 +242,6 @@ task.spawn(function()
 		end
 		task.wait(5)
 	end
-end)
+end)]]
 
 return Popups
