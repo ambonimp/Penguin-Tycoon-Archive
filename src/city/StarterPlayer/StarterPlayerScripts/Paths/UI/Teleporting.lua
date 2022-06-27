@@ -247,7 +247,7 @@ if Portals then
 		ProximityPrompt.Parent = Portal.PrimaryPart
 
 		ProximityPrompt.Triggered:Connect(function(player)
-			if player == game.Players.LocalPlayer and Frame.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
+			if player == game.Players.LocalPlayer and Frame.Visible == false and Paths.UI.Center.BuyEgg.Visible == false then
 				Teleporting:OpenConfirmation(Location)
 				Modules.Buttons:UIOn(Frame,true)
 			end
