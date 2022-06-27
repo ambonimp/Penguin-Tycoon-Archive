@@ -20,7 +20,7 @@ end
 
 
 -- Initializing
-for Level, Details in pairs(Modules.MiningDetails) do
+for Level in pairs(Modules.MiningDetails) do
     local Zone = Island.Zones[Level]
     for _, Mineable in ipairs(Zone.Mineables:GetChildren()) do
         Mineable:SetAttribute("CanMine", true) -- How i index them
@@ -29,22 +29,10 @@ for Level, Details in pairs(Modules.MiningDetails) do
 
     task.spawn(function()
         local Dividers = Zone:FindFirstChild("Dividers")
+        local Id = 1274261950
         if Dividers then
-            local Id = Details.Product
-            local Info
-            for _ = 1, 5 do
-    			local Success, Results = pcall(function()
-    				return Services.MPService:GetProductInfo(Id, Enum.InfoType.Product)
-    			end)
-    			if Success then
-    				Info = Results
-    				break
-    			end
-    		end
-
-            local Price =  Info.PriceInRobux
             for _, Divider in ipairs(Dividers:GetChildren()) do
-                Divider.SurfaceGui.BASE.RobuxNotice.Text = string.format("(Unlock now for R$%s)", Price)
+                Divider.SurfaceGui.BASE.RobuxNotice.Text = "(Unlock now for R$249)"
 
                 local Prompt = Instance.new("ProximityPrompt")
                 Prompt.HoldDuration = 0.25
