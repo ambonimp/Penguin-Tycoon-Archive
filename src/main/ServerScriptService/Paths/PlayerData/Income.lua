@@ -13,8 +13,8 @@ local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandl
 local Day = os.date("%A")
 local Mult = 1
 
-if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
-	Mult = 4
+if Day == "Saturday" or Day == "Sunday" or Day == "Friday" or Day == "Monday" or Day == "Tuesday" or Day == "Wednesday" or Day == "Thursday" then
+	Mult = 2
 else
 	Mult = 1
 end
@@ -108,8 +108,8 @@ function Income:GemLoop()
 	while true do
 		task.wait(1)
 		Day = os.date("%A")
-		if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
-			Mult = 4
+		if Day == "Saturday" or Day == "Sunday" or Day == "Friday" or Day == "Monday" or Day == "Tuesday" or Day == "Wednesday" or Day == "Thursday" then
+			Mult = 2
 		else
 			Mult = 1
 		end

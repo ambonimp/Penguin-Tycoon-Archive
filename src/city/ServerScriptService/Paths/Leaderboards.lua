@@ -193,7 +193,7 @@ function Leaderboards:beginLeaderboardUpdate()
 						ValueFormatted = Modules.Format:FormatTimeDHM(Value)
 					elseif Stat == "Skate Race Record" then
 						ValueFormatted = Value/100
-					else
+					elseif Value then
 						ValueFormatted = Modules.Format:FormatAbbreviated(Value)
 					end
 

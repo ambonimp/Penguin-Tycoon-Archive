@@ -1,7 +1,7 @@
 local Format = {}
 
 local prefixes = {
-	[2] = "K", [3] = "M", [4] = "B", [5] = "T"
+	[2] = "K", [3] = "M", [4] = "B", [5] = "T",[6] = "QD", [7] = "QT", [8] = "ST",[9] = "SP",[10] = "OT",[11] = "N",[12] = "D"
 }
 
 function Format:FormatAbbreviated(n)
