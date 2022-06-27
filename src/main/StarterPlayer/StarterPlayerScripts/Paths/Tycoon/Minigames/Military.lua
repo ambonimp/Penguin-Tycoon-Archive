@@ -79,17 +79,16 @@ local function ToggleOtherUI(toggle)
 	UI.Right.Visible = toggle
 	UI.Top.Visible = toggle
 	-- UI.Bottom.Visible = toggle
-
 end
 
 local function ToggleShiftlock(Toggle)
-    if Toggle then
+--[[     if Toggle then
         Paths.Player:SetAttribute("Shiftlock", true)
         Character.Humanoid.CameraOffset = Vector3.new(3, 3, 0)
     else
         Paths.Player:SetAttribute("Shiftlock", false)
         Character.Humanoid.CameraOffset = Vector3.new(0, 0, 0)
-    end
+    end *]]
 end
 
 local function PointTo(Destination)

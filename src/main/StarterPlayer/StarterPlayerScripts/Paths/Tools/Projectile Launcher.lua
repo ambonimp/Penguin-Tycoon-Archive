@@ -8,10 +8,7 @@ local Remotes = Paths.Remotes
 
 local COOLDOWN = 0.5
 local GRAVITY = -workspace.Gravity
-local POWER = 200
-
-local CAMERA_OFFSET = CFrame.new(4, 4, 10)
-
+local POWER = 350
 
 local Assets = Services.RStorage.Assets.Tools
 
@@ -21,17 +18,6 @@ local Character, Humanoid
 
 
 -- Functions
-local function GetYAngleBetweenPoints(P1, P2)
-    local Offset = P1:PointToObjectSpace(P2)
-    return math.atan2(-Offset.Z, Offset.X)
-end
-
-local function GetYAngle(CF)
-    local _, X, _ = CF:ToEulerAnglesYXZ()
-    return X
-end
-
-
 local function LoadCharacter(Char)
     if not Char then return end
     Character = Char
@@ -71,27 +57,6 @@ function Launcher.new(Name, OnHit)
                 IdleTrack:Play()
             end
 
-
-            -- Camera/Mouse  lock
-            local Main = Character.Main
-            local MainNozzleOffset = math.abs(GetYAngleBetweenPoints(Main.CFrame, Nozzle.WorldPosition))
-            -- warn(math.deg(MainNozzleOffset))
-
-            local ArmR = Main["Arm R"]
-            local ArmL = Main["Arm L"]
-            local RArmCFrame = CFrame.new(ArmR.C0.Position) * CFrame.fromEulerAnglesYXZ(0, table.unpack(table.pack(ArmR.C0:ToEulerAnglesYXZ()), 2))
-            local LArmCFrame = CFrame.new(ArmL.C0.Position) * CFrame.fromEulerAnglesYXZ(ArmR.C0:ToEulerAnglesYXZ() - ArmL.C0:ToEulerAnglesYXZ(), table.unpack(table.pack(ArmL.C0:ToEulerAnglesYXZ()), 2))
-
-            -- Update
-            Pointing = Services.RunService.RenderStepped:Connect(function(dt)
-                local Alpha = dt * 8
-
-                -- ArmR.C0 = ArmR.C0:Lerp(RArmCFrame * CFrame.fromEulerAnglesYXZ(LookX, 0, 0), Alpha)
-                -- ArmL.C0 = ArmL.C0:Lerp(LArmCFrame * CFrame.fromEulerAnglesYXZ(LookX, 0, 0), Alpha)
-                -- Main.CFrame = CFrame.new(Main.Position) * CFrame.fromEulerAnglesYXZ(0, LookY, 0)
-
-            end)
-
             -- Shooting
             local Debounce
             Services.ContextActionService:BindActionAtPriority(Name, function(_, State)
@@ -104,8 +69,8 @@ function Launcher.new(Name, OnHit)
                         ShootTrack.Stopped:Wait()
 
                         -- Create and launch projectile
-                        local LookX = Camera.CFrame:ToEulerAnglesYXZ()
-                        local C0 = CFrame.new(Nozzle.WorldPosition) * Camera.CFrame.Rotation
+                        local MouseLook = Camera:ScreenPointToRay(Mouse.X, Mouse.Y)
+                        local C0 = CFrame.new(Nozzle.WorldPosition) * CFrame.new(MouseLook.Origin, MouseLook.Origin + MouseLook.Direction).Rotation
 
                         local Projectile = Assets[Name].Projectile:Clone()
                         Projectile.Anchored = true
@@ -169,8 +134,6 @@ function Launcher.new(Name, OnHit)
 
         Unequipped = function()
             if IdleTrack then IdleTrack:Stop() end
-            Pointing:Disconnect()
-
             Services.ContextActionService:UnbindAction(Name)
         end,
 
