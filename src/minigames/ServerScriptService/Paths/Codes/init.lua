@@ -48,8 +48,10 @@ Codes.GiveReward["Outfit"] = function(Player, CodeData)
 	Modules.Accessories:ItemAcquired(Player, CodeData.AccessoryName, "Outfits")
 end
 
-function Codes.RedeemCode(Player, Code, Rewards)
-	table.insert(Modules.PlayerData.sessionData[Player.Name]["Redeemed Codes"], Code)
+function Codes.RedeemCode(Player, Code, Rewards, FreeUse)
+	if not FreeUse then
+		table.insert(Modules.PlayerData.sessionData[Player.Name]["Redeemed Codes"], Code)
+	end
 	local CodeData = Rewards
 
 	if not Rewards then
@@ -85,7 +87,7 @@ Remotes.RedeemCode.OnServerInvoke = function(Player, Code)
 
 		if response.claimed then
 			local Rewards = response.rewards[PLACE_ID]
-			return Codes.RedeemCode(Player, Code, Rewards)
+			return Codes.RedeemCode(Player, Code, Rewards, response.unlimited)
 		elseif response and response.status == "ALREADY CLAIMED" then
 			return "Already Claimed!"
 		end
