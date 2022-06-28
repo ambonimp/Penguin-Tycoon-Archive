@@ -350,6 +350,8 @@ game.Players.PlayerAdded:Connect(function(Player)
 	SetupNewStats(Player)
 
 
+	local Data = PlayerData.sessionData[Player.Name
+	]
 	-- Badges
 	Modules.Badges:AwardBadge(Player.UserId, 2124902910) -- Welcome
 	Modules.Badges:AwardBadge(Player.UserId, 2124907090) -- Island 1
@@ -383,59 +385,59 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 
 	-- Data check just incase
-	if not PlayerData.sessionData[Player.Name] then Player:Kick("Data Error: Rejoin") return end
+	if not Data then Player:Kick("Data Error: Rejoin") return end
 	-- Setup Attributes
 	Player:SetAttribute("Tycoon", "None")
-	Player:SetAttribute("Money", PlayerData.sessionData[Player.Name]["Money"])
-	Player:SetAttribute("Gems", PlayerData.sessionData[Player.Name]["Gems"])
+	Player:SetAttribute("Money", Data["Money"])
+	Player:SetAttribute("Gems", Data["Gems"])
 	getPlayerIncome(Player)
-	Player:SetAttribute("Income", PlayerData.sessionData[Player.Name]["Income"])
-	Player:SetAttribute("Level", PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
+	Player:SetAttribute("Income", Data["Income"])
+	Player:SetAttribute("Level", Data["My Penguin"]["Level"])
 	Player:SetAttribute("Pet", "none")
 	Player:SetAttribute("Tool", "None")
 	--[[
-	if PlayerData.sessionData[Player.Name]["NextGemReward"] and PlayerData.sessionData[Player.Name]["NextGemReward"]-os.time()>0  and PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] == "city" and os.time()-PlayerData.sessionData[Player.Name]["LastPlayTime"] < 30 then
-		Player:SetAttribute("Next5Gems", PlayerData.sessionData[Player.Name]["NextGemReward"])
-		Modules.PlayerData.sessionData[Player.Name]["NextGemRewardSaved"] = "tycoon"
+	if Data["NextGemReward"] and Data["NextGemReward"]-os.time()>0  and Data["NextGemRewardSaved"] == "city" and os.time()-Data["LastPlayTime"] < 30 then
+		Player:SetAttribute("Next5Gems", Data["NextGemReward"])
+		Modules.Data["NextGemRewardSaved"] = "tycoon"
 	end]]
-	if PlayerData.sessionData[Player.Name]["Pets"] then
-		for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets"].PetsOwned) do
+	if Data["Pets"] then
+		for i,v in pairs (Data["Pets"].PetsOwned) do
 			local breed = string.split(v.RealName," ")[2]
-			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[tostring(v.ID)] = {
+			Data["Pets_Data"].PetsOwned[tostring(v.ID)] = {
 				breed, v.RealName,v.Name,"LEGACY",0,{1.05,"All","Income"}
 			}
 		end
-		PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
-		PlayerData.sessionData[Player.Name]["Pets"] = nil
+		Data["OldPets"] = Data["Pets"]
+		Data["Pets"] = nil
 	end
 
-	for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned) do
+	for i,v in pairs (Data["Pets_Data"].PetsOwned) do
 		if typeof(i) == "number" then
-			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[i] = nil
-			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[tostring(i)] = v
+			Data["Pets_Data"].PetsOwned[i] = nil
+			Data["Pets_Data"].PetsOwned[tostring(i)] = v
 		end
 	end
 
-	Player:SetAttribute("MaxPetsOwned",PlayerData.sessionData[Player.Name]["Pets_Data"].MaxOwned)
-	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["Pets_Data"].MaxEquip)
+	Player:SetAttribute("MaxPetsOwned",Data["Pets_Data"].MaxOwned)
+	Player:SetAttribute("MaxEquip",Data["Pets_Data"].MaxEquip)
 
-	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] then --- (game.PlaceId == 9118436978 or game.PlaceId == 9118461324)
-		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
-		PlayerData.sessionData[Player.Name]["Spin"][1] = true
+	if os.time() > Data["Spin"][3] then --- (game.PlaceId == 9118436978 or game.PlaceId == 9118461324)
+		Data["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
+		Data["Spin"][1] = true
 	end
 
-	if PlayerData.sessionData[Player.Name]["Quests"].Timer then
-		if os.time() >= PlayerData.sessionData[Player.Name]["Quests"].Timer then
+	if Data["Quests"].Timer then
+		if os.time() >= Data["Quests"].Timer then
 			Modules.Quests.getNewQuests(Player)
 		end
 	else
 		Modules.Quests.getNewQuests(Player)
 	end
-	if PlayerData.sessionData[Player.Name]["Playtime"] and (os.time()-PlayerData.sessionData[Player.Name]["Playtime"][2]) < 5*60 then
-		Player:SetAttribute("JoinTime",PlayerData.sessionData[Player.Name]["Playtime"][1])
+	if Data["Playtime"] and (os.time()-Data["Playtime"][2]) < 5*60 then
+		Player:SetAttribute("JoinTime",Data["Playtime"][1])
 	else
 		Player:SetAttribute("JoinTime",os.time())
-		PlayerData.sessionData[Player.Name]["Playtime"] = {
+		Data["Playtime"] = {
 			[1] = os.time(),
 			[2] = os.time(),
 			[3] = {},
@@ -447,25 +449,25 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	--local MoneyStat = Instance.new("IntValue", leaderstats)
 	--MoneyStat.Name = "Money"
-	--MoneyStat.Value = PlayerData.sessionData[Player.Name]["Money"]
+	--MoneyStat.Value = Data["Money"]
 
 	local IncomeStat = Instance.new("IntValue", leaderstats)
 	IncomeStat.Name = "Income"
-	IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"]
+	IncomeStat.Value = Data["Income"]
 
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
-	NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
+	NetworthStat.Value = Data["Stats"]["Total Money"]
 
 
 	-- Updating Leaderstats
 	Player:GetAttributeChangedSignal("Money"):Connect(function()
-		--MoneyStat.Value = PlayerData.sessionData[Player.Name]["Money"]
-		NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
+		--MoneyStat.Value = Data["Money"]
+		NetworthStat.Value = Data["Stats"]["Total Money"]
 	end)
 
 	Player:GetAttributeChangedSignal("Income"):Connect(function()
-		IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"]
+		IncomeStat.Value = Data["Income"]
 	end)
 
 	Player:SetAttribute("Loaded",true)
@@ -475,7 +477,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	-- Check Gamepasses
 	Modules.Gamepasses:CheckGamepasses(Player)
-	if PlayerData.sessionData[Player.Name]["WasFishing"] and (os.time()-PlayerData.sessionData[Player.Name]["WasFishing"] < 60) then
+	if Data["WasFishing"] and (os.time()-Data["WasFishing"] < 60) then
 		task.spawn(function()
 			local Tycoon = Paths.Modules.Ownership:GetPlayerTycoon(Player)
 			repeat task.wait(.25) print("WAITING FOR BOAT1") until Player == nil or (Tycoon.Tycoon:FindFirstChild("Boat#1") and Player.Character and Player.Character:IsDescendantOf(workspace))
@@ -490,7 +492,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	end
 	task.spawn(function()
 		task.wait(10)
-		for name,details in pairs (PlayerData.sessionData[Player.Name]["Boosts"]) do
+		for name,details in pairs (Data["Boosts"]) do
 			if details[2] > 20 then
 				task.spawn(function()
 					Paths.Modules.Boosts.startPlayerBoost(Player,name,true)
@@ -500,6 +502,18 @@ game.Players.PlayerAdded:Connect(function(Player)
 			end
 		end
 	end)
+
+	-- Make sure player doesn't own any invalid items
+	for _, ItemType in ipairs({"Accessories", "Outfits", "Eyes", "Emotes"}) do
+		for Item in pairs(Data[ItemType]) do
+			if not Modules["All" .. ItemType].All[Item] then
+				warn("Invalid item removed:", Player, ItemType, Item)
+				Data[ItemType][Item] = nil
+			end
+
+		end
+
+	end
 
 	--Modules.Vehicles:SetUpSailboatBuild(Player)
 	Modules.Chat:ApplyChatTag(Player)

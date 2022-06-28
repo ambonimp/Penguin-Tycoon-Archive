@@ -110,6 +110,7 @@ function Accessories:NewItem(Item, ItemType)
 	elseif ItemType == "Outfits" then
 		Module = Modules.AllOutfits
 	end
+
 	local Rarity = Module.All[Item].Rarity
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.BackgroundColor3 = RarityColors[Rarity]
