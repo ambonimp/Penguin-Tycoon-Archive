@@ -56,7 +56,7 @@ end)()
 	
 	
 --- Functions ---
-coroutine.wrap(function()
+task.spawn(function()
 	Services.RunService.RenderStepped:Connect(function()
 		if string.match(Paths.Player:GetAttribute("Tool"), "Glider") then
 			if Paths.Player:GetAttribute("Tool") == "Glider" then
@@ -111,7 +111,8 @@ coroutine.wrap(function()
 			end
 		end
 	end)
-end)()
+
+end)
 
 
 

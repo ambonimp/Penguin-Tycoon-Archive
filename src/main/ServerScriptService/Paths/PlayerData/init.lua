@@ -33,208 +33,205 @@ local function getData(key)
 end
 
 local function Defaults(Player)
-	return {
-		-- Session Stats
-		["Money"] = 50,
-		["Gems"] = (IsTesting or IsQA) and 10000 or 0,
-		["Income"] = 0,
-		["Tycoon"] = {},
-		["Penguins"] = {},
+	local Returning = {}
 
-		["My Penguin"] = {
-			["Name"] = Player.DisplayName;
-			["Level"] = 0;
-			["BodyColor"] = "Default";
-			["Accessory"] = "None";
-			["Eyes"] = "Default";
-			["Outfit"] = "None";
-		},
+	-- Session Stats
+	Returning["Money"] = 50
+	Returning["Gems"] = (IsTesting or IsQA) and 10000 or 0
+	Returning["Income"] = 0
+	Returning["Tycoon"] = {}
+	Returning["Penguins"] = {}
 
-		-- Possessions
-		["Pets_Data"] = {
-			Equipped = {},
-			PetsOwned = {},
-			MaxEquip = 3,
-			Unlocked = {},
-			MaxOwned = 50,
-		},
-
-		["Outfits"] = {
-			["None"] = true,
-		},
-
-		["Tools"] = {
-			["Vehicle Spawner"] = true,
-		},
-
-		["Accessories"] = {
-			["None"] = true;
-		},
-
-		["Emotes"] = {
-			["Sit"] = true;
-			["Wave"] = true;
-			["Sleep"] = true;
-			["Point"] = true;
-			["Salute"] = true;
-			["Whack"] = true;
-			["Dab"] = true;
-			["Wavy"] = true;
-			["Clap"] = true;
-			["Hug"] = true;
-			["Shy"] = true;
-			["Floss"] = true;
-			["Push Ups"] = true;
-			["Stove Opening"] = true;
-			["Dough Flipping"] = true;
-			["Cheering"] = true;
-			["Crying"] = true;
-			["Giving Pizza"] = true;
-			["Vegetable Cutting"] = true;
-		},
-
-		["Equipped Emotes"] = {
-			["1"] = "Sit";
-			["2"] = "Wave";
-			["3"] = "Sleep";
-			["4"] = "Point";
-			["5"] = "Salute";
-		},
-
-		["Eyes"] = {
-			["Default"] = true;
-			["Angry"] = true;
-			["Surprised"] = true;
-			["Unamused"] = true;
-			["Scared"] = true;
-		},
-
-		["Eyes Rotation"] = Modules.AllEyes:ChooseStoreEyes(),
-
-		["Rotation Timer"] = os.time();
-		--["Rotation Index"] = 1;
-		["Accessory Rotation"] = Modules.AllAccessories:ChooseStoreAccessories();
-
-		-- Social Stats
-		["Hearts"] = 0,
-		["Regular Hearts Given"] = {},
-		["VIP Hearts Given"] = {},
-
-		-- Long term stats
-		["Stats"] = {
-			["Total Money"] = 50,
-			["Total Playtime"] = 0,
-			["Total Gems"] = 0,
-		},
-
-		["LastPlayTime"] = os.time()-(30*60),
-
-		-- Fish
-		["Fish Found"] = {},
-		["Enchanted Fish Found"] = {},
-
-		-- Rewards
-		["Discord Verification"] = false,
-		["Twitter Verification"] = false,
-
-		["Group Reward Claimed"] = false,
-		["Applied Boosts"] = {},
-
-		["Gamepasses"] = {},
-		["Applied Gamepasses"] = {},
-
-		["Tycoon Rewards"] = {},
-
-		["Redeemed Codes"] = {},
-
-		-- Settings
-		["Settings"] = {
-			["Chat Tag"] = true,
-			["Music"] = true,
-			["Progress Bar"] = true,
-			["Faster Speed"] = true,
-			["Double Jump"] = true,
-			["Show Hearts"] = true,
-		},
-
-		-- Multipliers
-		["Income Multiplier"] = 1,
-		["Gem Multiplier"] = 1,
-		["Walkspeed Multiplier"] = 1,
-
-
-		["Boosts"] = { --[1]owned, [2]time left in current boost
-			["Super Fishing Luck"] = {0,0},
-			["Ultra Fishing Luck"] = {0,0},
-			["x3 Money"] = {0,0},
-		},
-
-		-- Vehicles
-		["PlaneUnlocked"] = {
-			[1] = false,
-			[2] = {
-				["Wheel 1"] = false,
-				["Wheel 2"] = false,
-				["Propeller"] = false,
-				["Landing Gear"] = false,
-				["Body"] = false,
-				["Seat"] = false,
-				["Wing 1"] = false,
-				["Wing 2"] = false,
-				["Stabilizer 1"] = false,
-				["Stabilizer 2"] = false,
-			},
-		},
-
-		["BoatUnlocked"] = {
-			[1] = false,
-			[2] = {
-				["Hull"] = false,
-				["Windows"] = false,
-				["Deck"] = false,
-				["Lifebuoy"] = false,
-				["Helm"] = false,
-				["Seat"] = false,
-				["Mast"] = false,
-				["Sail 1"] = false,
-				["Sail 2"] = false,
-				["Flag"] = false,
-			},
-		},
-
-		-- Other
-		["Quests"] = {},
-
-		["Playtime"] = {0,0,{}},
-		["Spin"] = {
-			true,
-			0,
-			os.time()
-		},
-
-		-- Minigames
-		["Youtube Minigame Score"] = 0,
-		["YoutubeStats"] = {
-			Likes = 0,
-			Subscribers = 0,
-		},
-
-		["Military Minigame Score"] = math.huge,
-
-		["Mining"] = {
-			Level = 1,
-			Mined = {
-				Coal = 0,
-				Iron = 0,
-				Gold = 0,
-				Amethyst = 0,
-				Ruby = 0,
-				Emerald = 0,
-				Diamond = 0,
-			},
-		}
+	Returning["My Penguin"] = {
+		["Name"] = Player.DisplayName;
+		["Level"] = 0;
+		["BodyColor"] = "Default";
+		["Accessory"] = "None";
+		["Eyes"] = "Default";
+		["Outfit"] = "None";
 	}
 
+	-- Possessions
+	Returning["Pets_Data"] = {
+		Equipped = {},
+		PetsOwned = {},
+		MaxEquip = 3,
+		Unlocked = {},
+		MaxOwned = 50,
+	}
+
+	Returning["Outfits"] = {
+		["None"] = true,
+	}
+
+	Returning["Tools"] = {
+		["Vehicle Spawner"] = true,
+	}
+
+	Returning["Accessories"] = {
+		["None"] = true;
+	}
+
+	Returning["Emotes"] = {
+		["Sit"] = true;
+		["Wave"] = true;
+		["Sleep"] = true;
+		["Point"] = true;
+		["Salute"] = true;
+		["Whack"] = true;
+		["Dab"] = true;
+		["Wavy"] = true;
+		["Clap"] = true;
+		["Hug"] = true;
+		["Shy"] = true;
+		["Floss"] = true;
+		["Push Ups"] = true;
+		["Stove Opening"] = true;
+		["Dough Flipping"] = true;
+		["Cheering"] = true;
+		["Crying"] = true;
+		["Giving Pizza"] = true;
+		["Vegetable Cutting"] = true;
+	}
+
+	Returning["Equipped Emotes"] = {
+		["1"] = "Sit";
+		["2"] = "Wave";
+		["3"] = "Sleep";
+		["4"] = "Point";
+		["5"] = "Salute";
+	}
+
+	Returning["Eyes"] = {
+		["Default"] = true;
+		["Angry"] = true;
+		["Surprised"] = true;
+		["Unamused"] = true;
+		["Scared"] = true;
+	}
+
+	Returning["Eyes Rotation"] = Modules.AllEyes:ChooseStoreEyes()
+
+	Returning["Rotation Timer"] = os.time()
+	--["Rotation Index"] = 1
+	Returning["Accessory Rotation"] = Modules.AllAccessories:ChooseStoreAccessories()
+
+	-- Social Stats
+	Returning["Hearts"] = 0
+	Returning["Regular Hearts Given"] = {}
+	Returning["VIP Hearts Given"] = {}
+
+	-- Long term stats
+	Returning["Stats"] = {
+		["Total Money"] = 50,
+		["Total Playtime"] = 0,
+		["Total Gems"] = 0,
+	}
+
+	Returning["LastPlayTime"] = os.time()-(30*60)
+
+	-- Fish
+	Returning["Fish Found"] = {}
+	Returning["Enchanted Fish Found"] = {}
+
+	-- Rewards
+	Returning["Discord Verification"] = false
+	Returning["Twitter Verification"] = false
+
+	Returning["Group Reward Claimed"] = false
+	Returning["Applied Boosts"] = {}
+
+	Returning["Gamepasses"] = {}
+	Returning["Applied Gamepasses"] = {}
+
+	Returning["Tycoon Rewards"] = {}
+
+	Returning["Redeemed Codes"] = {}
+
+	-- Settings
+	Returning["Settings"] = {}
+	for Setting, Details in pairs(Modules.SettingDetails) do
+		Returning["Settings"][Setting] = Details.Default
+	end
+
+	-- Multipliers
+	Returning["Income Multiplier"] = 1
+	Returning["Gem Multiplier"] = 1
+	Returning["Walkspeed Multiplier"] = 1
+
+
+	Returning["Boosts"] = { --[1]owned, [2]time left in current boost
+		["Super Fishing Luck"] = {0,0},
+		["Ultra Fishing Luck"] = {0,0},
+		["x3 Money"] = {0,0},
+	}
+
+	-- Vehicles
+	Returning["PlaneUnlocked"] = {
+		[1] = false,
+		[2] = {
+			["Wheel 1"] = false,
+			["Wheel 2"] = false,
+			["Propeller"] = false,
+			["Landing Gear"] = false,
+			["Body"] = false,
+			["Seat"] = false,
+			["Wing 1"] = false,
+			["Wing 2"] = false,
+			["Stabilizer 1"] = false,
+			["Stabilizer 2"] = false,
+		},
+	}
+
+	Returning["BoatUnlocked"] = {
+		[1] = false,
+		[2] = {
+			["Hull"] = false,
+			["Windows"] = false,
+			["Deck"] = false,
+			["Lifebuoy"] = false,
+			["Helm"] = false,
+			["Seat"] = false,
+			["Mast"] = false,
+			["Sail 1"] = false,
+			["Sail 2"] = false,
+			["Flag"] = false,
+		},
+	}
+
+	-- Other
+	Returning["Quests"] = {}
+
+	Returning["Playtime"] = {0,0,{}}
+	Returning["Spin"] = {
+		true,
+		0,
+		os.time()
+	}
+
+	-- Minigames
+	Returning["Youtube Minigame Score"] = 0
+	Returning["YoutubeStats"] = {
+		Likes = 0,
+		Subscribers = 0,
+	}
+
+	Returning["Military Minigame Score"] = math.huge
+
+	Returning["Mining"] = {
+		Level = 1,
+		Mined = {
+			Coal = 0,
+			Iron = 0,
+			Gold = 0,
+			Amethyst = 0,
+			Ruby = 0,
+			Emerald = 0,
+			Diamond = 0,
+		},
+	}
+
+	return Returning
 end
 
 -- Recursively give player any data fields that they might be missing

@@ -42,10 +42,13 @@ function Boosts.startPlayerBoost(Player,Boost,isJoin)
 			if isJoin then
 				boosts[Boost][2] = boosts[Boost][2] - 5
 			else
-				boosts[Boost][1] -= 1
-				boosts[Boost][2] = BoostTimes[Boost]
+				boosts[Boost][1] -= 1 -- How many are left
+				boosts[Boost][2] = BoostTimes[Boost] -- Length
+				boosts[Boost][3] = os.time() -- Id so client doesn't get confused when deleting and adding
 			end
+
 			Remotes.BoostHandler:FireClient(Player,Boost,"Start",data)
+
 			while Player and Player.Parent do
 				task.wait(5)
 				boosts[Boost][2] -= 5

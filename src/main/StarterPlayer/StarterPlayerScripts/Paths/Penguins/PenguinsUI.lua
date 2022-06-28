@@ -194,9 +194,16 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				Template.Upgrade.Position = UDim2.fromScale(.5,.6)
 				Template.Upgrade.Size = UDim2.fromScale(.935,.17)
 				Template.Upgrade.TheText.Text = "SUPER PENGUIN"
+
+				local Rainbow = Dependency.Rainbow:Clone()
+				Rainbow:WaitForChild("Rotation").Disabled = false
+				Rainbow.Parent = Template.PenguinName
 			end
+
 		end
+
 	end
+
 end
 
 

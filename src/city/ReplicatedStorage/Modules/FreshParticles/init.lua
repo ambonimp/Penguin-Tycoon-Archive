@@ -39,10 +39,10 @@ function Particle.new(
 		Speed = Speed,
 		RotSpeed = RotSpeed,
 		Offset = Offset,
-		ParticlePart = ParticlePart
+		ParticlePart = ParticlePart,
+		HomeFolder = Instance.new("Folder",workspace)
+
 	}
-	HomeFolder = Instance.new("Folder",workspace)
-	HomeFolder.Name = "Particles"
 	setmetatable(newParticle, Particle)
 
 	return newParticle
@@ -53,11 +53,9 @@ function Particle:Spawn()
 		local Part = self.ParticlePart:Clone() or game:GetService("ReplicatedStorage").Assets:WaitForChild("Particle"):Clone()
 
 		---
-		
-		Part.Parent = HomeFolder
+		Part.Parent = self.HomeFolder
 		RPModule.RandomPosition(self.EmissionPart,Part)
 		Part.Position = Part.Position + (self.Offset or Vector3.new(0,0,0))
-		Part.Trail.Color = ColorSequence.new(self.Color)
 		Part.Image.ImageLabel.ImageColor3 = self.Color
 
 		Part.Size = Vector3.new(self.Size,self.Size,self.Size)
@@ -68,6 +66,7 @@ function Particle:Spawn()
 		end
 		
 		if self.TrailEnabled then
+			Part.Trail.Color = ColorSequence.new(self.Color)
 			Part.Trail.Enabled = true
 			Part.Trail.LightEmission = self.LightEmission
 			Part.Trail.Lifetime = self.TrailLength

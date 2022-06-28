@@ -166,6 +166,7 @@ task.spawn(function()
     if claimed >= 12 or current >= 12 then
         UI.Claimed.Text = claimed.."/12 Gifts Claimed"
         Paths.UI.Left.GemDisplay.Amount.Text = "Rewards fully unlocked!"
+        Paths.UI.Left.GemDisplay.Notif.Visible = false
         if claimed < 12 then
             for i = 1,12 do
                 local button = UI.Gifts:FindFirstChild(i)

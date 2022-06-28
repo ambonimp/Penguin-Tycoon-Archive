@@ -64,6 +64,9 @@ function Penguins:LoadPenguin(Penguin, Info, DontLoadHat, DontLoadEyes, DontLoad
 
 	if Info["Super"] then
 		Penguin:SetAttribute("IsSuper",true)
+
+		local Rainbow = Services.RStorage.ClientDependency.PenguinsUI.Rainbow:Clone()
+		Rainbow.Parent = Penguin.Info.PenguinInfo.PenguinName
 	end
 
 	-- Load eyes
@@ -232,7 +235,12 @@ function Penguins:UpgradePenguin(Player, Penguin,isSuper)
 	local NewIncome
 	if isSuper then
 		Penguin:SetAttribute("IsSuper",true)
+
+		local Rainbow = Services.RStorage.ClientDependency.PenguinsUI.Rainbow:Clone()
+		Rainbow.Parent = Penguin.Info.PenguinInfo.PenguinName
+
 	end
+
 	if Data["Penguins"][Penguin.Name] and Penguin:GetAttribute("Price") and Penguin:GetAttribute("Income") then
 		if Data["Penguins"][Penguin.Name]["Level"] == Modules.GameInfo.MAX_PENGUIN_LEVEL and not isSuper then return false, Data["Penguins"][Penguin.Name]["Level"] end
 		local oldLevel = Data["Penguins"][Penguin.Name]["Level"]
@@ -292,7 +300,11 @@ Penguins["Upgrade"] = function(Player, Penguin, IsSuper)
 				Data["Money"] -= UpgradePrice
 				if IsSuper then
 					Penguin:SetAttribute("IsSuper",true)
+
+					local Rainbow = Services.RStorage.ClientDependency.PenguinsUI.Rainbow:Clone()
+					Rainbow.Parent = Penguin.Info.PenguinInfo.PenguinName
 				end
+
 				Player:SetAttribute("Money", Data["Money"])
 				
 				return Penguins:UpgradePenguin(Player, Penguin)

@@ -25,22 +25,23 @@ CustomizationUI.PenguinNameBG.Rename.MouseButton1Down:Connect(function()
 	CustomizationUI.PenguinNameBG.Rename.Visible = false
 	CustomizationUI.PenguinNameBG.RenameFinish.Visible = true
 
-	CustomizationUI.PenguinNameBG.PenguinName.TextEditable = true
+	CustomizationUI.PenguinNameBG.PenguinNameTextbox.Text = CustomizationUI.PenguinNameBG.PenguinName.Text
+	CustomizationUI.PenguinNameBG.PenguinName.Visible = false
+	CustomizationUI.PenguinNameBG.PenguinNameTextbox.Visible = true
+
 end)
 
-CustomizationUI.PenguinNameBG.RenameFinish.MouseButton1Down:Connect(function()
+CustomizationUI.PenguinNameBG.PenguinNameTextbox.FocusLost:Connect(function()
 	CustomizationUI.PenguinNameBG.Rename.Visible = true
 	CustomizationUI.PenguinNameBG.RenameFinish.Visible = false
-	
-	CustomizationUI.PenguinNameBG.PenguinName.TextEditable = false
-end)
 
-CustomizationUI.PenguinNameBG.PenguinName.FocusLost:Connect(function(x, a)
-	local NewName = CustomizationUI.PenguinNameBG.PenguinName.Text
-	
+
+	local NewName = CustomizationUI.PenguinNameBG.PenguinNameTextbox.Text
 	local Success, FilteredName = Remotes.Customization:InvokeServer("Change Name", CustomizationUI.PenguinSelected.Value, NewName)
-	
+
 	CustomizationUI.PenguinNameBG.PenguinName.Text = FilteredName
+	CustomizationUI.PenguinNameBG.PenguinName.Visible = true
+	CustomizationUI.PenguinNameBG.PenguinNameTextbox.Visible = false
 
 	Modules.PenguinsUI:PenguinInfoUpdated(CustomizationUI.PenguinSelected.Value)
 end)
@@ -48,15 +49,15 @@ end)
 -- 20 max char limit
 local PrevName = "nil"
 
-CustomizationUI.PenguinNameBG.PenguinName.Changed:Connect(function(property)
+CustomizationUI.PenguinNameBG.PenguinNameTextbox.Changed:Connect(function(property)
 	if property == "Text" then
-		local length = string.len(CustomizationUI.PenguinNameBG.PenguinName.Text)
+		local length = string.len(CustomizationUI.PenguinNameBG.PenguinNameTextbox.Text)
 
 		if length > 20 then
-			CustomizationUI.PenguinNameBG.PenguinName.Text = PrevName
+			CustomizationUI.PenguinNameBG.PenguinNameTextbox.Text = PrevName
 		end
 
-		PrevName = CustomizationUI.PenguinNameBG.PenguinName.Text
+		PrevName = CustomizationUI.PenguinNameBG.PenguinNameTextbox.Text
 	end
 end)
 
@@ -80,8 +81,11 @@ for i, Color in pairs(CustomizationUI.Customization.Sections.Color.Colors:GetChi
 
 			task.wait(0.1)
 			ColorDB = false
+
 		end)
+
 	end
+
 end
 
 
@@ -130,6 +134,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		-- Get penguin info
 		CustomizationUI.Instant.Position = UDim2.fromScale(0.838,1.015)
 		CustomizationUI.Super.Visible = true
+
 		local Level = tonumber(string.split(string.split(Penguin.Info.PenguinInfo.PenguinLevel.Text, "/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL))[1], " ")[2])
 		if Level == 30 then
 			CustomizationUI.Super.Visible = false
@@ -144,6 +149,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 
 		-- Set text
 		CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.Info.PenguinInfo.PenguinName.Text
+		CustomizationUI.PenguinNameBG.PenguinName.Rainbow.Enabled = Level == 30
 		CustomizationUI.PenguinNameBG.PenguinLevel.Text = Penguin.Info.PenguinInfo.PenguinLevel.Text--.. ' <font color="rgb(57,225,91)">(+'..Modules.Format:FormatComma(Income)..")</font>"
 
 		if Level < Modules.GameInfo.MAX_PENGUIN_LEVEL then
@@ -162,6 +168,8 @@ function Customization:EnterUI(Penguin, PreviousUI)
 
 		CustomizationUI.Upgrade.TheText.Text = "N/A"
 		CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.HumanoidRootPart.CustomName.PlrName.Text
+		CustomizationUI.PenguinNameBG.PenguinName.Rainbow.Enabled = false
+
 		CustomizationUI.PenguinNameBG.PenguinLevel.Text = "Level "..Level..' <font color="rgb(38,255,14)">(+ $'..Modules.Format:FormatComma(Income)..")</font>"
 		CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
 	end

@@ -4,9 +4,11 @@ Paths.Services = {}
 Paths.Modules = {}
 Paths.UI = {}
 
+
 function Paths.Initiliaze()
+
 	--- Initializing Services ---
-	print("Load services")
+	-- print("Load services")
 	Paths.Services.RStorage = game:GetService("ReplicatedStorage");
 	Paths.Services.MPService = game:GetService("MarketplaceService");
 	Paths.Services.RunService = game:GetService("RunService");
@@ -22,10 +24,12 @@ function Paths.Initiliaze()
 	
 	Paths.Dependency = Paths.Services.RStorage:WaitForChild("ClientDependency")
 	--- Initializing UI ---
-	print("LOad UI")
+	-- print("Load UI")
 	local PlayerGui = game.Players.LocalPlayer.PlayerGui
 	Paths.UI.Main = PlayerGui:WaitForChild("Main")
+
 	Paths.UI.SpecialEffects = PlayerGui:WaitForChild("SpecialEffects")
+	Paths.UI.LoadingScreen = PlayerGui:WaitForChild("LoadingScreen")
 
 	Paths.UI.Left = Paths.UI.Main:WaitForChild("Left")
 	Paths.UI.Right = Paths.UI.Main:WaitForChild("Right")
@@ -52,95 +56,101 @@ function Paths.Initiliaze()
 	
 	
 --- Initializing Modules ---
+	local ModuleLoader = require(script.ModuleLoader)
+
 	-- Other Modules
-	print("Load Modules")
-	Paths.Modules.Setup = require(script.Setup);
-	Paths.Modules.Format = require(Paths.Services.RStorage.Modules.Format)
-	Paths.Modules.GameFunctions = require(Paths.Services.RStorage.Modules.GameFunctions)
-	Paths.Modules.GameInfo = require(Paths.Services.RStorage.Modules.GameInfo)
-	Paths.Modules.Camera = require(script.Camera)
-	Paths.Modules.Help = require(script.Tycoon.Help)
-	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
-	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
-	Paths.Modules.AchievementsDictionary = require(Paths.Services.RStorage.Modules.Achievements)
-	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
-	Paths.Modules.AllEmotes = require(Paths.Services.RStorage.Modules.AllEmotes)
-	Paths.Modules.Indicators = require(script.Setup.Indicators)
-	Paths.Modules.Settings = require(script.Settings)
-	Paths.Modules.GroupReward = require(script.GroupReward)
-	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
-	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
-	Paths.Modules.Maid = require(Paths.Services.RStorage.Modules.Maid)
-	Paths.Modules.Signal = require(Paths.Services.RStorage.Modules.Signal)
-	Paths.Modules.Verification = require(script.Verification)
-	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
-	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
-	Paths.Modules.MiningDetails = require(Paths.Services.RStorage.Modules.MiningDetails)
-	Paths.Modules.VehicleDetails = require(Paths.Services.RStorage.Modules.VehicleDetails)
-	Paths.Modules.DeviceDetector = require(script.DeviceDetector)
-	Paths.Modules.Feedback = require(script.Feedback)
+	-- print("Load Modules")
+	ModuleLoader.Register("Setup", script.Setup);
+	ModuleLoader.Register("Format", Paths.Services.RStorage.Modules.Format)
+	ModuleLoader.Register("GameFunctions", Paths.Services.RStorage.Modules.GameFunctions)
+	ModuleLoader.Register("GameInfo", Paths.Services.RStorage.Modules.GameInfo)
+	ModuleLoader.Register("Camera", script.Camera)
+	ModuleLoader.Register("Help", script.Tycoon.Help)
+	ModuleLoader.Register("AllOutfits", Paths.Services.RStorage.Modules.AllOutfits)
+	ModuleLoader.Register("AllAccessories", Paths.Services.RStorage.Modules.AllAccessories)
+	ModuleLoader.Register("AchievementsDictionary", Paths.Services.RStorage.Modules.Achievements)
+	ModuleLoader.Register("AllEyes", Paths.Services.RStorage.Modules.AllEyes)
+	ModuleLoader.Register("AllEmotes", Paths.Services.RStorage.Modules.AllEmotes)
+	ModuleLoader.Register("Indicators", script.Setup.Indicators)
+	ModuleLoader.Register("GroupReward", script.GroupReward)
+	ModuleLoader.Register("FishingConfig", Paths.Services.RStorage.Modules.FishingConfig)
+	ModuleLoader.Register("FuncLib", Paths.Services.RStorage.Modules.FuncLib)
+	ModuleLoader.Register("Maid", Paths.Services.RStorage.Modules.Maid)
+	ModuleLoader.Register("Signal", Paths.Services.RStorage.Modules.Signal)
+	ModuleLoader.Register("Verification", script.Verification)
+	ModuleLoader.Register("DiscordVerification", script.DiscordVerification)
+	ModuleLoader.Register("ProgressionDetails", Paths.Services.RStorage.Modules.ProgressionDetails)
+	ModuleLoader.Register("MiningDetails", Paths.Services.RStorage.Modules.MiningDetails)
+	ModuleLoader.Register("VehicleDetails", Paths.Services.RStorage.Modules.VehicleDetails)
+	ModuleLoader.Register("DeviceDetector", script.DeviceDetector)
+	ModuleLoader.Register("Feedback", script.Feedback)
 	
 
 
 	-- Tool Modules
-	Paths.Modules.Tools = require(script.Tools);
+	ModuleLoader.Register("Tools", script.Tools);
 
 	-- Character Modules
-	print("loading character modules")
-	Paths.Modules.Emotes = require(script.Emotes)
-	Paths.Modules.DoubleJump = require(script.Character.DoubleJump);
-	Paths.Modules.Character = require(script.Character);
-	Paths.Modules.CharacterSelect = require(script.Character.CharacterSelect);
+	-- print("loading character modules")
+	ModuleLoader.Register("Emotes", script.Emotes)
+	ModuleLoader.Register("DoubleJump", script.Character.DoubleJump);
+	ModuleLoader.Register("Character", script.Character);
+	ModuleLoader.Register("CharacterSelect", script.Character.CharacterSelect);
 	
 	-- UI Modules
-	print("ui modules")
-	Paths.Modules.UpdatingUI = require(script.UI.Updating)
-	Paths.Modules.UIAnimations = require(script.UI.Animations)
-	Paths.Modules.Transitions = require(script.UI.Animations)
-	Paths.Modules.Buttons = require(script.UI.Buttons)
-	Paths.Modules.Teleporting = require(script.UI.Teleporting)
-	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
-	Paths.Modules.UI = require(script.UI)
-	Paths.Modules.Index = require(script.UI.Index)
-	Paths.Modules.Achievements = require(script.Achievements)
-	Paths.Modules.SpinTheWheel = require(script.Achievements.SpinTheWheel)
-	Paths.Modules.Playtime = require(script.Achievements.Playtime)
-	Paths.Modules.AllAchievements = require(script.Achievements.AllAchievements)
-	Paths.Modules.Quests = require(script.Achievements.Quests)
+	-- print("ui modules")
+	ModuleLoader.Register("UpdatingUI", script.UI.Updating)
+	ModuleLoader.Register("UIAnimations", script.UI.Animations)
+	ModuleLoader.Register("Buttons", script.UI.Buttons)
+	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
+	ModuleLoader.Register("TycoonTeleporting", script.UI.TycoonTeleporting)
+	ModuleLoader.Register("PlatformAdjustments", script.UI.PlatformAdjustments)
+	ModuleLoader.Register("UI", script.UI)
+	ModuleLoader.Register("Index", script.UI.Index)
+	ModuleLoader.Register("Achievements", script.Achievements)
+	ModuleLoader.Register("SpinTheWheel", script.Achievements.SpinTheWheel)
+	ModuleLoader.Register("Playtime", script.Achievements.Playtime)
+	ModuleLoader.Register("AllAchievements", script.Achievements.AllAchievements)
+	ModuleLoader.Register("Quests", script.Achievements.Quests)
 
-	print("store modules")
+	-- print("store modules")
 	-- Store Modules
-	Paths.Modules.Store = require(script.Store)
-	Paths.Modules.Gamepasses = require(script.Store.Gamepasses)
-	Paths.Modules.Money = require(script.Store.Money)
-	Paths.Modules.Gems = require(script.Store.Gems)
-	Paths.Modules.Boosts = require(script.Store.Boosts)
-	Paths.Modules.Accessories = require(script.Store.Accessories)
+	ModuleLoader.Register("Store", script.Store)
+	ModuleLoader.Register("Gamepasses", script.Store.Gamepasses)
+	ModuleLoader.Register("Money", script.Store.Money)
+	ModuleLoader.Register("Gems", script.Store.Gems)
+	ModuleLoader.Register("Boosts", script.Store.Boosts)
+	ModuleLoader.Register("Accessories", script.Store.Accessories)
 	
-	print("penguin modules")
+	-- print("penguin modules")
 	-- Penguin Modules
-	Paths.Modules.PenguinsUI = require(script.Penguins.PenguinsUI)
-	Paths.Modules.Penguins = require(script.Penguins)
-	Paths.Modules.Customization = require(script.Penguins.Customization)
+	ModuleLoader.Register("PenguinsUI", script.Penguins.PenguinsUI)
+	ModuleLoader.Register("Penguins", script.Penguins)
+	ModuleLoader.Register("Customization", script.Penguins.Customization)
 	
-	print("audio modules")
+	-- print("audio modules")
 	-- Audio Modules
-	Paths.Modules.Audio = require(Paths.Services.RStorage.Modules.Audio)
-	Paths.Modules.AudioHandler = require(script.AudioHandler)
+	ModuleLoader.Register("Audio", Paths.Services.RStorage.Modules.Audio)
+	ModuleLoader.Register("AudioHandler", script.AudioHandler)
 	
-	print("tycoon/fishing modules")
+	-- print("tycoon/fishing modules")
 	-- Other Modules (That have to be required after)
-	Paths.Modules.Tycoon = require(script.Tycoon)
-	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
-	Paths.Modules.TycoonProgressBar = require(script.UI.TycoonProgressBar)
-	
---- Load Version ---
-	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
-	
-	print("Load pets module")
+	ModuleLoader.Register("Tycoon", script.Tycoon)
+	ModuleLoader.Register("Fishing", script.Tycoon.Fishing)
+	ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
+
+	-- print("Load pets module")
 	-- Pets
-	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
-	Paths.Modules.Pets = require(script.Pets)
+	ModuleLoader.Register("PetDetails", Paths.Services.RStorage.Modules.PetDetails)
+	ModuleLoader.Register("Pets", script.Pets)
+
+	ModuleLoader.Register("SettingDetails", Paths.Services.RStorage.Modules.SettingDetails)
+	ModuleLoader.Register("Settings", script.Settings)
+
+	-- Load Version
+	ModuleLoader.Load()
+	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
+
 end
 
 return Paths

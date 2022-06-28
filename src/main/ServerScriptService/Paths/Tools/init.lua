@@ -91,8 +91,11 @@ function Tools.EquipTool(Player, Tool)
 				Model.Parent = workspace
 				character.Humanoid:AddAccessory(Model)
 			end
+
 		end
+
 	end
+
 end
 
 

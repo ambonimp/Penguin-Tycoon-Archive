@@ -22,7 +22,7 @@ local winText = {
 	[3] = "You received 10 gems!!",
 	[4] = "You received 30 gems!",
 	[6] = "You received x1 Ultra Fish Luck Boost!",
-	
+
 }
 local positions = {
 	[8] = {-25,-65},
@@ -37,7 +37,7 @@ local positions = {
 
 function spinWheel()
 	spinning = true
-	
+
 	UI.Wheel.Rotation = 0
 	local result = Remotes.SpinTheWheel:InvokeServer("GetResult")
 	local low = math.min(positions[result][1],positions[result][2])
@@ -74,13 +74,13 @@ function spinWheel()
 				Paths.Audio.Tick:Play()
 			end
 		end
-		
+
 		task.wait()
 	end
 
 	local check,am = Remotes.SpinTheWheel:InvokeServer("ClaimReward")
 	spinning = false
-	
+
 	if check == "Owned" then
 		local text = "Already owned! You received "..am.." gems instead!"
 		Paths.Modules.Setup:Notification(text,Color3.new(0.945098, 0.525490, 0.282352),7)
@@ -96,7 +96,7 @@ function spinWheel()
 	local Spins = Remotes.GetStat:InvokeServer("Spin")
 	if Spins[1] then
 		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
-		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
+		Paths.UI.Right.Buttons.Achievements.Notif.Visible = true
 		UI.Center.Button.TheText.Text = "Spin For Free"
 	else
 		UI.Center.Button.TheText.Text = "Spin 99R$"
@@ -113,7 +113,7 @@ UI.Center.Button.MouseButton1Down:Connect(function()
 	local Spins = Remotes.GetStat:InvokeServer("Spin")
 	if Spins[1] then
 		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = false
-		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = false
+		Paths.UI.Right.Buttons.Achievements.Notif.Visible = false
 		spinWheel()
 	else
 		Services.MPService:PromptProductPurchase(Paths.Player, 1271390016)
@@ -127,7 +127,7 @@ end
 local Spins = Remotes.GetStat:InvokeServer("Spin")
 if Spins[1] then
 	Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
-	Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
+	Paths.UI.Right.Buttons.Achievements.Notif.Visible = true
 	UI.Center.Button.TheText.Text = "Spin For Free"
 else
 	UI.Center.Button.TheText.Text = "Spin 99R$"
@@ -148,19 +148,19 @@ task.spawn(function()
 			local tLeft = nextReward - os.time()
 			UI.FreeSpin.Text = "Next Free Spin: "..toHMS(tLeft)
 			task.wait(1)
-		end 
+		end
 		task.wait(3)
-		if spinning then 
+		if spinning then
 			repeat task.wait()
 			until not spinning
 		end
 		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
-		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
+		Paths.UI.Right.Buttons.Achievements.Notif.Visible = true
 		UI.Center.Button.TheText.Text = "Spin For Free"
 		nextReward = Remotes.SpinTheWheel:InvokeServer("CheckGift")
 		start()
 	 end
-	 
+
 	 start()
 end)
 

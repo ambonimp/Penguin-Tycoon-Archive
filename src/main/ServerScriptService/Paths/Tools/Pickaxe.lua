@@ -37,7 +37,7 @@ for Level in pairs(Modules.MiningDetails) do
                 local Prompt = Instance.new("ProximityPrompt")
                 Prompt.HoldDuration = 0.25
                 Prompt.MaxActivationDistance = 30
-                Prompt.RequiresLineOfSight = true
+                Prompt.RequiresLineOfSight = false
                 Prompt.ActionText = "Unlock"
                 Prompt.Parent = Divider
 
@@ -117,12 +117,9 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
         if Data.Mining.Level == Level then
             local NextLevel = Level + 1
             if Modules.MiningDetails[NextLevel] and OresMinedThisLevel >= Modules.MiningDetails[NextLevel].Requirement then
-                -- warn("On level up")
-
                 Data.Mining.Level = NextLevel
                 -- Hat reward
                 if NextLevel == 3 then
-                    -- warn("Hard hat given outfit given")
                     Modules.Accessories:ItemAcquired(Client, "Hard Hat", "Accessory")
                 end
 
@@ -133,25 +130,12 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
 
         -- Exclusive outfit
         if Data.Mining.Mined["Diamond"] >= 2000 and not Data.Outfits["Miner"] then
-            -- warn("Miner outfit given")
             Modules.Accessories:ItemAcquired(Client, "Miner", "Outfits")
         end
 
     end
 
 end)
-
-Remotes.MineTeleport.OnServerInvoke = function(Client, toIsland)
-    local Character = Client.Character
-
-    if Character then
-        local SpawnPart = toIsland and Island.Spawn or workspace.Tycoons[string.gsub(Client.Team.Name, " Island", "")].Spawn
-        local CFrame = SpawnPart.CFrame + Vector3.new(0, 3, 0)
-        Client:RequestStreamAroundAsync(CFrame.Position)
-        Character:SetPrimaryPartCFrame(CFrame)
-    end
-
-end
 
 
 --[[ if game.PlaceId == 9118461324 then

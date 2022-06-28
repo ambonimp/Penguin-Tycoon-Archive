@@ -46,7 +46,8 @@ end
 
 
 Services.InputService.JumpRequest:Connect(function()
-	if SettingsUI["Double Jump"].Locked.Visible == false and SettingsUI["Double Jump"].Toggle.IsToggled.Value == true then
+	local SettingsLbl = SettingsUI:WaitForChild("Double Jump")
+	if SettingsLbl.Locked.Visible == false and SettingsLbl.Toggle.IsToggled.Value == true then
 		if State == "Freefall" or State == "Jumping" then
 			if candj and not jump1 then
 				candj = false

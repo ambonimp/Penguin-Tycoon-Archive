@@ -9,8 +9,11 @@ local Remotes = Paths.Remotes
 local UI = Paths.UI
 local Dependency = Services.RStorage.ClientDependency.ProgressBarUI
 
-local ProgressBar = UI.Top.ProgressBar
+local Top = UI.Top
+local ProgressBar = Top.ProgressBar
 local Bar = ProgressBar.Bar
+
+local TopBottomPadding = Top.Bottom.UIPadding
 
 local Dividers = ProgressBar.Dividers
 local DividerTemplate = Dependency.Divider
@@ -27,6 +30,21 @@ local CurrentIsland
 local Unlocking = {}
 
 
+
+function TycoonProgressBar.Toggle(Toggle)
+    if Toggle then
+        if not ProgressBar:GetAttribute("Disabled") and Paths.UI.Center.Settings.Holder["Progress Bar"].Toggle.IsToggled.Value then
+            ProgressBar.Visible = true
+            TopBottomPadding.PaddingBottom = UDim.new(-0.15, 0)
+            TopBottomPadding.PaddingTop = UDim.new(0.15, 0)
+        end
+    else
+        ProgressBar.Visible = false
+        TopBottomPadding.PaddingTop = UDim.new(0, 0)
+        TopBottomPadding.PaddingBottom = UDim.new(0, 0)
+    end
+
+end
 
 
 local function GetIslandIndex(Reference)
@@ -202,5 +220,10 @@ if CurrentIsland then
 else
     TycoonCompleted()
 end
+
+local AFKFishing = Paths.UI.Top.AFKFishing
+AFKFishing:GetPropertyChangedSignal("Visible"):Connect(function()
+    TycoonProgressBar.Toggle(not AFKFishing.Visible)
+end)
 
 return TycoonProgressBar
