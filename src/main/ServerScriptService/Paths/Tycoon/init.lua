@@ -20,7 +20,7 @@ function Tycoon:InitializePlayer(Player)
 	Modules.Ownership:ClaimTycoon(ChosenTycoon, Player)
 	Modules.Loading:LoadTycoon(Player)
 	
-	Modules.Character:Spawn(Player, "Penguin")
+	--Modules.Character:Spawn(Player, "Penguin")
 end
 
 for _, MinigameHandler in ipairs(script.Minigames:GetChildren()) do
