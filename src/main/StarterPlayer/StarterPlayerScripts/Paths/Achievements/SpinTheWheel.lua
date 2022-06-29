@@ -19,12 +19,10 @@ if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
 end
 
 local winText = {
-	[1] = "You received x1 Super Fish Luck Boost!",
-	[2] = "You received x1 Triple Money Boost!",
-	[3] = "You received 10 gems!!",
-	[4] = "You received 30 gems!",
-	[6] = "You received x1 Ultra Fish Luck Boost!",
-
+	[1] = "You received 7 gems!!",
+	[2] = "You received x1 Super Fish Luck Boost!",
+	[3] = "You received 5 gems!!",
+	[4] = "You received 10 gems!",
 }
 local positions = {
 	[8] = {-25,-65},

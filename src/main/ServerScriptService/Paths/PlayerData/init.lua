@@ -298,9 +298,9 @@ local function getPlayerIncome(Player)
 	local levelIncome = Modules.GameFunctions:GetPlayerPenguinIncome(PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
 	local total = levelIncome
 	for i,v in pairs (PlayerData.sessionData[Player.Name]["Tycoon"]) do
-		local item = game.ReplicatedStorage:WaitForChild("Template"):WaitForChild("Buttons"):FindFirstChild(i)
+		local item = Paths.Template:WaitForChild("Buttons"):FindFirstChild(i)
 		if item == nil then
-			item = game.ReplicatedStorage:WaitForChild("Template"):WaitForChild("Upgrades"):FindFirstChild("Island1"):FindFirstChild(i)
+			item = Paths.Template:WaitForChild("Upgrades"):FindFirstChild("Island1"):FindFirstChild(i)
 		end
 		if item ~= nil then
 			local income = item:GetAttribute("Income")

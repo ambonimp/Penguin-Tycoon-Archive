@@ -6,8 +6,6 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
-local TycoonTemplate = Services.RStorage.Template
-
 -- Functions
 function BoatSpawner.Equipped(Player)
 
@@ -21,8 +19,8 @@ Remotes.VehicleSpawned.OnServerEvent:Connect(function(Client, Id, CF)
     -- Get info
     local Details = Modules.VehicleDetails[Id]
 
-    local Island = if Details.Source == "Button" then TycoonTemplate.Buttons[Id]:GetAttribute("Island") else Details.Island
-    local Vehicle = TycoonTemplate.Upgrades[Island][Id]:GetAttribute("Vehicle")
+    local Island = if Details.Source == "Button" then Paths.Template.Buttons[Id]:GetAttribute("Island") else Details.Island
+    local Vehicle = Paths.Template.Upgrades[Island][Id]:GetAttribute("Vehicle")
     local Unlocked = workspace.Tycoons[string.gsub(Client.Team.Name, " Island", "")].Tycoon:FindFirstChild(Id)
 
     if Unlocked then
@@ -56,7 +54,7 @@ Remotes.VehicleSpawned.OnServerEvent:Connect(function(Client, Id, CF)
 end)
 
 -- Testing
-if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 then
+--[[ if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 then
     task.spawn(function()
         require(game.ServerScriptService:WaitForChild("ChatServiceRunner").ChatService):RegisterProcessCommandsFunction("Commands", function(Speaker, Message)
             local Player = game.Players[Speaker]
@@ -72,7 +70,7 @@ if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 then
     end)
 
 end
-
+ *]]
 
 
 return BoatSpawner

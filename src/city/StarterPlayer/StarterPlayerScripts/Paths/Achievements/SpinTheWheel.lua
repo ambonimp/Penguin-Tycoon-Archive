@@ -1,3 +1,4 @@
+local DataStoreService = game:GetService("DataStoreService")
 local TweenService = game:GetService("TweenService")
 local SpinTheWheel = {}
 
@@ -11,18 +12,17 @@ local UI = Paths.UI.Center.Achievements.Sections.Spin
 local SpinTime = (12*60*60)
 local soundNums = {25,70,115,160,205,250,290,340}
 local spinning = false
+local rotations = {0,45,90,135,180,225,270,315}
 
 if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
 	SpinTime = 1*60
 end
 
 local winText = {
-	[1] = "You received x1 Super Fish Luck Boost!",
-	[2] = "You received x1 Triple Money Boost!",
-	[3] = "You received 10 gems!!",
-	[4] = "You received 30 gems!",
-	[6] = "You received x1 Ultra Fish Luck Boost!",
-	
+	[1] = "You received 7 gems!!",
+	[2] = "You received x1 Super Fish Luck Boost!",
+	[3] = "You received 5 gems!!",
+	[4] = "You received 10 gems!",
 }
 local positions = {
 	[8] = {-25,-65},
@@ -35,10 +35,11 @@ local positions = {
 	[1] = {-20,20},
 }
 
+UI.Wheel.Rotation = rotations[math.random(1,#rotations)]
+
 function spinWheel()
 	spinning = true
-	
-	UI.Wheel.Rotation = 0
+
 	local result = Remotes.SpinTheWheel:InvokeServer("GetResult")
 	local low = math.min(positions[result][1],positions[result][2])
 	local high = math.max(positions[result][1],positions[result][2])
@@ -55,7 +56,7 @@ function spinWheel()
 		tween:Play()
 		tween.Completed:Wait()
 		timePassed += spinSpeed
-		spinSpeed *= 1.015
+		spinSpeed *= 1.04
 		if spinSpeed >= .05 then
 			spinning = false
 		end
@@ -74,13 +75,12 @@ function spinWheel()
 				Paths.Audio.Tick:Play()
 			end
 		end
-		
+
 		task.wait()
 	end
-
 	local check,am = Remotes.SpinTheWheel:InvokeServer("ClaimReward")
 	spinning = false
-	
+
 	if check == "Owned" then
 		local text = "Already owned! You received "..am.." gems instead!"
 		Paths.Modules.Setup:Notification(text,Color3.new(0.945098, 0.525490, 0.282352),7)
@@ -104,7 +104,7 @@ function spinWheel()
 
 	task.wait(4)
 	if spinning == false then
-		UI.Wheel.Rotation = 0
+		UI.Wheel.Rotation = rotations[math.random(1,#rotations)]
 	end
 end
 
@@ -148,9 +148,9 @@ task.spawn(function()
 			local tLeft = nextReward - os.time()
 			UI.FreeSpin.Text = "Next Free Spin: "..toHMS(tLeft)
 			task.wait(1)
-		end 
+		end
 		task.wait(3)
-		if spinning then 
+		if spinning then
 			repeat task.wait()
 			until not spinning
 		end
@@ -160,7 +160,7 @@ task.spawn(function()
 		nextReward = Remotes.SpinTheWheel:InvokeServer("CheckGift")
 		start()
 	 end
-	 
+
 	 start()
 end)
 

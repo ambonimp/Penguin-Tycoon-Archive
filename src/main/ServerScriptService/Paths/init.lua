@@ -30,7 +30,7 @@ function Paths.Initiliaze()
 	Paths.Dependency = Paths.Services.SStorage:WaitForChild("ServerDependency")
 --- Other Variables ---
 	Paths.Template = workspace.Template;
-	Paths.Template.Parent = Paths.Services.RStorage
+	Paths.Template.Parent = Paths.Services.SStorage
 	
 	
 --- Initializing Remotes ---
