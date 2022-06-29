@@ -31,7 +31,9 @@ function Boosts.givePlayerBoost(Player,Boost,Amount,from)
 		boosts[Boost][1] += Amount
 		Remotes.BoostHandler:FireClient(Player,Boost,"Add",data)
 		if from == "REWARD" then
-			Boosts.startPlayerBoost(Player,Boost,false)
+			task.spawn(function()
+				Boosts.startPlayerBoost(Player,Boost,false)
+			end)
 		end
 	end
 end

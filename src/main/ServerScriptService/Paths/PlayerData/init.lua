@@ -151,7 +151,7 @@ local function Defaults(Player)
 		["Settings"] = {
 			["Chat Tag"] = true,
 			["Music"] = true,
-			["Progress Bar"] = true,
+			["Progress Bar"] = false,
 			["Faster Speed"] = true,
 			["Double Jump"] = true,
 			["Show Hearts"] = true,

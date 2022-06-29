@@ -293,6 +293,9 @@ end)
 --- Initializing ---
 for i, v in pairs(MainButtons) do
 	v.MouseButton1Down:Connect(function()
+		if v:FindFirstChild("Notif") then
+			v.Notif.Visible = false
+		end
 		ButtonClicked(v)
 	end)
 end

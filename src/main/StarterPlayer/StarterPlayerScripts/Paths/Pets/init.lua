@@ -1124,6 +1124,7 @@ do -- Free Pet
 			updateUI(Data,"add",Id)
 			updateUI(Data,"update",Id)
 		end
+		UI.Right.Buttons.Backpack.Notif.Visible = true
 		Paths.Modules.Buttons:UIOff(Paths.UI.Center.FreePet,true)
 		UI.Left.Visible = true
 		UI.Top.Visible = true
