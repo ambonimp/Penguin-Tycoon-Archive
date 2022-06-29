@@ -8,7 +8,7 @@ local Remotes = Paths.Remotes
 
 Spin.SpinTime = (12*60*60)
 if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
-	-- Spin.SpinTime = 2*60
+	Spin.SpinTime = 1*60
 end
 
 local Rand = Random.new()
@@ -25,14 +25,14 @@ local Results = {
 }
 
 local Rewards = {
-	[1] = {"Boost","Super Fishing Luck",1},
-	[2] = {"Boost","x3 Money"},
-	[3] = {"Gems",10},
-	[4] = {"Gems",30},
-	[5] = {"Accessory","Jellyfish Hat",50},
-	[6] = {"Boost","Ultra Fishing Luck",1},
-	[7] = {"Income",20},
-	[8] = {"Outfit","Hazmat Suit",100},
+	[1] = {"Gems",7},--15% 
+	[2] = {"Boost","Super Fishing Luck",1}, --3.3%
+	[3] = {"Gems",5}, --25%
+	[4] = {"Gems",10}, --14%
+	[5] = {"Accessory","Jellyfish Hat",50}, --2.7%
+	[6] = {"Income",100},--{"Boost","Ultra Fishing Luck",1},  13%
+	[7] = {"Income",20}, --26%
+	[8] = {"Outfit","Hazmat Suit",100}, --1%
 }
 
 function RollRandomResult()
@@ -61,11 +61,11 @@ function Spin.GiveReward(Player,Reward)
 	elseif Kind == "Boost" then
 		local am = Reward[3] or 1
 		if Reward[2] == "Fishing Luck Bundle" then
-			Modules.Boosts.givePlayerBoost(Player,"Super Fishing Luck",am)
-			Modules.Boosts.givePlayerBoost(Player,"Ultra Fishing Luck",am)
-			Modules.Boosts.givePlayerBoost(Player,"x3 Money",am)
+			Modules.Boosts.givePlayerBoost(Player,"Super Fishing Luck",am,"REWARD")
+			Modules.Boosts.givePlayerBoost(Player,"Ultra Fishing Luck",am,"REWARD")
+			Modules.Boosts.givePlayerBoost(Player,"x3 Money",am,"REWARD")
 		else
-			Modules.Boosts.givePlayerBoost(Player,Reward[2],am)
+			Modules.Boosts.givePlayerBoost(Player,Reward[2],am,"REWARD")
 		end
 		return "Boost",Reward[2],am
 	elseif Kind == "Outfit" then

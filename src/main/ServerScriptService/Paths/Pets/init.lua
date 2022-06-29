@@ -11,6 +11,12 @@ local PetsAssets = Assets.Pets
 local Chat = game:GetService("Chat")
 local rand = Random.new()
 
+local FreePets = {
+	[1] = {"Leafy","Default",1.05,"Fishing","Income",1,1},
+	[2] = {"Elebuddy","Default",1.05,"Walk","Speed",3,13},
+	[3] = {"Glacyx","Default",1.05,"Paycheck","Income",5,25},
+}
+
 function getEmptyNum(data)
 	for i=1,math.huge do
 		if data[tostring(i)] == nil then
@@ -118,6 +124,46 @@ function getRandomPet(chanceTable)
 			return entry
 		end
 	end
+end
+
+function giveFreePet(Player,Chosen)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+	if Data then
+		Data = Data["Pets_Data"]
+		if Data.ClaimedFree == nil then
+			Data.ClaimedFree = true
+			local petInfo = FreePets[Chosen]
+			local newId = getEmptyNum(Data.PetsOwned)
+			
+			Data.PetsOwned[newId] = {
+				petInfo[1],
+				petInfo[2],
+				petInfo[1],
+				PetDetails.Rarities[.35],
+				1,
+				{
+					petInfo[3],
+					petInfo[4],
+					petInfo[5]
+				},
+				petInfo[7],petInfo[6]
+			}
+			
+			if Data.Unlocked[tostring(petInfo[7])] then
+				Data.Unlocked[tostring(petInfo[7])] += 1
+			else
+				Data.Unlocked[tostring(petInfo[7])] = 1
+			end
+			
+			if #Data.Equipped < Player:GetAttribute("MaxEquip") then
+				table.insert(Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].Equipped,newId)
+				Player:SetAttribute("PetsEquipped",tick())
+			end
+			
+			return true,Data,newId, petInfo
+		end
+	end
+	return false
 end
 
 function givePet(Player, PetId, Chosen, IslandId)
@@ -255,5 +301,6 @@ Remotes.MergePet.OnServerInvoke = Merge
 Remotes.PetName.OnServerInvoke = EditName
 Remotes.DeletePet.OnServerInvoke = DeletePet
 Remotes.GetBonus.OnServerInvoke = Pets.getBonus
+Remotes.ClaimPet.OnServerInvoke = giveFreePet
 
 return Pets
