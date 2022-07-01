@@ -491,7 +491,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	if Data["WasFishing"] and (os.time()-Data["WasFishing"] < 60) then
 		task.spawn(function()
 			local Tycoon = Paths.Modules.Ownership:GetPlayerTycoon(Player)
-			repeat task.wait(.25) print("WAITING FOR BOAT1") until Player == nil or (Tycoon.Tycoon:FindFirstChild("Boat#1") and Player.Character and Player.Character:IsDescendantOf(workspace))
+			repeat task.wait(.25) Tycoon = Paths.Modules.Ownership:GetPlayerTycoon(Player) until Player == nil or (Tycoon and Tycoon.Tycoon:FindFirstChild("Boat#1") and Player.Character and Player.Character:IsDescendantOf(workspace))
 			local boat = Tycoon.Tycoon:FindFirstChild("Boat#1")
 			if boat and Player then
 				boat.Seat.Disabled = false
