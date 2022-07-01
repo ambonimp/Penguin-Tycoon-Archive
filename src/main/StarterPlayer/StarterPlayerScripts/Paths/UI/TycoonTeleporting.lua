@@ -46,8 +46,33 @@ for i = 1, 5 do
     Lbl.Visit.MouseButton1Down:Connect(function()
         Modules.Buttons:UIOff(Frame, true)
         Modules.UIAnimations.BlinkTransition(function()
-            Remotes.TeleportInternal:InvokeServer(Lbl.Name)
+            local Name = Lbl.Name
+            Remotes.TeleportInternal:InvokeServer(Name)
+--[[
+            local Player = game.Players:FindFirstChild(Name)
+            if Player then
+                local Tycoon = workspace.Tycoons[Player:GetAttribute("Tycoon")]
+                local PromptPart = Tycoon.Extras.Teleport:WaitForChild("PromptPart")
+                if not PromptPart:FindFirstChild("ProximityPrompt") then
+                    local ReturnPrompt = Instance.new("ProximityPrompt")
+                    ReturnPrompt.HoldDuration = 0.25
+                    ReturnPrompt.MaxActivationDistance = 10
+                    ReturnPrompt.RequiresLineOfSight = false
+                    ReturnPrompt.ActionText = "Return home"
+                    ReturnPrompt.Parent = PromptPart
+
+                    ReturnPrompt.Triggered:Connect(function()
+                        Modules.UIAnimations.BlinkTransition(function()
+                            Remotes.TeleportInternal:InvokeServer(Paths.Player.Name)
+                        end, true)
+                    end)
+
+                end
+
+            end *]]
+
         end, true)
+
     end)
 
 end
@@ -58,11 +83,13 @@ end
 
 game.Players.PlayerAdded:Connect(LoadTycoon)
 game.Players.PlayerRemoving:Connect(function(Player)
-    local Lbl = List:FindFirstChild(Player.Name)
-    Lbl.Visible = false
+    if Player ~= Paths.Player then
+        local Lbl = List:FindFirstChild(Player.Name)
+        Lbl.Visible = false
 
-    table.remove(UsedLbls, table.find(UnusedLbls, Lbl))
-    table.insert(UnusedLbls, Lbl)
+        table.remove(UsedLbls, table.find(UnusedLbls, Lbl))
+        table.insert(UnusedLbls, Lbl)
+    end
 end)
 
 
