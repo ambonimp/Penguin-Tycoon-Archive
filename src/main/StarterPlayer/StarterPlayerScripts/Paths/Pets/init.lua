@@ -812,6 +812,7 @@ BuyEgg.Robux.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 	if CurrentEggLoaded then
 		if getTotalPets() < LocalPlayer:GetAttribute("MaxPetsOwned") then
+			autoHatching = false
 			Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Robux")
 		else
 			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")

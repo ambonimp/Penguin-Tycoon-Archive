@@ -327,7 +327,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	-- Data check just incase
 	if not PlayerData.sessionData[Player.Name] then Player:Kick("Data Error: Rejoin") return end
 	
-	
+	local Data = PlayerData.sessionData[Player.Name]
 	-- Setup Attributes
 	Player:SetAttribute("Tycoon", "None")
 	Player:SetAttribute("Money", PlayerData.sessionData[Player.Name]["Money"])
@@ -337,6 +337,17 @@ game.Players.PlayerAdded:Connect(function(Player)
 	Player:SetAttribute("Level", PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
 	Player:SetAttribute("Tool", "None")
 	
+	if Data["Settings"]["Auto Hatch"] == nil then
+		Data["Settings"]["Auto Hatch"] = false
+	end
+	Player:SetAttribute("IsAutoHatch",Data["Settings"]["Auto Hatch"])
+
+	if Data["Boosts"]["Ultra Lucky Egg"] == nil then
+		Data["Boosts"]["Ultra Lucky Egg"] = {0,0}
+	end
+	if Data["Boosts"]["Super Lucky Egg"] == nil then
+		Data["Boosts"]["Super Lucky Egg"] = {0,0}
+	end
 
 	
 	if PlayerData.sessionData[Player.Name]["Pets"] then
@@ -400,7 +411,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
 	NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
-	
+	 
 	
 	-- Updating Leaderstats
 	Player:GetAttributeChangedSignal("Money"):Connect(function()

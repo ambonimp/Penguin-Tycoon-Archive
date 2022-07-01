@@ -10,12 +10,16 @@ local Remotes = Paths.Remotes
 local BoostTimes = {
 	["Super Fishing Luck"] = 60*15,
 	["Ultra Fishing Luck"] = 60*15,
-	["x3 Money"] = 60*15
+	["x3 Money"] = 60*15,
+	["Ultra Lucky Egg"] = 60*15,
+	["Super Lucky Egg"] = 60*15
 }
 local attName = {
 	["Super Fishing Luck"] = "FishingSuperLuckBoost",
 	["Ultra Fishing Luck"] = "FishingUltraLuckBoost",
-	["x3 Money"] = "x3MoneyBoost"
+	["x3 Money"] = "x3MoneyBoost",
+	["Ultra Lucky Egg"] = "UltraEggLuck",
+	["Super Lucky Egg"] = "SuperEggLuck"
 }
 --[[
 Data["Boosts"] = { --[1]owned, [2]time left in current boost
@@ -47,10 +51,13 @@ function Boosts.startPlayerBoost(Player,Boost,isJoin)
 			if isJoin then
 				boosts[Boost][2] = boosts[Boost][2] - 5
 			else
-				boosts[Boost][1] -= 1
-				boosts[Boost][2] = BoostTimes[Boost]
+				boosts[Boost][1] -= 1 -- How many are left
+				boosts[Boost][2] = BoostTimes[Boost] -- Length
+				boosts[Boost][3] = os.time() -- Id so client doesn't get confused when deleting and adding
 			end
+
 			Remotes.BoostHandler:FireClient(Player,Boost,"Start",data)
+
 			while Player and Player.Parent do
 				task.wait(5)
 				boosts[Boost][2] -= 5

@@ -19,8 +19,6 @@ Save.IsSaving = {}
 function Save:SavePlayerData(player)
 	local playerName = player.Name
 	local playerData = Modules.PlayerData.sessionData[playerName]
-	playerData["Playtime"][2] = os.time()
-	Modules.PlayerData.sessionData[playerName]["LastPlayTime"] = os.time()
 -- Prevent Errors / False Saving
 	if not playerData then
 		return warn(playerName .. "'s data couldn't be saved cause it wasnt initialized!")
@@ -28,6 +26,8 @@ function Save:SavePlayerData(player)
 		return warn(playerName .. "'s data is already being saved!")
 	end
 
+	playerData["Playtime"][2] = os.time()
+	Modules.PlayerData.sessionData[playerName]["LastPlayTime"] = os.time()
 -- Attempt to save if it's all good
 	self.IsSaving[playerName] = true
 

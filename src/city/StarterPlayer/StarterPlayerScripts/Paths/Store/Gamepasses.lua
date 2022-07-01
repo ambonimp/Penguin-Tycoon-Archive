@@ -24,6 +24,10 @@ local AllGamepasses = {
 	47438595, -- map teleport
 	49090546, -- x3 fish capture
 	41205759, -- Powered glider
+	55102169,
+	55102286, 
+	56637668, 
+	56844198, 
 }
 
 Gamepasses.Owned = {}
