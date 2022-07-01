@@ -24,7 +24,7 @@ function Tycoon:InitializePlayer(Player)
 		workspace:WaitForChild("Tycoons"):WaitForChild(ChosenTycoon):WaitForChild("StartIsland")
 		Modules.Character:Spawn(Player, "Penguin")
 	end)
-	--
+  
 end
 
 for _, MinigameHandler in ipairs(script.Minigames:GetChildren()) do

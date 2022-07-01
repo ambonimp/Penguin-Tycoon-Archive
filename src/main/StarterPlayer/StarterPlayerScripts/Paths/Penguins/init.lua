@@ -130,6 +130,8 @@ Remotes.Store.OnClientEvent:Connect(function(PurchaseType, PurchaseInfo, IsPurch
 				local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), NewLevel + 1)
 
 				CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.Info.PenguinInfo.PenguinName.Text
+				CustomizationUI.PenguinNameBG.PenguinName.Rainbow.Enabled = NewLevel == 30
+
 				CustomizationUI.PenguinNameBG.PenguinLevel.Text = Penguin.Info.PenguinInfo.PenguinLevel.Text
 
 				if NewLevel < Modules.GameInfo.MAX_PENGUIN_LEVEL then
@@ -164,6 +166,7 @@ CustomizationUI.Upgrade.MouseButton1Down:Connect(function()
 				local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), NewLevel + 1)
 				
 				CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.Info.PenguinInfo.PenguinName.Text
+				CustomizationUI.PenguinNameBG.PenguinName.Rainbow.Enabled = NewLevel == 30
 				CustomizationUI.PenguinNameBG.PenguinLevel.Text = Penguin.Info.PenguinInfo.PenguinLevel.Text
 				
 				if NewLevel < Modules.GameInfo.MAX_PENGUIN_LEVEL then
@@ -177,6 +180,7 @@ CustomizationUI.Upgrade.MouseButton1Down:Connect(function()
 				local UpgradePrice = Modules.GameFunctions:GetPlayerPenguinPrice(NewLevel + 1)
 				
 				CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.HumanoidRootPart.CustomName.PlrName.Text
+				CustomizationUI.PenguinNameBG.PenguinName.Rainbow.Enabled = false
 				CustomizationUI.PenguinNameBG.PenguinLevel.Text = "Level "..NewLevel..' <font color="rgb(38,255,14)">(+ $'..Modules.Format:FormatComma(Income)..")</font>"
 				CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
 			end

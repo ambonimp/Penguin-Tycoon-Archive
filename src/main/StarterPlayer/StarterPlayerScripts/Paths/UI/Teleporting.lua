@@ -39,7 +39,7 @@ function Teleporting:TeleportTo(PlaceId)
 	if TeleportDB then return end
 	TeleportDB = true
 	
-	local Success, Error = Remotes.Teleport:InvokeServer(PlaceId)
+	local Success, Error = Remotes.TeleportExternal:InvokeServer(PlaceId)
 	
 	if not Success then
 		Confirmation.InfoHolder.Confirm.Error.Visible = true
@@ -115,7 +115,7 @@ local function FriendTemplate(Info)
 		if TeleportDB then return end
 		TeleportDB = true
 		
-		local Success, Error = Remotes.Teleport:InvokeServer(Info.PlaceId, Info.GameId)
+		local Success, Error = Remotes.TeleportExternal:InvokeServer(Info.PlaceId, Info.GameId)
 
 		if not Success then
 			Template.Join.Error.Visible = true

@@ -30,4 +30,5 @@ return {
     {Object = "New Island!#26", Icon = "rbxassetid://9920784747"}, -- Enchanted Mushroom
     {Object = "New Island!#29", Icon = "rbxassetid://9936592115"}, -- Hospital
     {Object = "New Island!#30", Icon = "rbxassetid://10011061266"}, -- Military
+    {Object = "New Island!#31", Icon = "rbxassetid://10078392172"}, -- Mansion
 }

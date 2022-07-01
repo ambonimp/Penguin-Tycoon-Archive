@@ -87,7 +87,7 @@ function Fishing.Throw()
 	end
 	
 	local tool = localPlayer.Character:FindFirstChild("Tool")
-	if LastUpdate.lastClickPos and tool then
+	if LastUpdate.lastClickPos and tool and tool:FindFirstChild("Tip") then
 		local tip = tool.Tip
 		if (localPlayer.Character:GetPivot().Position - LastUpdate.lastClickPos).Magnitude > MAX_THROWING_DISTANCE then
 			Fishing.CancelThrow(true)

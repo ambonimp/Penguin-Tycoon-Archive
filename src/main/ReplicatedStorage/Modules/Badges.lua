@@ -49,7 +49,7 @@ Badges.Purchases = {
 	["New Island!#25"] = 2124929786; 
 	["New Island!#26"] = 2124929787;
 	["New Island!#29"] = 2124929788; --Hospital
-	["New Island!#30"] = 2124929789; --29
+	["New Island!#30"] = 2124929789; -- Military
 
 }
 

@@ -47,8 +47,15 @@ Services.InputService.LastInputTypeChanged:Connect(UpdateInputType)
 UpdateInputType(Services.InputService:GetLastInputType())
 
 
+--[[ -- Events --
+Buttons.FrameClosed = Modules.Signal.new()
+Buttons.FrameOpened = Modules.Signal.new()
+ *]]
+
 --- Button Functions ---
 function Buttons:UIOff(UI, ToggleBlur,DoWait)
+	-- Buttons.FrameClosed:Fire(UI)
+
 	-- UI
 	if UI.Size == OriginalSizes[UI] then
 		UI:TweenSize(UDim2.new(0.05, 0, 0.05, 0), "In", "Back", 0.15, true)
@@ -75,6 +82,8 @@ function Buttons:UIOff(UI, ToggleBlur,DoWait)
 end
 
 function Buttons:UIOn(UI, ToggleBlur,DoWait)
+	-- Buttons.FrameOpened:Fire(UI)
+
 	if not UI or UI == PreviousOpen then return end
 	if OriginalSizes[UI] == nil then
 		OriginalSizes[UI] = UI.Size

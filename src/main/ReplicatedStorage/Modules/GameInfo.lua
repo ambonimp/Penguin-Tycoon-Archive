@@ -1,6 +1,6 @@
 local GameInfo = {}
 
-GameInfo.Version = "v3.7"
+GameInfo.Version = "v3.8"
 
 GameInfo.MAX_PENGUIN_LEVEL = 10
 

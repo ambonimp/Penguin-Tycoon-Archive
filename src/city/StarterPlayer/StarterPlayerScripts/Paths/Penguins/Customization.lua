@@ -31,15 +31,15 @@ end)
 CustomizationUI.PenguinNameBG.RenameFinish.MouseButton1Down:Connect(function()
 	CustomizationUI.PenguinNameBG.Rename.Visible = true
 	CustomizationUI.PenguinNameBG.RenameFinish.Visible = false
-	
+
 	CustomizationUI.PenguinNameBG.PenguinName.TextEditable = false
 end)
 
 CustomizationUI.PenguinNameBG.PenguinName.FocusLost:Connect(function(x, a)
 	local NewName = CustomizationUI.PenguinNameBG.PenguinName.Text
-	
+
 	local Success, FilteredName = Remotes.Customization:InvokeServer("Change Name", CustomizationUI.PenguinSelected.Value, NewName)
-	
+
 	CustomizationUI.PenguinNameBG.PenguinName.Text = FilteredName
 
 	--Modules.PenguinsUI:PenguinInfoUpdated(CustomizationUI.PenguinSelected.Value)
@@ -51,11 +51,11 @@ local PrevName = "nil"
 CustomizationUI.PenguinNameBG.PenguinName.Changed:Connect(function(property)
 	if property == "Text" then
 		local length = string.len(CustomizationUI.PenguinNameBG.PenguinName.Text)
-		
+
 		if length > 20 then
 			CustomizationUI.PenguinNameBG.PenguinName.Text = PrevName
 		end
-		
+
 		PrevName = CustomizationUI.PenguinNameBG.PenguinName.Text
 	end
 end)
@@ -89,38 +89,38 @@ end
 --- UI Functions ---
 function Customization:EnterUI(Penguin)
 	CustomizationUI.PenguinSelected.Value = Penguin
-	
-	
+
+
 	-- Disable things for entering ui
 	Modules.Character:Freeze()
 	UI.Left.GemDisplay.Visible = false
 	UI.Left.Buttons.Visible = false
 	UI.Center.Visible = false
-	UI.Bottom.Buttons.Visible = false
+	UI.Right.Buttons.Visible = false
 	UI.BLCorner.GemDisplay.Visible = false
-	
+
 
 	local Level = Paths.Player:GetAttribute("Level")
-	
+
 	local Income = Modules.GameFunctions:GetPlayerPenguinIncome(Level)
 	local UpgradePrice = Modules.GameFunctions:GetPlayerPenguinPrice(Level + 1)
-	
+
 	CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.HumanoidRootPart.CustomName.PlrName.Text
 	CustomizationUI.PenguinNameBG.PenguinLevel.Text = "Level "..Level..' <font color="rgb(38,255,14)">(+ $'..Modules.Format:FormatComma(Income)..")</font>"
 	CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
-	
-	
+
+
 	-- Open Customization UI
 	CustomizationUI.Position = UDim2.new(-1.5, 0, 0.5, 0)
 	CustomizationUI.Visible = true
 	CustomizationUI:TweenPosition(UDim2.new(0.4, 0, 0.5, 0), "Out", "Back", 0.4, true)
-	
-	
+
+
 	-- Tween Camera to the Penguin
 	local CameraAngleCF = Penguin.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(5), math.rad(178), math.rad(0)) * CFrame.new(-3, 0.5, 8)
 	Modules.Camera:AttachTo(CameraAngleCF, true)
-	
-	
+
+
 	-- Set color selected ui to the color the penguin has (if applicable)
 	SelectedColorUI.Parent = script
 	SelectedAccessoryUI.Parent = script
@@ -176,20 +176,20 @@ function Customization:ExitUI()
 	-- Make plr visible
 	Modules.Character:Visible()
 	Modules.Character:Unfreeze()
-	
+
 	-- Update viewport in Penguins UI
 	--Modules.PenguinsUI:UpdateViewport(CustomizationUI.PenguinSelected.Value)
-	
+
 	-- Tween out UI
 	CustomizationUI:TweenPosition(UDim2.new(-1.5, 0, 0.5, 0), "In", "Back", 0.3, true)
 	UI.Left.GemDisplay.Visible = true
 	UI.Left.Buttons.Visible = true
 	UI.Center.Visible = true
-	UI.Bottom.Buttons.Visible = true
+	UI.Right.Buttons.Visible = true
 	UI.BLCorner.GemDisplay.Visible = true
-	
+
 	wait(0.25)
-	
+
 	CustomizationUI.Visible = false
 
 	-- Place camera back on the character
@@ -204,7 +204,7 @@ CustomizationUI.ExitCustomization.MouseButton1Down:Connect(function()
 end)
 
 
-Paths.UI.Bottom.Buttons.Customize.MouseButton1Down:Connect(function()
+Paths.UI.Right.Buttons.Customize.MouseButton1Down:Connect(function()
 	if Paths.Player.Character then
 		Customization:EnterUI(Paths.Player.Character)
 	end

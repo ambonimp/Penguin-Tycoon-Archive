@@ -114,6 +114,31 @@ function Character.CharacterAdded(Character)
 			end
 		end)
 
+		--- Tools stuff ---
+		if Character:WaitForChild("HumanoidRootPart", 1) then
+			local A1 = Instance.new("Attachment", Character.HumanoidRootPart)
+			A1.Name = "Attachment1"
+
+			if Character:FindFirstChild("HumanoidRootPart") then
+				local RootPart = Character.HumanoidRootPart
+
+				local AlignPos = RootPart:FindFirstChild("GliderPower") or Instance.new("AlignPosition", RootPart)
+				AlignPos.Mode = Enum.PositionAlignmentMode.OneAttachment
+				AlignPos.Name = "GliderPower"
+
+				AlignPos.Attachment0 = A1
+				AlignPos.Enabled = false
+
+				local AlignPos2 = RootPart:FindFirstChild("PlanePower") or Instance.new("AlignPosition", RootPart)
+				AlignPos2.Mode = Enum.PositionAlignmentMode.OneAttachment
+				AlignPos2.Name = "PlanePower"
+				AlignPos2.MaxForce = 5000
+				AlignPos2.Attachment0 = A1
+				AlignPos2.Enabled = false
+			end
+
+		end
+
 		Character.ChildRemoved:Connect(function(Child)
 			local n = Child.Name 
 			if n == "Hockey Stick" then

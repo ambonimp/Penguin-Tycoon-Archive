@@ -81,6 +81,8 @@ function Animations:MoneyChanged(Change, NewMoney)
 		YPos = -0.1
 		XPos = 0.14
 		YSize = 0.35
+
+		add = ""
 	end
 
 	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change)) ..add
@@ -95,9 +97,8 @@ function Animations:MoneyChanged(Change, NewMoney)
 	local TrickleChangeTween = Services.TweenService:Create(Template.Change, TrickleTI, Goal)
 
 	Template.Change.Value = Change
-
 	Template.Change.Changed:Connect(function(Value)
-		Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Value))..add
+		Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Value)).. (Value > 0 and add or "")
 	end)
 
 	TrickleChangeTween:Play()

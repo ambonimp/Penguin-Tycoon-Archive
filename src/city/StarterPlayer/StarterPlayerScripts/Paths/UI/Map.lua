@@ -8,7 +8,6 @@ local Modules = Paths.Modules
 local UI = Paths.UI
 
 -- Variables --
-local TRANSITION_LENGTH = 1
 local HOVER_SCALE = 1.25
 
 
@@ -19,10 +18,6 @@ local MainButton =UI.Left.Buttons.Map
 local Frame = UI.Center.Map
 local Locations = Frame.Locations
 local Tooltip = Frame.Tooltip
-
-local Bloom = UI.SpecialEffects.Bloom
-
-local Camera = workspace.CurrentCamera
 
 local Player = game:GetService("Players").LocalPlayer
 local Mouse = Player:GetMouse()
@@ -44,22 +39,6 @@ local function CloseMap()
 	Paths.UI.Bottom.Visible = true
 	Paths.UI.BLCorner.Visible = true
     Paths.UI.Top.Visible = true
-end
-
-local function Transition(OnHalfPoint)
-    local Info = TweenInfo.new(TRANSITION_LENGTH / 2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-
-    local In = Services.TweenService:Create(Bloom, Info, {BackgroundTransparency = 0})
-    In.Completed:Connect(function()
-        OnHalfPoint()
-
-        local Out = Services.TweenService:Create(Bloom, Info, {BackgroundTransparency = 1})
-        Out:Play()
-
-    end)
-
-    In:Play()
-
 end
 
 function OnLocationHover(Location)
@@ -105,7 +84,6 @@ function ownsGamepass()
     return true--Modules.Gamepasses.Owned[47438595]
 end
 
-
 -- Toggle other parts of the Interface
 MainButton.MouseButton1Down:Connect(OpenMap)
 Frame.Exit.MouseButton1Down:Connect(CloseMap)
@@ -120,19 +98,15 @@ for _, Location in ipairs(Locations:GetChildren()) do
 
     Location.MouseButton1Down:Connect(function()
         if ownsGamepass() then
-            Transition(function()
+            Modules.UIAnimations.BlinkTransition(function()
                 local Character = Player.Character
                 if Character then
-                    local NewCFrame = TeleportLocations[Location.Name].CFrame + Vector3.new(0, 5, 0)
-                    Character:SetPrimaryPartCFrame(NewCFrame)
-                    -- Make camera look at destination
-                    Camera.CFrame = CFrame.new(Camera.CFrame.Position) * NewCFrame.Rotation -- CFrame.fromEulerAnglesYXZ(math.rad(12), 0, 0)
-    
+                    Character:SetPrimaryPartCFrame(TeleportLocations[Location.Name].CFrame + Vector3.new(0, 5, 0))
                 end
-    
+
                 Modules.Buttons:UIOff(Frame, true)
                 CloseMap()
-            end)
+            end, true)
         else
             Services.MPService:PromptGamePassPurchase(Paths.Player, 47438595)
         end
@@ -160,6 +134,7 @@ for _, Location in ipairs(Locations:GetChildren()) do
 		    -- Closes any previously opened frames and opens map frame
 		    Modules.Buttons:OnMainButtonClicked(MainButton)
             OpenMap()
+
 		end)
 
     end
