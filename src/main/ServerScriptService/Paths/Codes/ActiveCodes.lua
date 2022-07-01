@@ -84,7 +84,7 @@ local Active = {
 		ReturnText = "Accessory Received!"
 	};
 
-	["150KCODE"] = {
+	["150KLIKES"] = {
 		RewardType = "Accessory";
 		AccessoryType = "Accessory";
 		AccessoryName = "Goal 150k";

@@ -32,7 +32,7 @@ local Unlocking = {}
 
 function TycoonProgressBar.Toggle(Toggle)
     if Toggle then
-        if not ProgressBar:GetAttribute("Disabled") and Paths.UI.Center.Settings.Holder:WaitForChild("Progress Bar").Toggle.IsToggled.Value then
+        if not ProgressBar:GetAttribute("Disabled") and Paths.UI.Center.Settings.Holder["Progress Bar"].Toggle.IsToggled.Value then
             ProgressBar.Visible = true
             TopBottomPadding.PaddingBottom = UDim.new(-0.15, 0)
             TopBottomPadding.PaddingTop = UDim.new(0.15, 0)
@@ -42,7 +42,6 @@ function TycoonProgressBar.Toggle(Toggle)
         TopBottomPadding.PaddingTop = UDim.new(0, 0)
         TopBottomPadding.PaddingBottom = UDim.new(0, 0)
     end
-
 end
 
 
@@ -202,11 +201,16 @@ else
     TycoonCompleted()
 end
 
-local AFKFishing = Paths.UI.Top.AFKFishing
-warn(AFKFishing.Visible)
-TycoonProgressBar.Toggle(not AFKFishing.Visible)
-AFKFishing:GetPropertyChangedSignal("Visible"):Connect(function()
+task.spawn(function()
+    repeat task.wait() until Modules.Settings
+
+    local AFKFishing = Paths.UI.Top.AFKFishing
     TycoonProgressBar.Toggle(not AFKFishing.Visible)
+    AFKFishing:GetPropertyChangedSignal("Visible"):Connect(function()
+        TycoonProgressBar.Toggle(not AFKFishing.Visible)
+    end)
+
 end)
+
 
 return TycoonProgressBar
