@@ -18,41 +18,41 @@ return {
         AlwaysVisible = true,
         LayoutOrder = 3,
     },
-    ["Music"] = {
-        Default = true,
-        AlwaysVisible = true,
-        LayoutOrder = 4,
-    },
     ["Auto Hatch"] = {
         Gamepass = 56637668,
         Default = false,
+        AlwaysVisible = true,
+        LayoutOrder = 4,
+    },
+    ["Music"] = {
+        Default = true,
         AlwaysVisible = true,
         LayoutOrder = 5,
     },
     ["Progress Bar"] = {
         Default = false,
         AlwaysVisible = true,
-        LayoutOrder = 5,
+        LayoutOrder = 6,
     },
     ["Night"] = {
         Default = false,
         AlwaysVisible = true,
-        LayoutOrder = 6,
+        LayoutOrder = 7,
     },
     ["Shadows"] = {
         Default = false,
         AlwaysVisible = true,
-        LayoutOrder = 7,
+        LayoutOrder = 8,
     },
     ["Auto Activate Boosts"] = {
         Default = true,
         AlwaysVisible = true,
-        LayoutOrder = 8,
+        LayoutOrder = 9,
     },
     ["Show Hearts"] = {
         Default = true,
         AlwaysVisible = false,
-        LayoutOrder = 9,
+        LayoutOrder = 10,
     },
 
 }

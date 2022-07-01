@@ -52,7 +52,7 @@ for i = 1, 5 do
             local Player = game.Players:FindFirstChild(Name)
             if Player then
                 local Tycoon = workspace.Tycoons[Player:GetAttribute("Tycoon")]
-                local PromptPart = Tycoon.Extras.Teleport:WaitForChild("PromptPart")
+                local PromptPart = Tycoon:WaitForChild("Extras"):WaitForChild("Teleport"):WaitForChild("PromptPart")
                 if not PromptPart:FindFirstChild("ProximityPrompt") then
                     local ReturnPrompt = Instance.new("ProximityPrompt")
                     ReturnPrompt.HoldDuration = 0.25
@@ -98,7 +98,7 @@ VisitPrompt.HoldDuration = 0.25
 VisitPrompt.MaxActivationDistance = 10
 VisitPrompt.RequiresLineOfSight = false
 VisitPrompt.ActionText = "Visit others"
-VisitPrompt.Parent = Paths.Tycoon:WaitForChild("Teleport"):WaitForChild("Prompt")
+VisitPrompt.Parent = Paths.Tycoon:WaitForChild("Teleport"):WaitForChild("PromptPart")
 
 VisitPrompt.Triggered:Connect(function()
     if not Frame.Visible then
@@ -110,26 +110,5 @@ Frame.Exit.MouseButton1Down:Connect(function()
     Modules.Buttons:UIOff(Frame, true)
 end)
 
-for _, Tycoon in ipairs(Workspace.Tycoons:GetChildren()) do
-    if Tycoon ~= Paths.Tycoon then
-        task.spawn(function()
-            local ReturnPrompt = Instance.new("ProximityPrompt")
-            ReturnPrompt.HoldDuration = 0.25
-            ReturnPrompt.MaxActivationDistance = 10
-            ReturnPrompt.RequiresLineOfSight = false
-            ReturnPrompt.ActionText = "Return home"
-            ReturnPrompt.Parent = Tycoon.Teleport:WaitForChild("Prompt", math.huge)
-
-            ReturnPrompt.Triggered:Connect(function()
-                Modules.UIAnimations.BlinkTransition(function()
-                    Remotes.TeleportInternal:InvokeServer(Paths.Player.Name)
-                end, true)
-            end)
-
-        end)
-
-    end
-
-end
 
 return TycoonTeleport
