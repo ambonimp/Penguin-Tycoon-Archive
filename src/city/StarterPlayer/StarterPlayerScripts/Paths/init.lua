@@ -61,7 +61,6 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("AllEmotes", Paths.Services.RStorage.Modules.AllEmotes)
 	ModuleLoader.Register("FishingConfig", Paths.Services.RStorage.Modules.FishingConfig)
 	ModuleLoader.Register("FuncLib", Paths.Services.RStorage.Modules.FuncLib)
-	ModuleLoader.Register("Settings", script.Settings)
 	ModuleLoader.Register("Emotes", script.Emotes)
 	ModuleLoader.Register("GroupReward", script.GroupReward)
 	ModuleLoader.Register("Verification", script.Verification)
@@ -119,6 +118,9 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("PetDetails", Paths.Services.RStorage.Modules.PetDetails)
 	ModuleLoader.Register("Pets", script.Pets)
 	ModuleLoader.Register("Zones", script.Zones)
+
+	ModuleLoader.Register("SettingDetails", Paths.Services.RStorage.Modules.SettingDetails)
+	ModuleLoader.Register("Settings", script.Settings)
 
 	-- Load Version
 	ModuleLoader.Load()

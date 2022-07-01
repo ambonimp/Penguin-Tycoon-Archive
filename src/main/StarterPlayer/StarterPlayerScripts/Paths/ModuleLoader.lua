@@ -28,6 +28,7 @@ local ToLoad = {}
 local function Close()
     Playing = false
     Animations.BlinkTransition(function()
+        Paths.Player.Character.PrimaryPart.Anchored = false
         LoadingScreen:Destroy()
     end)
 end
@@ -75,7 +76,7 @@ function Loader.Load()
             Tween.Completed:Connect(function()
                 if i == Count and Playing then
                     Playing = false
-                    task.wait(1)
+                    task.wait(0.5)
                     Close()
                 end
                 Tween = nil

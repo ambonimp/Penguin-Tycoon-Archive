@@ -79,7 +79,7 @@ end
 
 -- Spawns the character
 -- Player: Object, Type: String - no longer used, it was previously used to determine whether the player spawned as their 'Avatar' or a 'Penguin'
-function Character:Spawn(Player, Type)
+function Character:Spawn(Player, Type, Anchor)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	if not Data then Player:Kick("Data Error | CODE: CHARACTER") return end
 	
@@ -88,6 +88,7 @@ function Character:Spawn(Player, Type)
 	--elseif Type == "Penguin" then
 	
 	local Penguin = Dependency.Penguin:Clone()
+	Penguin.PrimaryPart.Anchored = Anchor or false
 	Penguin.Name = Player.Name
 	Player.Character = Penguin
 	Penguin.Parent = workspace

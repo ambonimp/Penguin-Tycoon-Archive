@@ -22,7 +22,7 @@ function Tycoon:InitializePlayer(Player)
 
 	task.spawn(function()
 		workspace:WaitForChild("Tycoons"):WaitForChild(ChosenTycoon):WaitForChild("StartIsland")
-		Modules.Character:Spawn(Player, "Penguin")
+		Modules.Character:Spawn(Player, "Penguin", true)
 	end)
   
 end

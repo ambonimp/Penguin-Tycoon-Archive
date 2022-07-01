@@ -48,11 +48,11 @@ for i = 1, 5 do
         Modules.UIAnimations.BlinkTransition(function()
             local Name = Lbl.Name
             Remotes.TeleportInternal:InvokeServer(Name)
---[[
+
             local Player = game.Players:FindFirstChild(Name)
             if Player then
                 local Tycoon = workspace.Tycoons[Player:GetAttribute("Tycoon")]
-                local PromptPart = Tycoon:WaitForChild("Extras"):WaitForChild("Teleport"):WaitForChild("PromptPart")
+                local PromptPart = Tycoon:WaitForChild("Teleport"):WaitForChild("PromptPart")
                 if not PromptPart:FindFirstChild("ProximityPrompt") then
                     local ReturnPrompt = Instance.new("ProximityPrompt")
                     ReturnPrompt.HoldDuration = 0.25
@@ -69,7 +69,7 @@ for i = 1, 5 do
 
                 end
 
-            end *]]
+            end
 
         end, true)
 
@@ -80,8 +80,8 @@ end
 for _, Player in ipairs(game.Players:GetPlayers()) do
     LoadTycoon(Player)
 end
-
 game.Players.PlayerAdded:Connect(LoadTycoon)
+
 game.Players.PlayerRemoving:Connect(function(Player)
     if Player ~= Paths.Player then
         local Lbl = List:FindFirstChild(Player.Name)

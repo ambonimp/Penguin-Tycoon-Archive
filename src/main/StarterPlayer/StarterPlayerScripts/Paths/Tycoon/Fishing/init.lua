@@ -171,6 +171,14 @@ function RetrieveFish()
 	local result = reelFish:InvokeServer(Fishing.LastUpdate.lastClickPos,nil,Fishing.LastUpdate.isAFKFishing)
 	-- Will only show notification and GUI animation for fish
 	if result and game.Players.LocalPlayer:GetAttribute("ThreeFish") then
+		for i, result in pairs (result) do
+			if result and (result.LootInfo.Type == "Fish" or result.LootInfo.Type == "Junk") then
+				totalEarned.Money += result.Worth
+			elseif result and result.LootInfo.Type == "Gem" then
+				totalEarned.Gems += result.LootInfo.Gems
+			end
+		end
+
 		uiAnimations.TripleFish(result)
 	else
 		if result and result.LootInfo.Type == "Fish" then
@@ -327,9 +335,9 @@ paths.UI.Top.AFKFishing.Exit.MouseButton1Down:Connect(function()
 end)
 
 localPlayer.Idled:Connect(function(time)
-	warn("NICE")
+	warn("IDLED", time)
 
-	local afk = 30
+	local afk = 2*60
 	if game.PlaceId == 7951464846 then
 		afk = 19*60
 	end

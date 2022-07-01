@@ -281,6 +281,16 @@ local function SetupNewStats(Player)
 		}
 	end
 
+	-- Settings
+	if not Data["Settings"] then
+		Data["Settings"] = {}
+	end
+
+	for Setting, Details in pairs(Modules.SettingDetails) do
+		Data["Settings"][Setting] = Details.Default
+	end
+
+
 end
 
 

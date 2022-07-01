@@ -55,6 +55,7 @@ function Paths.Initiliaze()
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Collisions = require(script.Collisions)
 	Paths.Modules.Zones = require(script.Zones)
+	Paths.Modules.SettingDetails = require(Paths.Services.RStorage.Modules.SettingDetails)
 
 	-- Chat Modules
 	Paths.Modules.Chat = require(script.Chat)
