@@ -19,7 +19,7 @@ function Tycoon:InitializePlayer(Player)
 
 	Modules.Ownership:ClaimTycoon(ChosenTycoon, Player)
 	Modules.Loading:LoadTycoon(Player)
-	
+
 	task.spawn(function()
 		workspace:WaitForChild("Tycoons"):WaitForChild(ChosenTycoon):WaitForChild("StartIsland")
 		Modules.Character:Spawn(Player, "Penguin")
