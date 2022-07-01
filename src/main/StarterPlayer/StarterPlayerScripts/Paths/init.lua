@@ -148,6 +148,10 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Settings", script.Settings)
 
 	-- Load Version
+	if not Paths.Player:GetAttribute("Loaded") then
+		Paths.Player:GetAttributeChangedSignal("Loaded"):Wait()
+	end
+
 	ModuleLoader.Load()
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
 

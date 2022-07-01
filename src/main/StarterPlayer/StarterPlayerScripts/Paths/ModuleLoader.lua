@@ -42,6 +42,25 @@ function Loader.Load()
     local Count = #ToLoad
     local Loaded = 0
 
+    -- Skipping
+    task.spawn(function()
+        if not Paths.Player.Character then
+            Paths.Player.CharacterAdded:Wait()
+        end
+        SkipBtn.Visible = true
+
+        SkipConn = SkipBtn.MouseButton1Down:Connect(function()
+            SkipConn:Disconnect()
+            SkipConn = nil
+
+            if Playing then
+                Close()
+            end
+
+        end)
+
+    end)
+
     for i, Loading in ipairs(ToLoad) do
         Paths.Modules[Loading[1]] = require(Loading[2])
         Loaded += 1
@@ -78,25 +97,6 @@ function Loader.Load()
     end)
 
 end
-
--- Skipping
-task.spawn(function()
-    if not Paths.Player.Character then
-        Paths.Player.CharacterAdded:Wait()
-    end
-    SkipBtn.Visible = true
-
-    SkipConn = SkipBtn.MouseButton1Down:Connect(function()
-        SkipConn:Disconnect()
-        SkipConn = nil
-
-        if Playing then
-            Close()
-        end
-
-    end)
-
-end)
 
 
 return Loader

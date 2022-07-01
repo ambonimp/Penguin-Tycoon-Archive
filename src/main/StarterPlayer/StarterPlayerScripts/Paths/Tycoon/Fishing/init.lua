@@ -1,6 +1,6 @@
 local paths = require(script.Parent.Parent)
 
-local remotes = paths.Remotes
+local Fishing = {}
 
 -- services
 local RunService = game:GetService("RunService")
@@ -14,8 +14,11 @@ local camera = workspace.CurrentCamera
 
 local objectHandler = require(script.ObjectHandler)
 local bobberHandler = require(script.BobberHandler)
-local animationService = require(script.AnimationService)
 local uiAnimations = require(script.UIAnimations)
+
+
+local AnimationService = require(script.AnimationService)
+AnimationService.ConnectFishingModule(Fishing)
 
 
 local funcLib = paths.Modules.FuncLib
@@ -27,7 +30,6 @@ local FishingRemote: RemoteEvent = remotes:WaitForChild("FishingRemote")
 
 local reelDebounce = false
 local MAX_THROWING_DISTANCE = 150 -- studs
-local Fishing = {}
 local totalEarned = {
 	Money = 0,
 	Gems = 0
@@ -75,7 +77,8 @@ function Fishing.CancelThrow(callEvent, died)
 	if callEvent then
 		FishingRemote:FireServer('Cancel')
 	end
-	animationService.Cancel(Fishing)
+
+	AnimationService.Cancel()
 end
 
 function Fishing.Throw()
@@ -102,10 +105,11 @@ function Fishing.Throw()
 		}
 		FishingRemote:FireServer('Create', data)
 		LastUpdate.RunningMain = false
+
 	else
 		LastUpdate.RunningMain = false
 		Fishing.CancelThrow(true)
-		animationService.Cancel(Fishing)
+		AnimationService.Cancel(Fishing)
 	end
 end
 
@@ -128,7 +132,7 @@ function Fishing.Main()
 	
 	local toolAttribute = localPlayer:GetAttribute("Tool")
 	if toolAttribute == "Fishing Rod" or toolAttribute == "Gold Fishing Rod" or toolAttribute == "Rainbow Fishing Rod" then	
-		animationService.ThrowAnimation(localPlayer, Fishing,LastUpdate.isAFKFishing)
+		AnimationService.PlayThrow(LastUpdate.isAFKFishing)
 	else
 		LastUpdate.RunningMain = false
 	end		
@@ -323,7 +327,9 @@ paths.UI.Top.AFKFishing.Exit.MouseButton1Down:Connect(function()
 end)
 
 localPlayer.Idled:Connect(function(time)
-	local afk = 2*60
+	warn("NICE")
+
+	local afk = 30
 	if game.PlaceId == 7951464846 then
 		afk = 19*60
 	end

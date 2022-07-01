@@ -1,62 +1,86 @@
--- animationTypes
-local idle, catch, throw = nil, nil, nil
-
-local replicatedStorage = game.ReplicatedStorage
-local animationPriority = Enum.AnimationPriority
-local animations = replicatedStorage:WaitForChild("Animations")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local AnimationPriority = Enum.AnimationPriority
+local Animations = ReplicatedStorage:WaitForChild("Animations")
 
 local AnimationService = {}
 
-function AnimationService.InitializeAnimation(localPlayer, animationType, priority)
-	local character = localPlayer.Character
-	local animator: Animator = character.Humanoid.Animator
-		
-	local animation = animator:LoadAnimation(animationType)
-	animation.Priority = priority
-	animation:play(.1,nil,1 * replicatedStorage.Remotes.GetBonus:InvokeServer("Fishing","Speed"))
-	return animation
+local Player = Players.LocalPlayer
+local Character
+
+local Throw, Idle, Catch
+
+local FishingModule
+
+local function LoadAnimation(Animation, Priority, Looped)
+	local Humanoid = Character:WaitForChild("Humanoid")
+	Humanoid:WaitForChild("Animator")
+
+	local Track = Humanoid:LoadAnimation(Animation)
+	Track.Priority = Priority
+	Track.Looped = Looped
+
+	return Track
 end
 
-function AnimationService.ThrowAnimation(localPlayer, fishingModule,wasAFK)
-	fishingModule.LastUpdate.FishingAnimationActive = true	
-	throw = AnimationService.InitializeAnimation(localPlayer, animations.Throw, animationPriority.Action)
-	throw.KeyframeReached:Connect(function()
-		if fishingModule.LastUpdate.isAFKFishing ~= wasAFK then
-			AnimationService.Cancel(fishingModule)
+local function LoadCharacter(Char)
+	if not Char then return end
+	Character = Char
+
+	Throw = LoadAnimation(Animations.Throw, AnimationPriority.Action)
+	Idle = LoadAnimation(Animations.Idle, AnimationPriority.Idle, true)
+	Catch = LoadAnimation(Animations.Catch, AnimationPriority.Action)
+
+end
+
+
+function AnimationService.ConnectFishingModule(FM)
+	FishingModule = FM
+end
+
+function AnimationService.PlayThrow(AFK)
+	FishingModule.LastUpdate.FishingAnimationActive = true
+
+	Throw:Play(0.1, nil , 1 * ReplicatedStorage.Remotes.GetBonus:InvokeServer("Fishing","Speed"))
+	local Conn
+	Conn = Throw.KeyframeReached:Connect(function()
+		Conn:Disconnect()
+		if FishingModule.LastUpdate.isAFKFishing ~= AFK then
+			AnimationService.Cancel()
 			return
 		end
-		AnimationService.IdleAnimation(localPlayer,fishingModule)
-		fishingModule.Throw()
+
+		-- AnimationService.PlayIdle()
+		task.wait(0.1)
+		FishingModule.Throw()
+
 	end)
+
 end
 
-function AnimationService.CatchAnimation(localPlayer)
-	AnimationService.Destroy(idle)
-	catch = AnimationService.InitializeAnimation(localPlayer, animations.Throw, animationPriority.Action)
+function AnimationService.PlayCatch()
+	Throw:Stop()
+	Catch:Play(0.1, nil , 1 * ReplicatedStorage.Remotes.GetBonus:InvokeServer("Fishing","Speed"))
 end
 
-function AnimationService.IdleAnimation(localPlayer,fishingModule)
-	AnimationService.Destroy(idle)
-
-	idle = AnimationService.InitializeAnimation(localPlayer, animations.Idle, animationPriority.Idle)
-	idle.Looped = true	
-end
-
-function AnimationService.Cancel(fishingModule)
-	fishingModule.LastUpdate.RunningMain = false
-	AnimationService.Destroy(idle)
-	AnimationService.Destroy(catch)
-	AnimationService.Destroy(throw)
-	
-	fishingModule.LastUpdate.FishingAnimationActive = false	
-end
-
-function AnimationService.Destroy(animation)
-	if animation then
-		animation:Stop()
-		animation:Destroy()
-		animation = nil
+function AnimationService.PlayIdle()
+	if not Idle.IsPlaying then
+		Idle:Play(0.1, nil , 1 * ReplicatedStorage.Remotes.GetBonus:InvokeServer("Fishing","Speed"))
 	end
 end
+
+function AnimationService.Cancel()
+	FishingModule.LastUpdate.RunningMain = false
+	
+	Idle:Stop()
+	Throw:Stop()
+	Catch:Stop()
+
+	FishingModule.LastUpdate.FishingAnimationActive = false
+end
+
+LoadCharacter(Player.Character)
+Player.CharacterAdded:Connect(LoadCharacter)
 
 return AnimationService

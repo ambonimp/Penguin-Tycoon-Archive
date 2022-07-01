@@ -481,9 +481,10 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Data["Boosts"]["Super Lucky Egg"] = {0,0}
 	end
 
-	Player:SetAttribute("Loaded",true)
 	-- Initialize Tycoon
 	Modules.Tycoon:InitializePlayer(Player)
+	Player:SetAttribute("Loaded",true)
+
 
 
 	-- Check Gamepasses
