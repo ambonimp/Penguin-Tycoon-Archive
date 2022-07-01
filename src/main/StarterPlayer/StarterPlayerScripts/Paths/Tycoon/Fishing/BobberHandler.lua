@@ -206,11 +206,11 @@ announcementRemote.OnClientEvent:Connect(function(player, item)
 			string.format("%s has just caught a %s (%." .. decimals .."f%%)!", player.Name, "random hat", fishChance), 
 			rarityColors[item.Type]
 		)
-	elseif item.Type == "Poofie" then
+	elseif item.Type == "Poofie" then 
 		decimals = 3
 		funcLib.SendMessage(
-			item.Name.." just hatched an ultra rarity "..item.RealName.."!", 
-			Color3.new(0.917647, 0.0862745, 0.027451)
+			item.Name.." just hatched a legendary "..item.RealName.."!", 
+			Color3.fromRGB(255, 217, 0)
 		)
 	end
 end)

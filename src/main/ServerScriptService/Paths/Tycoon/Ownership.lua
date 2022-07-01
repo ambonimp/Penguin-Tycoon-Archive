@@ -39,6 +39,11 @@ function Ownership:UnclaimTycoon(Tycoon)
 		workspace.Tycoons[Tycoon].Tycoon:ClearAllChildren()
 		workspace.Tycoons[Tycoon].Buttons:ClearAllChildren()
 		workspace.Tycoons[Tycoon].Vehicles:ClearAllChildren()
+		for i,v in (workspace.Tycoons[Tycoon]:GetChildren()) do
+			if v:GetAttribute("Unload") then
+				v:Destroy()
+			end
+		end
 	else
 		Ownership:CheckTycoons()
 	end
