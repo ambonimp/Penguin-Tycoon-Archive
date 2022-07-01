@@ -11,6 +11,8 @@ local PetsAssets = Assets.Pets
 local Chat = game:GetService("Chat")
 local rand = Random.new()
 
+local announcementRemote = Remotes:WaitForChild("Announcement")
+
 local FreePets = {
 	[1] = {"Leafy","Default",1.05,"Fishing","Income",1,1},
 	[2] = {"Elebuddy","Default",1.05,"Walk","Speed",3,13},
@@ -216,6 +218,16 @@ function Pets.BuyRobuxPet(Player,IslandId)
 		local ChanceTable = PetDetails.ChanceTables[IslandId]
 		local chosen = getRandomPet(ChanceTable.Pets,Data["Gamepasses"]["56844198"],Player)
 		local petId, petInfo = givePet(Player,chosen.Id,chosen,IslandId)
+		task.spawn(function()
+			if chosen.Percentage == 1 then
+				announcementRemote:FireAllClients({
+					Type = "Poofie",
+					Name = Player.Name,
+					RealName = petInfo[1],
+			
+				})
+			end
+		end)
 		Remotes.BuyEgg:InvokeClient(Player,"NewPet",Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],petId,petInfo)
 	end
 end
@@ -234,7 +246,16 @@ function BuyEgg(Player,Island,Type)
 				local newId,petInfo = givePet(Player,chosen.Id,chosen,PetDetails.EggNameToId[Island])
 				Modules.PlayerData.sessionData[Player.Name]["Gems"] -= Price
 				Player:SetAttribute("Gems", Modules.PlayerData.sessionData[Player.Name]["Gems"])
-
+				task.spawn(function()
+					if chosen.Percentage == 1 then
+						announcementRemote:FireAllClients({
+							Type = "Poofie",
+							Name = Player.Name,
+							RealName = petInfo[1],
+					
+						})
+					end
+				end)
 				warn(Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].Unlocked)
 
 				return true, Modules.PlayerData.sessionData[Player.Name]["Pets_Data"], petInfo, newId

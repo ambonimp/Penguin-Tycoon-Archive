@@ -81,7 +81,7 @@ Accessories.All = {
 	["Jellyfish Hat"] = {Rarity = "Free", IsForSale = false};
 	["Traffic Cone"] = {Rarity = "Free", IsForSale = false};
 	["Shark Hat"] = {Rarity = "Free", IsForSale = false};
-
+	["Goal 150k"] = {Rarity = "Free", IsForSale = false};
 	--- Unlockable Hats ---
 	-- Collectable
 	["Pirate Captain Hat"] = {Rarity = "Free", IsForSale = false};

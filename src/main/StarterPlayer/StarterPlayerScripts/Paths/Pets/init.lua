@@ -1234,7 +1234,7 @@ task.spawn(function()
 			if PetData.Unlocked[tostring(v.Id)] then
 				Template.BackgroundColor3 = PetDetails.RarityColors[Rarity]
 				Template.UIStroke.Color = PetDetails.RarityColors[Rarity]
-				Template.PetName.Text = Pet[1].. " x"..PetData.Unlocked[tostring(v.Id)]
+				Template.PetName.Text = Pet[1]--.. " x"..PetData.Unlocked[tostring(v.Id)]
 				Template.Icon.ImageColor3 = Color3.new(1,1,1)
 			else
 				Template.BackgroundColor3 = Color3.new()
@@ -1251,6 +1251,36 @@ task.spawn(function()
 		newIsland.LayoutOrder = i
 		newIsland.Parent = IndexPage.List
 	end
+
+	local oldPets = {
+		"Cat","Dog","Rabbit","Dinosaur","Unicorn","Panda"
+	}
+
+	for i,v in pairs (oldPets) do
+		local folder = Assets.Pets:FindFirstChild(v)
+		if folder then
+			local newIsland = IndexPage.List.Island:Clone()
+			for i,v in pairs (folder:GetChildren()) do
+				local Template = Dependency.ShopTemplate:Clone()
+				Template.Amount.Text = ""
+				Template.Icon.Visible = false
+				Template.ViewportFrame.Visible = true
+				local model = v:Clone()
+				Template.PetName.Text = v.Name
+				addPetToViewport(model,Template.ViewportFrame)
+				Template.Parent = newIsland.Pets.Pets
+			end
+
+			newIsland.TopText.Text = "Legacy Pets: "..v
+			newIsland.LayoutOrder = 1000+i
+			newIsland.Visible = true
+			newIsland.Name = "Legacy Pets: "..v
+			newIsland.Parent = IndexPage.List
+		end
+	end
+
+	IndexPage.List.CanvasSize = UDim2.new(0, 0, 0, IndexPage.List.UIGridLayout.AbsoluteContentSize.Y+(#IndexPage.List:GetChildren()*25))
+	IndexPage.List.UIGridLayout.CellSize = UDim2.new(1.15,-4,0.07,0)
 end)
 
 return Pets
