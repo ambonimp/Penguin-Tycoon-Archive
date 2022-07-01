@@ -84,6 +84,13 @@ local Active = {
 		ReturnText = "Accessory Received!"
 	};
 
+	["150KCODE"] = {
+		RewardType = "Accessory";
+		AccessoryType = "Accessory";
+		AccessoryName = "Goal 150k";
+		ReturnText = "Accessory Received!"
+	};
+
 	["TEAMWILCO"] = {
 		RewardType = "Outfit";
 		AccessoryType = "Outfit";
