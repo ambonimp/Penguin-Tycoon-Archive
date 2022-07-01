@@ -71,7 +71,7 @@ VisitPrompt.HoldDuration = 0.25
 VisitPrompt.MaxActivationDistance = 10
 VisitPrompt.RequiresLineOfSight = false
 VisitPrompt.ActionText = "Visit others"
-VisitPrompt.Parent = Paths.Tycoon:WaitForChild("Teleport")
+VisitPrompt.Parent = Paths.Tycoon:WaitForChild("Teleport"):WaitForChild("Prompt")
 
 VisitPrompt.Triggered:Connect(function()
     if not Frame.Visible then
@@ -91,7 +91,7 @@ for _, Tycoon in ipairs(Workspace.Tycoons:GetChildren()) do
             ReturnPrompt.MaxActivationDistance = 10
             ReturnPrompt.RequiresLineOfSight = false
             ReturnPrompt.ActionText = "Return home"
-            ReturnPrompt.Parent = Tycoon:WaitForChild("Teleport", math.huge)
+            ReturnPrompt.Parent = Tycoon.Teleport:WaitForChild("Prompt", math.huge)
 
             ReturnPrompt.Triggered:Connect(function()
                 Modules.UIAnimations.BlinkTransition(function()
