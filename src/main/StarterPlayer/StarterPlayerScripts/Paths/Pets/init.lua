@@ -39,6 +39,7 @@ local openingEgg = false
 local MergeSelected = {}
 local RealData = nil
 local PromptObj = nil
+local autoHatching = false
 
 local SMALL_GAMEPASS = 55102169
 local HUGE_GAMEPASS = 55102286
@@ -407,7 +408,6 @@ UI.Center.Merge.Merge.MouseButton1Down:Connect(function()
 		UI.Center.Merge.Merge3.Text.Text = "Lvl. 0"
 
 		UpdateStorage()
-
 	end
 	task.wait(.15)
 	clickdb = false
@@ -444,7 +444,7 @@ function updateIndex(data,islandId)
 				print(pet)
 				local Rarity = PetDetails.Rarities[pet.Percentage]
 				v.Icon.ImageColor3 = Color3.new(1,1,1)
-				v.PetName.Text = PetDetails.Pets[PetId][1].." x"..data.Unlocked[tostring(PetId)]
+				v.PetName.Text = PetDetails.Pets[PetId][1]--.." x"..data.Unlocked[tostring(PetId)]
 				v.BackgroundColor3 = PetDetails.RarityColors[Rarity]
 				v.UIStroke.Color = PetDetails.RarityColors[Rarity]
 			end
@@ -749,21 +749,47 @@ BuyEgg:GetPropertyChangedSignal("Visible"):Connect(function()
 	end
 end)
 
+function buyEgg(auto)
+	local Bought,Data,NewPetInfo,newId = Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Gems")
+	if Bought then
+		RealData = Data
+		local PetModel = PetsAssets:FindFirstChild(string.upper(NewPetInfo[1])):FindFirstChild(string.upper(NewPetInfo[2]))
+		local info = RealData.PetsOwned[tostring(newId)]
+		openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]],auto)
+		updateUI(Data,"add",newId)
+		updateIndex(Data, Data.PetsOwned[tostring(newId)][8])
+	end
+	return Bought
+end
+
 BuyEgg.Gems.MouseButton1Down:Connect(function()
 	BuyEgg.Bonus.Visible = false
 	if CurrentEggLoaded then
 		if getTotalPets() < LocalPlayer:GetAttribute("MaxPetsOwned") then
-			local Bought,Data,NewPetInfo,newId = Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Gems")
-			if Bought then
-				RealData = Data
-				local PetModel = PetsAssets:FindFirstChild(string.upper(NewPetInfo[1])):FindFirstChild(string.upper(NewPetInfo[2]))
-				local info = RealData.PetsOwned[tostring(newId)]
-				openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]])
-				updateUI(Data,"add",newId)
-				updateIndex(Data, Data.PetsOwned[tostring(newId)][8])
-
-			elseif not Bought and Data == "Gems" then
-
+			local auto = LocalPlayer:GetAttribute("IsAutoHatch")
+			local tbl = PetDetails.ChanceTables[PetDetails.EggNameToId[CurrentEggLoaded]]
+			local con = nil
+			if auto then
+				autoHatching = true
+				UI.Full.PetAdoption.Stop.Visible = true
+				con = UI.Full.PetAdoption.Stop.MouseButton1Down:Connect(function()
+					autoHatching = false
+					auto = false
+					UI.Full.PetAdoption.Stop.Visible = false
+					con:Disconnect()
+				end)
+				while LocalPlayer:GetAttribute("Gems") >= tbl.PriceGems and auto and getTotalPets() < LocalPlayer:GetAttribute("MaxPetsOwned") do
+					local bought = buyEgg(auto)
+					if not bought or not auto then break end
+					task.wait(1)
+				end
+				UI.Full.PetAdoption.Stop.Visible = false
+				autoHatching = false
+				if con then
+					con:Disconnect()
+				end
+			else
+				local bought = buyEgg(auto)
 			end
 		else
 			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
@@ -1067,21 +1093,45 @@ function openEgg(Image,Name,Rarity,Color)
 	PetAdoptionUI.PetName:TweenSizeAndPosition(UDim2.new(.3,0,.108,0),UDim2.new(.5,0,.125,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
 	PetAdoptionUI.Icon:TweenSize(UDim2.new(.35,0,.5,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
 	Dependency.Sounds.Ring:Play()
-	task.wait(1)
-	PetAdoptionUI.Continue.Visible = true
-	PetAdoptionUI.Continue.MouseButton1Down:wait()
-	PetAdoptionUI.Continue.Visible = false
-	PetAdoptionUI.Visible = false
-	PetAdoptionUI.ViewportFrame.Visible = true
-	UI.Left.Visible = true
-	UI.Top.Visible = true
-	UI.Right.Visible = true
-	UI.Bottom.Visible = true
-	BuyEgg.Visible = true
-	PetAdoptionUI.Rarity.Visible = false
-	PetAdoptionUI.PetName.Visible = false
-	PetAdoptionUI.Icon.Visible = false
-	openingEgg = false
+	local wasAuto = autoHatching
+	if not autoHatching then
+		task.wait(1)
+		PetAdoptionUI.Continue.Visible = true
+		PetAdoptionUI.Continue.MouseButton1Down:wait()
+		PetAdoptionUI.Continue.Visible = false
+		PetAdoptionUI.Visible = false
+		PetAdoptionUI.ViewportFrame.Visible = true
+		UI.Left.Visible = true
+		UI.Top.Visible = true
+		UI.Right.Visible = true
+		UI.Bottom.Visible = true
+		BuyEgg.Visible = true
+		PetAdoptionUI.Rarity.Visible = false
+		PetAdoptionUI.PetName.Visible = false
+		PetAdoptionUI.Icon.Visible = false
+		openingEgg = false
+	elseif autoHatching then
+		task.wait(.5)
+	end
+	task.spawn(function()
+		task.wait(2)
+		if wasAuto and not autoHatching and PetAdoptionUI.PetName.Visible == true then
+			PetAdoptionUI.Continue.Visible = true
+			PetAdoptionUI.Continue.MouseButton1Down:wait()
+			PetAdoptionUI.Continue.Visible = false
+			PetAdoptionUI.Visible = false
+			PetAdoptionUI.ViewportFrame.Visible = true
+			UI.Left.Visible = true
+			UI.Top.Visible = true
+			UI.Right.Visible = true
+			UI.Bottom.Visible = true
+			BuyEgg.Visible = true
+			PetAdoptionUI.Rarity.Visible = false
+			PetAdoptionUI.PetName.Visible = false
+			PetAdoptionUI.Icon.Visible = false
+			openingEgg = false
+		end
+	end)
 end
 
 PetsFrame.Pets.Pets.UIGridLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()

@@ -9,6 +9,7 @@ Paths.Initialized = false
 -- Initializes all services, modules and other commonly/globally used variables, so they can be accessed from all other server-sided modules.
 function Paths.Initiliaze()
 --- Initializing Services ---
+	print("Server Services")
 	Paths.Services.DataStoreService = game:GetService("DataStoreService")
 	Paths.Services.RStorage = game:GetService("ReplicatedStorage");
 	Paths.Services.SStorage = game:GetService("ServerStorage");
@@ -36,7 +37,11 @@ function Paths.Initiliaze()
 --- Initializing Remotes ---
 	Paths.Remotes = Paths.Services.RStorage.Remotes;
 	
-	
+	print("Pets Modules")
+	-- Pets
+	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
+	Paths.Modules.Pets = require(script.Pets)
+	print("Other Modules")
 --- Initializing Modules ---
 	-- Other Modules
 	Paths.Modules.Format = require(Paths.Services.RStorage.Modules.Format)
@@ -70,10 +75,10 @@ function Paths.Initiliaze()
 
 	-- Tool Modules
 	Paths.Modules.Tools = require(script.Tools)
-
+	
 	-- Penguins
 	Paths.Modules.Penguins = require(script.Penguins)
-	
+	print("Tycoon Modules")
 	-- Tycoon Modules
 	Paths.Modules.Tycoon = require(script.Tycoon)
 	Paths.Modules.Initiate = require(script.Tycoon.Initiate)
@@ -83,14 +88,14 @@ function Paths.Initiliaze()
 	Paths.Modules.Placement = require(script.Tycoon.Placement)
 	Paths.Modules.Buttons = require(script.Tycoon.Buttons)
 	Paths.Modules.Loading = require(script.Tycoon.Loading)
-	
+	print("Data Modules")
 	-- Data Modules
 	Paths.Modules.Save = require(script.PlayerData.Save)
 	Paths.Modules.PlayerData = require(script.PlayerData);
 	Paths.Modules.Income = require(script.PlayerData.Income)
 	Paths.Modules.Leaderboards = require(script.Leaderboards)
 
-	
+	print("Store Modules")
 	-- Store Modules
 	Paths.Modules.Store = require(script.Store)
 	Paths.Modules.Gamepasses = require(script.Store.Gamepasses)
@@ -103,9 +108,6 @@ function Paths.Initiliaze()
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
 	Paths.Modules.PoolSpawner = require(script.Tycoon.Fishing.PoolSpawner)
 
-	-- Pets
-	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
-	Paths.Modules.Pets = require(script.Pets)
 	
 	--- Other Variables ---
 	Paths.Initialized = true

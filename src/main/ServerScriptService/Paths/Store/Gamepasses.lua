@@ -32,6 +32,8 @@ local AllGamepasses = {
 	26269102, -- Vehicle spawner
 	55102286, -- pets +100
 	55102169, -- pets +300
+	56637668, -- auto hatch
+	56844198, -- lucky egg
 }
 
 local GamepassButtons = {
@@ -95,6 +97,8 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 			elseif gamepass == 55102169 then
 				Data["Pets_Data"].MaxOwned += 100
 				Player:SetAttribute("MaxPetsOwned",Data["Pets_Data"].MaxOwned)
+			elseif gamepass == 56637668 then
+				Data["Settings"]["Auto Hatch"] = true
 			end
 
 		end
@@ -134,10 +138,9 @@ function Gamepasses:CheckGamepasses(Player)
 
 		for i, Gamepass in pairs(AllGamepasses) do
 			if Gamepasses:PlayerOwnsPass(Player, Gamepass)  then
+				Gamepasses:AwardGamepass(Player.Name, Gamepass)
 				if Gamepass == 49090546 then
 					Player:SetAttribute("ThreeFish",true)
-				elseif not AppliedPasses[tostring(Gamepass)]  then
-					Gamepasses:AwardGamepass(Player.Name, Gamepass)
 				elseif GamepassButtons[Gamepass] and not Data["Tycoon"][GamepassButtons[tonumber(Gamepass)]] then
 						local ButtonName = GamepassButtons[Gamepass]
 						Modules.Purchasing:ItemPurchased(Player, ButtonName, true)

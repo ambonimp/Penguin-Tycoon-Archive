@@ -23,6 +23,12 @@ return {
         AlwaysVisible = true,
         LayoutOrder = 4,
     },
+    ["Auto Hatch"] = {
+        Gamepass = 56637668,
+        Default = false,
+        AlwaysVisible = true,
+        LayoutOrder = 5,
+    },
     ["Progress Bar"] = {
         Default = false,
         AlwaysVisible = true,

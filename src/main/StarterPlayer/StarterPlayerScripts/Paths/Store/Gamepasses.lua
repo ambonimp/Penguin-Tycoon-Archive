@@ -33,7 +33,9 @@ local AllGamepasses = {
 	{52724179, "Double money from ores mined!"}, -- Gold Pickaxe
 	{54396254, "Spawn your vehicles from anywhere"}, -- Vehicle spawner
 	{55102169, "Add 100 pet storage space!"},
-	{55102286, "Add 300 pet storage space!"}
+	{55102286, "Add 300 pet storage space!"},
+	{56637668, "Auto Hatch eggs!"},
+	{56844198, "Increases your egg luck by 20%"}
 }
 
 Popups.load(AllGamepasses)
