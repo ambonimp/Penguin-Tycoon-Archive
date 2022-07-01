@@ -52,13 +52,15 @@ function AnimationService.PlayThrow(AFK)
 		end
 
 		-- AnimationService.PlayIdle()
+		task.wait(0.1)
 		FishingModule.Throw()
+
 	end)
 
 end
 
 function AnimationService.PlayCatch()
-	Idle:Stop()
+	Throw:Stop()
 	Catch:Play(0.1, nil , 1 * ReplicatedStorage.Remotes.GetBonus:InvokeServer("Fishing","Speed"))
 end
 

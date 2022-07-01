@@ -78,7 +78,7 @@ function Fishing.CancelThrow(callEvent, died)
 		FishingRemote:FireServer('Cancel')
 	end
 
-	AnimationService.Cancel(Fishing)
+	AnimationService.Cancel()
 end
 
 function Fishing.Throw()
@@ -327,6 +327,8 @@ paths.UI.Top.AFKFishing.Exit.MouseButton1Down:Connect(function()
 end)
 
 localPlayer.Idled:Connect(function(time)
+	warn("NICE")
+
 	local afk = 30
 	if game.PlaceId == 7951464846 then
 		afk = 19*60
