@@ -24,7 +24,6 @@ local PopupSession
 
 
 
-local Buttons = Services.RStorage.Template:WaitForChild("Buttons")
 
 local CurrentIsland
 local Unlocking = {}
@@ -47,7 +46,7 @@ function TycoonProgressBar.Toggle(Toggle)
 end
 
 
-local function GetIslandIndex(Reference)
+--[[ local function GetIslandIndex(Reference)
     local Island = Reference:GetAttribute("Island")
     if Island == "Island1" then
         return 1
@@ -60,6 +59,7 @@ local function GetIslandIndex(Reference)
         end
     end
 end
+ *]]
 
 local function GetNextIslandIndex()
    return CurrentIsland ~= #Modules.ProgressionDetails and CurrentIsland + 1 or nil
@@ -74,7 +74,7 @@ local function GetIncompleteIslandIndex()
 end
 
 local function IsUnlockable(Index, Button)
-    return Button:GetAttribute("CurrencyType") == "Money" and Button.Name ~= Modules.ProgressionDetails[Index].Object
+    return Remotes.GetTemplateButtonAttribute:InvokeServer(Button, "CurrencyType") == "Money" and Button ~= Modules.ProgressionDetails[Index].Object
 end
 
 local function UpdateBar(Tween)
@@ -164,23 +164,7 @@ for i = 1, #Modules.ProgressionDetails do
     }
 end
 -- Unlocked
-local Tycoon = Remotes.GetStat:InvokeServer("Tycoon")
-
--- Unlockables
-for _, Button in pairs(Buttons:GetChildren()) do
-    local Index = GetIslandIndex(Button)
-    if IsUnlockable(Index, Button) then
-        table.insert(Unlocking[Index].Unlockables, Button)
-        if Tycoon[Button.Name] then
-            Unlocking[Index].Unlocked += 1
-        end
-    end
-end
-
-for _, v in ipairs(Unlocking) do
-    v.Unlockables = #v.Unlockables
-end
-
+Unlocking = Remotes.GetTycoonInfo:InvokeServer()
 
 -- Get current island, aka first non completed
 CurrentIsland = GetIncompleteIslandIndex()
@@ -188,15 +172,12 @@ if CurrentIsland then
     LoadIsland(CurrentIsland)
 
     -- Load bar for future islands
-    Remotes.ButtonPurchased.OnClientEvent:Connect(function(Button)
-        local TemplateButton = Buttons[Button]
-
-        local Index = GetIslandIndex(TemplateButton)
+    Remotes.ButtonPurchased.OnClientEvent:Connect(function(Index, Button)
         if Index ~= CurrentIsland then
             LoadIsland(Index)
         end
 
-        if IsUnlockable(Index, TemplateButton) then
+        if IsUnlockable(Index, Button) then
             local Unlocked, Unlockables = Progress()
 
             --Get half reward
@@ -204,7 +185,7 @@ if CurrentIsland then
                 local Id = os.time()
                 PopupSession = Id
 
-                Remotes.IslandProgressRewardCollected:FireServer(Index, TemplateButton:GetAttribute("Island"))
+                Remotes.IslandProgressRewardCollected:FireServer(Index, Remotes.GetTemplateButtonAttribute:InvokeServer(Button, "Island"))
                 Popup.Visible = true
                 task.wait(4)
                 if PopupSession == Id then

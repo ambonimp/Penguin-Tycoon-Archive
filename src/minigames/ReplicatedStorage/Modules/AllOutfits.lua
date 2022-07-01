@@ -49,6 +49,7 @@ end
 Outfits.All = {	
 	--- Default Outfit(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
+	--Rewards
 	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false};
 	["Royale Robe"] = {Rarity = "Free", IsForSale = false};
 	["Lobster"] = {Rarity = "Free", IsForSale = false};
@@ -69,7 +70,7 @@ Outfits.All = {
 	["Caveman"] = {Rarity = "Epic", IsForSale = true};
 	["Sailor"] = {Rarity = "Epic", IsForSale = true};
 	["Lumberjack"] = {Rarity = "Epic", IsForSale = true};
-
+	["Tuxedo"] = {Rarity = "Epic",IsForSale = true};
 	-- Legendaries
 	--["Red Coat"] = {Rarity = "Legendary", IsForSale = true};
 	["Firefighter"] = {Rarity = "Legendary", IsForSale = true};
@@ -83,6 +84,10 @@ Outfits.All = {
 	--- Event Outfits ---
 	["Red Jersey"] = {Rarity = "Event", IsForSale = false};
 	["Blue Jersey"] = {Rarity = "Event", IsForSale = false};
+
+	-- Mining Outfits
+	["Miner"] = {Rarity = "Free", IsForSale = false};
+
 }
 
 return Outfits

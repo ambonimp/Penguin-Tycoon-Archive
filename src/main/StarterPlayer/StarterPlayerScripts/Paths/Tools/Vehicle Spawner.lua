@@ -17,8 +17,6 @@ local Menu = UI.Center["VehicleSpawner"]
 local PlacingScreen = UI.Center["VehiclePlacing"]
 
 
-local TycoonTemplate = Services.RStorage.Template
-
 local Mouse = Paths.Player:GetMouse()
 local Camera = workspace.CurrentCamera
 
@@ -138,8 +136,8 @@ for Id, Details in pairs(Modules.VehicleDetails) do
     local Type = Details.Type
     local Source = Details.Source
 
-    local Island = if Source == "Button" then TycoonTemplate.Buttons[Id]:GetAttribute("Island") else Details.Island
-    local DisplayName = TycoonTemplate.Upgrades[Island][Id]:GetAttribute("Vehicle")
+    local Island = if Source == "Button" then Remotes.GetTemplateButtonAttribute:InvokeServer(Id, "Island") else Details.Island
+    local DisplayName = Remotes.GetTemplateUpgradeAttribute:InvokeServer(Island, Id, "Vehicle")
     local Model = Services.RStorage.Assets.Vehicles[DisplayName]
     local Unlocked = Paths.Tycoon.Tycoon:FindFirstChild(Id)
 

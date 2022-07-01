@@ -24,12 +24,17 @@ Data["Boosts"] = { --[1]owned, [2]time left in current boost
 	["x3 Money"] = {0,0}, --x3 Money
 }
 ]]
-function Boosts.givePlayerBoost(Player,Boost,Amount)
+function Boosts.givePlayerBoost(Player,Boost,Amount,from)
 	local data = Modules.PlayerData.sessionData[Player.Name]
 	if data then
 		local boosts = data["Boosts"]
 		boosts[Boost][1] += Amount
 		Remotes.BoostHandler:FireClient(Player,Boost,"Add",data)
+		if from == "REWARD" then
+			task.spawn(function()
+				Boosts.startPlayerBoost(Player,Boost,false)
+			end)
+		end
 	end
 end
 

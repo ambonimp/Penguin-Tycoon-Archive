@@ -278,7 +278,7 @@ task.spawn(function()
         end
     else
         local Conn
-        Conn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(Button)
+        Conn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(_, Button)
             if Button == "Gold Pickaxe#1" then
                 Conn:Disconnect()
                 GoldPickaxe.Model:Destroy()

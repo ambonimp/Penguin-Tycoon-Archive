@@ -1106,12 +1106,69 @@ function Remotes.BuyEgg.OnClientInvoke(Type,Data,PetId,PetInfo)
 	end
 end
 
+do -- Free Pet
+	local FreePet = Paths.UI.Center.FreePet
+	local Selected = {1,FreePet.Pets:WaitForChild("1")}
+	
+	local function updateSelected(button)
+		Selected = {tonumber(button.Name),button}
+		FreePet.Selected.Text = "Selected: "..button.PetName.Text
+		button.BackgroundColor3 = Color3.fromRGB(109, 211, 0)
+	end
+	
+	FreePet.Confirm.MouseButton1Down:Connect(function()
+		local Did,Data,Id,Info = Remotes.ClaimPet:InvokeServer(Selected[1])
+		
+		if Did and Data and Id then
+			RealData = Data
+			updateUI(Data,"add",Id)
+			updateUI(Data,"update",Id)
+		end
+		UI.Right.Buttons.Backpack.Notif.Visible = true
+		Paths.Modules.Buttons:UIOff(Paths.UI.Center.FreePet,true)
+		UI.Left.Visible = true
+		UI.Top.Visible = true
+		UI.Right.Visible = true
+		UI.Bottom.Visible = true
+	end)
+	
+	for i,button in pairs (FreePet.Pets:GetChildren()) do
+		if button:IsA("ImageButton") then
+			button.MouseButton1Down:Connect(function()
+				Selected[2].BackgroundColor3 = Color3.fromRGB(211,211,211)
+				updateSelected(button)
+			end)
+		end
+	end
+end
+
 task.spawn(function()
+	local TycoonData = Remotes.GetStat:InvokeServer("Tycoon")
 	local PetData = Remotes.PetsRemote:InvokeServer(LocalPlayer)
 	RealData = PetData
 	loadUI(PetData)
 	PetsFrame.Pets.Pets.CanvasSize = UDim2.new(0, 0, 0, PetsFrame.Pets.Pets.UIGridLayout.AbsoluteContentSize.Y+(#PetsFrame.Pets.Pets:GetChildren()*2))
+	
+	if Paths.Tycoon then
+		if RealData.ClaimedFree == nil and TycoonData["Pets#1"] then
+			UI.Left.Visible = false
+			UI.Top.Visible = false
+			UI.Right.Visible = false
+			UI.Bottom.Visible = false
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.FreePet,true)
+		end
+		Paths.Tycoon.Tycoon.ChildAdded:Connect(function(c)
+			if c.Name == "Pets#1" then
+				UI.Left.Visible = false
+				UI.Top.Visible = false
+				UI.Right.Visible = false
+				UI.Bottom.Visible = false
+				Paths.Modules.Buttons:UIOn(Paths.UI.Center.FreePet,true)
+			end
+		end)
+	end
 
+	
 	for i,IslandDetails in pairs (PetDetails.ChanceTables) do
 		local newIsland = IndexPage.List.Island:Clone()
 		newIsland.TopText.Text = IslandDetails.Name

@@ -7,18 +7,18 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 local Rewards = {
-	[1] = {"Gems",5},
-	[2] = {"Boost","Super Fishing Luck",1},
-	[3] = {"Income",10},
-	[4] = {"Gems",15},
-	[5] = {"Boost","Super Fishing Luck",2},
-	[6] = {"Gems",20},
-	[7] = {"Boost","Ultra Fishing Luck",1},
+	[1] = {"Gems",3},
+	[2] = {"Income",10},-- {"Boost","Super Fishing Luck",1},
+	[3] = {"Income",20},
+	[4] = {"Gems",5},
+	[5] = {"Income",60},--{"Boost","Super Fishing Luck",2},
+	[6] = {"Gems",10},
+	[7] = {"Boost","Super Fishing Luck",1},
 	[8] = {"Income",100},
-	[9] = {"Boost","x3 Money",1},
-	[10] = {"Accessory","Traffic Cone",50},
-	[11] = {"Boost","Fishing Luck Bundle",1},
-	[12] = {"Outfit","Lobster",100},
+	[9] = {"Boost","Ultra Fishing Luck",1},--{"Boost","x3 Money",1},
+	[10] = {"Accessory","Traffic Cone",20},
+	[11] = {"Boost","Ultra Fishing Luck",2},
+	[12] = {"Outfit","Lobster",50},
 }
 
 local RewardTimes = {

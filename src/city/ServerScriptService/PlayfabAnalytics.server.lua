@@ -1,6 +1,7 @@
 local ServerStorage = game:GetService("ServerStorage")
 local EventHandler = ServerStorage:FindFirstChild("EventHandler")
 local AnalyticsService = game:GetService("AnalyticsService")
+local SocialService = game:GetService("SocialService")
 
 -- Constants
 local CITY_PLACE_ID = 7967681044
@@ -15,4 +16,10 @@ EventHandler.Event:Connect(function(event, player, data)
 	pcall(function()
 		AnalyticsService:FireCustomEvent(player, event, data)
 	end)
+end)
+
+SocialService.GameInvitePromptClosed:Connect(function(player, recipientIds)
+	EventHandler:Fire("inviteFriends", player, {
+		placeId = game.PlaceId
+	})
 end)
