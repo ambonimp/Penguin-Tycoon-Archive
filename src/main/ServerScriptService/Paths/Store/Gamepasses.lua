@@ -121,10 +121,6 @@ function Gamepasses:AwardGamepass(playerName, gamepass)
 				Player:SetAttribute("ThreeFish",true)
 			end
 			Data["Gamepasses"][tostring(gamepass)] = true
-
-			if gamepass == 49090546 then
-                Player:SetAttribute("ThreeFish",true)
-            end
 			-- Apply the gamepass' function
 			Gamepasses:ApplyGamepass(playerName, gamepass)
 		end
