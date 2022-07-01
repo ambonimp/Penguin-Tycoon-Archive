@@ -74,7 +74,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Save = require(script.PlayerData.Save)
 	Paths.Modules.PlayerData = require(script.PlayerData);
 	Paths.Modules.Income = require(script.PlayerData.Income)
-	Paths.Modules.Boosts = require(script.PlayerData.Boosts)
+	--Paths.Modules.Boosts = require(script.PlayerData.Boosts)
 	
 
 	
