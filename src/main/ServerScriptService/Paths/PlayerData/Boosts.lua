@@ -10,12 +10,16 @@ local Remotes = Paths.Remotes
 local BoostTimes = {
 	["Super Fishing Luck"] = 60*15,
 	["Ultra Fishing Luck"] = 60*15,
-	["x3 Money"] = 60*15
+	["x3 Money"] = 60*15,
+	["Ultra Lucky Egg"] = 60*15,
+	["Super Lucky Egg"] = 60*15
 }
 local attName = {
 	["Super Fishing Luck"] = "FishingSuperLuckBoost",
 	["Ultra Fishing Luck"] = "FishingUltraLuckBoost",
-	["x3 Money"] = "x3MoneyBoost"
+	["x3 Money"] = "x3MoneyBoost",
+	["Ultra Lucky Egg"] = "UltraEggLuck",
+	["Super Lucky Egg"] = "SuperEggLuck"
 }
 --[[
 Data["Boosts"] = { --[1]owned, [2]time left in current boost

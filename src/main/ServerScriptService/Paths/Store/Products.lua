@@ -14,7 +14,11 @@ local Remotes = Paths.Remotes
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
 
 --- Product Variables ---
-local BoostsProducts = {[1266980995] = "x3 Money",[1266981097] = "Super Fishing Luck",[1266981160] = "Ultra Fishing Luck",[1266981422] = "Bundle"}
+local BoostsProducts = {[1266980995] = "x3 Money",[1266981097] = "Super Fishing Luck",
+	[1266981160] = "Ultra Fishing Luck",[1266981422] = "Bundle",
+	[1279118658] = "Super Lucky Egg",[1279118733] = "Ultra Lucky Egg",
+}
+
 local MoneyProducts = {[1224873708] = true, [1224873843] = true, [1224873847] = true, [1224873846] = true, [1224873844] = true, [1224873842] = true}
 local GemProducts = {[1266975588] = 100, [1266975627] = 275, [1266975643] = 725, [1266975658] = 1500, [1266975679] = 2400, [1266975715] = 4250}
 local AccessoryProducts = {[1231222251] = true, [1231222252] = true, [1231222253] = true}

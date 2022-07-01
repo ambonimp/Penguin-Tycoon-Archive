@@ -109,10 +109,19 @@ function Merge(Player,ID1,ID2)
 	end
 end
 
-function getRandomPet(chanceTable)
+function getRandomPet(chanceTable,ownsPass,Player)
 	local randomNumber = rand:NextNumber(0, 1)
 	local previousValue
-
+	if randomNumber*1.2 <= 1 and ownsPass then
+		local prev = randomNumber
+		randomNumber *= 1.2
+	end
+	if randomNumber*1.2 <= 1 and Player:GetAttribute("UltraEggLuck") then
+		randomNumber = randomNumber*1.2
+	end
+	if randomNumber*1.1 <= 1 and Player:GetAttribute("SuperEggLuck") then
+		randomNumber = randomNumber*1.1
+	end
 	for i, entry in ipairs(chanceTable) do
 		if i == 1 then
 			previousValue = 0
@@ -202,10 +211,13 @@ function givePet(Player, PetId, Chosen, IslandId)
 end
 
 function Pets.BuyRobuxPet(Player,IslandId)
-	local ChanceTable = PetDetails.ChanceTables[IslandId]
-	local chosen = getRandomPet(ChanceTable.Pets)
-	local petId, petInfo = givePet(Player,chosen.Id,chosen,IslandId)
-	Remotes.BuyEgg:InvokeClient(Player,"NewPet",Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],petId,petInfo)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+	if Data then
+		local ChanceTable = PetDetails.ChanceTables[IslandId]
+		local chosen = getRandomPet(ChanceTable.Pets,Data["Gamepasses"]["56844198"],Player)
+		local petId, petInfo = givePet(Player,chosen.Id,chosen,IslandId)
+		Remotes.BuyEgg:InvokeClient(Player,"NewPet",Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],petId,petInfo)
+	end
 end
 
 function BuyEgg(Player,Island,Type)
@@ -218,7 +230,7 @@ function BuyEgg(Player,Island,Type)
 			local Price = ChanceTable.PriceGems
 
 			if Modules.PlayerData.sessionData[Player.Name]["Gems"] >= Price then
-				local chosen = getRandomPet(ChanceTable.Pets)
+				local chosen = getRandomPet(ChanceTable.Pets,Modules.PlayerData.sessionData[Player.Name]["Gamepasses"]["56844198"],Player)
 				local newId,petInfo = givePet(Player,chosen.Id,chosen,PetDetails.EggNameToId[Island])
 				Modules.PlayerData.sessionData[Player.Name]["Gems"] -= Price
 				Player:SetAttribute("Gems", Modules.PlayerData.sessionData[Player.Name]["Gems"])

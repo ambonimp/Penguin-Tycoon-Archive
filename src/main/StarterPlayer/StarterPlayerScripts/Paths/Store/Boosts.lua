@@ -14,12 +14,15 @@ local Store = UI.Center.Store
 
 
 --- Money Variables ---
-local BoostsProducts = {1266980995,1266981097,1266981160,1266981422}
+local BoostsProducts = {1266980995,1266981097,1266981160,1266981422,1279118658,1279118733}
 local NameToID = {
 	["x3 Money"] = 1266980995,
 	["Super Fishing Luck"] = 1266981097,
 	["Ultra Fishing Luck"] = 1266981160,
+	["Super Lucky Egg"] = 1279118658,
+	["Ultra Lucky Egg"] = 1279118733,
 }
+
 local OwnedBoosts = Remotes.GetStat:InvokeServer("Boosts")
 --- Functions ---
 -- Load Products
@@ -84,9 +87,7 @@ function Boosts:StartBoost(Boost)
 		Template.TimeLeft.Text = "15:00"
 		Template:SetAttribute("Enabled",false)
 		cornerUI.Visible = false
-
 	end
-
 end
 
 
@@ -114,9 +115,7 @@ Remotes.BoostHandler.OnClientEvent:Connect(function(Boost,Action,Data, Id)
 		if AutoActivate and Owned > 0 then
 			Remotes.BoostHandler:FireServer("Start", Boost)
 		end
-
 	end
-
 end)
 
 

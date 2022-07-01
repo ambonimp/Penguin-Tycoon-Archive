@@ -148,6 +148,7 @@ local function Defaults(Player)
 
 	Returning["Redeemed Codes"] = {}
 
+
 	-- Settings
 	Returning["Settings"] = {}
 	for Setting, Details in pairs(Modules.SettingDetails) do
@@ -164,6 +165,8 @@ local function Defaults(Player)
 		["Super Fishing Luck"] = {0,0},
 		["Ultra Fishing Luck"] = {0,0},
 		["x3 Money"] = {0,0},
+		["Ultra Lucky Egg"] = {0,0},
+		["Super Lucky Egg"] = {0,0},
 	}
 
 	-- Vehicles
@@ -466,6 +469,17 @@ game.Players.PlayerAdded:Connect(function(Player)
 	Player:GetAttributeChangedSignal("Income"):Connect(function()
 		IncomeStat.Value = Data["Income"]
 	end)
+	if Data["Settings"]["Auto Hatch"] == nil then
+		Data["Settings"]["Auto Hatch"] = false
+	end
+	Player:SetAttribute("IsAutoHatch",Data["Settings"]["Auto Hatch"])
+
+	if Data["Boosts"]["Ultra Lucky Egg"] == nil then
+		Data["Boosts"]["Ultra Lucky Egg"] = {0,0}
+	end
+	if Data["Boosts"]["Super Lucky Egg"] == nil then
+		Data["Boosts"]["Super Lucky Egg"] = {0,0}
+	end
 
 	Player:SetAttribute("Loaded",true)
 	-- Initialize Tycoon

@@ -75,14 +75,19 @@ function Chat:ApplyChatTag(player)
 			["Boost 2"] = "Super Fishing Luck",
 			["Boost 3"] = "Ultra Fishing Luck",
 		}
-		player.Chatted:Connect(function(msg)
-			if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 then
+		
+		if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 or game.PlaceId == 9549503548 then
+			player.Chatted:Connect(function(msg)
 				if msg == "make super" then
 					for i,v in pairs (workspace.Tycoons:FindFirstChild(player:GetAttribute("Tycoon")).Tycoon:GetChildren()) do
 						if v:GetAttribute("Type") == "Penguin" then
 							Paths.Modules.Products:PenguinUpgradePurchased(player,true,v)
 						end
 					end
+				elseif msg == "autohatch" then
+					player:SetAttribute("IsAutoHatch",true)
+				elseif msg == "luckyegg" then
+					Paths.Modules.PlayerData.sessionData[player.Name]["Gamepasses"]["56844198"] = true
 				elseif boosts[msg] then
 					Modules.Boosts.givePlayerBoost(player,boosts[msg],1)
 				elseif msg == "Boost 4" then
@@ -107,8 +112,8 @@ function Chat:ApplyChatTag(player)
 						Paths.Modules.Income:AddMoney(player,PlayerIncome*1000,"-1")
 					end
 				end
-			end
-		end)
+			end)
+		end
 	end)()
 end
 
