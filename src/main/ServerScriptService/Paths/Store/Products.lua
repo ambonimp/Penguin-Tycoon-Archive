@@ -39,7 +39,7 @@ local TycoonProducts = {
 	[1269812728] = "Car#1",
 	[1274238094] = "Big Skull#1",
 	[1276711866] = "Helicopter#2",
-	[1279181120] = "Pool Table#1"
+	[1279181120] = "Pool Table#1" 
 }
 
 local EggProducts = {
