@@ -90,10 +90,12 @@ function Chat:ApplyChatTag(player)
 					Paths.Modules.PlayerData.sessionData[player.Name]["Gamepasses"]["56844198"] = true
 				elseif boosts[msg] then
 					Modules.Boosts.givePlayerBoost(player,boosts[msg],1)
-				elseif msg == "Boost 4" then
-					Modules.Boosts.givePlayerBoost(player,"x3 Money",4)
+				elseif msg == "Boosts" then
+					Modules.Boosts.givePlayerBoost(player,"x3 Money",3)
 					Modules.Boosts.givePlayerBoost(player,"Super Fishing Luck",3)
-					Modules.Boosts.givePlayerBoost(player,"Ultra Fishing Luck",3)				
+					Modules.Boosts.givePlayerBoost(player,"Ultra Fishing Luck",3)		
+					Modules.Boosts.givePlayerBoost(player,"Ultra Lucky Egg",3)
+					Modules.Boosts.givePlayerBoost(player,"Super Lucky Egg",3)			
 				elseif msg == "threefish" then
 					player:SetAttribute("ThreeFish",true)
 				elseif msg == "reset" then
