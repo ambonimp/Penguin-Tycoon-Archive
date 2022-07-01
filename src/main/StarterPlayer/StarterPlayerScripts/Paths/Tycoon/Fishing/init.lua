@@ -315,8 +315,10 @@ paths.UI.Top.AFKFishing.Exit.MouseButton1Down:Connect(function()
 		localPlayer.Character.Humanoid.Sit = false
 		localPlayer.Character.Humanoid.JumpPower = 60
 		paths.UI.Top.AFKFishing.Visible = false
+
 		Fishing.CancelThrow(true)
 		remotes.AFKFishing:FireServer(false)
+
 	end
 end)
 

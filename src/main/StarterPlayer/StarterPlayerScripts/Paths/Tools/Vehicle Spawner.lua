@@ -240,7 +240,7 @@ for Id, Details in pairs(Modules.VehicleDetails) do
                     local OccludingGui = Paths.Player.PlayerGui:GetGuiObjectsAtPosition(X, Y)
                     for _, Object in ipairs(OccludingGui) do
                         if Object.Visible and (Object.BackgroundTransparency ~= 1 or (if Object:IsA("ImageLabel") then Object.ImageTransparency ~= 1 else false)) then
-                            warn(Object, Object.Visible, Object.BackgroundTransparency, (if Object:IsA("ImageLabel") then Object.ImageTransparency else false))
+                            -- warn(Object, Object.Visible, Object.BackgroundTransparency, (if Object:IsA("ImageLabel") then Object.ImageTransparency else false))
                             return
                         end
                     end
