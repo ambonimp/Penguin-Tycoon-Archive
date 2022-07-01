@@ -250,7 +250,7 @@ function Customization:ExitUI()
 	for Penguin, v in pairs(Modules.Penguins.Penguins) do
 		if Penguin:WaitForChild("Info", 0.5) then
 			if Penguin:FindFirstChild("Info") then
-				Penguin.Info.ProximityPrompt.Enabled = false
+				Penguin.Info.ProximityPrompt.Enabled = true
 			end
 		end
 	end
