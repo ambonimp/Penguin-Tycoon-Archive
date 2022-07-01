@@ -26,7 +26,7 @@ local OwnedBoosts = Remotes.GetStat:InvokeServer("Boosts")
 for i, Product in pairs(BoostsProducts) do
 	local s,m = pcall(function()
 		local Info = Services.MPService:GetProductInfo(Product, Enum.InfoType.Product)
-		
+
 		local Template = Dependency.BoostTemplate:Clone()
 		Template.Icon.Image = "rbxassetid://"..Info["IconImageAssetId"]
 		Template.Purchase.TheText.Text = Modules.Format:FormatComma(Info["PriceInRobux"])
@@ -41,18 +41,18 @@ for i, Product in pairs(BoostsProducts) do
 		end
 		Template.LayoutOrder = i
 		Template.Name = Product
-		
+
 		Template.Purchase.MouseButton1Down:Connect(function()
 			Services.MPService:PromptProductPurchase(Paths.Player, Product)
 		end)
-		
+
 		if Template:FindFirstChild("Use") then
 			Template.Use.TheText.Text = "Use ("..OwnedBoosts[Info["Name"]][1]..")"
 			Template.Use.MouseButton1Down:Connect(function()
 				Remotes.BoostHandler:FireServer("Start",Info["Name"])
 			end)
 		end
-		
+
 		Template.Parent = Store.Sections.Boosts.Holder.Boosts
 	end)
 	print(s,m)
@@ -63,25 +63,34 @@ function toMS(s)
 end
 
 function Boosts:StartBoost(Boost)
+	local Id = OwnedBoosts[Boost][3]
+
 	local Template = Store.Sections.Boosts.Holder.Boosts:FindFirstChild(NameToID[Boost])
 	local timeLeft = OwnedBoosts[Boost][2]
 	Template.Use.TheText.Text = "Use ("..OwnedBoosts[Boost][1]..")"
-	local topUI = Paths.UI.Top.Bottom.Boosts:FindFirstChild(Boost)
-	topUI.Visible = true
+
+	local cornerUI = Paths.UI.BLCorner.Boosts:FindFirstChild(Boost)
+	cornerUI.Visible = true
 	Template:SetAttribute("Enabled",true)
+
 	while timeLeft > 0 and Template:GetAttribute("Enabled") do
 		timeLeft -= 1
 		Template.TimeLeft.Text = toMS(timeLeft)
-		topUI.TimeLeft.Text = Template.TimeLeft.Text
+		cornerUI.TimeLeft.Text = Template.TimeLeft.Text
 		task.wait(1)
 	end
-	Template.TimeLeft.Text = "15:00"
-	Template:SetAttribute("Enabled",false)
-	topUI.Visible = false
+
+	if OwnedBoosts[Boost][3] == Id then
+		Template.TimeLeft.Text = "15:00"
+		Template:SetAttribute("Enabled",false)
+		cornerUI.Visible = false
+
+	end
+
 end
 
 
-Remotes.BoostHandler.OnClientEvent:Connect(function(Boost,Action,Data)
+Remotes.BoostHandler.OnClientEvent:Connect(function(Boost,Action,Data, Id)
 	if Action == "Add" then
 		OwnedBoosts = Data["Boosts"]
 		local Template = Store.Sections.Boosts.Holder.Boosts:FindFirstChild(NameToID[Boost])
@@ -93,11 +102,21 @@ Remotes.BoostHandler.OnClientEvent:Connect(function(Boost,Action,Data)
 	elseif Action == "Start" then
 		OwnedBoosts = Data["Boosts"]
 		Boosts:StartBoost(Boost)
+
 	elseif Action == "End" then
 		OwnedBoosts = Data["Boosts"]
+		local Owned = OwnedBoosts[Boost][1]
+
 		local Template = Store.Sections.Boosts.Holder.Boosts:FindFirstChild(NameToID[Boost])
 		Template:SetAttribute("Enabled",false)
+
+		local AutoActivate = UI.Center.Settings.Holder["Auto Activate Boosts"].Toggle.IsToggled.Value
+		if AutoActivate and Owned > 0 then
+			Remotes.BoostHandler:FireServer("Start", Boost)
+		end
+
 	end
+
 end)
 
 

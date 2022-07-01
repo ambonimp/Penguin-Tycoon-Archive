@@ -46,78 +46,84 @@ function Paths.Initiliaze()
 	
 	
 --- Initializing Modules ---
+	local ModuleLoader = require(script.ModuleLoader)
+
 	-- Other Modules
-	Paths.Modules.Setup = require(script.Setup);
-	Paths.Modules.Format = require(Paths.Services.RStorage.Modules.Format)
-	Paths.Modules.GameFunctions = require(Paths.Services.RStorage.Modules.GameFunctions)
-	Paths.Modules.GameInfo = require(Paths.Services.RStorage.Modules.GameInfo)
-	Paths.Modules.Camera = require(script.Camera)
-	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
-	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
-	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
-	Paths.Modules.AllEmotes = require(Paths.Services.RStorage.Modules.AllEmotes)
-	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
-	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
-	Paths.Modules.Settings = require(script.Settings)
-	Paths.Modules.Emotes = require(script.Emotes)	
-	Paths.Modules.GroupReward = require(script.GroupReward)
-	Paths.Modules.Verification = require(script.Verification)
-	Paths.Modules.DiscordVerification = require(script.DiscordVerification)
+	ModuleLoader.Register("GameInfo", Paths.Services.RStorage.Modules.GameInfo)
+	ModuleLoader.Register("Setup", script.Setup);
+	ModuleLoader.Register("Format", Paths.Services.RStorage.Modules.Format)
+	ModuleLoader.Register("GameFunctions", Paths.Services.RStorage.Modules.GameFunctions)
+	ModuleLoader.Register("GameInfo", Paths.Services.RStorage.Modules.GameInfo)
+	ModuleLoader.Register("Camera", script.Camera)
+	ModuleLoader.Register("AllAccessories", Paths.Services.RStorage.Modules.AllAccessories)
+	ModuleLoader.Register("AllOutfits", Paths.Services.RStorage.Modules.AllOutfits)
+	ModuleLoader.Register("AllEyes", Paths.Services.RStorage.Modules.AllEyes)
+	ModuleLoader.Register("AllEmotes", Paths.Services.RStorage.Modules.AllEmotes)
+	ModuleLoader.Register("FishingConfig", Paths.Services.RStorage.Modules.FishingConfig)
+	ModuleLoader.Register("FuncLib", Paths.Services.RStorage.Modules.FuncLib)
+	ModuleLoader.Register("Settings", script.Settings)
+	ModuleLoader.Register("Emotes", script.Emotes)
+	ModuleLoader.Register("GroupReward", script.GroupReward)
+	ModuleLoader.Register("Verification", script.Verification)
+	ModuleLoader.Register("DiscordVerification", script.DiscordVerification)
 	
 	-- Event Modules
-	Paths.Modules.EventsConfig = require(Paths.Services.RStorage.Modules.EventsConfig)
+	ModuleLoader.Register("EventsConfig", Paths.Services.RStorage.Modules.EventsConfig)
 	
 	-- Character Modules
-	Paths.Modules.DoubleJump = require(script.Character.DoubleJump);
-	Paths.Modules.Character = require(script.Character);
-	Paths.Modules.CharacterSelect = require(script.Character.CharacterSelect);
+	ModuleLoader.Register("DoubleJump", script.Character.DoubleJump);
+	ModuleLoader.Register("Character", script.Character);
+	ModuleLoader.Register("CharacterSelect", script.Character.CharacterSelect);
 	
 	-- UI Modules
-	Paths.Modules.UpdatingUI = require(script.UI.Updating)
-	Paths.Modules.UIAnimations = require(script.UI.Animations)
-	Paths.Modules.Buttons = require(script.UI.Buttons)
-	Paths.Modules.Teleporting = require(script.UI.Teleporting)
-	Paths.Modules.Map = require(script.UI.Map)
-	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
-	Paths.Modules.UI = require(script.UI)
-	Paths.Modules.Index = require(script.UI.Index)
-	Paths.Modules.Achievements = require(script.Achievements)
-	Paths.Modules.SpinTheWheel = require(script.Achievements.SpinTheWheel)
-	Paths.Modules.Playtime = require(script.Achievements.Playtime)
-	--Paths.Modules.AllAchievements = require(script.Achievements.AllAchievements)
-	Paths.Modules.Quests = require(script.Achievements.Quests)
+	ModuleLoader.Register("UpdatingUI", script.UI.Updating)
+	ModuleLoader.Register("UIAnimations", script.UI.Animations)
+	ModuleLoader.Register("Buttons", script.UI.Buttons)
+	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
+	ModuleLoader.Register("Map", script.UI.Map)
+	ModuleLoader.Register("PlatformAdjustments", script.UI.PlatformAdjustments)
+	ModuleLoader.Register("UI", script.UI)
+	ModuleLoader.Register("Index", script.UI.Index)
+	ModuleLoader.Register("Achievements", script.Achievements)
+	ModuleLoader.Register("SpinTheWheel", script.Achievements.SpinTheWheel)
+	ModuleLoader.Register("Playtime", script.Achievements.Playtime)
+	--ModuleLoader.Register("AllAchievements", script.Achievements.AllAchievements)
+	ModuleLoader.Register("Quests", script.Achievements.Quests)
 	
 	-- Store Modules
-	Paths.Modules.Store = require(script.Store)
-	Paths.Modules.Gamepasses = require(script.Store.Gamepasses)
-	Paths.Modules.Money = require(script.Store.Money)
-	Paths.Modules.Gems = require(script.Store.Gems)
-	Paths.Modules.Accessories = require(script.Store.Accessories)
-	Paths.Modules.Boosts = require(script.Store.Boosts)
+	ModuleLoader.Register("Store", script.Store)
+	ModuleLoader.Register("Gamepasses", script.Store.Gamepasses)
+	ModuleLoader.Register("Money", script.Store.Money)
+	ModuleLoader.Register("Gems", script.Store.Gems)
+	ModuleLoader.Register("Accessories", script.Store.Accessories)
+	ModuleLoader.Register("Boosts", script.Store.Boosts)
 	
 	-- Hearts Modules
-	Paths.Modules.Hearts = require(script.Hearts);
+	ModuleLoader.Register("Hearts", script.Hearts);
 
 	-- Penguin Modules
-	--Paths.Modules.PenguinsUI = require(script.Penguins.PenguinsUI)
-	Paths.Modules.Penguins = require(script.Penguins)
-	Paths.Modules.Customization = require(script.Penguins.Customization)
+	--ModuleLoader.Register("PenguinsUI", script.Penguins.PenguinsUI)
+	ModuleLoader.Register("Penguins", script.Penguins)
+	ModuleLoader.Register("Customization", script.Penguins.Customization)
 	
 	-- Audio Modules
-	Paths.Modules.Audio = require(Paths.Services.RStorage.Modules.Audio)
-	Paths.Modules.AudioHandler = require(script.AudioHandler)
+	ModuleLoader.Register("Audio", Paths.Services.RStorage.Modules.Audio)
+	ModuleLoader.Register("AudioHandler", script.AudioHandler)
 	
 	-- Other Modules (That have to be required after)
-	Paths.Modules.Aquarium = require(script.Aquarium)
-	Paths.Modules.Fishing = require(script.Fishing)
-	Paths.Modules.Tools = require(script.Tools)
-	--- Load Version ---
-	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
+	ModuleLoader.Register("Aquarium", script.Aquarium)
+	ModuleLoader.Register("Fishing", script.Fishing)
+	ModuleLoader.Register("Tools", script.Tools)
 	
 	-- Pets
-	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
-	Paths.Modules.Pets = require(script.Pets)
-	Paths.Modules.Zones = require(script.Zones)
+	ModuleLoader.Register("PetDetails", Paths.Services.RStorage.Modules.PetDetails)
+	ModuleLoader.Register("Pets", script.Pets)
+	ModuleLoader.Register("Zones", script.Zones)
+
+	-- Load Version
+	ModuleLoader.Load()
+	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
+
 end
 
 return Paths

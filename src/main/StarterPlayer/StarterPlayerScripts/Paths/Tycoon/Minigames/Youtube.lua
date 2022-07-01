@@ -428,8 +428,6 @@ function results()
 	local gemsEarned = if score == MAX_SCORE then 3 else (if score >= 25 then 2 else (if score >= 10 then 1 else 0))
 	rewardLbl.TextLabel.Text = "Gems Won: " .. gemsEarned *  remotes.GetStat:InvokeServer("Gem Multiplier")
 
-	warn("Client", gemsEarned * remotes.GetStat:InvokeServer("Gem Multiplier"))
-
 	local subs = rand:NextInteger(6000, 10000)
 	local count1 = tweenNumber(scoreLbl.Bonus.TextLabel, subs, function(x)
 		return string.format("+%s Subs", x)

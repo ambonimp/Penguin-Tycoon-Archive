@@ -46,8 +46,6 @@ function Help:EnablePointerBeam()
 							table.insert(AllValidItems, v)
 						end
 					end
-				else
-					--warn("huhh", v) 
 				end
 			end
 			

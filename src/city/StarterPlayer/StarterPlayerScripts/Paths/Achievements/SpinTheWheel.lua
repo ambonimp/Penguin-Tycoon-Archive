@@ -19,10 +19,17 @@ if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
 end
 
 local winText = {
+	[1] = "You received x1 Super Fish Luck Boost!",
+	[2] = "You received x1 Triple Money Boost!",
+	[3] = "You received 10 gems!!",
+	[4] = "You received 30 gems!",
+	[6] = "You received x1 Ultra Fish Luck Boost!",
+
 	[1] = "You received 7 gems!!",
 	[2] = "You received x1 Super Fish Luck Boost!",
 	[3] = "You received 5 gems!!",
 	[4] = "You received 10 gems!",
+
 }
 local positions = {
 	[8] = {-25,-65},
@@ -96,7 +103,7 @@ function spinWheel()
 	local Spins = Remotes.GetStat:InvokeServer("Spin")
 	if Spins[1] then
 		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
-		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
+		Paths.UI.Right.Buttons.Achievements.Notif.Visible = true
 		UI.Center.Button.TheText.Text = "Spin For Free"
 	else
 		UI.Center.Button.TheText.Text = "Spin 99R$"
@@ -113,7 +120,7 @@ UI.Center.Button.MouseButton1Down:Connect(function()
 	local Spins = Remotes.GetStat:InvokeServer("Spin")
 	if Spins[1] then
 		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = false
-		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = false
+		Paths.UI.Right.Buttons.Achievements.Notif.Visible = false
 		spinWheel()
 	else
 		Services.MPService:PromptProductPurchase(Paths.Player, 1271390016)
@@ -127,7 +134,7 @@ end
 local Spins = Remotes.GetStat:InvokeServer("Spin")
 if Spins[1] then
 	Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
-	Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
+	Paths.UI.Right.Buttons.Achievements.Notif.Visible = true
 	UI.Center.Button.TheText.Text = "Spin For Free"
 else
 	UI.Center.Button.TheText.Text = "Spin 99R$"
@@ -155,7 +162,7 @@ task.spawn(function()
 			until not spinning
 		end
 		Paths.UI.Center.Achievements.Buttons.Spin.Notif.Visible = true
-		Paths.UI.Bottom.Buttons.Achievements.Notif.Visible = true
+		Paths.UI.Right.Buttons.Achievements.Notif.Visible = true
 		UI.Center.Button.TheText.Text = "Spin For Free"
 		nextReward = Remotes.SpinTheWheel:InvokeServer("CheckGift")
 		start()

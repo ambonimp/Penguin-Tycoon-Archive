@@ -189,6 +189,7 @@ for Id, Details in pairs(Modules.VehicleDetails) do
                 Paths.UI.Left.Visible = false
                 Paths.UI.Right.Visible = false
                 Paths.UI.Bottom.Visible = false
+                Paths.UI.BLCorner.Visible = false
                 Paths.UI.Top.Visible = false
 
                 -- Placement
@@ -233,8 +234,19 @@ for Id, Details in pairs(Modules.VehicleDetails) do
 
                 local CanPlace
                 Placement:GiveTask(Services.RunService.RenderStepped:Connect(function()
+                    local X = Mouse.X
+                    local Y = Mouse.Y
+
+                    local OccludingGui = Paths.Player.PlayerGui:GetGuiObjectsAtPosition(X, Y)
+                    for _, Object in ipairs(OccludingGui) do
+                        if Object.Visible and (Object.BackgroundTransparency ~= 1 or (if Object:IsA("ImageLabel") then Object.ImageTransparency ~= 1 else false)) then
+                            warn(Object, Object.Visible, Object.BackgroundTransparency, (if Object:IsA("ImageLabel") then Object.ImageTransparency else false))
+                            return
+                        end
+                    end
+
                     -- Get mouse position while. Doesn't use mouse.Hit because we want to ignore more than one thing
-                    local Resuls = workspace:Raycast(Camera.CFrame.Position, Camera:ScreenPointToRay(Mouse.X, Mouse.Y, 0).Direction  * PLACE_RADIUS, RParams)
+                    local Resuls = workspace:Raycast(Camera.CFrame.Position, Camera:ScreenPointToRay(X, Y, 0).Direction  * PLACE_RADIUS, RParams)
                     if Resuls then
                         CF = CFrame.new(Resuls.Position+Vector3.new(0, Size.Y/2, 0)) * Rotation
                         Preview:SetPrimaryPartCFrame(CF*PrimaryPartOffset)
@@ -303,6 +315,8 @@ for Id, Details in pairs(Modules.VehicleDetails) do
                     Paths.UI.Right.Visible = true
                 	Paths.UI.Bottom.Visible = true
                     Paths.UI.Top.Visible = true
+                    Paths.UI.BLCorner.Visible = true
+
 
                 end)
 

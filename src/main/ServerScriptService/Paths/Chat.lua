@@ -49,7 +49,7 @@ function Chat:ApplyChatTag(player)
 			for i = 1, 10 do -- 10 retries to get speaker
 				speaker = Services.ChatService:GetSpeaker(player.Name)
 				if speaker then break end
-				wait(0.2)
+				task.wait(0.2)
 			end
 		end
 		

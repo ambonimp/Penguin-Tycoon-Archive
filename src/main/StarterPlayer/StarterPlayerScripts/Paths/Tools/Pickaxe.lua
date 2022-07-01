@@ -111,9 +111,9 @@ local function UpdateDividerText(Level)
 
 end
 
-local function Teleport(ToMine)
+local function Teleport(To)
     Modules.UIAnimations.BlinkTransition(function()
-        Remotes.MineTeleport:InvokeServer(ToMine)
+        Remotes.TeleportInternal:InvokeServer(To)
     end, true)
 end
 
@@ -141,7 +141,7 @@ local function LoadMine(Mine)
 
     prompt.Triggered:Connect(function()
         prompt.Enabled = false
-        Teleport(true)
+        Teleport("Mining Island")
         prompt.Enabled = true
 
 
@@ -266,7 +266,7 @@ task.spawn(function()
 
 	prompt.Triggered:Connect(function()
         prompt.Enabled = false
-        Teleport(false)
+        Teleport(Paths.Player.Name)
         prompt.Enabled = true
     end)
 

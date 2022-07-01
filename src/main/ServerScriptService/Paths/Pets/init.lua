@@ -170,7 +170,7 @@ function givePet(Player, PetId, Chosen, IslandId)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	if Data then
 		Data = Data["Pets_Data"]
-		if #Data.PetsOwned >= Data.MaxOwned then return warn("WHOA") end
+		if #Data.PetsOwned >= Data.MaxOwned then return end
 
 		local petInfo = PetDetails.Pets[PetId]
 		local newId = getEmptyNum(Data.PetsOwned)
@@ -196,12 +196,7 @@ function givePet(Player, PetId, Chosen, IslandId)
 			Data.Unlocked[tostring(Chosen.Id)] = 1
 		end
 
-		warn("THIS2: ", Data.Unlocked)
-		print(Data)
 		return newId, petInfo
-
-	else
-		warn("THIS THIS")
 	end
 
 end

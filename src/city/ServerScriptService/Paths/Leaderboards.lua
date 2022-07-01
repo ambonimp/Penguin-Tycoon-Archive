@@ -206,9 +206,13 @@ function Leaderboards:beginLeaderboardUpdate()
 					PlrCard.Name = rank
 
 					if rank <= 3 and rank >= 1 then
-						local penguin = lbInfo.Leaderboard["Penguin#"..rank]
+						local Leaderboard = lbInfo.Leaderboard
+						local penguin = Leaderboard["Penguin#"..rank]
 						LoadPenguin(userid, penguin)
+
+						Leaderboard.Podiums["Penguin#"..rank].PlayerName.SurfaceGui.TextLabel.Text = username
 					end
+
 				end
 
 				-- Paste playerlist into leaderboards
@@ -220,11 +224,16 @@ function Leaderboards:beginLeaderboardUpdate()
 					Dependency.PlayerList:Clone().Parent = lbInfo.Leaderboard.Display.GUI
 				end
 
-				wait(LOOP_INTERVAL)
+				task.wait(LOOP_INTERVAL)
+
 			end
+
 		end
-		wait(LOOP_INTERVAL*4)
+
+		task.wait(LOOP_INTERVAL*4)
+
 	end
+
 end
 task.spawn(function()
 	task.wait(8)
