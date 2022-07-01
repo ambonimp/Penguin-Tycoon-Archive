@@ -28,6 +28,7 @@ local ToLoad = {}
 local function Close()
     Playing = false
     Animations.BlinkTransition(function()
+        Paths.Player.Character.PrimaryPart.Anchored = false
         LoadingScreen:Destroy()
     end)
 end

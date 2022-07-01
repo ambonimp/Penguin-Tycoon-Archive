@@ -29,24 +29,31 @@ return {
         AlwaysVisible = true,
         LayoutOrder = 5,
     },
-    ["Progress Bar"] = {
+    ["Night"] = {
         Default = false,
         AlwaysVisible = true,
         LayoutOrder = 6,
     },
-    ["Night"] = {
+    ["Shadows"] = {
         Default = false,
         AlwaysVisible = true,
         LayoutOrder = 7,
     },
-    ["Shadows"] = {
-        Default = false,
-        AlwaysVisible = true,
-        LayoutOrder = 8,
-    },
     ["Auto Activate Boosts"] = {
         Default = true,
         AlwaysVisible = true,
+        LayoutOrder = 8,
+    },
+    ["Show Hearts"] = {
+        Default = true,
+        AlwaysVisible = false,
         LayoutOrder = 9,
     },
+
+    ["Heart Notifications"] = {
+        Default = true,
+        AlwaysVisible = false,
+        LayoutOrder = 9,
+    },
+
 }
