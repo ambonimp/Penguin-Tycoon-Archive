@@ -110,17 +110,10 @@ end
 
 
 function VehicleSpawner.Equipped()
-    if not Remotes.GetStat:InvokeServer("Gamepasses")[tostring(GAMEPASS)] then
-        Services.MPService:PromptGamePassPurchase(Paths.Player, GAMEPASS)
-        Remotes.Tools:FireServer("Equip Tool", TOOL)
-    else
-        Equipped = true
-        Modules.Buttons:UIOn(Menu, true)
-    end
+    Modules.Buttons:UIOn(Menu, true)
 end
 
 function VehicleSpawner.Unequipped()
-    Equipped = false
     if Paths.Player:GetAttribute("Tool") == TOOL then
         Remotes.Tools:FireServer("Equip Tool", TOOL)
     end

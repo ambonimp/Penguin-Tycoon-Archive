@@ -17,7 +17,7 @@ local announcementRemote: RemoteEvent = remotes:WaitForChild("Announcement")
 local funcLib = paths.Modules.FuncLib
 local config = paths.Modules.FishingConfig
 local frameTime 
-local animationService = require(script.Parent.AnimationService)
+local AnimationService = require(script.Parent.AnimationService)
 
 -- fishing module
 local fishingModule = nil
@@ -109,7 +109,7 @@ end
 function BobberHandler.MoveFrom(character, bobber, isPlayer)
 	if isPlayer then
 		fishingModule.LastUpdate.BobberReturning = true
-		animationService.CatchAnimation(localPlayer)
+		AnimationService.PlayCatch(localPlayer)
 	end
 	
 	local hrp = character.HumanoidRootPart
@@ -133,7 +133,7 @@ function BobberHandler.MoveFrom(character, bobber, isPlayer)
 		coroutine.wrap(function()
 			fishingModule.LastUpdate.BobberReturning = false
 			task.wait(0.15)
-			animationService.Cancel(fishingModule)
+			AnimationService.Cancel(fishingModule)
 		end)()
 	end
 end
