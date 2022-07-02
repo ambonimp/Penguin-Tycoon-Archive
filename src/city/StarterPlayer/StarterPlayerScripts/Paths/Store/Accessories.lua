@@ -52,7 +52,7 @@ local EquipDB = false
 function addModelToViewport(Model,Template)
 	Model = Model:Clone()
 	Model.PrimaryPart.Transparency = 1
-	
+
 	local c = Template.ViewportFrame.CurrentCamera or Instance.new("Camera")
 	if Template.ViewportFrame:FindFirstChildOfClass("Model") then
 		Template.ViewportFrame:FindFirstChildOfClass("Model"):Destroy()
@@ -77,7 +77,7 @@ function Accessories:NewItem(Item, ItemType)
 	local CustomizationSection = CustomizationUI.Customization.Sections[ItemType].Holder
 	-- If the accessory is already in the u         i, don't clone it
 	if CustomizationSection:FindFirstChild(Item) then return end
-	
+
 	-- Update UI in the store
 	if StoreSectionUI and StoreSectionUI:FindFirstChild(Item) then
 		StoreSectionUI[Item].Owned.Visible = true
@@ -100,7 +100,7 @@ function Accessories:NewItem(Item, ItemType)
 		Template.AccessoryIcon.Image = ""
 	end
 	Template.AccessoryName.Text = Item
-	
+
 
 	local Module
 	if ItemType == "Accessory" then
@@ -116,18 +116,18 @@ function Accessories:NewItem(Item, ItemType)
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.BackgroundColor3 = RarityColors[Rarity]
 	Template.Stroke.UIStroke.Color = RarityColors[Rarity]
-		
+
 	if Item == "None" or Item == "Default" then
 		Template.LayoutOrder = 0
 	end
-	
+
 	Template.Parent = CustomizationSection
-	
+
 	-- Equipping the accessory
 	Template.MouseButton1Down:Connect(function()
 		if EquipDB then return end
 		EquipDB = true
-		
+
 		if ItemType == "Accessory" then
 			SelectedAccessoryUI.Parent = Template
 		elseif ItemType == "Eyes" then
@@ -135,14 +135,14 @@ function Accessories:NewItem(Item, ItemType)
 		elseif ItemType == "Outfits" then
 			SelectedOutfitUI.Parent = Template
 		end
-		
+
 		if ItemType == "Outfits" then
 			Remotes.Customization:InvokeServer("Equip "..ItemType, Item)
 		else
 			local Penguin = CustomizationUI.PenguinSelected.Value
 			Remotes.Customization:InvokeServer("Equip "..ItemType, Penguin, Item)
 		end
-		
+
 		task.wait(0.3)
 		EquipDB = false
 	end)
@@ -154,7 +154,7 @@ coroutine.wrap(function()
 	-- Loading accessories
 	local PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories")
 	repeat PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories") if not PlayerAccessories then wait(1) end until PlayerAccessories
-	
+
 	for Accessory, IsOwned in pairs(PlayerAccessories) do
 		if IsOwned then
 			Accessories:NewItem(Accessory, "Accessory")
@@ -169,7 +169,7 @@ coroutine.wrap(function()
 			Accessories:NewItem(Outfit, "Outfits")
 		end
 	end
-	
+
 	-- Loading eyes
 	local PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
 	repeat PlayerEyes = Remotes.GetStat:InvokeServer("Eyes") if not PlayerEyes then wait(1) end until PlayerEyes
@@ -187,7 +187,7 @@ Remotes.Store.OnClientEvent:Connect(function(ActionType, Accessory, Purchased)
 	if (ActionType == "Accessory" or ActionType == "Eyes" or ActionType == "Outfits") and Purchased then
 		Accessories:NewItem(Accessory, ActionType)
 		Accessories:AnimateNewItem(Accessory, ActionType)
-		
+
 	elseif ActionType == "Store Rotated" then
 		--RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
 		--Accessories:LoadStore()
@@ -213,7 +213,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	-- Reset positions and sizes
 	NewItemUI.Position = UDim2.new(0, 0, 1, 0)
 	NewItemUI.Visible = true
-	
+
 	-- Setup accessory info
 	NewItemUI.ItemName.Text = Item
 
@@ -230,7 +230,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 		end
 	end
 
-	
+
 	-- Play animation
 	NewItemUI:TweenPosition(UDim2.new(0, 0, 0, -50), "Out", "Quart", 0.4, true)
 
@@ -262,7 +262,7 @@ local function NewStoreTemplate(Item, ItemType)
 	elseif ItemType == "Outfits" then
 		Module = Modules.AllOutfits
 	end
-	
+
 	local Rarity = Module.All[Item].Rarity
 	local Template = Dependency.ItemStoreTemplate:Clone()
 	Template.Name = Item
@@ -282,7 +282,7 @@ local function NewStoreTemplate(Item, ItemType)
 	Template.Background.BackgroundColor3 = RarityColors[Rarity]
 	Template.Background.UIStroke.Color = RarityColors[Rarity]
 	Template.ItemName.TextColor3 = RarityColors[Rarity]
-	
+
 	if ItemType == "Eyes" then
 		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.36, 0)
 	end
@@ -293,7 +293,7 @@ local function NewStoreTemplate(Item, ItemType)
 		Template.PurchaseRobux.MouseButton1Down:Connect(function()
 			Remotes.Store:FireServer("Buy Item", Item, ItemType, "Robux")
 		end)
-		
+
 		Template.PurchaseGems.MouseButton1Down:Connect(function()
 			Remotes.Store:FireServer("Buy Item", Item, ItemType, "Gems")
 		end)
@@ -308,7 +308,7 @@ local function NewStoreTemplate(Item, ItemType)
 		uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
 		scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 	end
-	
+
 	Template2.Parent = ClothingSections[ItemType].Holder
 	if Template2 then
 		if PlayerAccessories[Item] or PlayerEyes[Item] or PlayerOutfits[Item] then
@@ -317,7 +317,7 @@ local function NewStoreTemplate(Item, ItemType)
 			Template2.PurchaseRobux.MouseButton1Down:Connect(function()
 				Remotes.Store:FireServer("Buy Item", Item, ItemType, "Robux")
 			end)
-			
+
 			Template2.PurchaseGems.MouseButton1Down:Connect(function()
 				Remotes.Store:FireServer("Buy Item", Item, ItemType, "Gems")
 			end)
@@ -338,12 +338,12 @@ function Accessories:LoadStore()
 		--ChosenAccessories = Remotes.GetStat:InvokeServer("Accessory Rotation")
 
 		PlayerOutfits = Remotes.GetStat:InvokeServer("Outfits")
-		
+
 		PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
 		--ChosenEyes = Remotes.GetStat:InvokeServer("Eyes Rotation")
 		task.wait(1)
 	until PlayerAccessories and PlayerEyes and PlayerOutfits
-	
+
 	-- Clear the UI from any old templates
 	for i, v in pairs(StoreSections.Accessory:GetChildren()) do
 		if v:IsA("Frame") then v:Destroy() end
@@ -389,16 +389,16 @@ coroutine.wrap(function()
 	while true do
 		local TimeSinceRotation = os.time() - RotationTimer
 		local TimeUntilRotation = Modules.AllAccessories.RotationInterval - TimeSinceRotation
-		
+
 		local Timer = Modules.Format:FormatTimeHMS(TimeUntilRotation)
-		
+
 		StoreSections.Parent.Timer.Text = "New Store In: "..Timer
 		ClothingSections.Parent.Timer.Text = "New Store In: "..Timer
-		
+
 		if TimeUntilRotation <= 0 then
 			Remotes.Store:FireServer("Rotate Store")
 		end
-		
+
 		task.wait(1)
 	end
 end)()]]
@@ -412,7 +412,7 @@ end
 
 if ProximityPrompt then
 	ProximityPrompt.Triggered:Connect(function(player)
-		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
+		if player == game.Players.LocalPlayer and not Paths.UI.Center.TeleportConfirmation.Visible and not Paths.UI.Center.BuyEgg.Visible and not game.Players.LocalPlayer:GetAttribute("BuyingEgg") then
 			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Clothing,true)
 		end
 	end)
