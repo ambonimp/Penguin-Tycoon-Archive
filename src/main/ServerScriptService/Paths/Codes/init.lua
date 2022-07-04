@@ -100,7 +100,21 @@ Remotes.RedeemCode.OnServerInvoke = function(Player, Code)
 
 		if response.claimed then
 			local Rewards = response.rewards[PLACE_ID]
-			return Codes.RedeemCode(Player, Code, Rewards, response.unlimited)
+			
+			local isWhitelisted = false
+			if response.unlimited and Rewards["Whitelist"] then
+				for _, playerId in Rewards["Whitelist"] do
+					if playerId == Player.UserId then
+						isWhitelisted = true
+					end
+				end
+
+				if not isWhitelisted then
+					return "Not allowed"
+				end
+			end
+
+			return Codes.RedeemCode(Player, Code, Rewards, isWhitelisted)
 		elseif response and response.status == "ALREADY CLAIMED" then
 			return "Already Claimed!"
 		end

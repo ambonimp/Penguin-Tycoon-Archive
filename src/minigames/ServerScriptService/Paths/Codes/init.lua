@@ -87,7 +87,7 @@ Remotes.RedeemCode.OnServerInvoke = function(Player, Code)
 
 		if response.claimed then
 			local Rewards = response.rewards[PLACE_ID]
-			return Codes.RedeemCode(Player, Code, Rewards, response.unlimited)
+			return Codes.RedeemCode(Player, Code, Rewards, false)
 		elseif response and response.status == "ALREADY CLAIMED" then
 			return "Already Claimed!"
 		end
