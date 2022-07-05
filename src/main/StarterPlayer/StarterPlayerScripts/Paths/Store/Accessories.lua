@@ -93,9 +93,13 @@ function Accessories:NewItem(Item, ItemType)
 	if ItemType ~= "Outfits" then
 		Template.AccessoryIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
 	else
-		local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
-		addModelToViewport(Model,Template)
-		Template.AccessoryIcon.Image = ""
+		if Item ~= "None" then
+			local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
+			addModelToViewport(Model,Template)
+			Template.AccessoryIcon.Image = ""
+		else
+			Template.AccessoryIcon.Image = "rbxassetid://16201262"
+		end
 	end
 	Template.AccessoryName.Text = Item
 	

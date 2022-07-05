@@ -419,8 +419,6 @@ function changeFrameColors(frame,color1,color2)
 end
 
 function updateIndex(data,islandId)
-	-- warn("Nice", islandId, data)
-	print(data,islandId)
 	local island = PetDetails.ChanceTables[islandId]
 
 	local frame = IndexPage.List:FindFirstChild(island.Name)
@@ -452,7 +450,25 @@ function updateIndex(data,islandId)
 		end
 
 	end
+	
+end
 
+function Pets.UpdateEggUI()
+	local tycoonData = Remotes.GetStat:InvokeServer("Tycoon")
+	for i,v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
+		if v:IsA("ImageButton") then
+			if (tycoonData[v.Name] or v.Name == "1") and not v:GetAttribute("Unlocked") then
+				v:SetAttribute("Unlocked",true)
+				v.MouseButton1Down:Connect(function()
+					if tycoonData[v.Name] or v.Name == "1" then
+						Pets.LoadEgg(v:GetAttribute("Egg"),nil)
+					end
+				end)
+			else
+				v.ViewportFrame.ImageColor3 = Color3.new(0,0,0)
+			end
+		end
+	end
 end
 
 function addPetToViewport(Model,ViewPort)
@@ -677,13 +693,16 @@ function OpenEdit(ID)
 end
 
 function Pets.LoadEgg(Island,Prompt)
+	Paths.Modules.Buttons:UIOff(Paths.UI.Center.UnlockedEggs,true)
 	if CurrentEggLoaded == Island then
 		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
 		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
 		return
 	end
-	Prompt.Enabled = false
-	PromptObj = Prompt
+	if Prompt then
+		Prompt.Enabled = false
+		PromptObj = Prompt
+	end
 	CurrentEggLoaded = Island
 	local IslandDetails = PetDetails.ChanceTables[PetDetails.EggNameToId[Island]]
 
@@ -1281,6 +1300,23 @@ task.spawn(function()
 
 	IndexPage.List.CanvasSize = UDim2.new(0, 0, 0, IndexPage.List.UIGridLayout.AbsoluteContentSize.Y+(#IndexPage.List:GetChildren()*25))
 	IndexPage.List.UIGridLayout.CellSize = UDim2.new(1.15,-4,0.07,0)
+
+
+	local tycoonData = Remotes.GetStat:InvokeServer("Tycoon")
+	for i,v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
+		if v:IsA("ImageButton") then
+			if tycoonData[v.Name] or v.Name == "1" then
+				v:SetAttribute("Unlocked",true)
+				v.MouseButton1Down:Connect(function()
+					if tycoonData[v.Name] or v.Name == "1" then
+						Pets.LoadEgg(v:GetAttribute("Egg"),nil)
+					end
+				end)
+			else
+				v.ViewportFrame.ImageColor3 = Color3.new(0,0,0)
+			end
+		end
+	end
 end)
 
 return Pets

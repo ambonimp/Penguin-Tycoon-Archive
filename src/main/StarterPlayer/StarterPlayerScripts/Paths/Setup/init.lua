@@ -110,7 +110,8 @@ local function onPromptTriggered(promptObject, player)
             Paths.Modules.Buttons:UIOff(Paths.UI.Center.BoatUnlock)
             Paths.Modules.Buttons:UIOn(Paths.UI.Center.PlaneUnlock,true)
 		elseif promptObject.ObjectText == "Poofies Egg" then
-            Paths.Modules.Pets.LoadEgg(promptObject:GetAttribute("Egg"),promptObject)
+            Paths.Modules.Buttons:UIOn(Paths.UI.Center.UnlockedEggs,true)
+            --Paths.Modules.Pets.LoadEgg(promptObject:GetAttribute("Egg"),promptObject)
         elseif promptObject.ObjectText == "Gamepass" then
             local id = promptObject:GetAttribute("Gamepass")
             Paths.Services.MPService:PromptGamePassPurchase(Paths.Player, id)

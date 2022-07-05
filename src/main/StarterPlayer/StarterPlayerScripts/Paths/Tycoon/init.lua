@@ -24,6 +24,9 @@ local function NewObject(Object, Type)
 			Modules.Penguins:SetupPenguin(Object)
 		end
 	end
+	if Modules.Pets then
+		Modules.Pets.UpdateEggUI()
+	end
 end
 
 local function ButtonRemoved(Button)

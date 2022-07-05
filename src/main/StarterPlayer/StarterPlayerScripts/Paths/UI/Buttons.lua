@@ -8,13 +8,13 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local UI = Paths.UI
-
+local StarterGui = game:GetService("StarterGui")
 
 --- UI Variables ---
 local MainButtons = {}
 for i, v in pairs(UI.Main:GetDescendants()) do
 	if v:GetAttribute("UI") then
-		table.insert(MainButtons, v)
+ 		table.insert(MainButtons, v)
 	end
 end
 
@@ -298,10 +298,13 @@ Paths.Player.PlayerGui.DescendantAdded:Connect(function(Descendant)
 end)
 
 
-
 --- Initializing ---
 for i, v in pairs(MainButtons) do
 	v.MouseButton1Down:Connect(function()
+		local isKeyboard = game:GetService("UserInputService").KeyboardEnabled
+		if v:GetAttribute("UI") == "Achievements" and game.Players.LocalPlayer.PlayerGui.Chat.Frame.Visible and not isKeyboard then
+			return
+		end
 		if v:FindFirstChild("Notif") then
 			v.Notif.Visible = false
 		end
