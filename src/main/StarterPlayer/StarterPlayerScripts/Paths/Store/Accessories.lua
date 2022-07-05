@@ -93,10 +93,8 @@ function Accessories:NewItem(Item, ItemType)
 	if ItemType ~= "Outfits" then
 		Template.AccessoryIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
 	else
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,Template)
-		end
+		local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
+		addModelToViewport(Model,Template)
 		Template.AccessoryIcon.Image = ""
 	end
 	Template.AccessoryName.Text = Item
@@ -111,7 +109,7 @@ function Accessories:NewItem(Item, ItemType)
 		Module = Modules.AllOutfits
 	end
 
-	local Rarity = Module.All[Item].Rarity
+	local Rarity = assert(Module.All[Item], Item).Rarity
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.BackgroundColor3 = RarityColors[Rarity]
 	Template.Stroke.UIStroke.Color = RarityColors[Rarity]
@@ -223,10 +221,8 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	else
 		NewItemUI.ItemIcon.Visible = false
 		NewItemUI.ViewportFrame.Visible = true
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,NewItemUI)
-		end
+		local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
+		addModelToViewport(Model,NewItemUI)
 	end
 
 	
@@ -268,9 +264,7 @@ local function NewStoreTemplate(Item, ItemType)
 	Template.ItemName.Text = Item
 	if ItemType == "Outfits" then
 		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,Template)
-		end
+		addModelToViewport(Model,Template)
 	else
 		Template.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
 	end

@@ -483,8 +483,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	-- Initialize Tycoon
 	Modules.Tycoon:InitializePlayer(Player)
-	Player:SetAttribute("Loaded",true)
-
 
 
 	-- Check Gamepasses

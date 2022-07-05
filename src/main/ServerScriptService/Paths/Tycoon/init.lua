@@ -21,7 +21,8 @@ function Tycoon:InitializePlayer(Player)
 	Modules.Loading:LoadTycoon(Player)
 
 	task.spawn(function()
-		workspace:WaitForChild("Tycoons"):WaitForChild(ChosenTycoon):WaitForChild("StartIsland")
+		local ChosenTycoonModel = workspace:WaitForChild("Tycoons"):WaitForChild(ChosenTycoon)
+		Player:RequestStreamAroundAsync(ChosenTycoonModel:WaitForChild("Spawn").Position)
 		Modules.Character:Spawn(Player, "Penguin", true)
 	end)
   
