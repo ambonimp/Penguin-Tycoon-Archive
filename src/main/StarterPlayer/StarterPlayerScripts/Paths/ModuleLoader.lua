@@ -21,11 +21,12 @@ local LogoGradient = LoadingScreen.Logo.Colored.UIGradient
 local SkipBtn = LoadingScreen.Skip
 
 
-
 local Playing = true
 local ToLoad = {}
 
 local function Close()
+    repeat task.wait() until SkipBtn.Visible -- Character has loaded flag
+
     Playing = false
     Animations.BlinkTransition(function()
         Paths.Player.Character.PrimaryPart.Anchored = false
