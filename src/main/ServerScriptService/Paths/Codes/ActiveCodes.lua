@@ -13,7 +13,12 @@ local Active = {
 	--	AccessoryName = "Lucky Hat";
 	--	ReturnText = "Accessory Received!"
 	--};
-
+	["150KLIKES"] = {
+		RewardType = "Accessory";
+		AccessoryType = "Accessory";
+		AccessoryName = "Goal 150k";
+		ReturnText = "Accessory Received!"
+	};
 
 	["MINERHAT"] = {
 		RewardType = "Accessory";
