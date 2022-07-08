@@ -35,7 +35,7 @@ local AllGamepasses = {
 	{55102286, "Add 300 pet storage space!"},
 	{56637668, "Auto Hatch eggs!"},
 	{56844198, "Increases your egg luck by 20%"},
-	{58998843,"Instantly chop trees and x2 income from them!"}
+	{58998843, "Instantly chop trees and x2 income from them!"}
 }
 
 Popups.load(AllGamepasses)

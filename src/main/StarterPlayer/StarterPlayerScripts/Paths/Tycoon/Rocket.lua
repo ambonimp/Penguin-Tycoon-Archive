@@ -144,13 +144,13 @@ local function LoadTeleporters()
         end
     end
 
-    Paths.Player:GetAttributeChangedSignal("World") do
+    Paths.Player:GetAttributeChangedSignal("World"):Connect(function()
         LastLocation.YouAreHere.Visible = false
 
         LastLocation = Locations[Paths.Player:GetAttribute("World")]
         LastLocation.YouAreHere.Visible = true
 
-    end
+    end)
 
     local function SwitchWorld(Location, Destination)
         Location.MouseButton1Down:Connect(function()
