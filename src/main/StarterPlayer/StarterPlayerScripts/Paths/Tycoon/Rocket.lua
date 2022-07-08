@@ -1,8 +1,5 @@
 local Rocket = {}
 
-
-
-
 local Paths = require(script.Parent.Parent)
 local Modules = Paths.Modules
 local Services = Paths.Services
@@ -12,6 +9,7 @@ local UI = Paths.UI
 local Dependency = Services.RStorage.ClientDependency.BuildA
 
 local TeleportFrame = UI.Center.WorldTeleport
+local WorldList = TeleportFrame.List
 
 local ItemFrame = UI.Center.RocketItems
 local ItemList = ItemFrame.Items.Unlocked
@@ -131,43 +129,49 @@ local function LoadTeleporters()
     LoadTeleporter(Paths.Tycoon.Tycoon[UPGRADE])
     LoadTeleporter(Paths.Tycoon.Tycoon["New Island!#32"].Rocket)
 
-    local Locations = TeleportFrame.List
     -- Set up you are here
     local LastLocation
-    for _, Location in ipairs(Locations:GetChildren()) do
+    local Locations = {}
+
+    for _, Location in ipairs(WorldList:GetChildren()) do
         if Location:IsA("ImageButton") then
+            Locations[Location.LayoutOrder] = Location
+
             if Location.LayoutOrder == Paths.Player:GetAttribute("World") then
                 LastLocation = Location
                 Location.YouAreHere.Visible = true
             end
         end
+    end
+
+    Paths.Player:GetAttributeChangedSignal("World") do
+        LastLocation.YouAreHere.Visible = false
+
+        LastLocation = Locations[Paths.Player:GetAttribute("World")]
+        LastLocation.YouAreHere.Visible = true
 
     end
 
     local function SwitchWorld(Location, Destination)
         Location.MouseButton1Down:Connect(function()
-            if LastLocation ~= Location then
-                LastLocation.YouAreHere.Visible = false
-
-                LastLocation = Location
-                LastLocation.YouAreHere.Visible = true
-
+            if not Location.YouAreHere.Visible then
                 Paths.Audio.BlastOff:Play()
 
                 Modules.Buttons:UIOff(TeleportFrame, true)
                 Modules.UIAnimations.BlinkTransition(function()
                     Remotes.TeleportInternal:InvokeServer(Destination)
                 end, true)
+
             end
 
         end)
 
     end
 
-    SwitchWorld(Locations.Main, Paths.Player.Name)
-    SwitchWorld(Locations.Woodcutting, "Woodcutting World")
+    SwitchWorld(WorldList.Main, Paths.Player.Name)
+    SwitchWorld(WorldList.Woodcutting, "Woodcutting World")
 
-    Locations.City.MouseButton1Down:Connect(function()
+    WorldList.City.MouseButton1Down:Connect(function()
         Modules.Buttons:UIOff(TeleportFrame, true)
         Remotes.TeleportExternal:InvokeServer(Modules.PlaceIds["Penguin City"], game.GameId)
     end)
@@ -203,7 +207,7 @@ local function UpdateProgress(LastItem)
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
 
     elseif LastItem then
-        FoundPopup.Text.Text = string.format("You found a Rocket part: %s!", LastItem)
+        FoundPopup.Text.Text = string.format("(%s/%s) You found a Rocket part: %s!", Completed, Total, LastItem)
         Paths.Audio.Celebration:Play()
 
         OpenPopup(FoundPopup, UDim2.fromScale(.309, 1))
