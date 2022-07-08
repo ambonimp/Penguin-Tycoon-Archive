@@ -58,6 +58,7 @@ function Purchasing:ItemPurchased(Player, Item, IsAnimated)
 	if Item == "Sailboat#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
 	end
+
 	if not Button then return end
 	local Item2 = Button:GetAttribute("Object2")
 	local Data = Modules.PlayerData.sessionData[Player.Name]

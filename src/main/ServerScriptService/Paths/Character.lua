@@ -83,6 +83,8 @@ function Character:Spawn(Player, Type, Anchor)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	if not Data then Player:Kick("Data Error | CODE: CHARACTER") return end
 	
+	Player:SetAttribute("World", 1)
+
 	--if Type == "Avatar" then
 	--	Player:LoadCharacter()
 	--elseif Type == "Penguin" then

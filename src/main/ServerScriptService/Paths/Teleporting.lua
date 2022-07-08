@@ -30,8 +30,14 @@ Remotes.TeleportInternal.OnServerInvoke = function(Client, To)
 		local SpawnPart
 		if game.Players:FindFirstChild(To) then
 			SpawnPart = Workspace.Tycoons[game.Players:FindFirstChild(To):GetAttribute("Tycoon")].Spawn
+			Client:SetAttribute("World", 1)
+
 		elseif workspace.Islands:FindFirstChild(To) then
 			SpawnPart = workspace.Islands:FindFirstChild(To).Spawn
+		elseif "Woodcutting World" then
+			SpawnPart = Workspace.Tycoons[Client:GetAttribute("Tycoon")].Tycoon["New Island!#32"].Spawn
+			Client:SetAttribute("World", 2)
+
 		end
 
 		if SpawnPart then

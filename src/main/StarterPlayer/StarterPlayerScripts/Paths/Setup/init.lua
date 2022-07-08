@@ -89,6 +89,41 @@ function GetRotationInstructionsToPoint(position)
     return Vector2.new(rotationX, rotationY)
 end
 
+local function LeadToBuildA(Item)
+    local Character = Paths.Player.Character
+    if not Character then return end
+
+    task.spawn(function()
+        local Upgrade = Paths.Tycoon.Tycoon:WaitForChild(Item)
+        local InfoPart = Upgrade:WaitForChild("InfoPart", math.huge)
+        local Hitbox = Upgrade:WaitForChild("Hitbox", math.huge)
+
+        local Att0 = Instance.new("Attachment")
+        Att0.Parent = Character.Main
+
+        local Att1 = Instance.new("Attachment")
+        Att1.Parent = InfoPart
+
+        local Beam = Paths.Services.RStorage.ClientDependency.Help.Pointer:Clone()
+        Beam.Color = ColorSequence.new(Color3.fromRGB(255, 0, 255))
+        Beam.Parent = InfoPart
+        Beam.Attachment0 = Att0
+        Beam.Attachment1 = Att1
+
+        local Conn
+        Conn = Hitbox.Touched:Connect(function(Hit)
+            if Hit.Parent == Character then
+                Beam:Destroy()
+                Att0:Destroy()
+                Conn:Disconnect()
+            end
+
+        end)
+
+     end)
+
+end
+
 
 local function onPromptTriggered(promptObject, player)
     if player == game.Players.LocalPlayer then
@@ -189,6 +224,8 @@ do -- boat
         end
         Paths.UI.Center.BoatUnlock.Items.Text.Text =  am.."/10 ITEMS FOUND"
         if doAnim and am == 10 then
+            LeadToBuildA("Sailboat#1")
+
             Paths.UI.Right.Compass.Visible = false
             Paths.UI.Top.Bottom.Popups.FoundBoatPart.Visible = false
             local foundBoatPart = Paths.UI.Top.Bottom.Popups.SailboatCompleted
@@ -202,8 +239,10 @@ do -- boat
                 task.wait(.25)
                 foundBoatPart.Visible = false
             end)
+
             Paths.Services.RunService:UnbindFromRenderStep("Compass")
         end
+
     end
 
 
@@ -402,6 +441,8 @@ do -- plane
         end
         Paths.UI.Center.PlaneUnlock.Items.Text.Text =  am.."/10 ITEMS FOUND"
         if doAnim and am == 10 then
+            LeadToBuildA("Plane#1")
+
             Paths.UI.Right.Compass.Visible = false
 			Paths.UI.Top.Bottom.Popups.FoundPlanePart.Visible = false
 			local foundBoatPart = Paths.UI.Top.Bottom.Popups.PlaneCompleted
@@ -502,6 +543,7 @@ do -- plane
                             CFra = true
                             unlockItem(ModelName,true)
                             local unlocked = PlaneBuild:InvokeServer(c.Name)
+
                             if unlocked then
                                 print("ATTEMPT UNLOCK 2")
                                 local selected = "Wing 1"
@@ -518,6 +560,7 @@ do -- plane
                                 print(c,"DESTROY")
                                 c:Destroy()
                             end
+
                         end
                         task.wait(.1)
                         deb = false

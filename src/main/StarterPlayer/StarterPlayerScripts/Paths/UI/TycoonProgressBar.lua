@@ -44,22 +44,6 @@ function TycoonProgressBar.Toggle(Toggle)
     end
 end
 
-
---[[ local function GetIslandIndex(Reference)
-    local Island = Reference:GetAttribute("Island")
-    if Island == "Island1" then
-        return 1
-    else
-        for i = 2, #Modules.ProgressionDetails do
-            local FirstButton = Buttons[Modules.ProgressionDetails[i].Object]
-            if FirstButton:GetAttribute("Island") == Island then
-                return i
-            end
-        end
-    end
-end
- *]]
-
 local function GetNextIslandIndex()
    return CurrentIsland ~= #Modules.ProgressionDetails and CurrentIsland + 1 or nil
 end
@@ -102,6 +86,8 @@ function LoadIsland(Island)
             Divider:Destroy()
         end
     end
+
+    warn(CurrentIsland)
 
     local Unlockables = Unlocking[CurrentIsland].Unlockables - 1
     Dividers.UIListLayout.Padding = UDim.new((1 - DividerSize*Unlockables) / (Unlockables+1), 0)
@@ -156,17 +142,10 @@ function TycoonCompleted()
 end
 
 -- Initialize
-for i = 1, #Modules.ProgressionDetails do
-    Unlocking[i] = {
-        Unlocked = 0,
-        Unlockables = {},
-    }
-end
--- Unlocked
 Unlocking = Remotes.GetTycoonInfo:InvokeServer()
 
 -- Get current island, aka first non completed
-CurrentIsland = GetIncompleteIslandIndex()
+--[[ CurrentIsland = GetIncompleteIslandIndex()
 if CurrentIsland then
     LoadIsland(CurrentIsland)
 
@@ -199,7 +178,7 @@ if CurrentIsland then
 
 else
     TycoonCompleted()
-end
+end *]]
 
 task.spawn(function()
     repeat task.wait() until Modules.Settings

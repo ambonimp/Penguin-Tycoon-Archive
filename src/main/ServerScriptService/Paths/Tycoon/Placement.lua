@@ -45,8 +45,13 @@ function Placement:GetRelativePos(Tycoon, Item, IsButton)
 	if Item == "Sailboat#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
 	elseif Item == "Plane#1" then
-		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
+		Button = Paths.Template.Buttons:FindFirstChild("Hot Springs#1")
+	elseif Item == "Rocketship#1" then
+		Button = Paths.Template.Buttons:FindFirstChild("New Island!#12")
+	elseif Item == "New Island!#32" then -- Word 2
+		Button = Paths.Template.Buttons:FindFirstChild("Axe#1")
 	end
+
 	if not Button then return end
 	
 	local Model 
@@ -80,8 +85,13 @@ function Placement:NewItem(Player, Item, IsAnimated)
 	if Item == "Sailboat#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
 	elseif Item == "Plane#1" then
-		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
+		Button = Paths.Template.Buttons:FindFirstChild("Hot Springs#1")
+	elseif Item == "Rocketship#1" then
+		Button = Paths.Template.Buttons:FindFirstChild("New Island!#12")
+	elseif Item == "New Island!#32" then -- Word 2
+		Button = Paths.Template.Buttons:FindFirstChild("Axe#1")
 	end
+
 	if not Button then return end
 	
 	local Island = Button:GetAttribute("Island")
@@ -133,9 +143,14 @@ function Placement:NewItem(Player, Item, IsAnimated)
 	task.defer(function()
 		if Item == "Dock#2" then
 			Modules.Vehicles:SetUpSailboatBuild(Player)
+		elseif Item == "Hot Springs#1" then
 			Modules.Vehicles:SetUpPlaneBuild(Player)
+		elseif Item == "New Island!#12" then
+			Modules.Rocket.Load(Player)
 		end
+
 	end)
+
 end
 
 
@@ -162,7 +177,9 @@ function Placement:AnimateIn(Model)
 				v.CanCollide = PreviousProperties.CanCollide
 			end)
 		end
+
 	end
+
 end
 
 
