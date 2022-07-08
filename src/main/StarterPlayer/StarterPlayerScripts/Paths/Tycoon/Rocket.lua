@@ -172,7 +172,6 @@ local function LoadTeleporters()
         Remotes.TeleportExternal:InvokeServer(Modules.PlaceIds["Penguin City"], game.GameId)
     end)
 
-
 end
 
 
@@ -325,7 +324,6 @@ local function LoadBuildA()
     UpdateProgress()
 end
 
-
 if UnlockingData[1] then
     LoadTeleporters()
 else
@@ -344,5 +342,7 @@ else
     end
 
 end
+
+
 
 return Rocket
