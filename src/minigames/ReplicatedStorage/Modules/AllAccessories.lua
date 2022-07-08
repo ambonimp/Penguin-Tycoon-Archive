@@ -78,6 +78,7 @@ Accessories.Unlockables = {
 Accessories.All = {	
 	--- Default Hat(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
+	--Rewards
 	["Jellyfish Hat"] = {Rarity = "Free", IsForSale = false};
 	["Traffic Cone"] = {Rarity = "Free", IsForSale = false};
 	["Shark Hat"] = {Rarity = "Free", IsForSale = false};
@@ -88,7 +89,9 @@ Accessories.All = {
 	["Bunny Ears"] = {Rarity = "Free", IsForSale = false};
 	["Straw Hat"] = {Rarity = "Free", IsForSale = false};
 	["Feather Hat"] = {Rarity = "Free", IsForSale = false};
-
+	["Beret"] = {Rarity = "Free", IsForSale = false};
+	["Bee Hat"] = {Rarity = "Free", IsForSale = false};
+	["Hockey Helmet"] = {Rarity = "Free", IsForSale = false};
 	-- Penguin Hats
 	["Fisher Hat"] = {Rarity = "Free", IsForSale = false};
 	["Ninja Hat"] = {Rarity = "Free", IsForSale = false};
@@ -100,7 +103,7 @@ Accessories.All = {
 	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false};
 	["Bowl Hat"] = {Rarity = "Free", IsForSale = false};
 	["Cap"] = {Rarity = "Free", IsForSale = false};
-	["Beret"] = {Rarity = "Free", IsForSale = false};
+
 	--Fish Rewards
 	["Boot Hat"] = {Rarity = "Free", IsForSale = false};
 	["Bottle Hat"] = {Rarity = "Free", IsForSale = false};
@@ -120,8 +123,6 @@ Accessories.All = {
 	["Bucket Hat"] = {Rarity = "Rare", IsForSale = true};
 	["Umbrella"] = {Rarity = "Rare", IsForSale = true};
 	["Detective's Hat"] = {Rarity = "Rare", IsForSale = true};
-
-
 
 	-- Epics
 	["Pot"] = {Rarity = "Epic", IsForSale = true};
@@ -161,6 +162,10 @@ Accessories.All = {
 	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
 	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
 	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false};
+
+	-- Mining Hats ===
+	["Hard Hat"] = {Rarity = "Free", IsForSale = false};
+
 }
 
 return Accessories
