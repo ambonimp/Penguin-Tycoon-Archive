@@ -18,6 +18,7 @@ function Paths.Initiliaze()
 	Paths.Services.TeleportService = game:GetService("TeleportService");
 	Paths.Services.ContentProvider = game:GetService("ContentProvider");
 	Paths.Services.ContextActionService = game:GetService("ContextActionService");
+	Paths.Services.CollectionService = game:GetService("CollectionService");
 	Paths.Services.PhysicsService = game:GetService("PhysicsService")
 
 	Paths.Services.GuiService = game:GetService("GuiService");
@@ -82,6 +83,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("ProgressionDetails", Paths.Services.RStorage.Modules.ProgressionDetails)
 	ModuleLoader.Register("MiningDetails", Paths.Services.RStorage.Modules.MiningDetails)
 	ModuleLoader.Register("VehicleDetails", Paths.Services.RStorage.Modules.VehicleDetails)
+	ModuleLoader.Register("BuildADetails", Paths.Services.RStorage.Modules.BuildADetails)
 	ModuleLoader.Register("DeviceDetector", script.DeviceDetector)
 	ModuleLoader.Register("Feedback", script.Feedback)
 	
@@ -138,6 +140,8 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Tycoon", script.Tycoon)
 	ModuleLoader.Register("Fishing", script.Tycoon.Fishing)
 	ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
+	ModuleLoader.Register("Rocket", script.Tycoon.Rocket)
+
 
 	-- print("Load pets module")
 	-- Pets

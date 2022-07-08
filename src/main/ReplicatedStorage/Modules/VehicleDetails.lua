@@ -26,7 +26,7 @@ return {
     },
     ["Plane#1"] = {
         Source = "Building",
-        Island = "Island1",
+        Island = "Island8",
         Type = "Plane",
         LayoutOrder = 6,
         Thumbnail = "rbxassetid://9996505742",

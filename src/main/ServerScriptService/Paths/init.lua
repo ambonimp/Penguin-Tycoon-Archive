@@ -22,6 +22,7 @@ function Paths.Initiliaze()
 	Paths.Services.ContentProvider = game:GetService("ContentProvider");
 	Paths.Services.TeleportService = game:GetService("TeleportService");
 	Paths.Services.HttpService = game:GetService("HttpService")
+	Paths.Services.CollectionService = game:GetService("CollectionService")
 	
 	coroutine.wrap(function()
 		Paths.Services.ChatService = require(script.Parent:WaitForChild("ChatServiceRunner").ChatService)
@@ -64,6 +65,7 @@ function Paths.Initiliaze()
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
 	Paths.Modules.ProgressionDetails = require(Paths.Services.RStorage.Modules.ProgressionDetails)
 	Paths.Modules.VehicleDetails = require(Paths.Services.RStorage.Modules.VehicleDetails)
+	Paths.Modules.BuildADetails = require(Paths.Services.RStorage.Modules.BuildADetails)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Feedback = require(script.Feedback)
 	
@@ -85,6 +87,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Vehicles = require(script.Vehicles)
 	Paths.Modules.Ownership = require(script.Tycoon.Ownership)
 	Paths.Modules.Purchasing = require(script.Tycoon.Purchasing)
+	Paths.Modules.Rocket = require(script.Tycoon.Rocket)
 	Paths.Modules.Placement = require(script.Tycoon.Placement)
 	Paths.Modules.Buttons = require(script.Tycoon.Buttons)
 	Paths.Modules.Loading = require(script.Tycoon.Loading)

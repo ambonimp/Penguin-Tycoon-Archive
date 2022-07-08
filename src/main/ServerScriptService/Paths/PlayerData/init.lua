@@ -202,6 +202,11 @@ local function Defaults(Player)
 		},
 	}
 
+	Returning["RocketUnlocked"] = {false, {}} -- Completed, Items
+	for Item in pairs(Modules.BuildADetails.Rocket) do
+		Returning["RocketUnlocked"][2][Item] = false
+	end
+
 	-- Other
 	Returning["Quests"] = {}
 
