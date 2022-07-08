@@ -222,6 +222,9 @@ function Accessories:AnimateNewItem(Item, ItemType)
 		NewItemUI.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
 		NewItemUI.ViewportFrame.Visible = false
 		NewItemUI.ItemIcon.Visible = true
+		if NewItemUI.ViewportFrame:FindFirstChildOfClass("Model") then
+			NewItemUI.ViewportFrame:FindFirstChildOfClass("Model"):Destroy()
+		end
 	else
 		NewItemUI.ItemIcon.Visible = false
 		NewItemUI.ViewportFrame.Visible = true

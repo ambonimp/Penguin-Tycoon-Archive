@@ -9,6 +9,7 @@ local UI = Paths.UI
 local Dependency = Services.RStorage.ClientDependency.BuildA
 
 local TeleportFrame = UI.Center.WorldTeleport
+local WorldList = TeleportFrame.List
 
 local ItemFrame = UI.Center.RocketItems
 local ItemList = ItemFrame.Items.Unlocked
@@ -128,43 +129,49 @@ local function LoadTeleporters()
     LoadTeleporter(Paths.Tycoon.Tycoon[UPGRADE])
     LoadTeleporter(Paths.Tycoon.Tycoon["New Island!#32"].Rocket)
 
-    local Locations = TeleportFrame.List
     -- Set up you are here
     local LastLocation
-    for _, Location in ipairs(Locations:GetChildren()) do
+    local Locations = {}
+
+    for _, Location in ipairs(WorldList:GetChildren()) do
         if Location:IsA("ImageButton") then
+            Locations[Location.LayoutOrder] = Location
+
             if Location.LayoutOrder == Paths.Player:GetAttribute("World") then
                 LastLocation = Location
                 Location.YouAreHere.Visible = true
             end
         end
+    end
+
+    Paths.Player:GetAttributeChangedSignal("World") do
+        LastLocation.YouAreHere.Visible = false
+
+        LastLocation = Locations[Paths.Player:GetAttribute("World")]
+        LastLocation.YouAreHere.Visible = true
 
     end
 
     local function SwitchWorld(Location, Destination)
         Location.MouseButton1Down:Connect(function()
-            if Location.LayoutOrder then
-                LastLocation.YouAreHere.Visible = false
-
-                LastLocation = Location
-                LastLocation.YouAreHere.Visible = true
-
+            if not Location.YouAreHere.Visible then
                 Paths.Audio.BlastOff:Play()
 
                 Modules.Buttons:UIOff(TeleportFrame, true)
                 Modules.UIAnimations.BlinkTransition(function()
                     Remotes.TeleportInternal:InvokeServer(Destination)
                 end, true)
+
             end
 
         end)
 
     end
 
-    SwitchWorld(TeleportFrame.List.Main, Paths.Player.Name)
-    SwitchWorld(TeleportFrame.List.Woodcutting, "Woodcutting World")
+    SwitchWorld(WorldList.Main, Paths.Player.Name)
+    SwitchWorld(WorldList.Woodcutting, "Woodcutting World")
 
-    TeleportFrame.List.City.MouseButton1Down:Connect(function()
+    WorldList.City.MouseButton1Down:Connect(function()
         Modules.Buttons:UIOff(TeleportFrame, true)
         Remotes.TeleportExternal:InvokeServer(Modules.PlaceIds["Penguin City"], game.GameId)
     end)
