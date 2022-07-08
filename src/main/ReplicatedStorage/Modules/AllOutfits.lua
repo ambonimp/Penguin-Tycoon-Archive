@@ -72,6 +72,7 @@ Outfits.All = {
 	["Sailor"] = {Rarity = "Epic", IsForSale = true};
 	["Lumberjack"] = {Rarity = "Epic", IsForSale = true};
 	["Tuxedo"] = {Rarity = "Epic",IsForSale = true};
+	["Frog"] = {Rarity = "Epic",IsForSale = true};
 	-- Legendaries
 	--["Red Coat"] = {Rarity = "Legendary", IsForSale = true};
 	["Firefighter"] = {Rarity = "Legendary", IsForSale = true};

@@ -31,4 +31,8 @@ return {
     {Object = "New Island!#30", Icon = "rbxassetid://10011061266", Alias = "Military"},
     {Object = "New Island!#31", Icon = "rbxassetid://10078392172", Alias = "Mansion"},
     {Object = "Mining Island!#1", Icon = "rbxassetid://9941290962", Alias = "Mining Island"},
+    {Object = "New Island!#32", Icon = "rbxassetid://10159585153", Alias = "Woodcutting"},
+    {Object = "New Island!#33", Icon = "rbxassetid://10159602497", Alias = "Sports"},
+    {Object = "New Island!#35", Icon = "rbxassetid://10159602960", Alias = "Bee"},
+    {Object = "New Island!#34", Icon = "rbxassetid://10159602779", Alias = "Castle"}
 }
