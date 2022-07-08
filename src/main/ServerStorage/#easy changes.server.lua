@@ -19,6 +19,9 @@ for i, v in pairs(workspace.Template.Buttons:GetChildren()) do
 	if v:GetAttribute("CurrencyType") == "Robux" or v:GetAttribute("CurrencyType") == "Gamepass" then
 		Info.Price.Text = "ROBUX"
 	end
+	if v:GetAttribute("Price") == 0 then
+		Info.Price.Text = "FREE"
+	end
 end
 
 

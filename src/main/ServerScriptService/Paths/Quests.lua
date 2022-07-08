@@ -112,7 +112,6 @@ end
 
 --Example: Modules.Quests.GiveQuest(Player,"Collect","Woodcutting","Tree",1)
 function Quests.GiveQuest(Player,QuestKind,QuestName,QuestType,Amount)
-    print(Player,QuestKind,QuestName,QuestType,Amount)
     local Data = Modules.PlayerData.sessionData[Player.Name]
     if Data["Quests"] then
         local updated = false
