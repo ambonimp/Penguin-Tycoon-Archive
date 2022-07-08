@@ -240,7 +240,7 @@ local function Defaults(Player)
 	}
 
 	Returning["Woodcutting"] = {
-		Unlocked = {"Oak"},
+		Unlocked = {"Oak","Tree"},
 		Cut = {
 			Oak = 0,
 			Birch = 0,
@@ -497,7 +497,9 @@ game.Players.PlayerAdded:Connect(function(Player)
 	if Data["Boosts"]["Super Lucky Egg"] == nil then
 		Data["Boosts"]["Super Lucky Egg"] = {0,0}
 	end
-
+	if not table.find(Data["Woodcutting"].Unlocked,"Tree") then
+		table.insert(Data["Woodcutting"].Unlocked,"Tree")
+	end
 	-- Initialize Tycoon
 	Modules.Tycoon:InitializePlayer(Player)
 
