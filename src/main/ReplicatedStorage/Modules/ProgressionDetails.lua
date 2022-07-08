@@ -13,7 +13,7 @@ return {
     {Object = "New Island!#10", Icon = "rbxassetid://9920788678", Alias = "Theme park"},
     {Object = "New Island!#11", Icon = "rbxassetid://9920784544", Alias = "Desert Island"},
     {Object = "New Island!#12", Icon = "rbxassetid://9920787582", Alias = "Observatory"},
-    {Object = "New Island!#13", Icon = "rbxassetid://9920786122", Alias = "Iceberg 3"},
+    {Object = "New Island!#13", Icon = "rbxassetid://9920786122", Alias = "Meteor"}, -- Iceberg 3
     {Object = "New Island!#14", Icon = "rbxassetid://9920785947", Alias = "Iceberg 4"},
     {Object = "New Island!#15", Icon = "rbxassetid://9942500543", Alias = "Meteor"},
     {Object = "New Island!#16", Icon = "rbxassetid://9920787993", Alias = "Space Station"},
@@ -22,7 +22,7 @@ return {
     {Object = "New Island!#19", Icon = "rbxassetid://9920788208", Alias = "Space Ship"},
     {Object = "New Island!#20", Icon = "rbxassetid://9920784915", Alias = "Film Set"},
     {Object = "New Island!#21", Icon = "rbxassetid://9920784274", Alias = "Cinema"},
-    {Object = "New Island!#22", Icon = "rbxassetid://9920785154", Alias = "Green tree"},
+    {Object = "New Island!#22", Icon = "rbxassetid://9920785154", Alias = "Green House"}, -- Green Tree
     {Object = "New Island!#23", Icon = "rbxassetid://9920785355", Alias = "Greenhouse"},
     {Object = "New Island!#24", Icon = "rbxassetid://9920783589", Alias = "Allotment"},
     {Object = "New Island!#25", Icon = "rbxassetid://9920784062", Alias = "Cavemen"},

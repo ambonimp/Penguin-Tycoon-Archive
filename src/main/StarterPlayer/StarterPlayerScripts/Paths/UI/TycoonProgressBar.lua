@@ -87,8 +87,6 @@ function LoadIsland(Island)
         end
     end
 
-    warn(CurrentIsland)
-
     local Unlockables = Unlocking[CurrentIsland].Unlockables - 1
     Dividers.UIListLayout.Padding = UDim.new((1 - DividerSize*Unlockables) / (Unlockables+1), 0)
     for i = 1, Unlockables do
