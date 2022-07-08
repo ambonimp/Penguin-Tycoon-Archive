@@ -1,8 +1,5 @@
 local Rocket = {}
 
-
-
-
 local Paths = require(script.Parent.Parent)
 local Modules = Paths.Modules
 local Services = Paths.Services
@@ -146,7 +143,7 @@ local function LoadTeleporters()
 
     local function SwitchWorld(Location, Destination)
         Location.MouseButton1Down:Connect(function()
-            if LastLocation ~= Location then
+            if Location.LayoutOrder then
                 LastLocation.YouAreHere.Visible = false
 
                 LastLocation = Location
@@ -164,14 +161,13 @@ local function LoadTeleporters()
 
     end
 
-    SwitchWorld(Locations.Main, Paths.Player.Name)
-    SwitchWorld(Locations.Woodcutting, "Woodcutting World")
+    SwitchWorld(TeleportFrame.List.Main, Paths.Player.Name)
+    SwitchWorld(TeleportFrame.List.Woodcutting, "Woodcutting World")
 
-    Locations.City.MouseButton1Down:Connect(function()
+    TeleportFrame.List.City.MouseButton1Down:Connect(function()
         Modules.Buttons:UIOff(TeleportFrame, true)
         Remotes.TeleportExternal:InvokeServer(Modules.PlaceIds["Penguin City"], game.GameId)
     end)
-
 
 end
 
@@ -325,7 +321,6 @@ local function LoadBuildA()
     UpdateProgress()
 end
 
-
 if UnlockingData[1] then
     LoadTeleporters()
 else
@@ -344,5 +339,7 @@ else
     end
 
 end
+
+
 
 return Rocket
