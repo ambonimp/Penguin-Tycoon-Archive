@@ -98,7 +98,7 @@ function Placement:NewItem(Player, Item, IsAnimated)
 	elseif Item == "Rocketship#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("New Island!#12")
 	elseif Item == "New Island!#32" then -- Word 2
-		Button = Paths.Template.Buttons:FindFirstChild("Axe#1")
+		Button = Paths.Template.Buttons:FindFirstChild("Oak Trees#1")
 	end
 
 	if not Button then return end

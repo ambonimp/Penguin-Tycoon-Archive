@@ -21,13 +21,11 @@ function Rocket.Load(Player)
         if Data["RocketUnlocked"][1] then
             Unlock(Player)
 
-            if not Data.Tycoon["New Island!#32"] then
-                warn("OH DENG")
-
+--[[             if not Data.Tycoon["New Island!#32"] then
                 Data.Tycoon["New Island!#32"] = true
                 Modules.Placement:NewItem(Player, "New Island!#32", true)
 
-            end
+            end *]]
 
         end
 
@@ -65,7 +63,7 @@ Remotes.RocketBuild.OnServerInvoke = function(Client, Item)
                 Modules.Placement:NewItem(Client, "Rocketship#1", true)
 
                 Data.Tycoon["New Island!#32"] = true
-                Modules.Placement:NewItem(Client, "New Island!#32", true)
+                Modules.Purchasing:ItemPurchased(Client, "New Island!#32", true)
 
                 Unlock(Client)
             end
