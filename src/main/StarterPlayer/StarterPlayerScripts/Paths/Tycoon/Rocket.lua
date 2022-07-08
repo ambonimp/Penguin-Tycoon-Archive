@@ -126,8 +126,8 @@ local function LoadTeleporter(Teleporter)
 end
 
 local function LoadTeleporters()
-    LoadTeleporter(Paths.Tycoon.Tycoon[UPGRADE])
-    LoadTeleporter(Paths.Tycoon.Tycoon["New Island!#32"].Rocket)
+    LoadTeleporter(Paths.Tycoon.Tycoon:WaitForChild(UPGRADE))
+    LoadTeleporter(Paths.Tycoon.Tycoon:WaitForChild("New Island!#32"):WaitForChild("Rocket"))
 
     -- Set up you are here
     local LastLocation
@@ -171,10 +171,10 @@ local function LoadTeleporters()
     SwitchWorld(WorldList.Main, Paths.Player.Name)
     SwitchWorld(WorldList.Woodcutting, "Woodcutting World")
 
-    WorldList.City.MouseButton1Down:Connect(function()
+--[[     WorldList.City.MouseButton1Down:Connect(function()
         Modules.Buttons:UIOff(TeleportFrame, true)
         Remotes.TeleportExternal:InvokeServer(Modules.PlaceIds["Penguin City"], game.GameId)
-    end)
+    end) *]]
 
 end
 

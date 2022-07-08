@@ -48,8 +48,6 @@ function Placement:GetRelativePos(Tycoon, Item, IsButton)
 		Button = Paths.Template.Buttons:FindFirstChild("Hot Springs#1")
 	elseif Item == "Rocketship#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("New Island!#12")
-	elseif Item == "New Island!#32" then -- Word 2
-		Button = Paths.Template.Buttons:FindFirstChild("Axe#1")
 	end
 
 	if not Button then return end
@@ -97,8 +95,6 @@ function Placement:NewItem(Player, Item, IsAnimated)
 		Button = Paths.Template.Buttons:FindFirstChild("Hot Springs#1")
 	elseif Item == "Rocketship#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("New Island!#12")
-	elseif Item == "New Island!#32" then -- Word 2
-		Button = Paths.Template.Buttons:FindFirstChild("Oak Trees#1")
 	end
 
 	if not Button then return end

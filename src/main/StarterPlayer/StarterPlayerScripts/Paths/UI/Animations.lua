@@ -20,6 +20,8 @@ else
 	Mult = 1
 end
 
+local IsQA = (game.GameId == 3425594443)
+
 
 --- Other Variables
 local TrickleTI = TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
@@ -56,7 +58,7 @@ end
 function Animations:MoneyChanged(Change, NewMoney)
 	local Day = os.date("%A")
 	local add = ""
-	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday" ) and Change > 0 then
+	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday" ) and Change > 0 and not IsQA then
 		add = " (X2 DAY)"
 	end
 	if game.Players.LocalPlayer:GetAttribute("x3MoneyBoost") then

@@ -87,24 +87,27 @@ end
 function Income:IncomeLoop()
 	while true do
 		for i, Player in pairs(game.Players:GetPlayers()) do
-			local Data = Modules.PlayerData.sessionData[Player.Name]
-			
-			if Data then
-				local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
+			task.spawn(function()
+				local Data = Modules.PlayerData.sessionData[Player.Name]
 				
-				if PlayerIncome > 0 then
-					-- Add Money
-					local mult = Paths.Modules.Pets.getBonus(Player,"Paycheck","Income")
-					PlayerIncome = math.floor(PlayerIncome * mult)
-					Income:AddMoney(Player, PlayerIncome)
+				if Data then
+					local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
+
+					if PlayerIncome > 0 then
+						-- Add Money
+						local mult = Paths.Modules.Pets.getBonus(Player,"Paycheck","Income")
+						PlayerIncome = math.floor(PlayerIncome * mult)
+						Income:AddMoney(Player, PlayerIncome)
+					end
+
+					-- Add to total playtime
+					Data["Stats"]["Total Playtime"] += INCOME_INTERVAL
 				end
-				
-				-- Add to total playtime
-				Data["Stats"]["Total Playtime"] += INCOME_INTERVAL
-			end
+			end)
+
 		end
 		
-		wait(INCOME_INTERVAL)
+		task.wait(INCOME_INTERVAL)
 	end
 end
 

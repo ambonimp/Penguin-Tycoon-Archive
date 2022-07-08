@@ -15,16 +15,17 @@ function Accessories:ItemAcquired(Player, Item, ItemType)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	
 	if Data then
-		local PlayerItems 
+		local Path
 		if ItemType == "Accessory" then
-			PlayerItems = Data["Accessories"]
+			Path = "Accessories"
 		elseif ItemType == "Eyes" then
-			PlayerItems = Data["Eyes"]
+			Path = "Eyes"
 		elseif ItemType == "Outfits" then
-			PlayerItems = Data["Outfits"]
+			Path = "Outfits"
 		end
 		
-		if not PlayerItems[Item] then
+		local PlayerItems = Data[Path]
+		if Modules["All" .. Path].All[Item] and not PlayerItems[Item] then
 			PlayerItems[Item] = true
 			Remotes.Store:FireClient(Player, ItemType, Item, true)
 

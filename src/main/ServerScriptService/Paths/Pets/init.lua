@@ -200,7 +200,6 @@ function givePet(Player, PetId, Chosen, IslandId)
 			PetId,IslandId
 		}
 
-		warn(Chosen.Id, typeof(Chosen.Id))
 		if Data.Unlocked[tostring(Chosen.Id)] then
 			Data.Unlocked[tostring(Chosen.Id)] += 1
 		else

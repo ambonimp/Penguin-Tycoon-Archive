@@ -240,7 +240,7 @@ local function Defaults(Player)
 	}
 
 	Returning["Woodcutting"] = {
-		Unlocked = {"Oak"},
+		Unlocked = {"Oak","Tree"},
 		Cut = {
 			Oak = 0,
 			Birch = 0,
@@ -338,12 +338,15 @@ local function SetupNewStats(Player)
 	local Data = PlayerData.sessionData[Player.Name]
 	if not Data then return end
 
-	if IsTesting or IsQA then
+	Reconcile(Data, Defaults(Player))
+
+	if IsTesting then
 		Data["Money"] = 1000000000
 		Data["Gems"] = 1000000000
+	elseif IsQA then
+		Data["Money"] = 0
 	end
 
-	Reconcile(Data, Defaults(Player))
 end
 
 -- Send back the player stat that the client requests
@@ -367,8 +370,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	SetupNewStats(Player)
 
 
-	local Data = PlayerData.sessionData[Player.Name
-	]
+	local Data = PlayerData.sessionData[Player.Name]
 	-- Badges
 	Modules.Badges:AwardBadge(Player.UserId, 2124902910) -- Welcome
 	Modules.Badges:AwardBadge(Player.UserId, 2124907090) -- Island 1
@@ -497,7 +499,9 @@ game.Players.PlayerAdded:Connect(function(Player)
 	if Data["Boosts"]["Super Lucky Egg"] == nil then
 		Data["Boosts"]["Super Lucky Egg"] = {0,0}
 	end
-
+	if not table.find(Data["Woodcutting"].Unlocked,"Tree") then
+		table.insert(Data["Woodcutting"].Unlocked,"Tree")
+	end
 	-- Initialize Tycoon
 	Modules.Tycoon:InitializePlayer(Player)
 

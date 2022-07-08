@@ -8,6 +8,7 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 local TreeDetails = {
+    ["Tree"] = {0,"Oak"},
     ["Oak"] = {500,"Birch"},
     ["Birch"] = {1500,"Spruce"},
     ["Spruce"] = {2500,"Acacia"},
@@ -17,6 +18,7 @@ local TreeDetails = {
 }
 if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
     TreeDetails = {
+        ["Tree"] = {0,"Oak"},
         ["Oak"] = {5,"Birch"},
         ["Birch"] = {10,"Spruce"},
         ["Spruce"] = {15,"Acacia"},
@@ -219,7 +221,11 @@ function Axe.checkUnlocked(Player,TreeModel)
         if Data then
             
             local PlayerTycoon = Modules.Ownership:GetPlayerTycoon(Player)
-            Data["Woodcutting"].Cut[TreeModel.Name] += 1
+            if Data["Woodcutting"].Cut[TreeModel.Name] then
+				Data["Woodcutting"].Cut[TreeModel.Name] += 1
+			else
+				Data["Woodcutting"].Cut[TreeModel.Name] = 1
+			end
             if TreeDetails[TreeModel.Name][1] and TreeDetails[TreeModel.Name][2] and not table.find(Data["Woodcutting"].Unlocked,TreeDetails[TreeModel.Name][2]) and Data["Woodcutting"].Cut[TreeModel.Name] >= TreeDetails[TreeModel.Name][1] then
                 Player:SetAttribute("Tree"..TreeDetails[TreeModel.Name][2],true)
                 table.insert(Data["Woodcutting"].Unlocked,TreeDetails[TreeModel.Name][2])

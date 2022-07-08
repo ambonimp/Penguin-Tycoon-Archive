@@ -309,8 +309,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 	-- Setup Data
 	PlayerData:SetupPlayerData(Player)
 	SetupNewStats(Player)
-	
-
 
 	-- Group reward
 	pcall(function()
