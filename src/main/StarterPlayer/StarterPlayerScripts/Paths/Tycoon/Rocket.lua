@@ -164,8 +164,8 @@ local function LoadTeleporters()
     Locations.Woodcutting.MouseButton1Down:Connect(function()
         if LastLocation ~= Locations.Woodcutting then
             LastLocation.YouAreHere.Visible = false
-            LastLocation = Locations.Main
 
+            LastLocation = Locations.Woodcutting
             LastLocation.YouAreHere.Visible = true
 
             Modules.Buttons:UIOff(TeleportFrame, true)
