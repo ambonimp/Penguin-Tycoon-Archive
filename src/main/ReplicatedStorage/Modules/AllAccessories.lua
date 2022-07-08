@@ -68,6 +68,8 @@ Accessories.Unlockables = {
 	["Nurse#1"] = "Bowl Hat";
 	["Soldier#1"] = "Beret";
 	["Youtuber#1"] = "Cap";
+	["Ice Hockey Player#1"] = "Hockey Helmet";
+	["Bumble Bee#1"] = "Bee Hat";
 	-- Pick-up Unlockables
 	["Bunny Ears"] = true;
 	["Feather Hat"] = true;

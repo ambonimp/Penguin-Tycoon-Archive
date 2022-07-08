@@ -51,6 +51,11 @@ Badges.Purchases = {
 	["New Island!#29"] = 2124929788; --Hospital
 	["New Island!#30"] = 2124929789; -- Military
 
+	["New Island!#32"] = 2127256368; --woodcutting trees
+	["New Island!#33"] = 2127256371; --sports
+	["New Island!#34"] = 2127256374; --bee
+	["New Island!#35"] = 2127256375; --castle
+
 }
 
 return Badges
