@@ -113,9 +113,10 @@ function PlaneBuild.OnServerInvoke(Player,item)
 			Modules.Placement:NewItem(Player, "Plane#1", true)
 			Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][1] = true
 			local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
-			if Tycoon.Tycoon:FindFirstChild("Dock#2") and Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("BrokenPlane") then
-				Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("BrokenPlane"):Destroy()
+			if Tycoon.Tycoon:FindFirstChild("Hot Springs#1") and Tycoon.Tycoon:FindFirstChild("Hot Springs#1"):FindFirstChild("BrokenPlane") then
+				Tycoon.Tycoon:FindFirstChild("Hot Springs#1"):FindFirstChild("BrokenPlane"):Destroy()
 			end
+
 		end
 		return Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"]
 	end
@@ -126,7 +127,7 @@ end
 function Vehicles:SetUpPlaneBuild(Player)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	if Data then
-		if Data["Tycoon"]["Dock#2"] then
+		if Data["Tycoon"]["Hot Springs#1"] then
 			local unlocked = Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][1]
 			if unlocked == false then
 				local items = {}
@@ -158,8 +159,8 @@ function Vehicles:SetUpPlaneBuild(Player)
 				Paths.Remotes:WaitForChild("PlaneBuild"):InvokeClient(Player,items)
 			else
 				local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
-				if Tycoon.Tycoon:FindFirstChild("Dock#2") and Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("BrokenPlane") then
-					Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("BrokenPlane"):Destroy()
+				if Tycoon.Tycoon:FindFirstChild("Hot Springs#1") and Tycoon.Tycoon:FindFirstChild("Hot Springs#1"):FindFirstChild("BrokenPlane") then
+					Tycoon.Tycoon:FindFirstChild("Hot Springs#1"):FindFirstChild("BrokenPlane"):Destroy()
 				end
 			end
 		end

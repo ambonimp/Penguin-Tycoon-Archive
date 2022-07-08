@@ -26,9 +26,9 @@ end
 
 
 local function IsUnlockable(Index, Button)
+	if not Index then return false end
     return Button:GetAttribute("CurrencyType") == "Money" and Button.Name ~= Modules.ProgressionDetails[Index].Object
 end
-
 
 --- Purchase Functions ---
 function Initiate:InitiateButtons()
@@ -57,6 +57,15 @@ function Initiate:InitiateButtons()
 
 end
 
+function Initiate.GetIslandIndex(Upgrade : string)
+	local UpgradeModel = Paths.Template.Upgrades[Upgrade]
+	for Id, Details in pairs(Modules.ProgressionDetails) do
+		if UpgradeModel:FindFirstChild(Details.Object) then
+			return Id
+		end
+	end
+end
+
 Remotes.IslandProgressRewardCollected.OnServerEvent:Connect(function(Client, Index, Island)
 	local Data = Modules.PlayerData.sessionData[Client.Name]
 	if Data and not Data["Tycoon Rewards"][Island] then
@@ -83,6 +92,9 @@ Remotes.IslandProgressRewardCollected.OnServerEvent:Connect(function(Client, Ind
 end)
 
 
+Remotes.GetIslandIndex.OnServerInvoke = function(_, Upgrade : string)
+	return Initiate.GetIslandIndex(Upgrade)
+end
 
 Remotes.GetTemplateButtonAttribute.OnServerInvoke = function(_, Id, Attribute)
     return Paths.Template.Buttons[Id]:GetAttribute(Attribute)
@@ -91,6 +103,8 @@ end
 Remotes.GetTemplateUpgradeAttribute.OnServerInvoke = function(_, Island, Id, Attribute)
     return Paths.Template.Upgrades[Island][Id]:GetAttribute(Attribute)
 end
+
+
 
 Remotes.GetTycoonInfo.OnServerInvoke = function(Client)
 	local Unlocking = {}
