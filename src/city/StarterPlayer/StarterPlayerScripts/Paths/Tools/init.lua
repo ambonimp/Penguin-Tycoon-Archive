@@ -125,10 +125,6 @@ function Tools.AddTool(Tool, isNew)
 		Tools.RemoveTool(TOOL_EXCEPTIONS[Tool])
 	end
 
-	if Tool == "Axe" or Tool == "Gold Axe" then
-		workspace.Preload:FindFirstChild("Swamp Indicator").GUI.IslandIcon.Frame.Visible = true
-	end
-
 	local Template = Dependency.ToolTemplate:Clone()
 	Template.Name = Tool
 	Template.ToolIcon.Image = "rbxgameasset://Images/"..Tool.."_Tool"
