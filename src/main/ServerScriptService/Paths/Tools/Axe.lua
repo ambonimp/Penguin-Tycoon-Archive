@@ -7,6 +7,24 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
+local TreeDetails = {
+    ["Oak"] = {500,"Birch"},
+    ["Birch"] = {1500,"Spruce"},
+    ["Spruce"] = {2500,"Acacia"},
+    ["Acacia"] = {3000,"Jungle"},
+    ["Jungle"] = {5000,"Blossom"},
+    ["Blossom"] = {nil,nil},
+}
+if game.PlaceId == 9118436978 or game.PlaceId == 9118461324 then
+    TreeDetails = {
+        ["Oak"] = {5,"Birch"},
+        ["Birch"] = {10,"Spruce"},
+        ["Spruce"] = {15,"Acacia"},
+        ["Acacia"] = {20,"Jungle"},
+        ["Jungle"] = {25,"Blossom"},
+        ["Blossom"] = {nil,nil},
+    }
+end
 local Trees = {}
 local HittingGrand = {}
 
@@ -22,6 +40,42 @@ function changeTransparency(model,t)
                 end
             end
         end
+    end
+end
+
+function Axe.GiveRandom(Player)
+    local Data = Modules.PlayerData.sessionData[Player.Name]
+    if Data == nil then return end
+    local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
+    local num = math.random(1,100)
+    local reward = nil
+    if num == 1 and Data["Outfits"]["Unicorn"] == nil then
+        reward = {"Outfit"}
+        Modules.Accessories:ItemAcquired(Player, "Unicorn", "Outfits")
+    elseif num == 1 then
+        reward = {"Gems",5}
+        Modules.Income:AddGems(Player,5,"AxeAward")
+    elseif num == 2 and Data["Accessories"]["Shark Hat"] == nil then
+        reward = {"Outfit"}
+        Modules.Accessories:ItemAcquired(Player, "Shark Hat", "Accessory")
+    elseif num == 2 then
+        reward = {"Gems",10}
+        Modules.Income:AddGems(Player,5,"AxeAward") 
+    elseif num <= 5 then
+        print("Acorn")
+        reward = {"Gems",5,"Acorn"}
+        Modules.Income:AddGems(Player,5,"AxeAward")
+    elseif num <= 13 then
+        print("Money pouch")
+        reward = {"Money",math.floor(10*PlayerIncome),"Pouch"}
+        Modules.Income:AddMoney(Player,math.floor(10*PlayerIncome))
+    elseif num <= 16.5 then
+        print("Log")
+        reward = {"Money",math.floor(20*PlayerIncome),"Log"}
+        Modules.Income:AddMoney(Player,math.floor(20*PlayerIncome))
+    end
+    if reward then
+        Remotes.Axe:FireClient(Player,reward,true)
     end
 end
 
@@ -45,7 +99,7 @@ function ConnectTree(Tree)
         end
         local Day = os.date("%A")
         local Mult = 1
-        if Day == "Saturday" or Day == "Sunday" or Day == "Friday" or Day == "Monday" or Day == "Tuesday" or Day == "Wednesday" or Day == "Thursday" then
+        if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
             Mult = 2
         else
             Mult = 1
@@ -120,7 +174,7 @@ end
 
 --- Functions ---
 function Axe.Equipped(player)
-	
+	Axe.LoadPlayer(player)
 end
 
 game.Players.PlayerRemoving:Connect(function(Player)
@@ -129,7 +183,81 @@ game.Players.PlayerRemoving:Connect(function(Player)
     end
 end)
 
+function Axe.LoadPlayer(Player)
+    local Data = Modules.PlayerData.sessionData[Player.Name]
+    if Data then
+        local PlayerTycoon = Modules.Ownership:GetPlayerTycoon(Player)
+
+        for tree,details in pairs (TreeDetails) do
+            local treename = details[2]
+            if table.find(Data["Woodcutting"].Unlocked,tree) then
+                Player:SetAttribute("Tree"..tree,true)
+            end
+            if treename and table.find(Data["Woodcutting"].Unlocked,treename) then
+                if PlayerTycoon.Tycoon:FindFirstChild(treename.." Bridge#1") and PlayerTycoon.Tycoon:FindFirstChild(treename.." Bridge#1"):FindFirstChild("Locked") then
+                    PlayerTycoon.Tycoon:FindFirstChild(treename.." Bridge#1").Locked:Destroy()    
+                end
+            elseif treename then
+                if PlayerTycoon.Tycoon:FindFirstChild(treename.." Bridge#1") and PlayerTycoon.Tycoon:FindFirstChild(treename.." Bridge#1"):FindFirstChild("Locked") then
+                    local bb = PlayerTycoon.Tycoon:FindFirstChild(treename.." Bridge#1").Locked.PrimaryPart.BillboardGui
+                    local per = math.floor(Data["Woodcutting"].Cut[tree]/details[1]*100)/100
+                    if per < .15 then
+                        per = .15
+                    end
+                    bb.Frame.Frame:TweenSize(UDim2.fromScale(per,1),Enum.EasingDirection.In,Enum.EasingStyle.Linear,.1,true)
+    
+                    bb.Frame.Text.Text = Data["Woodcutting"].Cut[tree].." / "..details[1]
+                end
+            end
+        end
+    end
+end
+
+function Axe.checkUnlocked(Player,TreeModel)
+    if Player and TreeModel and TreeDetails[TreeModel.Name] then
+        local Data = Modules.PlayerData.sessionData[Player.Name]
+        if Data then
+            
+            local PlayerTycoon = Modules.Ownership:GetPlayerTycoon(Player)
+            Data["Woodcutting"].Cut[TreeModel.Name] += 1
+            if TreeDetails[TreeModel.Name][1] and TreeDetails[TreeModel.Name][2] and not table.find(Data["Woodcutting"].Unlocked,TreeDetails[TreeModel.Name][2]) and Data["Woodcutting"].Cut[TreeModel.Name] >= TreeDetails[TreeModel.Name][1] then
+                Player:SetAttribute("Tree"..TreeDetails[TreeModel.Name][2],true)
+                table.insert(Data["Woodcutting"].Unlocked,TreeDetails[TreeModel.Name][2])
+                if PlayerTycoon.Tycoon:FindFirstChild(TreeDetails[TreeModel.Name][2].." Bridge#1") and PlayerTycoon.Tycoon:FindFirstChild(TreeDetails[TreeModel.Name][2].." Bridge#1"):FindFirstChild("Locked") then
+                    PlayerTycoon.Tycoon:FindFirstChild(TreeDetails[TreeModel.Name][2].." Bridge#1").Locked:Destroy()
+                end
+            elseif TreeDetails[TreeModel.Name][2] and TreeDetails[TreeModel.Name][1] then
+	
+                if PlayerTycoon.Tycoon:FindFirstChild(TreeDetails[TreeModel.Name][2].." Bridge#1") and PlayerTycoon.Tycoon:FindFirstChild(TreeDetails[TreeModel.Name][2].." Bridge#1"):FindFirstChild("Locked") then
+                    local bb = PlayerTycoon.Tycoon:FindFirstChild(TreeDetails[TreeModel.Name][2].." Bridge#1").Locked.PrimaryPart.BillboardGui
+                    local per = math.floor(Data["Woodcutting"].Cut[TreeModel.Name]/TreeDetails[TreeModel.Name][1]*100)/100
+                    if per < .15 then
+                        per = .15
+                    end
+                    bb.Frame.Frame:TweenSize(UDim2.fromScale(per,1),Enum.EasingDirection.In,Enum.EasingStyle.Linear,.1,true)
+    
+                    bb.Frame.Text.Text = Data["Woodcutting"].Cut[TreeModel.Name].." / "..TreeDetails[TreeModel.Name][1]
+                end
+            end
+            
+        end
+    end
+end
+
+function Axe.canCut(Player,TreeModel)
+    if Player and TreeModel and TreeDetails[TreeModel.Name] then
+        local Data = Modules.PlayerData.sessionData[Player.Name]
+        if Data then
+            if table.find(Data["Woodcutting"].Unlocked,TreeModel.Name) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
+    if not Axe.canCut(Player,Tree) then return end
     local dis = 14
     if Tree then
         dis = Tree.Name ~= "GrandTree" and 12 or 14
@@ -143,7 +271,7 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
             local Data = Modules.PlayerData.sessionData[Player.Name]
             local Day = os.date("%A")
             local Mult = 1
-            if Day == "Saturday" or Day == "Sunday" or Day == "Friday" or Day == "Monday" or Day == "Tuesday" or Day == "Wednesday" or Day == "Thursday" then
+            if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
                 Mult = 2
             else
                 Mult = 1
@@ -160,6 +288,9 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
                 else
                     HittingGrand[Player.Name] = 1
                 end
+            end
+            if Tree:GetAttribute("Income") then
+                Mult = Mult * Tree:GetAttribute("Income")
             end
             if Data then
 				local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
@@ -182,6 +313,8 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
                 Remotes.Axe:FireClient(Player,added)
             end
             if Tree:GetAttribute("Health") == 0 then
+                Axe.checkUnlocked(Player,Tree)
+                Axe.GiveRandom(Player)
                 Modules.Quests.GiveQuest(Player,"Collect","Woodcutting","Tree",1)
             end
         end

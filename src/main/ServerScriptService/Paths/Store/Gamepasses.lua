@@ -43,6 +43,7 @@ local GamepassButtons = {
 	[45764173] = "Jet Plane#1",
 	[47438416] = "Rainbow Fishing Rod#1",
 	[52724179] = "Gold Pickaxe#1",
+	[58998843] = "Chainsaw#1",
 }
 
 
@@ -88,7 +89,8 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				Modules.Tools.AddTool(Player, "Gold Pickaxe")
 			elseif gamepass == 47438416 then
 				Modules.Tools.AddTool(Player, "Rainbow Fishing Rod")
-
+			elseif gamepass == 58998843 then
+				Modules.Tools.AddTool(Player, "Chainsaw")
 			-- Pet storage gamepasses
 			elseif gamepass == 55102286 then
 				Data["Pets_Data"].MaxOwned += 300
