@@ -33,6 +33,7 @@ local AllGamepasses = {
 	55102169, -- pets +300
 	56637668, -- auto hatch
 	56844198, -- lucky egg
+	58998843, -- Chainsaw
 }
 
 local GamepassButtons = {

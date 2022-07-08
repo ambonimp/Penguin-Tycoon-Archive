@@ -144,13 +144,13 @@ local function LoadTeleporters()
         end
     end
 
-    Paths.Player:GetAttributeChangedSignal("World") do
+    Paths.Player:GetAttributeChangedSignal("World"):Connect(function()
         LastLocation.YouAreHere.Visible = false
 
         LastLocation = Locations[Paths.Player:GetAttribute("World")]
         LastLocation.YouAreHere.Visible = true
 
-    end
+    end)
 
     local function SwitchWorld(Location, Destination)
         Location.MouseButton1Down:Connect(function()
@@ -207,11 +207,7 @@ local function UpdateProgress(LastItem)
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
 
     elseif LastItem then
-<<<<<<< HEAD
-        FoundPopup.Text.Text = string.format("(%s/%s) You found a Rocket part: %s!", Total, Completed, LastItem)
-=======
         FoundPopup.Text.Text = string.format("(%s/%s) You found a Rocket part: %s!", Completed, Total, LastItem)
->>>>>>> 4e6439ccb8799e59d2ce63422caf2447c678d60d
         Paths.Audio.Celebration:Play()
 
         OpenPopup(FoundPopup, UDim2.fromScale(.309, 1))

@@ -106,7 +106,7 @@ Remotes.Chainsaw.OnServerEvent:Connect(function(Player,Tree)
             if Tree:GetAttribute("Income") then
                 Mult = Mult * Tree:GetAttribute("Income")
             end
-            local Div = 1
+            local Div = 4
             if Data then
 				local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
                 local added = math.floor((PlayerIncome*Mult*Mult2)/Div)
