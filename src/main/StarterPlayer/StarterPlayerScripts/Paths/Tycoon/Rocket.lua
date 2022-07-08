@@ -207,7 +207,11 @@ local function UpdateProgress(LastItem)
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
 
     elseif LastItem then
+<<<<<<< HEAD
         FoundPopup.Text.Text = string.format("(%s/%s) You found a Rocket part: %s!", Total, Completed, LastItem)
+=======
+        FoundPopup.Text.Text = string.format("(%s/%s) You found a Rocket part: %s!", Completed, Total, LastItem)
+>>>>>>> 4e6439ccb8799e59d2ce63422caf2447c678d60d
         Paths.Audio.Celebration:Play()
 
         OpenPopup(FoundPopup, UDim2.fromScale(.309, 1))
