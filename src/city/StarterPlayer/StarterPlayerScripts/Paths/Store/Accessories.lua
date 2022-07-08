@@ -110,9 +110,8 @@ function Accessories:NewItem(Item, ItemType)
 	elseif ItemType == "Outfits" then
 		Module = Modules.AllOutfits
 	end
-	if not Item then warn("WERE LOOKING FOR THIS:", Item, ItemType) end
 
-	local Rarity = Module.All[Item].Rarity
+	local Rarity = assert(Module.All[Item], (Item or "NIL ITEM") .. " " .. "Item").Rarity
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.BackgroundColor3 = RarityColors[Rarity]
 	Template.Stroke.UIStroke.Color = RarityColors[Rarity]

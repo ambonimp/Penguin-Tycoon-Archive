@@ -14,8 +14,10 @@ local LastAdded = false
 
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
+local IsQA = (game.GameId == 3425594443)
+
 --- Tool Variables ---
-local TOOL_EXCEPTIONS = {
+local TOOL_REPLACEMENTS = {
 	["Gold Axe"] = "Axe",
 	["Gold Fishing Rod"] = "Fishing Rod",
 	["Powered Glider"] = "Glider",
@@ -101,7 +103,7 @@ local function LoadTools(Whitelist)
 		end
 	end
 
-	for name,exception in pairs (TOOL_EXCEPTIONS) do
+	for name,exception in pairs (TOOL_REPLACEMENTS) do
 		if table.find(Adding,name) and table.find(Adding,exception) then
 			table.remove(Adding,table.find(Adding,exception))
 		end
@@ -119,9 +121,10 @@ end
 --- Tool Functions ---
 function Tools.AddTool(Tool, isNew)
 	if Paths.UI.Tools:FindFirstChild(Tool) then return end
+	if IsQA and string.find(string.lower(Tool), "gold") then warn(Tool) return end
 
-	if TOOL_EXCEPTIONS[Tool] then
-		Tools.RemoveTool(TOOL_EXCEPTIONS[Tool])
+	if TOOL_REPLACEMENTS[Tool] then
+		Tools.RemoveTool(TOOL_REPLACEMENTS[Tool])
 	end
 	
 	local Template = Dependency.ToolTemplate:Clone()
@@ -368,6 +371,13 @@ Remotes.Tools.OnClientEvent:Connect(function(Action, Tool, Temporary)
 	end
 end)
 
+if IsQA then
+	for Tool in pairs(TOOL_REPLACEMENTS) do
+		if string.find(string.lower(Tool), "gold") then
+			TOOL_REPLACEMENTS[Tool] = nil
+		end
+	end
+end
 LoadTools()
 
 return Tools
