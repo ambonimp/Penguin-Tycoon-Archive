@@ -11,10 +11,19 @@ local Remotes = Paths.Remotes
 local Dependency = script
 
 --- Tool Variables ---
-local ToolFunctions = {}
-for i, v in pairs(Dependency:GetChildren()) do ToolFunctions[v.Name] = require(v) end
+Tools.ToolFunctions = {}
+for i, v in pairs(Dependency:GetChildren()) do 
+	Tools.ToolFunctions[v.Name] = require(v) 
+end
 
-
+game.Players.PlayerAdded:Connect(function(Player)
+	repeat task.wait(.1) until Player == nil or Player:GetAttribute("Loaded")
+	for i,v in pairs (Tools.ToolFunctions) do
+		if v.LoadPlayer then
+			v.LoadPlayer(Player)
+		end
+	end
+end)
 
 --- Tool Functions ---
 function Tools.AddTool(Player, Tool, Temporary)
@@ -76,7 +85,7 @@ function Tools.EquipTool(Player, Tool)
 		if character and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0 then
 			Player:SetAttribute("Tool", Tool)
 			
-			for moduleName, module in pairs(ToolFunctions) do
+			for moduleName, module in pairs(Tools.ToolFunctions) do
 				if string.match(Tool, moduleName) then
 					local Equipped = module.Equipped
 					if Equipped then

@@ -162,10 +162,10 @@ function Tools.AddTool(Tool, isNew)
 	if isAnimating then
 		task.defer(function()
 			while Template:GetAttribute("Animating") and Template.Parent and Template:FindFirstChild("BG") do
-				local tween = TweenService:Create(Template.BG,TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(240, 202, 34)})
+				local tween = TweenService:Create(Template:WaitForChild("BG"),TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(240, 202, 34)})
 				tween:Play()
 				task.wait(.4)
-				local tween = TweenService:Create(Template.BG,TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(48, 176, 255)})
+				local tween = TweenService:Create(Template:WaitForChild("BG"),TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(48, 176, 255)})
 				tween:Play()
 				task.wait(.3)
 			end
@@ -269,6 +269,63 @@ local function EquipTool(Tool)
 	Modules.Character:PlayToolAnimation(Tool)
 end
 
+function Tools.ToolReward(amount,isbig)
+	local treeReward = Paths.UI.Center.TreeReward:Clone()
+	if type(amount) == "table" then
+		if amount[1] == "Outfit" then return end
+		treeReward.Icon.Visible = true
+		if amount[3] then --rbxassetid://10156079663 -- money ||| rbxassetid://10156079883 -- acorn	
+			if amount[3] == "Acorn" then
+				treeReward.Icon.Image = "rbxassetid://10156079883"
+				treeReward.Text = "+ "..Paths.Modules.Format:FormatComma(amount[2])
+				treeReward.TextColor3 = Color3.new(0, 0.6, 1)
+			elseif amount[3] == "Pouch" then
+				treeReward.Icon.Image = "rbxassetid://10156079663"
+				treeReward.Text = "+ $ "..Paths.Modules.Format:FormatComma(amount[2])
+			elseif amount[3] == "Log" then
+				treeReward.Icon.Image = "rbxassetid://10156079663"
+				treeReward.Text = "+ $ "..Paths.Modules.Format:FormatComma(amount[2])
+			end
+		elseif amount[1] == "Gems" then
+			treeReward.Icon.Image = "rbxassetid://8679117564"
+			treeReward.Text = "+ "..Paths.Modules.Format:FormatComma(amount[2])
+			treeReward.TextColor3 = Color3.new(0, 0.6, 1)
+		elseif amount[1] == "Money" then
+			treeReward.Icon.Image = "rbxassetid://8679056485"
+			treeReward.Text = "+ $ "..Paths.Modules.Format:FormatComma(amount[2])
+		end
+	else
+		treeReward.Text = "+ $ "..Paths.Modules.Format:FormatComma(amount)
+	end
+	treeReward.Parent = Paths.UI.Center
+	local big = treeReward.Size 
+	treeReward.Size = UDim2.fromScale(0,0)
+	local w,w2 = .1,1
+	if isbig then
+		big = UDim2.fromScale(big.X.Scale*2,big.Y.Scale*2)
+		w = .2
+		w2 = 5.5
+		if type(amount) ~= "table" then
+			treeReward.TextColor3 = Color3.new(1,1,1)
+			treeReward.UIGradient.Enabled = true
+		else
+			treeReward.ZIndex = -5
+		end
+	end
+	treeReward.Position = UDim2.fromScale(math.random(25,75)/100,math.random(25,75)/100)
+	local tween = Paths.Services.TweenService:Create(treeReward,TweenInfo.new(w),{Size = big})
+	treeReward.Visible = true
+	tween:Play()
+	task.wait(w2)
+	local tween = Paths.Services.TweenService:Create(treeReward,TweenInfo.new(w),{Size = UDim2.fromScale(0,0)})
+	tween:Play()
+	task.wait(w)
+	treeReward:Destroy()
+end
+
+Remotes.Axe.OnClientEvent:Connect(function(amount,isbig)
+	Modules.Tools.ToolReward(amount,isbig)
+end)
 
 -- Updatin tool UI
 Paths.Player:GetAttributeChangedSignal("Tool"):Connect(function()

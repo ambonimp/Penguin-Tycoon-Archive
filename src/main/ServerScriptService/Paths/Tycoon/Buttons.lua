@@ -65,7 +65,7 @@ function getMostExpensive(Player,Data)
 	local mostExpensive = nil
 	for name,has in pairs (Data) do
 		local button = Paths.Template.Buttons:FindFirstChild(name)
-		-- warn(name)
+		--warn(name)
 		if button and button:GetAttribute("CurrencyType") == "Money" and button:GetAttribute("Type") == nil and Paths.Template.Upgrades:FindFirstChild(button:GetAttribute("Island")):FindFirstChild(name):GetAttribute("Type") == nil  then
 			if mostExpensive == nil then
 				mostExpensive = Paths.Template.Buttons:FindFirstChild(name)

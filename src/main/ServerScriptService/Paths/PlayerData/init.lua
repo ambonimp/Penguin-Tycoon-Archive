@@ -239,6 +239,18 @@ local function Defaults(Player)
 		},
 	}
 
+	Returning["Woodcutting"] = {
+		Unlocked = {"Oak"},
+		Cut = {
+			Oak = 0,
+			Birch = 0,
+			Spruce = 0,
+			Acacia = 0,
+			Jungle = 0,
+			Blossom = 0,
+		},
+	}
+
 	return Returning
 end
 

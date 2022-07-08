@@ -13,7 +13,7 @@ local Remotes = Paths.Remotes
 function Placement:MoveModel(Model, Pos, Rotation)
 	local x, y, z = Model:GetPivot():ToOrientation()
 	local TycoonRotation = CFrame.Angles(x, y, z)-- + math.rad(Rotation), z)
-	
+
 	local NewCFrame = CFrame.new(Pos) * TycoonRotation
 		
 	Model:PivotTo(NewCFrame)
@@ -64,15 +64,24 @@ function Placement:GetRelativePos(Tycoon, Item, IsButton)
 	
 	-- Get difference from center to the item
 	local CenterPos = Paths.Template.Center.Position
+	if Button:GetAttribute("World") == 2 or Model:GetAttribute("World") == 2  then
+		CenterPos = Paths.Template.World2Center.Position
+	end
+	
 	local ModelPos = Model:GetPivot().p
 	local DiffPos = ModelPos - CenterPos
 	
 	local TycoonPos = Tycoon.Center.Position
+	if Button:GetAttribute("World") == 2 or Model:GetAttribute("World") == 2  then
+		TycoonPos = Tycoon.World2Center.Position
+	end
 	local RelativePos = TycoonPos + DiffPos
 	
 	-- Get tycoon rotation
 	local Rotation = Tycoon.Center.Orientation.Y
-	
+	if Button:GetAttribute("World") == 2 or Model:GetAttribute("World") == 2  then
+		Rotation = Tycoon.World2Center.Orientation.Y
+	end
 	return RelativePos, Rotation
 end
 
@@ -144,9 +153,12 @@ function Placement:NewItem(Player, Item, IsAnimated)
 		elseif Item == "New Island!#12" then
 			Modules.Rocket.Load(Player)
 		end
-
 	end)
 
+
+	if Button:GetAttribute("Woodcutting") then
+		Modules.Tools.ToolFunctions.Axe.LoadPlayer(Player)
+	end
 end
 
 

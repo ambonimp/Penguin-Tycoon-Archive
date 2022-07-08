@@ -54,6 +54,7 @@ Outfits.All = {
 	["Royale Robe"] = {Rarity = "Free", IsForSale = false};
 	["Lobster"] = {Rarity = "Free", IsForSale = false};
 	["Wilco Shirt"] = {Rarity = "Free", IsForSale = false};
+	["Unicorn"] = {Rarity = "Free", IsForSale = false};
 	--- Purchaseable Hats ---
 	-- Rares
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};
@@ -63,7 +64,7 @@ Outfits.All = {
 	["Farmer"] = {Rarity = "Rare", IsForSale = true};
 	["Nurse"] = {Rarity = "Rare", IsForSale = true};
 	["Paramedic"] = {Rarity = "Rare", IsForSale = true};
-
+	["Alien"] = {Rarity = "Rare", IsForSale = true};
 	-- Epics
 	["Engineer"] = {Rarity = "Epic", IsForSale = true};
 	["Adventurer"] = {Rarity = "Epic", IsForSale = true};
@@ -78,6 +79,7 @@ Outfits.All = {
 	["Astronaut"] = {Rarity = "Legendary", IsForSale = true};
 	["Police Officer"] = {Rarity = "Legendary", IsForSale = true};
 	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true};
+	["Bee"] = {Rarity = "Legendary", IsForSale = true};
 	
 	--- Code Outfits ---
 	
