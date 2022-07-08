@@ -27,6 +27,10 @@ local IsTesting = (game.GameId == 3425588324)
 local IsQA = (game.GameId == 3425594443)
 
 if IsTesting or IsQA then
+	if IsQA then
+		Mult = 1
+	end
+
 	GEM_INTERVAL = 3*60
 end
 
@@ -113,7 +117,13 @@ function Income:GemLoop()
 		else
 			Mult = 1
 		end
+
+		if IsQA then
+			Mult = 1
+		end
+
 	end
+
 end
 
 
