@@ -145,7 +145,7 @@ end
 Unlocking = Remotes.GetTycoonInfo:InvokeServer()
 
 -- Get current island, aka first non completed
---[[ CurrentIsland = GetIncompleteIslandIndex()
+CurrentIsland = GetIncompleteIslandIndex()
 if CurrentIsland then
     LoadIsland(CurrentIsland)
 
@@ -178,7 +178,7 @@ if CurrentIsland then
 
 else
     TycoonCompleted()
-end *]]
+end
 
 task.spawn(function()
     repeat task.wait() until Modules.Settings

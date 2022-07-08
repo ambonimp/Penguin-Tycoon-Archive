@@ -144,38 +144,28 @@ local function LoadTeleporters()
 
     end
 
-    -- TODO: Play sound
-    Locations.Main.MouseButton1Down:Connect(function()
-        if LastLocation ~= Locations.Main then
-            LastLocation.YouAreHere.Visible = false
+    local function SwitchWorld(Location, Destination)
+        Location.MouseButton1Down:Connect(function()
+            if LastLocation ~= Location then
+                LastLocation.YouAreHere.Visible = false
 
-            LastLocation = Locations.Main
-            LastLocation.YouAreHere.Visible = true
+                LastLocation = Location
+                LastLocation.YouAreHere.Visible = true
 
-            Modules.Buttons:UIOff(TeleportFrame, true)
-            Modules.UIAnimations.BlinkTransition(function()
-                Remotes.TeleportInternal:InvokeServer(Paths.Player.Name)
-            end, true)
+                Paths.Audio.BlastOff:Play()
 
-        end
+                Modules.Buttons:UIOff(TeleportFrame, true)
+                Modules.UIAnimations.BlinkTransition(function()
+                    Remotes.TeleportInternal:InvokeServer(Destination)
+                end, true)
+            end
 
-    end)
+        end)
 
-    Locations.Woodcutting.MouseButton1Down:Connect(function()
-        if LastLocation ~= Locations.Woodcutting then
-            LastLocation.YouAreHere.Visible = false
+    end
 
-            LastLocation = Locations.Woodcutting
-            LastLocation.YouAreHere.Visible = true
-
-            Modules.Buttons:UIOff(TeleportFrame, true)
-            Modules.UIAnimations.BlinkTransition(function()
-                Remotes.TeleportInternal:InvokeServer("Woodcutting World")
-            end, true)
-
-        end
-
-    end)
+    SwitchWorld(Locations.Main, Paths.Player.Name)
+    SwitchWorld(Locations.Woodcutting, "Woodcutting World")
 
     Locations.City.MouseButton1Down:Connect(function()
         Modules.Buttons:UIOff(TeleportFrame, true)
@@ -207,9 +197,12 @@ local function UpdateProgress(LastItem)
         end)
 
     elseif Completed == Total then
+        Paths.Audio.FullyRepaired:Play()
+
         LoadTeleporters()
         LeadToBuildA()
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
+
     elseif LastItem then
         FoundPopup.Text.Text = string.format("You found a sailboat  part: %s!", LastItem)
         Paths.Audio.Celebration:Play()
