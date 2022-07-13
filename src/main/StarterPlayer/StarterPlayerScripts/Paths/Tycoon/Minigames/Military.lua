@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local Minigame = {}
 
@@ -283,7 +282,7 @@ local function LoadUpgrade(Upgrade)
 
             -- Create map, client side and teleport player there
     		Map = Assets.Map:Clone()
-    		Map.Parent = Workspace
+    		Map.Parent = workspace
             Round:GiveTask(Map)
 
             Modules.UIAnimations.BlinkTransition(function()
@@ -317,7 +316,6 @@ local function LoadUpgrade(Upgrade)
 
             -- Round over
             Round:GiveTask(function()
-                -- TODO: Minigame over screen
                 if CenterFrames.Visible then
                     Modules.Buttons:UIOff(CenterFrames, true)
                 end
@@ -347,18 +345,26 @@ local function LoadUpgrade(Upgrade)
 
 end
 
-if Remotes.GetStat:InvokeServer("Tycoon")[UPGRADE_NAME] then
-    LoadUpgrade(Paths.Tycoon.Tycoon:WaitForChild(UPGRADE_NAME))
-else
-    local Conn
-    Conn = Paths.Tycoon.Tycoon.ChildAdded:Connect(function(Added)
-        if Added.Name == UPGRADE_NAME then
-            Conn:Disconnect()
-            LoadUpgrade(Added)
-        end
-    end)
+local function Init()
+    if Remotes.GetStat:InvokeServer("Tycoon")[UPGRADE_NAME] then
+        LoadUpgrade(Paths.Tycoon.Tycoon:WaitForChild(UPGRADE_NAME))
+    else
+        local Conn
+        Conn = Paths.Tycoon.Tycoon.ChildAdded:Connect(function(Added)
+            if Added.Name == UPGRADE_NAME then
+                Conn:Disconnect()
+                LoadUpgrade(Added)
+            end
+        end)
+
+    end
 
 end
 
+Init()
+task.spawn(function()
+    repeat task.wait() until Modules.Rebirths
+    Modules.Rebirths.Rebirthed:Connect(Init)
+end)
 
 return Minigame

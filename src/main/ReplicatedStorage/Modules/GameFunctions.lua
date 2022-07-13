@@ -2,6 +2,7 @@ local GameFunctions = {}
 
 --- Variables ---
 local MPService = game:GetService("MarketplaceService")
+local PathfindingService = game:GetService("PathfindingService")
 local MoneyProducts = {
 	[1224873708] = {["Base"] = 1.0000, ["Bonus"] = 1},	-- R$ 24
 	[1224873843] = {["Base"] = 3.2900, ["Bonus"] = 1.05},  -- R$ 79
@@ -10,6 +11,16 @@ local MoneyProducts = {
 	[1224873844] = {["Base"] = 41.630, ["Bonus"] = 1.40},  -- R$ 999
 	[1224873842] = {["Base"] = 104.13, ["Bonus"] = 1.60}	-- R$ 2499
 }
+
+local GemProducts = {
+	[1266975588] = 100,
+	[1266975627] = 275,
+	[1266975643] = 725,
+	[1266975658] = 1500,
+	[1266975679] = 2400,
+	[1266975715] = 4250
+}
+
 local PerProductTotal = {
 	[1224873708] = 1,
 	[1224873843] = 3,
@@ -41,6 +52,20 @@ function GameFunctions:GetRequiredMoneyProduct(Player, MoneyRequired)
 	
 	return ProductChosen
 end
+
+function GameFunctions:GetRequiredGemProduct(GemsRequired)
+	local ChosenProduct = 1266975715
+	local ChosenAmount = 4250
+	for Product, Amount in pairs(GemProducts) do
+		if Amount > GemsRequired and Amount < ChosenAmount then
+			ChosenProduct = Product
+			ChosenAmount = Amount
+		end
+	end
+
+	return ChosenProduct
+end
+
 
 function round(number)
 	local nums = {

@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
 
 local Settings = {}
@@ -16,7 +15,6 @@ local Dependency = Services.RStorage.ClientDependency[script.Name]
 
 --- Other Variables ---
 local List = UI.Center.Settings.Holder
-local ToggleDB
 
 --- Functions ---
 local Handlers = {

@@ -9,8 +9,8 @@ local Remotes = Paths.Remotes
 
 
 --- Initializing ---
-function Tycoon:InitializePlayer(Player)
-	local ChosenTycoon = Modules.Ownership:GetAvailableTycoon()
+function Tycoon:InitializePlayer(Player, ChosenTycoon)
+	ChosenTycoon = ChosenTycoon or Modules.Ownership:GetAvailableTycoon()
 	
 	if not ChosenTycoon then
 		warn(Player, "was kicked due to Choosing Tycoon error")

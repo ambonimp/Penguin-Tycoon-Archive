@@ -21,32 +21,45 @@ local AllVehicles = Services.RStorage.Assets.Vehicles
 
 local SpawningDBs = {}
 
-function SailboatBuild.OnServerInvoke(Player,item)
+function SailboatBuild.OnServerInvoke(Player, Item)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-
 	if Data then
-		Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2][item] = true
+		local UnlockingData = Data["BoatUnlocked"]
+		Data["BoatUnlocked"][2][Item] = true
 
-		local alltrue = true
-
-		for i,v in pairs (Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2]) do
-			if v == false then
-				alltrue = false
+		local Completed = true
+		for _, Unlocked in pairs (UnlockingData[2]) do
+			if not Unlocked then
+				Completed = false
 				break
 			end
+
 		end
-		if alltrue then
+
+		if Completed then
+			UnlockingData[1] = true
 			Modules.Badges:AwardBadge(Player.UserId, Modules.Badges.Purchases["Sailboat#1"])
-			Modules.PlayerData.sessionData[Player.Name]["Tycoon"]["Sailboat#1"] = true
+
+			Data["Tycoon"]["Sailboat#1"] = true
 			Modules.Placement:NewItem(Player, "Sailboat#1", true)
-			Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][1] = true
+
 			local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
-			if Tycoon.Tycoon:FindFirstChild("Dock#2") and Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("Building") then
-				Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("Building"):Destroy()
+
+			local Dock = Tycoon.Tycoon:FindFirstChild("Dock#2")
+			if Dock then
+				local BrokenShip = Dock:FindFirstChild("Building")
+				if BrokenShip then
+					BrokenShip:Destroy()
+				end
+
 			end
+
 		end
-		return Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"]
+
+		return true
+
 	end
+
 end
 
 function Vehicles:SetUpSailboatBuild(Player)
@@ -58,7 +71,7 @@ function Vehicles:SetUpSailboatBuild(Player)
 			if unlocked == false then
 				local items = {}
 				local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
-				for i,Model in pairs (game.ReplicatedStorage.BoatBuildParts:GetChildren()) do
+				for i,Model in pairs (game.ReplicatedStorage.Assets.BuildA.Sailboat:GetChildren()) do
 					if Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2][Model.Name] == false then
 						if Model:GetAttribute("InTycoon") then
 							local CenterPos = Paths.Template.Center.Position
@@ -93,32 +106,38 @@ function Vehicles:SetUpSailboatBuild(Player)
 	end
 end
 
-function PlaneBuild.OnServerInvoke(Player,item)
+function PlaneBuild.OnServerInvoke(Player,Item)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	print("ATTEMPTED UNLOCK ITEM",item)
 	if Data then
-		Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][2][item] = true
-		print(Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][2],"SET ITEM")
-		local alltrue = true
+		local UnlockingData = Data["PlaneUnlocked"]
 
-		for i,v in pairs (Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][2]) do
-			if v == false then
-				alltrue = false
+		Data["PlaneUnlocked"][2][Item] = true
+
+		local Completed = true
+		for _, Unlocked in pairs (UnlockingData[2]) do
+			if not Unlocked then
+				Completed = false
 				break
 			end
+
 		end
-		if alltrue then
+
+		if Completed then
 			Modules.Badges:AwardBadge(Player.UserId, Modules.Badges.Purchases["Plane#1"])
-			Modules.PlayerData.sessionData[Player.Name]["Tycoon"]["Plane#1"] = true
+
+			Data["Tycoon"]["Plane#1"] = true
 			Modules.Placement:NewItem(Player, "Plane#1", true)
-			Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][1] = true
+
+			Data["PlaneUnlocked"][1] = true
 			local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
 			if Tycoon.Tycoon:FindFirstChild("Hot Springs#1") and Tycoon.Tycoon:FindFirstChild("Hot Springs#1"):FindFirstChild("BrokenPlane") then
 				Tycoon.Tycoon:FindFirstChild("Hot Springs#1"):FindFirstChild("BrokenPlane"):Destroy()
 			end
 
 		end
-		return Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"]
+
+		return true
+
 	end
 	
 end
@@ -132,7 +151,7 @@ function Vehicles:SetUpPlaneBuild(Player)
 			if unlocked == false then
 				local items = {}
 				local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
-				for i,Model in pairs (game.ReplicatedStorage.PlaneBuildParts:GetChildren()) do
+				for i,Model in pairs (game.ReplicatedStorage.Assets.BuildA.Plane:GetChildren()) do
 					if Modules.PlayerData.sessionData[Player.Name]["PlaneUnlocked"][2][Model.Name] == false then
 						if Model:GetAttribute("InTycoon") then
 							local CenterPos = Paths.Template.Center.Position
