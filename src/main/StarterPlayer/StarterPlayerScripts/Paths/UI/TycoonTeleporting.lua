@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local TycoonTeleport = {}
 
 --- Main Variables ---
@@ -16,9 +15,6 @@ local List = Frame.List
 local UsedLbls = {}
 local UnusedLbls = {}
 
-local function Open()
-    Modules.Buttons:UIOn()
-end
 
 local function LoadTycoon(Player)
     if Player ~= Paths.Player then
@@ -92,23 +88,31 @@ game.Players.PlayerRemoving:Connect(function(Player)
     end
 end)
 
-
-local VisitPrompt = Instance.new("ProximityPrompt")
-VisitPrompt.HoldDuration = 0.25
-VisitPrompt.MaxActivationDistance = 10
-VisitPrompt.RequiresLineOfSight = false
-VisitPrompt.ActionText = "Visit others"
-VisitPrompt.Parent = Paths.Tycoon:WaitForChild("Teleport"):WaitForChild("PromptPart")
-
-VisitPrompt.Triggered:Connect(function()
-    if not Frame.Visible then
-        Modules.Buttons:UIOn(Frame, true)
-    end
-end)
-
 Frame.Exit.MouseButton1Down:Connect(function()
     Modules.Buttons:UIOff(Frame, true)
 end)
 
+
+local function Init()
+    local VisitPrompt = Instance.new("ProximityPrompt")
+    VisitPrompt.HoldDuration = 0.25
+    VisitPrompt.MaxActivationDistance = 10
+    VisitPrompt.RequiresLineOfSight = false
+    VisitPrompt.ActionText = "Visit others"
+    VisitPrompt.Parent = Paths.Tycoon:WaitForChild("Teleport"):WaitForChild("PromptPart")
+
+    VisitPrompt.Triggered:Connect(function()
+        if not Frame.Visible then
+            Modules.Buttons:UIOn(Frame, true)
+        end
+    end)
+
+end
+
+Init()
+task.spawn(function()
+    repeat task.wait() until Modules.Rebirths
+    Modules.Rebirths.Rebirthed:Connect(Init)
+end)
 
 return TycoonTeleport

@@ -27,9 +27,10 @@ local BROKEN_SHIP_UPGRADE = "New Island!#12"
 local ITEM_TAG = "BuildAItem" -- Collection service tag, how items are found when added to tycoon
 
 
+local TycoonSession = Modules.Maid.new()
 
 local UnlockingData = Remotes.GetStat:InvokeServer("RocketUnlocked")
-local ItemModels =  Services.RStorage.RocketBuildItems
+local ItemModels =  Services.RStorage.Assets.BuildA.Rocket
 
 
 local function CreatePrompt(Parent, ActionText, ObjectText)
@@ -66,11 +67,11 @@ local function LeadToBuildA()
         Beam.Attachment1 = Att1
 
         local Conn
-        Conn = PromptPart.ProximityPrompt.Triggered:Connect(function()
+        Conn = TycoonSession:GiveTask(PromptPart.ProximityPrompt.Triggered:Connect(function()
             Beam:Destroy()
             Att0:Destroy()
             Conn:Disconnect()
-        end)
+        end))
 
      end)
 
@@ -83,7 +84,6 @@ local function OpenPopup(Popup, FinalSize)
         task.wait(5)
         Popup.Visible = false
     end)
-
 end
 
 local function UnlockLocation(Item)
@@ -107,74 +107,8 @@ local function UnlockItem(Item)
 
 end
 
-local function LoadTeleporter(Teleporter)
-    task.spawn(function()
-        local Prompt = CreatePrompt(Teleporter:WaitForChild("PromptPart", math.huge), "Blast Off")
-
-        Prompt.Triggered:Connect(function()
-            if not ItemFrame.Visible then
-                Modules.Buttons:UIOn(TeleportFrame, true)
-            end
-        end)
-
-        TeleportFrame.Exit.MouseButton1Down:Connect(function()
-            Modules.Buttons:UIOff(TeleportFrame, true)
-        end)
-
-    end)
-
-end
-
 local function LoadTeleporters()
-    LoadTeleporter(Paths.Tycoon.Tycoon:WaitForChild(UPGRADE))
-    LoadTeleporter(Paths.Tycoon.Tycoon:WaitForChild("New Island!#32"):WaitForChild("Rocket"))
 
-    -- Set up you are here
-    local LastLocation
-    local Locations = {}
-
-    for _, Location in ipairs(WorldList:GetChildren()) do
-        if Location:IsA("ImageButton") then
-            Locations[Location.LayoutOrder] = Location
-
-            if Location.LayoutOrder == Paths.Player:GetAttribute("World") then
-                LastLocation = Location
-                Location.YouAreHere.Visible = true
-            end
-        end
-    end
-
-    Paths.Player:GetAttributeChangedSignal("World"):Connect(function()
-        LastLocation.YouAreHere.Visible = false
-
-        LastLocation = Locations[Paths.Player:GetAttribute("World")]
-        LastLocation.YouAreHere.Visible = true
-
-    end)
-
-    local function SwitchWorld(Location, Destination)
-        Location.MouseButton1Down:Connect(function()
-            if not Location.YouAreHere.Visible then
-                Paths.Audio.BlastOff:Play()
-
-                Modules.Buttons:UIOff(TeleportFrame, true)
-                Modules.UIAnimations.BlinkTransition(function()
-                    Remotes.TeleportInternal:InvokeServer(Destination)
-                end, true)
-
-            end
-
-        end)
-
-    end
-
-    SwitchWorld(WorldList.Main, Paths.Player.Name)
-    SwitchWorld(WorldList.Woodcutting, "Woodcutting World")
-
---[[     WorldList.City.MouseButton1Down:Connect(function()
-        Modules.Buttons:UIOff(TeleportFrame, true)
-        Remotes.TeleportExternal:InvokeServer(Modules.PlaceIds["Penguin City"], game.GameId)
-    end) *]]
 
 end
 
@@ -223,6 +157,7 @@ local function LoadCollectable(Item, Placeholder)
         local Collectable = ItemModels[Item]:Clone()
         Collectable:SetPrimaryPartCFrame(Placeholder.CFrame)
         Collectable.Parent = Placeholder.Parent
+        TycoonSession:GiveTask(Collectable)
 
         Placeholder:Destroy()
 
@@ -241,7 +176,6 @@ local function LoadCollectable(Item, Placeholder)
                     UnlockItem(Item)
                     UpdateProgress(Item)
                     Collectable:Destroy()
-
                 end
 
             end
@@ -267,25 +201,28 @@ local function LoadBuildA()
 
     -- Frame
     for Item in pairs(Modules.BuildADetails.Rocket) do
-        local UnlockLbl = Dependency.RocketItemTemplate:Clone()
-        UnlockLbl.Name = Item
-        UnlockLbl.Parent = ItemList
+        local UnlockLbl = ItemList:FindFirstChild(Item)
+        if not UnlockLbl then
+            UnlockLbl = Dependency.RocketItemTemplate:Clone()
+            UnlockLbl.Name = Item
+            UnlockLbl.Parent = ItemList
 
-        -- Item Preview
-        local Viewport = UnlockLbl.ViewportFrame
+            -- Item Preview
+            local Viewport = UnlockLbl.ViewportFrame
 
-        local ViewportCam = Instance.new("Camera", Viewport)
-        ViewportCam.FieldOfView = 1
+            local ViewportCam = Instance.new("Camera", Viewport)
+            ViewportCam.FieldOfView = 1
 
-        Viewport.CurrentCamera = ViewportCam
+            Viewport.CurrentCamera = ViewportCam
 
-        local ViewportModel = ItemModels[Item]:Clone()
-        ViewportModel.Parent = Viewport
-        local ModelCF, ModelSize = ViewportModel:GetBoundingBox()
+            local ViewportModel = ItemModels[Item]:Clone()
+            ViewportModel.Parent = Viewport
+            local ModelCF, ModelSize = ViewportModel:GetBoundingBox()
 
-        local Offset = (ModelSize.Y / 2) / math.tan(math.rad(ViewportCam.FieldOfView / 2)) + (ModelSize.Z / 2)
-        ViewportCam.CFrame = ModelCF * CFrame.new(0, math.pi, 0) * CFrame.new(0, 0, Offset)
+            local Offset = (ModelSize.Y / 2) / math.tan(math.rad(ViewportCam.FieldOfView / 2)) + (ModelSize.Z / 2)
+            ViewportCam.CFrame = ModelCF * CFrame.new(0, math.pi, 0) * CFrame.new(0, 0, Offset)
 
+        end
 
         if UnlockingData[2][Item] then
             UnlockLocation(Item)
@@ -328,24 +265,92 @@ local function LoadBuildA()
     UpdateProgress()
 end
 
-if UnlockingData[1] then
-    LoadTeleporters()
-else
-    if Remotes.GetStat:InvokeServer("Tycoon")[BROKEN_SHIP_UPGRADE] then
-        LoadBuildA()
-    else
-        local Conn
-        Conn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(_, Button)
-            if Button == BROKEN_SHIP_UPGRADE then
-                LoadBuildA()
-                Conn:Disconnect()
-            end
+local function Init()
+    if not UnlockingData[1] then
+        if Remotes.GetStat:InvokeServer("Tycoon")[BROKEN_SHIP_UPGRADE] then
+            LoadBuildA()
+        else
+            local Conn
+            Conn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(_, Button)
+                if Button == BROKEN_SHIP_UPGRADE then
+                    LoadBuildA()
+                    Conn:Disconnect()
+                end
 
-        end)
+            end)
+
+        end
 
     end
 
 end
+
+
+
+
+-- Teleport interface
+local LastLocation
+local Locations = {}
+
+for _, Location in ipairs(WorldList:GetChildren()) do
+    if Location:IsA("ImageButton") then
+        Locations[Location.LayoutOrder] = Location
+
+        if Location.LayoutOrder == Paths.Player:GetAttribute("World") then
+            LastLocation = Location
+            Location.YouAreHere.Visible = true
+        end
+    end
+end
+
+Paths.Player:GetAttributeChangedSignal("World"):Connect(function()
+    LastLocation.YouAreHere.Visible = false
+
+    LastLocation = Locations[Paths.Player:GetAttribute("World")]
+    LastLocation.YouAreHere.Visible = true
+
+end)
+
+local function SwitchWorld(Location, Destination)
+    Location.MouseButton1Down:Connect(function()
+        if not Location.YouAreHere.Visible then
+            Paths.Audio.BlastOff:Play()
+
+            Modules.Buttons:UIOff(TeleportFrame, true)
+            Modules.UIAnimations.BlinkTransition(function()
+                Remotes.TeleportInternal:InvokeServer(Destination)
+            end, true)
+
+        end
+
+    end)
+
+end
+
+SwitchWorld(WorldList.Main, Paths.Player.Name)
+SwitchWorld(WorldList.Woodcutting, "Woodcutting World")
+
+--[[     WorldList.City.MouseButton1Down:Connect(function()
+    Modules.Buttons:UIOff(TeleportFrame, true)
+    Remotes.TeleportExternal:InvokeServer(Modules.PlaceIds["Penguin City"], game.GameId)
+end) *]]
+
+
+
+TeleportFrame.Exit.MouseButton1Down:Connect(function()
+    Modules.Buttons:UIOff(TeleportFrame, true)
+end)
+
+
+-- Initialize
+Init()
+task.spawn(function()
+    repeat task.wait() until Modules.Rebirths
+    Modules.Rebirths.Rebirthed:Connect(function()
+        TycoonSession:Destroy()
+        Init()
+    end)
+end)
 
 
 

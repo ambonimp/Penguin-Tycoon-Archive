@@ -80,7 +80,6 @@ function Purchasing:ItemPurchased(Player, Item, IsAnimated)
 			Modules.Penguins:PenguinPurchased(Player, Item)
 			
 		elseif Button:GetAttribute("Type") == "Robux" then
-			
 		end
 	end
 	
@@ -96,8 +95,10 @@ function Purchasing:ItemPurchased(Player, Item, IsAnimated)
 	
 	-- Remove button
 	local Tycoon = Modules.Ownership:GetPlayerTycoon(Player)
-	if Tycoon.Buttons:FindFirstChild(Item) then
-		Modules.Placement:AnimateOut(Tycoon.Buttons[Item])
+	local ButtonToRemove = Tycoon.Buttons:FindFirstChild(Item)
+	if ButtonToRemove then
+		ButtonToRemove:SetAttribute("Purchased", true)
+		Modules.Placement:AnimateOut(ButtonToRemove)
 	end
 
 	-- Place item

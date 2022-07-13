@@ -24,7 +24,7 @@ local PopupSession
 
 
 
-
+local ButtonPurchasedConn
 local CurrentIsland
 local Unlocking = {}
 
@@ -140,46 +140,60 @@ function TycoonCompleted()
 end
 
 -- Initialize
-Unlocking = Remotes.GetTycoonInfo:InvokeServer()
+function Init()
+    if ButtonPurchasedConn then ButtonPurchasedConn:Disconnect() end
 
--- Get current island, aka first non completed
-CurrentIsland = GetIncompleteIslandIndex()
-if CurrentIsland then
-    LoadIsland(CurrentIsland)
+    ProgressBar:SetAttribute("Disabled", false)
+    TycoonProgressBar.Toggle(true)
 
-    -- Load bar for future islands
-    Remotes.ButtonPurchased.OnClientEvent:Connect(function(Index, Button)
-        if Index ~= CurrentIsland then
-            LoadIsland(Index)
-        end
+    Unlocking = Remotes.GetTycoonInfo:InvokeServer()
 
-        if IsUnlockable(Index, Button) then
-            local Unlocked, Unlockables = Progress()
+    -- Get current island, aka first non completed
+    CurrentIsland = GetIncompleteIslandIndex()
+    if CurrentIsland then
+        LoadIsland(CurrentIsland)
 
-            --Get half reward
-            if Unlocked == math.floor(Unlockables/2) then
-                local Id = os.time()
-                PopupSession = Id
+        -- Load bar for future islands
+        ButtonPurchasedConn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(Index, Button)
+            if Index ~= CurrentIsland then
+                LoadIsland(Index)
+            end
 
-                Remotes.IslandProgressRewardCollected:FireServer(Index, Remotes.GetTemplateButtonAttribute:InvokeServer(Button, "Island"))
-                Popup.Visible = true
-                task.wait(4)
-                if PopupSession == Id then
-                    Popup.Visible = false
+            if IsUnlockable(Index, Button) then
+                local Unlocked, Unlockables = Progress()
+
+                --Get half reward
+                if Unlocked == math.floor(Unlockables/2) then
+                    local Id = os.time()
+                    PopupSession = Id
+
+                    Remotes.IslandProgressRewardCollected:FireServer(Index, Remotes.GetTemplateButtonAttribute:InvokeServer(Button, "Island"))
+                    Popup.Visible = true
+                    task.wait(4)
+                    if PopupSession == Id then
+                        Popup.Visible = false
+                    end
+
                 end
 
             end
 
-        end
+        end)
 
-    end)
+    else
+        TycoonCompleted()
+    end
 
-else
-    TycoonCompleted()
 end
+
+
+
 
 task.spawn(function()
     repeat task.wait() until Modules.Settings
+
+    Init()
+    Modules.Rebirths.Rebirthed:Connect(Init)
 
     local AFKFishing = Paths.UI.Top.AFKFishing
     TycoonProgressBar.Toggle(not AFKFishing.Visible)

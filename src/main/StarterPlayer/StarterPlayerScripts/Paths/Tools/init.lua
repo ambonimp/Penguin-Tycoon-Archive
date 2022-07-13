@@ -9,12 +9,11 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
-local NewItemUI = Paths.UI.Full.NewItem
-local LastAdded = false
-
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
-local IsQA = (game.GameId == 3425594443)
+
+local IS_QA = (game.GameId == 3425594443)
+
 
 --- Tool Variables ---
 local TOOL_REPLACEMENTS = {
@@ -36,6 +35,7 @@ local KEYBINDS = {
 
 
 
+local NewItemUI = Paths.UI.Full.NewItem
 
 local Pinned = {}
 local CurrentlyEquipped = false
@@ -116,12 +116,10 @@ local function LoadTools(Whitelist)
 end
 
 
-
-
 --- Tool Functions ---
 function Tools.AddTool(Tool, isNew)
 	if Paths.UI.Tools:FindFirstChild(Tool) then return end
-	if IsQA and string.find(string.lower(Tool), "gold") then warn(Tool) return end
+	if IS_QA and string.find(string.lower(Tool), "gold") then warn(Tool) return end
 
 	if TOOL_REPLACEMENTS[Tool] then
 		Tools.RemoveTool(TOOL_REPLACEMENTS[Tool])
@@ -371,7 +369,8 @@ Remotes.Tools.OnClientEvent:Connect(function(Action, Tool, Temporary)
 	end
 end)
 
-if IsQA then
+
+if IS_QA then
 	for Tool in pairs(TOOL_REPLACEMENTS) do
 		if string.find(string.lower(Tool), "gold") then
 			TOOL_REPLACEMENTS[Tool] = nil

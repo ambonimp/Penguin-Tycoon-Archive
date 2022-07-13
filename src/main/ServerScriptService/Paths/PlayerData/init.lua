@@ -13,7 +13,7 @@ local Remotes = Paths.Remotes
 
 --- Other Variables ---
 local Store = "PlayerData#RELEASE"
-local IsTesting = (game.GameId == 3425588324)
+local IsTesting = (game.GameId == 3425588324) or (game.GameId == 3662230549)
 if IsTesting then Store = "TESTINGSTORE3" end
 local IsQA = (game.GameId == 3425594443)
 if IsQA then Store = "QASTORE1" end
@@ -32,7 +32,7 @@ local function getData(key)
 	end)
 end
 
-local function Defaults(Player)
+function PlayerData.Defaults(Player)
 	local Returning = {}
 
 	-- Session Stats
@@ -41,6 +41,7 @@ local function Defaults(Player)
 	Returning["Income"] = 0
 	Returning["Tycoon"] = {}
 	Returning["Penguins"] = {}
+	Returning["Rebirths"] = 0
 
 	Returning["My Penguin"] = {
 		["Name"] = Player.DisplayName;
@@ -338,13 +339,13 @@ local function SetupNewStats(Player)
 	local Data = PlayerData.sessionData[Player.Name]
 	if not Data then return end
 
-	Reconcile(Data, Defaults(Player))
+	Reconcile(Data, PlayerData.Defaults(Player))
 
 	if IsTesting then
 		Data["Money"] = 1000000000
 		Data["Gems"] = 1000000000
 	elseif IsQA then
-		Data["Money"] = 0
+		-- Data["Money"] = 0
 	end
 
 end
@@ -394,13 +395,15 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 
 	-- Group reward
-	pcall(function()
-		if Player:IsInGroup(12843903) and not PlayerData.sessionData[Player.Name]["Group Reward Claimed"] then
-			PlayerData.sessionData[Player.Name]["Group Reward Claimed"] = true
-			Modules.Income:AddMoney(Player, 5000)
-			Remotes.GroupReward:FireClient(Player, true)
-		end
-	end)
+	if not IsQA then
+		pcall(function()
+			if Player:IsInGroup(12843903) and not PlayerData.sessionData[Player.Name]["Group Reward Claimed"] then
+				PlayerData.sessionData[Player.Name]["Group Reward Claimed"] = true
+				Modules.Income:AddMoney(Player, 5000)
+				Remotes.GroupReward:FireClient(Player, true)
+			end
+		end)
+	end
 
 
 	-- Data check just incase
@@ -477,6 +480,10 @@ game.Players.PlayerAdded:Connect(function(Player)
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
 	NetworthStat.Value = Data["Stats"]["Total Money"]
+
+	local RebirthStat = Instance.new("IntValue", leaderstats)
+	RebirthStat.Name = "Rebirths"
+	RebirthStat.Value = Data["Rebirths"]
 
 
 	-- Updating Leaderstats

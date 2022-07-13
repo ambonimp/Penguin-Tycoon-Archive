@@ -126,11 +126,11 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 		--compass
 		elseif product == 1260546076 then
 			Modules.PlayerData.sessionData[Player.Name]["Compass"] = true
-			Paths.Remotes:WaitForChild("SailboatBuild"):InvokeClient(Player,"Compass")
+			Paths.Remotes:WaitForChild("SailboatBuild"):InvokeClient(Player,"Helper")
 		-- Metal Detector
 		elseif product == 1265460820 then
 			Modules.PlayerData.sessionData[Player.Name]["MetalDetector"] = true
-			Paths.Remotes:WaitForChild("PlaneBuild"):InvokeClient(Player,"Compass")
+			Paths.Remotes:WaitForChild("PlaneBuild"):InvokeClient(Player,"Helper")
 		-- Refresh Store
 		elseif product == 1233004731 then
 			Modules.Accessories:RefreshStore(Player)

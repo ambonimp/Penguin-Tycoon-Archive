@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local DataStoreService = game:GetService("DataStoreService")
 local Pickaxe = {}
 
@@ -23,6 +22,7 @@ local Char, MineTrack, Hrp
 
 local Rand = Random.new()
 
+local GoldPickaxePurchaseConn
 local FirstTeleport = false
 
 --- Functions ---
@@ -240,55 +240,64 @@ Paths.Player.CharacterRemoving:Connect(function()
     Char = nil
 end)
 
+function Init()
+    if Remotes.GetStat:InvokeServer("Tycoon")["Mine#1"]then
+        LoadMine(Paths.Tycoon.Tycoon:WaitForChild("Mine#1"))
+    else
+        local Conn
+        Conn = Paths.Tycoon.Tycoon.ChildAdded:Connect(function(Child)
+            if Child.Name == "Mine#1" then
+                Conn:Disconnect()
+                LoadMine(Child)
+            end
+        end)
 
-if Remotes.GetStat:InvokeServer("Tycoon")["Mine#1"]then
-    LoadMine(Paths.Tycoon.Tycoon:WaitForChild("Mine#1"))
-else
-    local Conn
-    Conn = Paths.Tycoon.Tycoon.ChildAdded:Connect(function(Child)
-        if Child.Name == "Mine#1" then
-            Conn:Disconnect()
-            LoadMine(Child)
+    end
+
+    -- Island
+    task.spawn(function()
+        -- Teleport back
+        local prompt = Instance.new("ProximityPrompt")
+    	prompt.HoldDuration = 0.25
+    	prompt.MaxActivationDistance = 50
+    	prompt.RequiresLineOfSight = false
+    	prompt.ActionText = "Return home"
+    	prompt.Parent = Island.Teleport:WaitForChild("Hitbox", math.huge)
+
+    	prompt.Triggered:Connect(function()
+            prompt.Enabled = false
+            Teleport(Paths.Player.Name)
+            prompt.Enabled = true
+        end)
+
+        local GoldPickaxe = Island.GoldPickaxe
+        GoldPickaxe:WaitForChild("Loader", math.huge)
+        if Remotes.GetStat:InvokeServer("Tycoon")["Gold Pickaxe#1"] then
+            if GoldPickaxe:FindFirstChild("Model") then
+                GoldPickaxe.Model:Destroy()
+            end
+        else
+            GoldPickaxePurchaseConn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(_, Button)
+                if Button == "Gold Pickaxe#1" then
+                    GoldPickaxePurchaseConn:Disconnect()
+                    GoldPickaxePurchaseConn = nil
+
+                    GoldPickaxe.Model:Destroy()
+                end
+            end)
         end
+
     end)
 
 end
 
--- Island
+Init()
 task.spawn(function()
-    -- Teleport back
-    local prompt = Instance.new("ProximityPrompt")
-	prompt.HoldDuration = 0.25
-	prompt.MaxActivationDistance = 50
-	prompt.RequiresLineOfSight = false
-	prompt.ActionText = "Return home"
-	prompt.Parent = Island.Teleport:WaitForChild("Hitbox", math.huge)
-
-	prompt.Triggered:Connect(function()
-        prompt.Enabled = false
-        Teleport(Paths.Player.Name)
-        prompt.Enabled = true
+    repeat task.wait() until Modules.Rebirths
+    Modules.Rebirths.Rebirthed:Connect(function()
+        Init()
     end)
-
-    local GoldPickaxe = Island.GoldPickaxe
-    GoldPickaxe:WaitForChild("Loader", math.huge)
-    if Remotes.GetStat:InvokeServer("Tycoon")["Gold Pickaxe#1"] then
-        if GoldPickaxe:FindFirstChild("Model") then
-            GoldPickaxe.Model:Destroy()
-        end
-    else
-        local Conn
-        Conn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(_, Button)
-            if Button == "Gold Pickaxe#1" then
-                Conn:Disconnect()
-                GoldPickaxe.Model:Destroy()
-            end
-        end)
-    end
-
 end)
-
-
 Remotes.MiningLevelUp.OnClientEvent:Connect(DestroyDividers)
 
 return Pickaxe

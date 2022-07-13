@@ -9,5 +9,5 @@ return {
         ["Metal Strip"] = "Military",
         ["Fins 1"] = "MiningIsland",
         ["Fins 2"] = "Hospital"
-    }
+    },
 }

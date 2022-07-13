@@ -37,16 +37,22 @@ function Initiate:InitiateButtons()
 	for _, Tycoon in pairs(workspace.Tycoons:GetChildren()) do
 		-- Fired when an item is purchased in a tycoon
 		Tycoon.Buttons.ChildRemoved:Connect(function(ButtonRemoved)
-			local Owner = Tycoon.Owner.Value
-			local Player = game.Players:FindFirstChild(Owner)
+			if ButtonRemoved:GetAttribute("Purchased") then -- Could potentially be removed for rebirthing
+				local Owner = Tycoon.Owner.Value
+				local Player = game.Players:FindFirstChild(Owner)
 
-			if Player then
-				Remotes.ButtonPurchased:FireClient(Player, GetIslandIndex(ButtonRemoved), ButtonRemoved.Name)
+				if Player then
+					Remotes.ButtonPurchased:FireClient(Player, GetIslandIndex(ButtonRemoved), ButtonRemoved.Name, ButtonRemoved:GetAttribute("Island"))
 
-				for _, Button in pairs(Buttons:GetChildren()) do
-					if Button:GetAttribute("Dependency") == ButtonRemoved.Name then
-						Modules.Buttons:NewButton(Player, Button.Name)
+					for _, Button in pairs(Buttons:GetChildren()) do
+						if Button:GetAttribute("Dependency") == ButtonRemoved.Name then
+							if not (Button.Name == "Pets#1" and Modules.PlayerData.sessionData.Rebirths ~= 0) then
+								Modules.Buttons:NewButton(Player, Button.Name)
+							end
+						end
+
 					end
+
 				end
 
 			end
