@@ -20,13 +20,6 @@ function Rocket.Load(Player)
     if Data then
         if Data["RocketUnlocked"][1] then
             Unlock(Player)
-
---[[             if not Data.Tycoon["New Island!#32"] then
-                Data.Tycoon["New Island!#32"] = true
-                Modules.Placement:NewItem(Player, "New Island!#32", true)
-
-            end *]]
-
         end
 
     end

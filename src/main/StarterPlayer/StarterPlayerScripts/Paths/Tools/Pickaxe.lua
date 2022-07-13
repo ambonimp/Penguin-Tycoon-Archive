@@ -1,4 +1,3 @@
-local Workspace = game:GetService("Workspace")
 local DataStoreService = game:GetService("DataStoreService")
 local Pickaxe = {}
 

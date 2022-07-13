@@ -6,6 +6,8 @@ Paths.UI = {}
 
 
 function Paths.Initiliaze()
+	game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
+	game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
 
 	--- Initializing Services ---
 	-- print("Load services")
@@ -20,6 +22,7 @@ function Paths.Initiliaze()
 	Paths.Services.ContextActionService = game:GetService("ContextActionService");
 	Paths.Services.CollectionService = game:GetService("CollectionService");
 	Paths.Services.PhysicsService = game:GetService("PhysicsService")
+	Paths.Services.ProximityPromptService = game:GetService("ProximityPromptService")
 
 	Paths.Services.GuiService = game:GetService("GuiService");
 	
@@ -62,6 +65,8 @@ function Paths.Initiliaze()
 	-- Other Modules
 	-- print("Load Modules")
 	ModuleLoader.Register("Setup", script.Setup);
+
+	ModuleLoader.Register("FuncLib", Paths.Services.RStorage.Modules.FuncLib)
 	ModuleLoader.Register("Format", Paths.Services.RStorage.Modules.Format)
 	ModuleLoader.Register("GameFunctions", Paths.Services.RStorage.Modules.GameFunctions)
 	ModuleLoader.Register("GameInfo", Paths.Services.RStorage.Modules.GameInfo)
@@ -76,7 +81,6 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("GroupReward", script.GroupReward)
 	ModuleLoader.Register("PlaceIds", Paths.Services.RStorage.Modules.PlaceIds)
 	ModuleLoader.Register("FishingConfig", Paths.Services.RStorage.Modules.FishingConfig)
-	ModuleLoader.Register("FuncLib", Paths.Services.RStorage.Modules.FuncLib)
 	ModuleLoader.Register("Maid", Paths.Services.RStorage.Modules.Maid)
 	ModuleLoader.Register("Signal", Paths.Services.RStorage.Modules.Signal)
 	ModuleLoader.Register("Verification", script.Verification)
@@ -88,8 +92,6 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("DeviceDetector", script.DeviceDetector)
 	ModuleLoader.Register("Feedback", script.Feedback)
 	
-
-
 
 	-- Tool Modules
 	ModuleLoader.Register("Tools", script.Tools);
@@ -109,6 +111,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
 	ModuleLoader.Register("TycoonTeleporting", script.UI.TycoonTeleporting)
 	ModuleLoader.Register("PlatformAdjustments", script.UI.PlatformAdjustments)
+	ModuleLoader.Register("PlatformAdjustments", script.UI.Snackbars)
 	ModuleLoader.Register("UI", script.UI)
 	ModuleLoader.Register("Index", script.UI.Index)
 	ModuleLoader.Register("Achievements", script.Achievements)
@@ -140,6 +143,8 @@ function Paths.Initiliaze()
 	-- print("tycoon/fishing modules")
 	-- Other Modules (That have to be required after)
 	ModuleLoader.Register("Tycoon", script.Tycoon)
+	ModuleLoader.Register("Rebirths", script.Tycoon.Rebirths)
+	ModuleLoader.Register("BuildA", script.Tycoon.BuildA);
 	ModuleLoader.Register("Fishing", script.Tycoon.Fishing)
 	ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
 	ModuleLoader.Register("Rocket", script.Tycoon.Rocket)

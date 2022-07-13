@@ -35,6 +35,8 @@ function Loading:LoadTycoon(Player)
 	end
 	
 	Modules.Buttons:NewButton(Player, "Snow#1")
+	Modules.Rebirths.LoadRebirth(Player)
+
 end
 
 

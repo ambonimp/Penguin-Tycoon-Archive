@@ -84,6 +84,7 @@ function Paths.Initiliaze()
 	-- Tycoon Modules
 	Paths.Modules.Tycoon = require(script.Tycoon)
 	Paths.Modules.Initiate = require(script.Tycoon.Initiate)
+	Paths.Modules.Rebirths = require(script.Tycoon.Rebirths)
 	Paths.Modules.Vehicles = require(script.Vehicles)
 	Paths.Modules.Ownership = require(script.Tycoon.Ownership)
 	Paths.Modules.Purchasing = require(script.Tycoon.Purchasing)

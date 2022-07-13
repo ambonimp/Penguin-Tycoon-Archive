@@ -623,22 +623,33 @@ startScreen.Buttons.Exit.MouseButton1Down:Connect(function()
 end)
 
 -- open
-for i = 1, 2 do
-	local name = "Gaming Desk#" .. i
+local function init()
+	computers = {}
 
-	if remotes.GetStat:InvokeServer("Tycoon")[name]then
-		loadComputer(paths.Tycoon.Tycoon:WaitForChild(name))
-	else
-		local conn
-		conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
-			if child.Name == name then
-				conn:Disconnect()
-				loadComputer(child)
-			end
-		end)
+	for i = 1, 2 do
+		local name = "Gaming Desk#" .. i
+
+		if remotes.GetStat:InvokeServer("Tycoon")[name]then
+			loadComputer(paths.Tycoon.Tycoon:WaitForChild(name))
+		else
+			local conn
+			conn = paths.Tycoon.Tycoon.ChildAdded:Connect(function(child)
+				if child.Name == name then
+					conn:Disconnect()
+					loadComputer(child)
+				end
+			end)
+
+		end
+
 	end
 
 end
 
+init()
+task.spawn(function()
+    repeat task.wait() until modules.Rebirths
+    modules.Rebirths.Rebirthed:Connect(init)
+end)
 
 return minigame

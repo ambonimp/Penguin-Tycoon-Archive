@@ -13,7 +13,7 @@ local Remotes = Paths.Remotes
 
 --- Other Variables ---
 local Store = "PlayerData#RELEASE"
-local IsTesting = (game.GameId == 3425588324)
+local IsTesting = (game.GameId == 3425588324) or (game.GameId == 3662230549)
 if IsTesting then Store = "TESTINGSTORE3" end
 local IsQA = (game.GameId == 3425594443)
 if IsQA then Store = "QASTORE1" end
@@ -32,7 +32,7 @@ local function getData(key)
 	end)
 end
 
-local function Defaults(Player)
+function PlayerData.Defaults(Player)
 	local Returning = {}
 
 	-- Session Stats
@@ -41,6 +41,7 @@ local function Defaults(Player)
 	Returning["Income"] = 0
 	Returning["Tycoon"] = {}
 	Returning["Penguins"] = {}
+	Returning["Rebirths"] = 0
 
 	Returning["My Penguin"] = {
 		["Name"] = Player.DisplayName;
@@ -338,7 +339,7 @@ local function SetupNewStats(Player)
 	local Data = PlayerData.sessionData[Player.Name]
 	if not Data then return end
 
-	Reconcile(Data, Defaults(Player))
+	Reconcile(Data, PlayerData.Defaults(Player))
 
 	if IsTesting then
 		Data["Money"] = 1000000000

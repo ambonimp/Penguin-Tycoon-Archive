@@ -1,5 +1,5 @@
 local Players = game:GetService("Players")
--- Chat features; Chat tag, 
+-- Chat features; Chat tag,
 
 local Chat = {}
 
@@ -18,7 +18,7 @@ function Chat:ApplyChatTag(player)
 	coroutine.wrap(function()
 		local Data = Modules.PlayerData.sessionData[player.Name]
 		if not Data then return end
-		
+
 		local GroupRank = 0
 		pcall(function()
 			GroupRank = player:GetRankInGroup(12843903)
@@ -34,7 +34,7 @@ function Chat:ApplyChatTag(player)
 			[120] = {{TagText = "⛏️ Contributor", TagColor = Color3.new(138/255, 255/255, 105/255)}}, -- Contributor
 
 			["VIP"] = {{TagText = "⭐ VIP", TagColor = Color3.new(255/255, 234/255, 0/255)}}, -- VIP
-			
+
 			["Verified"] = {{TagText = "☑️ Verified", TagColor = Color3.fromRGB(48, 176, 255)}}, -- Verified
 
 			[1503429436] = {{TagText = "⚒️ Dev", TagColor = Color3.fromRGB(107, 142, 255)}}, -- Dz3rro
@@ -42,9 +42,9 @@ function Chat:ApplyChatTag(player)
 			[75787254] = {{TagText = "⚒ Dev", TagColor = Color3.fromRGB(255, 135, 135)}}, -- Kippiiq
 			[2215273802] = {{TagText = "⚒ Dev", TagColor = Color3.fromRGB(144, 238, 144)}} -- unsigned_var
 		}
-		
+
 		local speaker = Services.ChatService:GetSpeaker(player.Name)
-		
+
 		if not speaker then
 			for i = 1, 10 do -- 10 retries to get speaker
 				speaker = Services.ChatService:GetSpeaker(player.Name)
@@ -52,7 +52,7 @@ function Chat:ApplyChatTag(player)
 				task.wait(0.2)
 			end
 		end
-		
+
 		if Data["Settings"]["Chat Tag"] then
 			if GroupRank <= 1 and Data["Twitter Verification"] then
 				speaker:SetExtraData("Tags", Tags["Verified"])
@@ -75,8 +75,8 @@ function Chat:ApplyChatTag(player)
 			["Boost 2"] = "Super Fishing Luck",
 			["Boost 3"] = "Ultra Fishing Luck",
 		}
-		
-		if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 or game.PlaceId == 9549503548 then
+
+		if game.PlaceId == 9925648281 or game.PlaceId == 9118461324 or game.PlaceId == 9118436978 or game.PlaceId == 9549503548 then
 			player.Chatted:Connect(function(msg)
 				if msg == "make super" then
 					for i,v in pairs (workspace.Tycoons:FindFirstChild(player:GetAttribute("Tycoon")).Tycoon:GetChildren()) do
@@ -93,9 +93,9 @@ function Chat:ApplyChatTag(player)
 				elseif msg == "Boosts" then
 					Modules.Boosts.givePlayerBoost(player,"x3 Money",3)
 					Modules.Boosts.givePlayerBoost(player,"Super Fishing Luck",3)
-					Modules.Boosts.givePlayerBoost(player,"Ultra Fishing Luck",3)		
+					Modules.Boosts.givePlayerBoost(player,"Ultra Fishing Luck",3)
 					Modules.Boosts.givePlayerBoost(player,"Ultra Lucky Egg",3)
-					Modules.Boosts.givePlayerBoost(player,"Super Lucky Egg",3)			
+					Modules.Boosts.givePlayerBoost(player,"Super Lucky Egg",3)
 				elseif msg == "threefish" then
 					player:SetAttribute("ThreeFish",true)
 				elseif msg == "reset" then
@@ -110,10 +110,33 @@ function Chat:ApplyChatTag(player)
 					local Data = Paths.Modules.PlayerData.sessionData[player.Name]
 					if Data then
 						local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
-						
+
 						Paths.Modules.Income:AddMoney(player,PlayerIncome*1000,"-1")
 					end
+				elseif msg == "complete" then
+					if Data then
+						for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
+							local Name = Button.Name
+							if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" then
+								Data.Tycoon[Name] = true
+								Data.Income += Button:GetAttribute("Income") or 0
+
+								if Button:GetAttribute("Type") == "Penguin" then
+									Modules.Penguins:PenguinPurchased(player, Name)
+								else
+									Data.Income += Button:GetAttribute("Income") or 0
+								end
+
+							end
+
+						end
+
+					end
+
+					task.wait(0.5)
+					player:Kick("Completing your tycoon")
 				end
+
 			end)
 		end
 	end)()
