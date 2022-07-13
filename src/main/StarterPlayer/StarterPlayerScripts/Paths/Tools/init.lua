@@ -12,8 +12,8 @@ local Remotes = Paths.Remotes
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 
-
 local IS_QA = (game.GameId == 3425594443)
+
 
 --- Tool Variables ---
 local TOOL_REPLACEMENTS = {
@@ -368,6 +368,7 @@ Remotes.Tools.OnClientEvent:Connect(function(Action, Tool, Temporary)
 		Tools.RemoveTool(Tool)
 	end
 end)
+
 
 if IS_QA then
 	for Tool in pairs(TOOL_REPLACEMENTS) do
