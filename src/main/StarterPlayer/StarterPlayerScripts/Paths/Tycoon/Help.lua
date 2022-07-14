@@ -23,20 +23,19 @@ local CurrentPointerButton = nil
 
 local LastIsland
 
-local function GetClosestButton(Buttons)
-	local Closest
-	local ClosestDist = math.huge
+local function GetCheapestButton(Buttons)
+	local Cheapest
+	local CheapestPrice = math.huge
 
-	local Root = Paths.Player.Character.HumanoidRootPart.Position
 	for _, Button in ipairs(Buttons) do
-		local Dist = (Root - Button.Hitbox.Position).Magnitude
-		if Dist < ClosestDist then
-			ClosestDist = Dist
-			Closest = Button
+		local Price = Button:GetAttribute("Price")
+		if Price < CheapestPrice then
+			CheapestPrice = Price
+			Cheapest = Button
 		end
 	end
 
-	return Closest
+	return Cheapest
 end
 
 local function GetButtonsOnIsland(Buttons)
@@ -90,14 +89,14 @@ function Help:EnablePointerBeam()
 			
 			local ChosenButton
 			if #AffordableButtons > 0 then
-				-- ChosenButton = GetClosestButton(GetButtonsOnIsland(AffordableButtons))
+				ChosenButton = GetCheapestButton(GetButtonsOnIsland(AffordableButtons))
 				if not ChosenButton then
-					ChosenButton = GetClosestButton(AffordableButtons)
+					ChosenButton = GetCheapestButton(AffordableButtons)
 				end
 			elseif #UnaffordableButtons > 0 then
-				-- ChosenButton = GetClosestButton(GetButtonsOnIsland(UnaffordableButtons))
+				ChosenButton = GetCheapestButton(GetButtonsOnIsland(UnaffordableButtons))
 				if not ChosenButton then
-					ChosenButton = GetClosestButton(UnaffordableButtons)
+					ChosenButton = GetCheapestButton(UnaffordableButtons)
 				end
 			end
 			

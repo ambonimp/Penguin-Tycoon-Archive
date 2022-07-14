@@ -27,9 +27,9 @@ local Handlers = {
 		end
 	end,
 
-	["Progress Bar"] = function(Value)
+--[[ 	["Progress Bar"] = function(Value)
 		Modules.TycoonProgressBar.Toggle(Value)
-	end,
+	end, *]]
 
 	["Night"] = function(Value)
 		Lighting.ClockTime = if Value then 22 else 12

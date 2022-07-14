@@ -41,7 +41,7 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
         if Data.Tycoon[UPGRADE] then
             local Purchased
             if Currency == "Money" then
-                if Data.Money >= 10^10 then
+                if Data.Money >= 10 ^ 9 + (10 ^ 9) * 0.25 * Data.Rebirths then
                     Purchased = true
                 end
             else -- Gems
@@ -52,7 +52,7 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
 
             if Purchased then
                 Data.Rebirths += 1
-                Data["Income Multiplier"] += 0.002
+                Data["Income Multiplier"] += 0.1
 
                 Client.leaderstats.Rebirths.Value = Data.Rebirths
 
@@ -63,8 +63,8 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
                 -- Data.Gems = Defaults.Gems
 
                 Data.Tycoon = Defaults.Tycoon
-                Data.Woodcutting = Defaults.Woodcutting
-                Data.Mining = Defaults.Mining
+                -- Data.Woodcutting = Defaults.Woodcutting
+                -- Data.Mining = Defaults.Mining
                 Data.YoutubeStats = Defaults.YoutubeStats
                 Data.PlaneUnlocked = Defaults.PlaneUnlocked
                 Data.RocketUnlocked = Defaults.RocketUnlocked
@@ -81,10 +81,7 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
                 Modules.Ownership:UnclaimTycoon(Tycoon)
                 Modules.Tycoon:InitializePlayer(Client, Tycoon)
 
-                return true
-
-            else
-                return
+                return Data.Rebirths
             end
 
         end
