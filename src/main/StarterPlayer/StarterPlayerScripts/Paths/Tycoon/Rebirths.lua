@@ -10,10 +10,16 @@ local UPGRADE = "RebirthMachine"
 local Frame = Paths.UI.Center.Rebirth
 
 
-local PRICE_MONEY = 10^10
-local PRICE_GEMS = 10^4
+local priceGems = 10^4
+local priceMoney
 
 Rebirths.Rebirthed = Modules.Signal.new()
+
+local function updateRebirths(Rebirths)
+    priceMoney = 10 ^ 9 + (10 ^ 9) * 0.25 * Rebirths
+    Frame.Description.Text = string.format('By rebirthing, you reset your entire tycoon and gain a <font color="#ffe600">%s%%</font> money boost!.', 1 + (Rebirths + 1) / 10)
+    Frame.Purchase.Money.Amount.Text = Modules.Format:FormatAbbreviated(10 ^ 9 + (10 ^ 9) * 0.25 * Rebirths)
+end
 
 local function CreatePrompt(Parent, ActionText, ObjectText)
     local Prompt = Instance.new("ProximityPrompt")
@@ -30,7 +36,7 @@ end
 local function LoadMachine()
     local Prompt = CreatePrompt(Paths.Tycoon.Tycoon:WaitForChild(UPGRADE):WaitForChild("PromptPart"), "Rebirth")
     Prompt.Triggered:Connect(function()
-        Frame.Description.Text = string.format('By rebirthing, you reset your entire tycoon and gain a <font color="#ffe600">%sx</font> money boost!.', 1 + (Remotes.GetStat:InvokeServer("Rebirths") + 1) * 0.002)
+
         Modules.Buttons:UIOn(Frame, true)
     end)
 end
@@ -47,11 +53,16 @@ local function Init()
                 LoadMachine()
             end
         end)
+
     end
+
 end
 
-local function Rebirth()
+local function Rebirth(Count)
+    if not Count then return end
+
     Rebirths.Rebirthed:Fire()
+    updateRebirths(Count)
 
     -- SFX
     Modules.UIAnimations.Confetti()
@@ -63,8 +74,9 @@ local function Rebirth()
 
 end
 
+-- Init
+updateRebirths(Remotes.GetStat:InvokeServer("Rebirths"))
 Init()
-
 
 -- UI
 Frame.Exit.MouseButton1Down:Connect(function()
@@ -72,29 +84,25 @@ Frame.Exit.MouseButton1Down:Connect(function()
 end)
 
 Frame.Purchase.Money.MouseButton1Down:Connect(function()
-    if Remotes.GetStat:InvokeServer("Money") >= PRICE_MONEY then
+    if Remotes.GetStat:InvokeServer("Money") >= priceMoney then
         Modules.UIAnimations.BlinkTransition(function()
-            if Remotes.Rebirth:InvokeServer("Money") then
-                Rebirth()
-            end
+            Rebirth(Remotes.Rebirth:InvokeServer("Money"))
         end)
 
     else
-        local ProductRequired = Modules.GameFunctions:GetRequiredMoneyProduct(Paths.Player, PRICE_MONEY)
+        local ProductRequired = Modules.GameFunctions:GetRequiredMoneyProduct(Paths.Player, priceMoney)
         Services.MPService:PromptProductPurchase(Paths.Player, ProductRequired)
     end
 
 end)
 
 Frame.Purchase.Gems.MouseButton1Down:Connect(function()
-    if Remotes.GetStat:InvokeServer("Gems") >= PRICE_GEMS then
+    if Remotes.GetStat:InvokeServer("Gems") >= priceGems then
         Modules.UIAnimations.BlinkTransition(function()
-            if Remotes.Rebirth:InvokeServer("Gems") then
-                Rebirth()
-            end
+            Rebirth(Remotes.Rebirth:InvokeServer("Gems"))
         end)
     else
-        local ProductRequired = Modules.GameFunctions:GetRequiredGemProduct(PRICE_GEMS)
+        local ProductRequired = Modules.GameFunctions:GetRequiredGemProduct(priceGems)
         Services.MPService:PromptProductPurchase(Paths.Player, ProductRequired)
     end
 end)

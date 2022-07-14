@@ -24,7 +24,7 @@ local AllGamepasses = {
 	41205759, -- Powered Glider
 	43183311, -- Gold Axe
 	45764173, -- Jet,
-	47438416, --rainbow fishing rod,
+	47438416, -- rainbow fishing rod,
 	47438471, -- x2 gems
 	47438595, -- map teleport
 	49090546, -- x3 fish capture

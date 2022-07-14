@@ -28,7 +28,6 @@ function Penguins:SetupPenguin(Penguin)
 			Modules.PenguinsUI:SetupPenguin(Penguin)
 
 			ProximityPrompt.Triggered:Connect(function(Player)
-				
 				Modules.Customization:EnterUI(Penguin)
 			end)
 		end

@@ -1,5 +1,4 @@
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AnimationPriority = Enum.AnimationPriority
 local Animations = ReplicatedStorage:WaitForChild("Animations")
@@ -40,6 +39,7 @@ function AnimationService.ConnectFishingModule(FM)
 end
 
 function AnimationService.PlayThrow(AFK)
+	AnimationService.PlayIdle()
 	FishingModule.LastUpdate.FishingAnimationActive = true
 
 	Throw:Play(0.1, nil , 1 * ReplicatedStorage.Remotes.GetBonus:InvokeServer("Fishing","Speed"))
@@ -51,7 +51,6 @@ function AnimationService.PlayThrow(AFK)
 			return
 		end
 
-		-- AnimationService.PlayIdle()
 		task.wait(0.1)
 		FishingModule.Throw()
 

@@ -29,11 +29,11 @@ return {
         AlwaysVisible = true,
         LayoutOrder = 5,
     },
-    ["Progress Bar"] = {
+--[[     ["Progress Bar"] = {
         Default = false,
         AlwaysVisible = true,
         LayoutOrder = 6,
-    },
+    }, *]]
     ["Night"] = {
         Default = false,
         AlwaysVisible = true,

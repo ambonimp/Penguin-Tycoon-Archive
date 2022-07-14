@@ -78,6 +78,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("AllEyes", Paths.Services.RStorage.Modules.AllEyes)
 	ModuleLoader.Register("AllEmotes", Paths.Services.RStorage.Modules.AllEmotes)
 	ModuleLoader.Register("Indicators", script.Setup.Indicators)
+	ModuleLoader.Register("PassButtons", script.Setup.PassButtons)
 	ModuleLoader.Register("GroupReward", script.GroupReward)
 	ModuleLoader.Register("PlaceIds", Paths.Services.RStorage.Modules.PlaceIds)
 	ModuleLoader.Register("FishingConfig", Paths.Services.RStorage.Modules.FishingConfig)
@@ -146,7 +147,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Rebirths", script.Tycoon.Rebirths)
 	ModuleLoader.Register("BuildA", script.Tycoon.BuildA);
 	ModuleLoader.Register("Fishing", script.Tycoon.Fishing)
-	ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
+	-- ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
 	ModuleLoader.Register("Rocket", script.Tycoon.Rocket)
 
 
