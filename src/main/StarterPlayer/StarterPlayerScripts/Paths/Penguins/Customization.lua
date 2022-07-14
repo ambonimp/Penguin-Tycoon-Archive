@@ -138,6 +138,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		-- Get penguin info
 		CustomizationUI.Instant.Position = UDim2.fromScale(0.838,1.015)
 		CustomizationUI.Super.Visible = true
+		CustomizationUI.PenguinNameBG.UpgradeInfo.Visible = true
 
 		local Level = tonumber(string.split(string.split(Penguin.Info.PenguinInfo.PenguinLevel.Text, "/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL))[1], " ")[2])
 		if Level == 30 then
@@ -163,6 +164,8 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		end
 
 	else -- For the player's penguin
+		CustomizationUI.PenguinNameBG.UpgradeInfo.Visible = false
+
 		local Level = Paths.Player:GetAttribute("Level")
 		CustomizationUI.Instant.Position = UDim2.fromScale(0.645,1.015)
 		CustomizationUI.Super.Visible = false

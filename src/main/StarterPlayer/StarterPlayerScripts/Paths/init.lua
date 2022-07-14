@@ -146,7 +146,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Rebirths", script.Tycoon.Rebirths)
 	ModuleLoader.Register("BuildA", script.Tycoon.BuildA);
 	ModuleLoader.Register("Fishing", script.Tycoon.Fishing)
-	ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
+	-- ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
 	ModuleLoader.Register("Rocket", script.Tycoon.Rocket)
 
 

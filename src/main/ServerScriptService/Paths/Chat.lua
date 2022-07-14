@@ -160,6 +160,12 @@ Players.PlayerAdded:Connect(function(player)
 					player:SetAttribute("Money", Data["Money"])
 				end
 
+			elseif msg == "TestingMoney" then
+				local Data = Paths.Modules.PlayerData.sessionData[player.Name]
+				if Data then
+					Data.Money += 123691937
+					player:SetAttribute("Money", Data["Money"])
+				end
 			end
 
 		end)

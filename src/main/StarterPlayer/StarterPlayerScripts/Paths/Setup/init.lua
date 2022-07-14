@@ -47,7 +47,7 @@ Paths.Services.ProximityPromptService.PromptTriggered:Connect(function(Prompt, P
 			Modules.Buttons:UIOn(UI.Center.Store,true)
 
         elseif Prompt.ActionText == "Plane" then
-            Modules.Buttons:UIOff(UI.Center.BoatUnlock)
+            Modules.Buttons:UIOff(UI.Center.SailboatUnlock)
             Modules.Buttons:UIOn(UI.Center.PlaneUnlock,true)
 
 		elseif Prompt.ObjectText == "Poofies Egg" then

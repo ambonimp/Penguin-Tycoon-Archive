@@ -93,14 +93,22 @@ function EarningParticle(Earned)
 end
 
 local function DestroyDividers(Level)
-    local Dividers = Island.Zones:WaitForChild(Level):WaitForChild("Dividers", math.huge)
-    Dividers:Destroy()
+    Island.Zones:WaitForChild(Level).Dividers:Destroy()
 end
 
 local function UpdateDividerText(Level)
     local Dividers = Island.Zones[Level]:FindFirstChild("Dividers")
     if Dividers then
-        for _, Divider in ipairs(Dividers:GetChildren()) do
+        -- Make sure the island is streamed in
+        local ChildrenCount = Dividers:GetAttribute("Children")
+        local Children
+
+        repeat
+            task.wait(1)
+            Children = Dividers:GetChildren()
+        until #Children == ChildrenCount
+
+        for _, Divider in ipairs(Children) do
             local PrevDetails = Modules.MiningDetails[Level-1]
             local Remainder = Modules.MiningDetails[Level].Requirement - Remotes.GetStat:InvokeServer("Mining").Mined[PrevDetails.Ore]
 
@@ -143,23 +151,6 @@ local function LoadMine(Mine)
         prompt.Enabled = false
         Teleport("Mining Island")
         prompt.Enabled = true
-
-
-        if not FirstTeleport then
-            FirstTeleport = false
-            -- Initialize dividers
-            local Level = Remotes.GetStat:InvokeServer("Mining").Level
-
-            for i = 2, Level do
-                DestroyDividers(i)
-            end
-
-            for i = Level + 1, #Modules.MiningDetails do
-                UpdateDividerText(i)
-            end
-
-        end
-
     end)
 
 end
@@ -291,7 +282,24 @@ function Init()
 
 end
 
+task.spawn(function()
+    -- Initialize dividers
+    local Level = Remotes.GetStat:InvokeServer("Mining").Level
+
+    for i = 2, Level do
+        DestroyDividers(i)
+    end
+
+    for i = Level + 1, #Modules.MiningDetails do
+        UpdateDividerText(i)
+    end
+
+end)
+
+-- Initialize teleportation1
 Init()
+
+
 task.spawn(function()
     repeat task.wait() until Modules.Rebirths
     Modules.Rebirths.Rebirthed:Connect(function()

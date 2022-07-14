@@ -372,6 +372,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 
 	local Data = PlayerData.sessionData[Player.Name]
+
 	-- Badges
 	Modules.Badges:AwardBadge(Player.UserId, 2124902910) -- Welcome
 	Modules.Badges:AwardBadge(Player.UserId, 2124907090) -- Island 1
