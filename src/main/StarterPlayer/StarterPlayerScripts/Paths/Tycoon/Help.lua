@@ -11,9 +11,47 @@ local UI = Paths.UI
 
 local Dependency = Paths.Dependency:WaitForChild(script.Name)
 
+
+local IGNORED_BUTTONS = {
+	["Glider#1"] = true,
+	["Pets#1"] = true,
+}
+
 --- Help Variables ---
 local PointerButton = UI.Right.Buttons.Pointer
-local CurrentPointerItem = nil
+local CurrentPointerButton = nil
+
+local LastIsland
+
+local function GetClosestButton(Buttons)
+	local Closest
+	local ClosestDist = math.huge
+
+	local Root = Paths.Player.Character.HumanoidRootPart.Position
+	for _, Button in ipairs(Buttons) do
+		local Dist = (Root - Button.Hitbox.Position).Magnitude
+		if Dist < ClosestDist then
+			ClosestDist = Dist
+			Closest = Button
+		end
+	end
+
+	return Closest
+end
+
+local function GetButtonsOnIsland(Buttons)
+	local Returning = {}
+
+	if LastIsland then
+		for _, Button in ipairs(Buttons) do
+			if Button:GetAttribute("Island") == LastIsland then
+				table.insert(Returning, Button)
+			end
+		end
+	end
+
+	return Returning
+end
 
 
 --- Help Functions ---
@@ -24,42 +62,47 @@ function Help:EnablePointerBeam()
 		local Root = Char:FindFirstChild("HumanoidRootPart") 
 		
 		if Root then
-			local AllItems = Paths.Tycoon.Buttons:GetChildren()
+			local Buttons = Paths.Tycoon.Buttons:GetChildren()
 			local PlayerMoney = Paths.Player:GetAttribute("Money")
 			
-			local ChosenItem = nil
+			local ChosenButton = nil
 			
 			-- Find random purchaseable item AFFORDABLE
-			local AffordableItems = {}
-			local NonRobuxItems = {}
-			local AllValidItems = {}
-			for i, v in pairs(AllItems) do
-				if v:FindFirstChild("Hitbox") then
-					local Price = v:GetAttribute("Price")
-					local Type = v:GetAttribute("CurrencyType")
-					if Type ~= "Robux" and Type ~= "Gamepass" then
+			local AffordableButtons = {}
+			local UnaffordableButtons = {}
+			for _, Button in pairs(Buttons) do
+				if Button:FindFirstChild("Hitbox") then
+					local Price = Button:GetAttribute("Price")
+					local Type = Button:GetAttribute("CurrencyType")
+
+					if Type ~= "Robux" and Type ~= "Gamepass" and not IGNORED_BUTTONS[Button.Name] then
 						if PlayerMoney >= Price and Type ~= "Robux" then
-							table.insert(AffordableItems, v)
-						elseif Type ~= "Robux" then
-							table.insert(NonRobuxItems, v)
+							table.insert(AffordableButtons, Button)
 						else
-							table.insert(AllValidItems, v)
+							table.insert(UnaffordableButtons, Button)
 						end
+
 					end
+
+				end
+
+			end
+			
+			local ChosenButton
+			if #AffordableButtons > 0 then
+				-- ChosenButton = GetClosestButton(GetButtonsOnIsland(AffordableButtons))
+				if not ChosenButton then
+					ChosenButton = GetClosestButton(AffordableButtons)
+				end
+			elseif #UnaffordableButtons > 0 then
+				-- ChosenButton = GetClosestButton(GetButtonsOnIsland(UnaffordableButtons))
+				if not ChosenButton then
+					ChosenButton = GetClosestButton(UnaffordableButtons)
 				end
 			end
 			
-			if #AffordableItems > 0 then
-				ChosenItem = AffordableItems[Random.new():NextInteger(1, #AffordableItems)]
-			elseif #NonRobuxItems > 0 then
-				ChosenItem = NonRobuxItems[Random.new():NextInteger(1, #NonRobuxItems)]
-			elseif #AllValidItems > 0 then
-				ChosenItem = AllValidItems[Random.new():NextInteger(1, #AllValidItems)]
-			end
-			
-			
 			-- Else find a random available item, if none can be afforded
-			if not ChosenItem then Help:DisablePointerBeam() return end
+			if not ChosenButton then Help:DisablePointerBeam() return end
 			
 			-- Make disable text visible
 			PointerButton.Enable.Visible = false
@@ -68,12 +111,12 @@ function Help:EnablePointerBeam()
 			-- Create beam
 			local A1 = Root:FindFirstChild("Attachment") or Instance.new("Attachment", Root)
 			
-			local A2 = ChosenItem.Hitbox:FindFirstChild("Attachment") or Instance.new("Attachment", ChosenItem.Hitbox)
+			local A2 = ChosenButton.Hitbox:FindFirstChild("Attachment") or Instance.new("Attachment", ChosenButton.Hitbox)
 			
 			local Beam = Root:FindFirstChild("Pointer") or Dependency.Pointer:Clone()
 			Beam.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, ChosenItem.Part.Color), 
-				ColorSequenceKeypoint.new(1, ChosenItem.Part.Color)
+				ColorSequenceKeypoint.new(0, ChosenButton.Part.Color),
+				ColorSequenceKeypoint.new(1, ChosenButton.Part.Color)
 			})
 				
 				
@@ -81,7 +124,7 @@ function Help:EnablePointerBeam()
 			Beam.Attachment0 = A1
 			Beam.Attachment1 = A2
 			
-			CurrentPointerItem = ChosenItem
+			CurrentPointerButton = ChosenButton
 		end
 	end
 end
@@ -95,7 +138,7 @@ function Help:DisablePointerBeam()
 		if Root then
 			local Beam = Root:FindFirstChild("Pointer")
 
-			CurrentPointerItem = nil
+			CurrentPointerButton = nil
 			
 			-- Make enable text visible
 			PointerButton.Enable.Visible = true
@@ -107,14 +150,14 @@ function Help:DisablePointerBeam()
 end
 
 function Help:ButtonRemoved(Button)
-	if Button == CurrentPointerItem then
+	if Button == CurrentPointerButton then
 		wait(0.3) -- Wait for next buttons to get loaded in; otherwise it may point to a Robux button or error
 		Help:EnablePointerBeam()
 	end
 end
 
 PointerButton.MouseButton1Down:Connect(function()
-	if CurrentPointerItem then
+	if CurrentPointerButton then
 		Help:DisablePointerBeam()
 	else
 		Help:EnablePointerBeam()
@@ -127,6 +170,11 @@ task.defer(function()
 	if not data["Dock#1"] then
 		Help:EnablePointerBeam()
 	end
+
+end)
+
+Remotes.ButtonPurchased.OnClientEvent:Connect(function(_, _, Island)
+	LastIsland = Island
 end)
 
 return Help
