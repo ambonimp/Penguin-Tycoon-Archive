@@ -11,7 +11,7 @@ local Dependency = Services.RStorage.ClientDependency.BuildA
 local TeleportFrame = UI.Center.WorldTeleport
 local WorldList = TeleportFrame.List
 
-local ItemFrame = UI.Center.RocketItems
+local ItemFrame = UI.Center.RocketUnlock
 local ItemList = ItemFrame.Items.Unlocked
 local ProgressLbl = ItemFrame.Items.Progress
 
@@ -67,11 +67,11 @@ local function LeadToBuildA()
         Beam.Attachment1 = Att1
 
         local Conn
-        Conn = TycoonSession:GiveTask(PromptPart.ProximityPrompt.Triggered:Connect(function()
+        Conn = PromptPart.ProximityPrompt.Triggered:Connect(function()
             Beam:Destroy()
             Att0:Destroy()
             Conn:Disconnect()
-        end))
+        end)
 
      end)
 
@@ -141,6 +141,9 @@ local function UpdateProgress(LastItem)
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
 
     elseif LastItem then
+        -- Item shows up in popup
+        FoundPopup.Thumbnail.Image = ItemModels[LastItem]:GetAttribute("Thumbnail")
+
         FoundPopup.Text.Text = string.format("(%s/%s) You found a Rocket part: %s!", Completed, Total, LastItem)
         Paths.Audio.Celebration:Play()
 
@@ -208,19 +211,8 @@ local function LoadBuildA()
             UnlockLbl.Parent = ItemList
 
             -- Item Preview
-            local Viewport = UnlockLbl.ViewportFrame
-
-            local ViewportCam = Instance.new("Camera", Viewport)
-            ViewportCam.FieldOfView = 1
-
-            Viewport.CurrentCamera = ViewportCam
-
-            local ViewportModel = ItemModels[Item]:Clone()
-            ViewportModel.Parent = Viewport
-            local ModelCF, ModelSize = ViewportModel:GetBoundingBox()
-
-            local Offset = (ModelSize.Y / 2) / math.tan(math.rad(ViewportCam.FieldOfView / 2)) + (ModelSize.Z / 2)
-            ViewportCam.CFrame = ModelCF * CFrame.new(0, math.pi, 0) * CFrame.new(0, 0, Offset)
+            local Thumbnail = UnlockLbl.Thumbnail
+            Thumbnail.Image = ItemModels[Item]:GetAttribute("Thumbnail")
 
         end
 
@@ -229,7 +221,7 @@ local function LoadBuildA()
             UnlockItem(Item)
         else
             -- Black out lbl
-            UnlockLbl.ViewportFrame.ImageColor3 = Color3.new(0, 0, 0)
+            UnlockLbl.Thumbnail.ImageColor3 = Color3.new(0, 0, 0)
 
             local NameLbl = UnlockLbl.ItemName
             NameLbl.Text = "???"

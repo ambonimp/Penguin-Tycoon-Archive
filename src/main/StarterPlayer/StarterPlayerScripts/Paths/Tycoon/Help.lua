@@ -39,6 +39,23 @@ local function GetClosestButton(Buttons)
 	return Closest
 end
 
+local function GetCheapestButton(Buttons)
+	local Cheapest
+	local CheapestPrice = math.huge
+
+	for _, Button in ipairs(Buttons) do
+		local Price = Button:GetAttribute("Price")
+		if Price < CheapestPrice then
+			CheapestPrice = Price
+			Cheapest = {Button}
+		elseif Price == CheapestPrice then
+			table.insert(Cheapest, Button)
+		end
+	end
+
+	return Cheapest and GetClosestButton(Cheapest) or nil
+end
+
 local function GetButtonsOnIsland(Buttons)
 	local Returning = {}
 
@@ -65,8 +82,6 @@ function Help:EnablePointerBeam()
 			local Buttons = Paths.Tycoon.Buttons:GetChildren()
 			local PlayerMoney = Paths.Player:GetAttribute("Money")
 			
-			local ChosenButton = nil
-			
 			-- Find random purchaseable item AFFORDABLE
 			local AffordableButtons = {}
 			local UnaffordableButtons = {}
@@ -90,14 +105,14 @@ function Help:EnablePointerBeam()
 			
 			local ChosenButton
 			if #AffordableButtons > 0 then
-				-- ChosenButton = GetClosestButton(GetButtonsOnIsland(AffordableButtons))
+				ChosenButton = GetCheapestButton(GetButtonsOnIsland(AffordableButtons))
 				if not ChosenButton then
-					ChosenButton = GetClosestButton(AffordableButtons)
+					ChosenButton = GetCheapestButton(AffordableButtons)
 				end
 			elseif #UnaffordableButtons > 0 then
-				-- ChosenButton = GetClosestButton(GetButtonsOnIsland(UnaffordableButtons))
+				ChosenButton = GetCheapestButton(GetButtonsOnIsland(UnaffordableButtons))
 				if not ChosenButton then
-					ChosenButton = GetClosestButton(UnaffordableButtons)
+					ChosenButton = GetCheapestButton(UnaffordableButtons)
 				end
 			end
 			

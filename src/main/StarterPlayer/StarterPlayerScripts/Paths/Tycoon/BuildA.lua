@@ -281,6 +281,18 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
                         Modules.Buttons:UIOn(FirstPartFrame, false)
                     end
 
+                    -- Item shows up in popup
+                    local PPViewportFrame = ProgressPopup.ViewportFrame
+                    for _, Child in ipairs(PPViewportFrame:GetChildren()) do
+                        Child:Destroy()
+                    end
+
+                    for _, Child in ipairs(ItemButtons[Item].ViewportFrame:GetChildren()) do
+                        local Clone = Child:Clone()
+                        Clone.Parent = PPViewportFrame
+                    end
+
+                    PPViewportFrame.CurrentCamera = PPViewportFrame.Camera
 
                     ProgressPopup.Text.Text = string.format("(%s/%s) You found a %s part: %s!", self.Completed, self.ToComplete, Name, Item)
                     OpenPopup(ProgressPopup, ProgressPopupSize)
@@ -294,7 +306,7 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
 
             local Button = ItemButtons[Item]
             Button.LayoutOrder = 1
-            Button.ViewportFrame.ImageColor3 = Color3.fromRGB(255, 255, 255)
+            Button.ViewportFrame.ImageColor3 = Color3.fromRGB(227, 245, 247)
 
             Button.ItemName.Text = Item
             Button.ItemName.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -320,7 +332,7 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
             local Viewport = Button.ViewportFrame
 
             local ViewportCam = Instance.new("Camera", Viewport)
-            ViewportCam.FieldOfView = 1
+            ViewportCam.FieldOfView = 40
 
             Viewport.CurrentCamera = ViewportCam
 
@@ -331,15 +343,7 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
 
 
             local Offset = (ModelSize.Y / 2) / math.tan(math.rad(ViewportCam.FieldOfView / 2)) + (ModelSize.Z / 2)
-            ViewportCam.CFrame = ModelCF * CFrame.new(0, math.pi, 0) * CFrame.new(0, 0, Offset)
-
---[[             if Item == "Deck" then
-                warn(ModelSize)
-                print(ViewportCam.FieldOfView)
-                warn(Offset)
-            end *]]
-
-
+            ViewportCam.CFrame = ModelCF * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, Offset)
             Button.MouseButton1Down:Connect(function()
                 if not Button:GetAttribute("Unlocked") and self.HelperUnlocked then
                     self:OpenHelper(Item)

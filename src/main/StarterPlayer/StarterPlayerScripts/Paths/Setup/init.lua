@@ -31,32 +31,17 @@ Paths.Services.ProximityPromptService.PromptTriggered:Connect(function(Prompt, P
             Paths.Modules.Buttons:UIOff(UI.Center.PlaneUnlock)
 			Paths.Modules.Buttons:UIOn(UI.Center.SailboatUnlock,true)
 
-		elseif Prompt.ActionText == "Socials" then
-			Paths.Modules.Buttons:UIOn(UI.Center.Codes,true)
-
         elseif Prompt.ActionText == "Spin" then
             Modules.Achievements.ButtonClicked(UI.Center.Achievements.Buttons.Spin,UI.Center.Achievements)
 			Modules.Buttons:UIOn(UI.Center.Achievements,true)
 
-		elseif Prompt.ActionText == "Money" then
-			Modules.Store.ButtonClicked(UI.Center.Store.Buttons.Money,UI.Center.Store)
-			Modules.Buttons:UIOn(UI.Center.Store,true)
-
-		elseif Prompt.ActionText == "Gems" then
-			Modules.Store.ButtonClicked(UI.Center.Store.Buttons.Gems,UI.Center.Store)
-			Modules.Buttons:UIOn(UI.Center.Store,true)
-
         elseif Prompt.ActionText == "Plane" then
-            Modules.Buttons:UIOff(UI.Center.BoatUnlock)
+            Modules.Buttons:UIOff(UI.Center.SailboatUnlock)
             Modules.Buttons:UIOn(UI.Center.PlaneUnlock,true)
 
 		elseif Prompt.ObjectText == "Poofies Egg" then
             Modules.Buttons:UIOn(UI.Center.UnlockedEggs,true)
             --Modules.Pets.LoadEgg(Prompt:GetAttribute("Egg"),Prompt)
-
-        elseif Prompt.ObjectText == "Gamepass" then
-            local id = Prompt:GetAttribute("Gamepass")
-            Paths.Services.MPService:PromptGamePassPurchase(Paths.Player, id)
 
         elseif Prompt.ActionText == "Penguin City" then
             Modules.Teleporting:OpenConfirmation()

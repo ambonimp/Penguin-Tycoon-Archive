@@ -45,28 +45,6 @@ for i = 1, 5 do
             local Name = Lbl.Name
             Remotes.TeleportInternal:InvokeServer(Name)
 
-            local Player = game.Players:FindFirstChild(Name)
-            if Player then
-                local Tycoon = workspace.Tycoons[Player:GetAttribute("Tycoon")]
-                local PromptPart = Tycoon:WaitForChild("Teleport"):WaitForChild("PromptPart")
-                if not PromptPart:FindFirstChild("ProximityPrompt") then
-                    local ReturnPrompt = Instance.new("ProximityPrompt")
-                    ReturnPrompt.HoldDuration = 0.25
-                    ReturnPrompt.MaxActivationDistance = 10
-                    ReturnPrompt.RequiresLineOfSight = false
-                    ReturnPrompt.ActionText = "Return home"
-                    ReturnPrompt.Parent = PromptPart
-
-                    ReturnPrompt.Triggered:Connect(function()
-                        Modules.UIAnimations.BlinkTransition(function()
-                            Remotes.TeleportInternal:InvokeServer(Paths.Player.Name)
-                        end, true)
-                    end)
-
-                end
-
-            end
-
         end, true)
 
     end)
@@ -90,29 +68,6 @@ end)
 
 Frame.Exit.MouseButton1Down:Connect(function()
     Modules.Buttons:UIOff(Frame, true)
-end)
-
-
-local function Init()
-    local VisitPrompt = Instance.new("ProximityPrompt")
-    VisitPrompt.HoldDuration = 0.25
-    VisitPrompt.MaxActivationDistance = 10
-    VisitPrompt.RequiresLineOfSight = false
-    VisitPrompt.ActionText = "Visit others"
-    VisitPrompt.Parent = Paths.Tycoon:WaitForChild("Teleport"):WaitForChild("PromptPart")
-
-    VisitPrompt.Triggered:Connect(function()
-        if not Frame.Visible then
-            Modules.Buttons:UIOn(Frame, true)
-        end
-    end)
-
-end
-
-Init()
-task.spawn(function()
-    repeat task.wait() until Modules.Rebirths
-    Modules.Rebirths.Rebirthed:Connect(Init)
 end)
 
 return TycoonTeleport
