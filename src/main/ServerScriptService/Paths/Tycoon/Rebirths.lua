@@ -26,6 +26,8 @@ end
 function Rebirths.LoadRebirth(Player)
     local Data = Modules.PlayerData.sessionData[Player.Name]
     if Data then
+        if Data.Tycoon[UPGRADE] then return end
+
         for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
             local Name = Button.Name
             if not BUTTONS_TO_IGNORE[Name] and Button:GetAttribute("CurrencyType") == "Money" and not Data.Tycoon[Name] then
@@ -52,7 +54,7 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
                     Purchased = true
                 end
             else -- Gems
-                if Data.Gems >= 1000 + (1000) * 0.25 * Rebirths then
+                if Data.Gems >= 1000 + (1000) * 0.25 * Data.Rebirths then
                     Purchased = true
                 end
             end
