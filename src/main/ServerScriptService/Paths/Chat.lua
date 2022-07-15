@@ -166,6 +166,32 @@ Players.PlayerAdded:Connect(function(player)
 					Data.Money += 123691937
 					player:SetAttribute("Money", Data["Money"])
 				end
+			elseif msg == "AlmostComplete" then
+				local Data = Paths.Modules.PlayerData.sessionData[player.Name]
+				if Data then
+					Data.RocketUnlocked[1] = true
+					Data.Tycoon["Rocketship#1"] = true
+
+					for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
+						local Name = Button.Name
+						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and Button:GetAttribute("Island") ~= "School" then
+							Data.Tycoon[Name] = true
+							Data.Income += Button:GetAttribute("Income") or 0
+
+							if Button:GetAttribute("Type") == "Penguin" then
+								Modules.Penguins:PenguinPurchased(player, Name)
+							else
+								Data.Income += Button:GetAttribute("Income") or 0
+							end
+
+						end
+
+					end
+
+				end
+
+				task.wait(0.5)
+				player:Kick("Almost completing your tycoon")
 			end
 
 		end)

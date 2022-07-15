@@ -175,6 +175,9 @@ function Init()
         Spawner.MouseButton1Down:Connect(function()
             if Paths.Tycoon.Tycoon:FindFirstChild(Id) then
                 local Character = Paths.Player.Character
+                if Character:FindFirstChild("Humanoid") and Character.Humanoid.SeatPart and Character.Humanoid.SeatPart.Parent:GetAttribute("VehicleType") then
+                    return
+                end
                 if Character then
                     -- Hide interface
                     ToggleProximityPrompts(false)

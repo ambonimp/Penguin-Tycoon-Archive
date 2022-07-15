@@ -8,7 +8,7 @@ local Remotes = Paths.Remotes
 local UPGRADE = "RebirthMachine"
 
 local Frame = Paths.UI.Center.Rebirth
-
+local Popup = Paths.UI.Top.Bottom.Popups.Rebirth
 
 local priceGems = 10^4
 local priceMoney
@@ -107,5 +107,14 @@ Frame.Purchase.Gems.MouseButton1Down:Connect(function()
     end
 end)
 
+Remotes.RebirthReady.OnClientEvent:Connect(function()
+    Popup.Size = UDim2.fromScale(0,0)
+    Popup.Visible = true
+    Popup:TweenSize(UDim2.fromScale(0.457, 1), Enum.EasingDirection.Out,Enum.EasingStyle.Quad, 0.25, true, function()
+        task.wait(5)
+        Popup.Visible = false
+    end)
+
+end)
 
 return Rebirths

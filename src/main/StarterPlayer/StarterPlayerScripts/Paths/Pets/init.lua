@@ -1234,6 +1234,14 @@ task.spawn(function()
 				UI.Right.Visible = false
 				UI.Bottom.Visible = false
 				Paths.Modules.Buttons:UIOn(Paths.UI.Center.FreePet,true)
+			elseif c.Name == "Beach House#1" then
+				Paths.Modules.Buttons:UIOn(Paths.UI.Center.CompleteRocket,true)
+			elseif UI.Center.UnlockedEggs.Eggs.Pets:FindFirstChild(c.Name) then
+				local v = UI.Center.UnlockedEggs.Eggs.Pets:FindFirstChild(c.Name)
+				v.ViewportFrame.ImageColor3 = Color3.new(1, 1, 1)
+				v.MouseButton1Down:Connect(function()
+					Pets.LoadEgg(v:GetAttribute("Egg"),nil)
+				end)
 			end
 		end)
 	end

@@ -1,11 +1,17 @@
+local Rebirths = {}
+
 local Paths = require(script.Parent.Parent)
 local Modules = Paths.Modules
 local Services = Paths.Services
 local Remotes = Paths.Remotes
 
 local UPGRADE = "RebirthMachine"
+local BUTTONS_TO_IGNORE = {
+    [UPGRADE] = true,
+    ["Pets#1"] = true
+}
 
-local Rebirths = {}
+
 
 local ToolsToReset = {}
 for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
@@ -22,19 +28,20 @@ function Rebirths.LoadRebirth(Player)
     if Data then
         for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
             local Name = Button.Name
-            if Name ~= UPGRADE and Button:GetAttribute("CurrencyType") == "Money" and not Data.Tycoon[Name] then
+            if not BUTTONS_TO_IGNORE[Name] and Button:GetAttribute("CurrencyType") == "Money" and not Data.Tycoon[Name] then
                 return false
             end
         end
 
-       Modules.Buttons:NewButton(Player, UPGRADE)
-       return true
+        Remotes.RebirthReady:FireClient(Player)
+
+        Modules.Buttons:NewButton(Player, UPGRADE)
+        return true
 
     end
 
 end
 
-Remotes.IsRebirthReady.OnServerInvoke = Rebirths.LoadRebirth
 Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
     local Data = Modules.PlayerData.sessionData[Client.Name]
     if Data then
