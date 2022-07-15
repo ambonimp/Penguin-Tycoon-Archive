@@ -23,19 +23,20 @@ local CurrentPointerButton = nil
 
 local LastIsland
 
-local function GetCheapestButton(Buttons)
-	local Cheapest
-	local CheapestPrice = math.huge
+local function GetClosestButton(Buttons)
+	local Closest
+	local ClosestDist = math.huge
 
+	local Root = Paths.Player.Character.HumanoidRootPart.Position
 	for _, Button in ipairs(Buttons) do
-		local Price = Button:GetAttribute("Price")
-		if Price < CheapestPrice then
-			CheapestPrice = Price
-			Cheapest = Button
+		local Dist = (Root - Button.Hitbox.Position).Magnitude
+		if Dist < ClosestDist then
+			ClosestDist = Dist
+			Closest = Button
 		end
 	end
 
-	return Cheapest
+	return Closest
 end
 
 local function GetCheapestButton(Buttons)
@@ -84,10 +85,11 @@ function Help:EnablePointerBeam()
 			-- Find random purchaseable item AFFORDABLE
 			local AffordableButtons = {}
 			local UnaffordableButtons = {}
-			for _,Button in pairs(Buttons) do
+			for _, Button in pairs(Buttons) do
 				if Button:FindFirstChild("Hitbox") then
 					local Price = Button:GetAttribute("Price")
 					local Type = Button:GetAttribute("CurrencyType")
+
 					if Type ~= "Robux" and Type ~= "Gamepass" and not IGNORED_BUTTONS[Button.Name] then
 						if PlayerMoney >= Price and Type ~= "Robux" then
 							table.insert(AffordableButtons, Button)

@@ -46,9 +46,8 @@ function Initiate:InitiateButtons()
 
 					for _, Button in pairs(Buttons:GetChildren()) do
 						if Button:GetAttribute("Dependency") == ButtonRemoved.Name then
-							if not (Button.Name == "Pets#1" and Modules.PlayerData.sessionData.Rebirths ~= 0) then
-								Modules.Buttons:NewButton(Player, Button.Name)
-							end
+							if Modules.PlayerData.sessionData.Rebirths ~= 0 and Button.Name == "Pets#1" then return end
+							Modules.Buttons:NewButton(Player, Button.Name)
 						end
 
 					end
