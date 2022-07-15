@@ -57,7 +57,7 @@ function Initiate:InitiateButtons()
 
 					end
 
-					if not HadDependents then
+					if not HadDependents and not ButtonRemoved.Name == "RebirthMachine"then
 						Modules.Rebirths.LoadRebirth(Player)
 					end
 

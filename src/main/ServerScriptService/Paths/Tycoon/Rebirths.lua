@@ -34,8 +34,8 @@ function Rebirths.LoadRebirth(Player)
         end
 
         Remotes.RebirthReady:FireClient(Player)
-
         Modules.Buttons:NewButton(Player, UPGRADE)
+
         return true
 
     end
@@ -52,7 +52,7 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
                     Purchased = true
                 end
             else -- Gems
-                if Data.Gems >= 10^4 then
+                if Data.Gems >= 1000 + (1000) * 0.25 * Rebirths then
                     Purchased = true
                 end
             end

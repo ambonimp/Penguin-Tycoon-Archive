@@ -10,15 +10,17 @@ local UPGRADE = "RebirthMachine"
 local Frame = Paths.UI.Center.Rebirth
 local Popup = Paths.UI.Top.Bottom.Popups.Rebirth
 
-local priceGems = 10^4
+local priceGems
 local priceMoney
 
 Rebirths.Rebirthed = Modules.Signal.new()
 
 local function updateRebirths(Rebirths)
     priceMoney = 10 ^ 9 + (10 ^ 9) * 0.25 * Rebirths
+    priceGems = 1000 + (1000) * 0.25 * Rebirths
     Frame.Description.Text = string.format('By rebirthing, you reset your entire tycoon and gain a <font color="#ffe600">%s%%</font> money boost!.', 1 + (Rebirths + 1) / 10)
-    Frame.Purchase.Money.Amount.Text = Modules.Format:FormatAbbreviated(10 ^ 9 + (10 ^ 9) * 0.25 * Rebirths)
+    Frame.Purchase.Money.Amount.Text = Modules.Format:FormatAbbreviated(priceMoney)
+    Frame.Purchase.Gems.Amount.Text = Modules.Format:FormatAbbreviated(priceGems)
 end
 
 local function CreatePrompt(Parent, ActionText, ObjectText)
