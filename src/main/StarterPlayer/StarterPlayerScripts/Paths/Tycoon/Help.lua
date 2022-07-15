@@ -69,11 +69,10 @@ function Help:EnablePointerBeam()
 			-- Find random purchaseable item AFFORDABLE
 			local AffordableButtons = {}
 			local UnaffordableButtons = {}
-			for _, Button in pairs(Buttons) do
+			for _,Button in pairs(Buttons) do
 				if Button:FindFirstChild("Hitbox") then
 					local Price = Button:GetAttribute("Price")
 					local Type = Button:GetAttribute("CurrencyType")
-
 					if Type ~= "Robux" and Type ~= "Gamepass" and not IGNORED_BUTTONS[Button.Name] then
 						if PlayerMoney >= Price and Type ~= "Robux" then
 							table.insert(AffordableButtons, Button)

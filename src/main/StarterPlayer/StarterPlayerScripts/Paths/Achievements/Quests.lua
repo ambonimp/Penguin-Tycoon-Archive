@@ -88,6 +88,10 @@ function updateQuestData(data)
         
     end
 end
+--[[
+function OpenQuestHelp(id)
+    local Quest = QuestData.Quests[id]
+end]]
 
 for i = 1,5 do
     local Frame = UI.Quests:FindFirstChild("Quest"..i)
@@ -107,6 +111,9 @@ for i = 1,5 do
             Frame.Progress.Claim.Visible = false
         end
     end)
+   --[[ Frame.Help.MouseButton1Down:Connect(function()
+        
+    end)]]
 end
 
 function Remotes.Quests.OnClientInvoke(Data)
