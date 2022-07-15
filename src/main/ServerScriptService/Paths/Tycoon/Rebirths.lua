@@ -34,8 +34,8 @@ function Rebirths.LoadRebirth(Player)
         end
 
         Remotes.RebirthReady:FireClient(Player)
-
         Modules.Buttons:NewButton(Player, UPGRADE)
+
         return true
 
     end
