@@ -1242,6 +1242,8 @@ task.spawn(function()
 				v.MouseButton1Down:Connect(function()
 					Pets.LoadEgg(v:GetAttribute("Egg"),nil)
 				end)
+			elseif c.Name == "Fishing Rod#1" then
+				Paths.Modules.Setup:Notification("Click on water to start fishing!",Color3.new(0.184313, 0.752941, 0.792156),3.5)
 			end
 		end)
 	end

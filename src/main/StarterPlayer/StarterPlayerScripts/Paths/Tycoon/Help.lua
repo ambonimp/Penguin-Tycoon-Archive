@@ -105,7 +105,7 @@ function Help:EnablePointerBeam()
 			
 			local ChosenButton
 			if #AffordableButtons > 0 then
-				ChosenButton = GetCheapestButton(GetButtonsOnIsland(AffordableButtons))
+				ChosenButton = GetClosestButton(GetButtonsOnIsland(AffordableButtons))
 				if not ChosenButton then
 					ChosenButton = GetCheapestButton(AffordableButtons)
 				end
@@ -130,8 +130,8 @@ function Help:EnablePointerBeam()
 			
 			local Beam = Root:FindFirstChild("Pointer") or Dependency.Pointer:Clone()
 			Beam.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, ChosenButton.Part.Color),
-				ColorSequenceKeypoint.new(1, ChosenButton.Part.Color)
+				ColorSequenceKeypoint.new(0, ChosenButton:WaitForChild("Part").Color),
+				ColorSequenceKeypoint.new(1, ChosenButton:WaitForChild("Part").Color)
 			})
 				
 				
@@ -166,7 +166,7 @@ end
 
 function Help:ButtonRemoved(Button)
 	if Button == CurrentPointerButton then
-		wait(0.3) -- Wait for next buttons to get loaded in; otherwise it may point to a Robux button or error
+		task.wait(0.3) -- Wait for next buttons to get loaded in; otherwise it may point to a Robux button or error
 		Help:EnablePointerBeam()
 	end
 end
