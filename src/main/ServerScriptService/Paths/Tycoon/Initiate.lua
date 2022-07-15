@@ -44,20 +44,15 @@ function Initiate:InitiateButtons()
 				if Player then
 					Remotes.ButtonPurchased:FireClient(Player, GetIslandIndex(ButtonRemoved), ButtonRemoved.Name, ButtonRemoved:GetAttribute("Island"))
 
-					local HadDependents = false -- last button that leads to rebirth won't have anything after it so only check completion in that scenario
-
 					for _, Button in pairs(Buttons:GetChildren()) do
 						if Button:GetAttribute("Dependency") == ButtonRemoved.Name then
 							if Modules.PlayerData.sessionData[Player.Name].Rebirths ~= 0 and Button.Name == "Pets#1" then continue end
-							if Button:GetAttribute("CurrencyType") == "Money" then
-								HadDependents = true
-							end
 							Modules.Buttons:NewButton(Player, Button.Name)
 						end
 
 					end
 
-					if not HadDependents then
+					if not ButtonRemoved.Name == "RebirthMachine"then
 						Modules.Rebirths.LoadRebirth(Player)
 					end
 
