@@ -464,7 +464,7 @@ function Pets.UpdateEggUI()
 						Pets.LoadEgg(v:GetAttribute("Egg"),nil)
 					end
 				end)
-			else
+			elseif not v:GetAttribute("Unlocked") then
 				v.ViewportFrame.ImageColor3 = Color3.new(0,0,0)
 			end
 		end
@@ -1243,7 +1243,7 @@ task.spawn(function()
 					Pets.LoadEgg(v:GetAttribute("Egg"),nil)
 				end)
 			elseif c.Name == "Fishing Rod#1" then
-				Paths.Modules.Setup:Notification("Click on water to start fishing!",Color3.new(0.184313, 0.752941, 0.792156),3.5)
+				Paths.Modules.Setup:Notification("Click on water to start fishing!",Color3.new(0.184313, 0.752941, 0.792156),10)
 			end
 		end)
 	end
@@ -1315,6 +1315,7 @@ task.spawn(function()
 	local tycoonData = Remotes.GetStat:InvokeServer("Tycoon")
 	for i,v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
 		if v:IsA("ImageButton") then
+			print(v,tycoonData[v.Name])
 			if tycoonData[v.Name] or v.Name == "1" then
 				v:SetAttribute("Unlocked",true)
 				v.MouseButton1Down:Connect(function()
