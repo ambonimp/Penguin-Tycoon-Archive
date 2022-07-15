@@ -68,6 +68,14 @@ function claimQuest(Player,QuestNumber)
     return nil
 end
 
+function Quests.ProductReset(Player)
+    local Data = Modules.PlayerData.sessionData[Player.Name]
+    if Data then
+        Quests.getNewQuests(Player)
+        Remotes.Quests:InvokeClient(Player,Data["Quests"])
+    end
+end
+
 function Quests.getNewQuests(Player)
     local possibleTypes = shallowCopy(AllQuests.Types)
 

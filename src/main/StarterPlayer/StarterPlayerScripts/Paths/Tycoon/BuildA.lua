@@ -251,7 +251,7 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
         function self:LockItem(Item)
             local Button = ItemButtons[Item]
             Button.LayoutOrder = 0
-            Button.ViewportFrame.ImageColor3 = Color3.fromRGB(0, 0, 0)
+            Button.Thumbnail.ImageColor3 = Color3.fromRGB(0, 0, 0)
 
             Button.ItemName.Text = "???"
             Button.ItemName.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -282,17 +282,7 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
                     end
 
                     -- Item shows up in popup
-                    local PPViewportFrame = ProgressPopup.ViewportFrame
-                    for _, Child in ipairs(PPViewportFrame:GetChildren()) do
-                        Child:Destroy()
-                    end
-
-                    for _, Child in ipairs(ItemButtons[Item].ViewportFrame:GetChildren()) do
-                        local Clone = Child:Clone()
-                        Clone.Parent = PPViewportFrame
-                    end
-
-                    PPViewportFrame.CurrentCamera = PPViewportFrame.Camera
+                    ProgressPopup.Thumbnail.Image = Models[Item]:GetAttribute("Thumbnail")
 
                     ProgressPopup.Text.Text = string.format("(%s/%s) You found a %s part: %s!", self.Completed, self.ToComplete, Name, Item)
                     OpenPopup(ProgressPopup, ProgressPopupSize)
@@ -306,7 +296,7 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
 
             local Button = ItemButtons[Item]
             Button.LayoutOrder = 1
-            Button.ViewportFrame.ImageColor3 = Color3.fromRGB(227, 245, 247)
+            Button.Thumbnail.ImageColor3 = Color3.fromRGB(255, 255, 255)
 
             Button.ItemName.Text = Item
             Button.ItemName.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -329,21 +319,8 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
             Button.Parent = ItemButtons
 
             -- Item Preview
-            local Viewport = Button.ViewportFrame
+            Button.Thumbnail.Image = Models[Item]:GetAttribute("Thumbnail")
 
-            local ViewportCam = Instance.new("Camera", Viewport)
-            ViewportCam.FieldOfView = 40
-
-            Viewport.CurrentCamera = ViewportCam
-
-            local ViewportModel = Models[Item]:Clone()
-            ViewportModel.Parent = Viewport
-            local o, ModelSize = ViewportModel:GetBoundingBox()
-            local ModelCF = ViewportModel.PrimaryPart.CFrame
-
-
-            local Offset = (ModelSize.Y / 2) / math.tan(math.rad(ViewportCam.FieldOfView / 2)) + (ModelSize.Z / 2)
-            ViewportCam.CFrame = ModelCF * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, Offset)
             Button.MouseButton1Down:Connect(function()
                 if not Button:GetAttribute("Unlocked") and self.HelperUnlocked then
                     self:OpenHelper(Item)

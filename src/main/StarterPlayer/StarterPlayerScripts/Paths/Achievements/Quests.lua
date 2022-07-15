@@ -7,6 +7,7 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local UI = Paths.UI.Center.Achievements.Sections.Quests
 
+local RerollId = 1284829211
 local QuestData = nil
 
 function getReward(difficult)
@@ -18,6 +19,10 @@ function getReward(difficult)
     end
     return "rbxassetid://9846753652",reward
 end
+
+UI.Quests.Reroll.MouseButton1Down:Connect(function()
+    Services.MPService:PromptProductPurchase(Paths.Player, 1284829211)
+end)
 
 function claimQuest(questNum,Button)
     local Reward = Remotes.Quests:InvokeServer("Reward",questNum)
@@ -83,6 +88,10 @@ function updateQuestData(data)
         
     end
 end
+--[[
+function OpenQuestHelp(id)
+    local Quest = QuestData.Quests[id]
+end]]
 
 for i = 1,5 do
     local Frame = UI.Quests:FindFirstChild("Quest"..i)
@@ -102,6 +111,9 @@ for i = 1,5 do
             Frame.Progress.Claim.Visible = false
         end
     end)
+   --[[ Frame.Help.MouseButton1Down:Connect(function()
+        
+    end)]]
 end
 
 function Remotes.Quests.OnClientInvoke(Data)
