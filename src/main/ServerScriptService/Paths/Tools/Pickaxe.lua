@@ -27,6 +27,11 @@ for Level in pairs(Modules.MiningDetails) do
         Mineable:SetAttribute("Health", MINE_MAX_HEALTH)
     end
 
+    local Dividers = Zone:FindFirstChild("Dividers")
+    if Dividers then
+        Dividers:SetAttribute("Children", #Dividers:GetChildren())
+    end
+
     task.spawn(function()
         local Dividers = Zone:FindFirstChild("Dividers")
         local Id = 1274261950

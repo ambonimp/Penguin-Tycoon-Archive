@@ -67,11 +67,11 @@ local function LeadToBuildA()
         Beam.Attachment1 = Att1
 
         local Conn
-        Conn = TycoonSession:GiveTask(PromptPart.ProximityPrompt.Triggered:Connect(function()
+        Conn = PromptPart.ProximityPrompt.Triggered:Connect(function()
             Beam:Destroy()
             Att0:Destroy()
             Conn:Disconnect()
-        end))
+        end)
 
      end)
 
@@ -99,7 +99,7 @@ end
 local function UnlockItem(Item)
     local Lbl = ItemList[Item]
 
-    Lbl.ViewportFrame.ImageColor3 = Color3.new(255, 255, 255)
+    Lbl.ViewportFrame.ImageColor3 = Color3.new(231, 220, 250)
 
     local NameLbl = Lbl.ItemName
     NameLbl.Text = Item
@@ -141,6 +141,17 @@ local function UpdateProgress(LastItem)
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
 
     elseif LastItem then
+        -- Item shows up in popup
+        local PPViewportFrame = FoundPopup.ViewportFrame
+        for _, Child in ipairs(PPViewportFrame:GetChildren()) do
+            Child:Destroy()
+        end
+
+        for _, Child in ipairs(ItemList[LastItem].ViewportFrame:GetChildren()) do
+            local Clone = Child:Clone()
+            Clone.Parent = PPViewportFrame
+        end
+
         FoundPopup.Text.Text = string.format("(%s/%s) You found a Rocket part: %s!", Completed, Total, LastItem)
         Paths.Audio.Celebration:Play()
 
@@ -220,7 +231,7 @@ local function LoadBuildA()
             local ModelCF, ModelSize = ViewportModel:GetBoundingBox()
 
             local Offset = (ModelSize.Y / 2) / math.tan(math.rad(ViewportCam.FieldOfView / 2)) + (ModelSize.Z / 2)
-            ViewportCam.CFrame = ModelCF * CFrame.new(0, math.pi, 0) * CFrame.new(0, 0, Offset)
+            ViewportCam.CFrame = ModelCF * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, Offset)
 
         end
 
