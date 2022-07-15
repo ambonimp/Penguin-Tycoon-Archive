@@ -119,7 +119,7 @@ end
 --- Tool Functions ---
 function Tools.AddTool(Tool, isNew)
 	if Paths.UI.Tools:FindFirstChild(Tool) then return end
-	if IS_QA and string.find(string.lower(Tool), "gold") then warn(Tool) return end
+	if IS_QA and string.find(Tool, "Gold") then return end
 
 	if TOOL_REPLACEMENTS[Tool] then
 		Tools.RemoveTool(TOOL_REPLACEMENTS[Tool])
@@ -167,6 +167,10 @@ function Tools.AddTool(Tool, isNew)
 				task.wait(.3)
 			end
 		end)
+	end
+
+	if Tool == "Fishing Rod" and isNew then
+		Remotes.Tools:FireServer("Equip Tool", Tool)
 	end
 
 end
@@ -405,7 +409,7 @@ end)
 
 if IS_QA then
 	for Tool in pairs(TOOL_REPLACEMENTS) do
-		if string.find(string.lower(Tool), "gold") then
+		if string.find(Tool, "Gold") then
 			TOOL_REPLACEMENTS[Tool] = nil
 		end
 	end

@@ -11,7 +11,7 @@ local Dependency = Services.RStorage.ClientDependency.BuildA
 local TeleportFrame = UI.Center.WorldTeleport
 local WorldList = TeleportFrame.List
 
-local ItemFrame = UI.Center.RocketItems
+local ItemFrame = UI.Center.RocketUnlock
 local ItemList = ItemFrame.Items.Unlocked
 local ProgressLbl = ItemFrame.Items.Progress
 
