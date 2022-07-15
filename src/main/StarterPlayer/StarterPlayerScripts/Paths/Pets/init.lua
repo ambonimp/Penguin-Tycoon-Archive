@@ -1234,6 +1234,8 @@ task.spawn(function()
 				UI.Right.Visible = false
 				UI.Bottom.Visible = false
 				Paths.Modules.Buttons:UIOn(Paths.UI.Center.FreePet,true)
+			elseif c.Name == "Beach House#1" then
+				Paths.Modules.Buttons:UIOn(Paths.UI.Center.CompleteRocket,true)
 			end
 		end)
 	end

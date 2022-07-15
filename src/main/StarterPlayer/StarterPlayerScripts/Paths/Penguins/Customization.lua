@@ -243,7 +243,6 @@ function Customization:ExitUI()
 
 	-- Tween out UI
 	CustomizationUI:TweenPosition(UDim2.new(-1.5, 0, 0.5, 0), "In", "Back", 0.3, true)
-	UI.Left.GemDisplay.Visible = true
 	UI.Left.Buttons.Visible = true
 	UI.Center.Visible = true
 	UI.Top.Currencies.MoneyDisplay.BuyMore.Visible = true

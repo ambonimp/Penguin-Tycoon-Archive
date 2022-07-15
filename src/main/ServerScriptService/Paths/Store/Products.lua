@@ -81,6 +81,10 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 		if product == 1271390016 then
 			Modules.PlayerData.sessionData[Player.Name]["Spin"][2] = 1
 			Remotes.SpinTheWheel:InvokeClient(Player,"Bought")
+
+		--reset quests
+		elseif product == 1284829211 then
+			Modules.Quests.ProductReset(Player)
 		--Gem Products
 		elseif GemProducts[product] then
 			Modules.Income:AddGems(Player,GemProducts[product],"Bought")

@@ -45,7 +45,7 @@ return {
         LayoutOrder = 8,
     },
     ["Auto Activate Boosts"] = {
-        Default = true,
+        Default = false,
         AlwaysVisible = true,
         LayoutOrder = 9,
     },

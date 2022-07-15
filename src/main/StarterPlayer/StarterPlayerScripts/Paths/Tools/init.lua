@@ -11,7 +11,7 @@ local Remotes = Paths.Remotes
 
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
-
+local isStillPlaying = 0
 local IS_QA = (game.GameId == 3425594443)
 
 
@@ -266,31 +266,64 @@ local function EquipTool(Tool)
 	Modules.Character:PlayToolAnimation(Tool)
 end
 
+function ItemRetrievedAnimation(Icon,Amount,Name)
+	isStillPlaying += 1
+
+	coroutine.wrap(function()
+		local currentAnim = isStillPlaying
+		local fishCaught = Paths.UI.Bottom.WoodCaught:Clone()
+		fishCaught.Parent = Paths.UI.Bottom
+		-- Reset positions and sizes
+		fishCaught.Position = UDim2.new(0.5, 0, 1, 0)
+
+		-- Setup info
+		fishCaught.FishName.Text = Name
+		fishCaught.FishReward.Text = Amount
+		fishCaught.Icon.Image = Icon
+		if string.match(Name,"Gem") then
+			fishCaught.FishReward.TextColor3 = Color3.new(0, 0.6, 1)
+		end
+		-- Play animation
+		fishCaught.Visible = true
+
+		fishCaught:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Back", 0.5, true)
+
+		wait(2)
+
+		fishCaught:TweenPosition(UDim2.new(0.5, 0, 1, 0), "In", "Back", 0.5, true)
+
+		wait(0.6)
+
+		fishCaught:Destroy()
+	end)()
+end
+
+local NameToImage = {
+	["Acorn"] = "rbxassetid://10156079883",
+	["Pouch"] = "rbxassetid://10156079663",
+	["Log"] = "rbxassetid://10156079663",
+	["Gems"] = "rbxassetid://8679117564",
+	["Money"] = "rbxassetid://8679056485",
+}
+
 function Tools.ToolReward(amount,isbig)
 	local treeReward = Paths.UI.Center.TreeReward:Clone()
 	if type(amount) == "table" then
 		if amount[1] == "Outfit" then return end
-		treeReward.Icon.Visible = true
 		if amount[3] then --rbxassetid://10156079663 -- money ||| rbxassetid://10156079883 -- acorn	
 			if amount[3] == "Acorn" then
-				treeReward.Icon.Image = "rbxassetid://10156079883"
-				treeReward.Text = "+ "..Paths.Modules.Format:FormatComma(amount[2])
-				treeReward.TextColor3 = Color3.new(0, 0.6, 1)
+				ItemRetrievedAnimation(NameToImage[amount[3]],"+ "..Paths.Modules.Format:FormatComma(amount[2]),"Gems Acorn")
 			elseif amount[3] == "Pouch" then
-				treeReward.Icon.Image = "rbxassetid://10156079663"
-				treeReward.Text = "+ $ "..Paths.Modules.Format:FormatComma(amount[2])
+				ItemRetrievedAnimation(NameToImage[amount[3]],"+ "..Paths.Modules.Format:FormatComma(amount[2]),"Money Pouch")
 			elseif amount[3] == "Log" then
-				treeReward.Icon.Image = "rbxassetid://10156079663"
-				treeReward.Text = "+ $ "..Paths.Modules.Format:FormatComma(amount[2])
+				ItemRetrievedAnimation(NameToImage[amount[3]],"+ "..Paths.Modules.Format:FormatComma(amount[2]),"Money Log")
 			end
 		elseif amount[1] == "Gems" then
-			treeReward.Icon.Image = "rbxassetid://8679117564"
-			treeReward.Text = "+ "..Paths.Modules.Format:FormatComma(amount[2])
-			treeReward.TextColor3 = Color3.new(0, 0.6, 1)
+			ItemRetrievedAnimation(NameToImage[amount[1]],"+ "..Paths.Modules.Format:FormatComma(amount[2]),"Gems")
 		elseif amount[1] == "Money" then
-			treeReward.Icon.Image = "rbxassetid://8679056485"
-			treeReward.Text = "+ $ "..Paths.Modules.Format:FormatComma(amount[2])
+			ItemRetrievedAnimation(NameToImage[amount[1]],"+ "..Paths.Modules.Format:FormatComma(amount[2]),"Big Money")
 		end
+		return
 	else
 		treeReward.Text = "+ $ "..Paths.Modules.Format:FormatComma(amount)
 	end
