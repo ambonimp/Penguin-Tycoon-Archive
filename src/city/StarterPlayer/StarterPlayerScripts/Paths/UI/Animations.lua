@@ -14,12 +14,12 @@ local UI = Paths.UI
 --- UI Variables ---
 local Day = os.date("%A")
 local Mult = 1
-
+--[[
 if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
 	Mult = 2
 else
 	Mult = 1
-end
+end]]
 
 
 
@@ -93,9 +93,10 @@ end
 function Animations:MoneyChanged(Change, NewMoney)
 	local Day = os.date("%A")
 	local add = ""
+	--[[
 	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday") and Change > 0 then
 		add = " (X2 DAY)"
-	end
+	end]]
 	if game.Players.LocalPlayer:GetAttribute("x3MoneyBoost") then
 		add = add.." (x3)"
 	end
@@ -171,9 +172,10 @@ end
 function Animations:GemsChanged(Change, NewGems)
 	local Day = os.date("%A")
 	local add = ""
+	--[[
 	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday" ) and Change > 0 then
 		add = " (X2 DAY)"
-	end
+	end]]
 	local Template = Dependency.GemsChanged:Clone()
 	Template.Position = UDim2.new(0.37, 0, 0.7, -10)
 	Template.AnchorPoint = Vector2.new(0, 0.5)

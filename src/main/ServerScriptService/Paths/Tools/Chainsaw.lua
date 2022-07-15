@@ -40,11 +40,12 @@ function ConnectTree(Tree)
         local h = Tree:GetAttribute("Health")
         local Day = os.date("%A")
         local Mult = 1
+        --[[
         if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
             Mult = 2
         else
             Mult = 1
-        end
+        end]]
         lastChange = os.time()
         if h <= 0 then
             Tree.PrimaryPart.Down:Play()
@@ -97,11 +98,12 @@ Remotes.Chainsaw.OnServerEvent:Connect(function(Player,Tree)
             local Data = Modules.PlayerData.sessionData[Player.Name]
             local Day = os.date("%A")
             local Mult = 1
+            --[[
             if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
                 Mult = 2
             else
                 Mult = 1
-            end
+            end]]
             local Mult2 = 2
             if Tree:GetAttribute("Income") then
                 Mult = Mult * Tree:GetAttribute("Income")

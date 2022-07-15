@@ -67,9 +67,10 @@ end
 function Animations:MoneyChanged(Change, NewMoney)
 	local Day = os.date("%A")
 	local add = ""
+	--[[
 	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday" ) and Change > 0 and not IS_QA then
 		add = " (X2 DAY)"
-	end
+	end]]
 	if game.Players.LocalPlayer:GetAttribute("x3MoneyBoost") then
 		add = add.." (x3)"
 	end
@@ -145,9 +146,10 @@ end
 function Animations:GemsChanged(Change, NewGems)
 	local Day = os.date("%A")
 	local add = ""
+	--[[
 	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday") and Change > 0 then
 		add = " (X2 DAY)"
-	end
+	end]]
 	local Template = Dependency.GemsChanged:Clone()
 	Template.Position = UDim2.new(0.14, 0, 1.05, 0)
 	Template.Size = UDim2.new(1, 0, 0, 0)

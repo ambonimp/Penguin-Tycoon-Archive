@@ -12,12 +12,12 @@ local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandl
 
 local Day = os.date("%A")
 local Mult = 1
-
+--[[
 if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
 	Mult = 2
 else
 	Mult = 1
-end
+end]]
 
 --- Other Variables ---
 local INCOME_INTERVAL = 3
@@ -115,11 +115,12 @@ function Income:GemLoop()
 	while true do
 		task.wait(1)
 		Day = os.date("%A")
+		--[[
 		if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
 			Mult = 2
 		else
 			Mult = 1
-		end
+		end]]
 
 		if IsQA then
 			Mult = 1

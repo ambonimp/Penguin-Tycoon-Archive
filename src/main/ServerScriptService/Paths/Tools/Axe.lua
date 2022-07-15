@@ -101,11 +101,12 @@ function ConnectTree(Tree)
         end
         local Day = os.date("%A")
         local Mult = 1
+        --[[
         if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
             Mult = 2
         else
             Mult = 1
-        end
+        end]]
         if h == 0 and Tree.Name == "GrandTree" then
             for v,amountofhits in pairs (HittingGrand) do
                 pcall(function()
@@ -277,11 +278,12 @@ Remotes.Axe.OnServerEvent:Connect(function(Player,Tree)
             local Data = Modules.PlayerData.sessionData[Player.Name]
             local Day = os.date("%A")
             local Mult = 1
+            --[[
             if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
                 Mult = 2
             else
                 Mult = 1
-            end
+            end]]
             local Mult2 = 1
             if Player:GetAttribute("Tool") == "Gold Axe" then
                 Mult2 = 2
