@@ -89,7 +89,6 @@ local function LeftEvent()
 	EventInfoUI.Minigames.Visible = true
 	EventInfoUI.Timer.Visible = false
 
-	Paths.UI.Left.GemDisplay.Visible = true
 	Paths.UI.Left.Buttons.Visible = true
 
 	Paths.UI.Bottom.Visible = true

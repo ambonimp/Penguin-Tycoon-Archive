@@ -99,7 +99,7 @@ end
 local function UnlockItem(Item)
     local Lbl = ItemList[Item]
 
-    Lbl.ViewportFrame.ImageColor3 = Color3.new(255, 255, 255)
+    Lbl.ViewportFrame.ImageColor3 = Color3.new(231, 220, 250)
 
     local NameLbl = Lbl.ItemName
     NameLbl.Text = Item
