@@ -32,19 +32,6 @@ local TycoonSession = Modules.Maid.new()
 local UnlockingData = Remotes.GetStat:InvokeServer("RocketUnlocked")
 local ItemModels =  Services.RStorage.Assets.BuildA.Rocket
 
-
-local function CreatePrompt(Parent, ActionText, ObjectText)
-    local Prompt = Instance.new("ProximityPrompt")
-    Prompt.HoldDuration = 0.25
-    Prompt.MaxActivationDistance = 25
-    Prompt.RequiresLineOfSight = false
-    Prompt.ObjectText = ObjectText or ""
-    Prompt.ActionText = ActionText
-    Prompt.Parent = Parent
-
-    return Prompt
-end
-
 -- Creates arrow to brocken rocket when rocket is unlocked
 local function LeadToBuildA()
     local Character = Paths.Player.Character
@@ -193,15 +180,6 @@ end
 
 
 local function LoadBuildA()
-    local BrokenModel = Paths.Tycoon.Tycoon:WaitForChild(BROKEN_SHIP_UPGRADE):WaitForChild("BrokenRocketShip")
-
-    local Prompt = CreatePrompt(BrokenModel:WaitForChild("Ship"), "Rocket", "Under Construction")
-    Prompt.Triggered:Connect(function()
-        if not ItemFrame.Visible then
-            Modules.Buttons:UIOn(ItemFrame, true)
-        end
-    end)
-
     -- Frame
     for Item in pairs(Modules.BuildADetails.Rocket) do
         local UnlockLbl = ItemList:FindFirstChild(Item)
@@ -328,6 +306,16 @@ SwitchWorld(WorldList.Woodcutting, "Woodcutting World")
 end) *]]
 
 
+Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
+    if Player == Paths.Player then
+        if Prompt.ActionText == "Fix Rocket" then
+            Modules.Buttons:UIOn(ItemFrame , true)
+        elseif Prompt.ActionText == "Blast Off" then
+            Modules.Buttons:UIOn(UI.Center.WorldTeleport, true)
+        end
+    end
+
+end)
 
 TeleportFrame.Exit.MouseButton1Down:Connect(function()
     Modules.Buttons:UIOff(TeleportFrame, true)

@@ -15,6 +15,7 @@ local Dependency = Paths.Dependency:WaitForChild(script.Name)
 local IGNORED_BUTTONS = {
 	["Glider#1"] = true,
 	["Pets#1"] = true,
+	["New Island!#32"] = true,
 }
 
 --- Help Variables ---

@@ -24,8 +24,8 @@ Paths.Remotes.ClientNotif.OnClientEvent:Connect(function(text,color,time)
     Setup:Notification(text,color,time)
 end)
 
-
-Paths.Services.ProximityPromptService.PromptTriggered:Connect(function(Prompt, Player)
+-- Proximity Prompts
+Paths.Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
     if Player == Paths.Player then
         if Prompt.ActionText == "Sailboat" then
             Paths.Modules.Buttons:UIOff(UI.Center.PlaneUnlock)
@@ -46,13 +46,27 @@ Paths.Services.ProximityPromptService.PromptTriggered:Connect(function(Prompt, P
         elseif Prompt.ActionText == "Penguin City" then
             Modules.Teleporting:OpenConfirmation()
             Modules.Buttons:UIOn(UI.Center.TeleportConfirmation,true)
-
-        elseif Prompt.ActionText == "Blast Off" then
-            Modules.Buttons:UIOn(UI.Center.WorldTeleport, true)
         end
 
     end
 
 end)
+
+-- Hide tycoon prompts that aren't in your tycoon
+local function RemovePrompt(Prompt)
+    if Prompt:IsA("ProximityPrompt") then
+        task.defer(Prompt.Destroy, Prompt)
+    end
+end
+
+for _, Tycoon in ipairs(workspace.Tycoons:GetChildren()) do
+    if Tycoon.Name ~= Paths.Player:GetAttribute("Tycoon") then
+        local Upgrades = Tycoon.Tycoon
+        for _, Descendant in ipairs(Upgrades:GetDescendants()) do
+            RemovePrompt(Descendant)
+        end
+        Upgrades.DescendantAdded:Connect(RemovePrompt)
+    end
+end
 
 return Setup

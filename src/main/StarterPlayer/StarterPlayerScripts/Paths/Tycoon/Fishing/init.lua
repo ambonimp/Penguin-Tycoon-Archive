@@ -335,8 +335,6 @@ paths.UI.Top.AFKFishing.Exit.MouseButton1Down:Connect(function()
 end)
 
 localPlayer.Idled:Connect(function(time)
-	warn("IDLED", time)
-
 	local afk = 2*60
 	if game.PlaceId == 7951464846 then
 		afk = 19*60

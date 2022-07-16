@@ -40,6 +40,7 @@ function PlayerData.Defaults(Player)
 	Returning["Gems"] = (IsTesting or IsQA) and 10000 or 0
 	Returning["Income"] = 0
 	Returning["Tycoon"] = {}
+	Returning["Robux Tycoon"] = nil -- Initialized later on, it being nil is a flag for whether or previous purchases have been recorded
 	Returning["Penguins"] = {}
 	Returning["Rebirths"] = 0
 
@@ -365,7 +366,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	local PolicyService = game:GetService("PolicyService")
 
-
 	-- Setup Data
 	PlayerData:SetupPlayerData(Player)
 	SetupNewStats(Player)
@@ -393,7 +393,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Modules.Character:Spawned(Player, Character, OldChar)
 		OldChar = Character
 	end)
-
 
 	-- Group reward
 	if not IsQA then
@@ -466,6 +465,23 @@ game.Players.PlayerAdded:Connect(function(Player)
 			[3] = {},
 		}
 	end
+
+	if not Data["Robux Tycoon"] then
+		Data["Robux Tycoon"] = {}
+
+		local Buttons = Paths.Template.Buttons
+		for Item in pairs(Data.Tycoon) do
+			local Button = Buttons:FindFirstChild(Item)
+			if Button then
+				local CurrencyType = Button:GetAttribute("CurrencyType")
+				if CurrencyType == "Robux" or CurrencyType == "Gamepass" then
+					Data["Robux Tycoon"][Item] = true
+				end
+			end
+		end
+
+	end
+
 	-- Setup Leaderstats
 	local leaderstats = Instance.new("Folder", Player)
 	leaderstats.Name = "leaderstats"

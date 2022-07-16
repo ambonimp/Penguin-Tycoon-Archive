@@ -53,7 +53,7 @@ function Purchasing:CanPurchaseWithMoney(Player, Item)
 end
 
 
-function Purchasing:ItemPurchased(Player, Item, IsAnimated)
+function Purchasing:ItemPurchased(Player, Item, IsAnimated, ForceLoad)
 	local Button = Paths.Template.Buttons:FindFirstChild(Item)
 	if Item == "Sailboat#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Dock#2")
@@ -64,6 +64,7 @@ function Purchasing:ItemPurchased(Player, Item, IsAnimated)
 	end
 
 	if not Button then return end
+
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	-- Add income
 	Data["Income"] += Button:GetAttribute("Income")
@@ -75,30 +76,35 @@ function Purchasing:ItemPurchased(Player, Item, IsAnimated)
 	--	Data["Tycoon"][Item2] = true
 	--end
 	-- Add specific items to their own table
-	if Button:GetAttribute("Type") then
-		if Button:GetAttribute("Type") == "Penguin" then
-			Modules.Penguins:PenguinPurchased(Player, Item)
-			
-		elseif Button:GetAttribute("Type") == "Robux" then
-		end
+	if Button:GetAttribute("Type") and Button:GetAttribute("Type") == "Penguin" then
+		Modules.Penguins:PenguinPurchased(Player, Item)
 	end
-	
+
+	local CurrencyType = Button:GetAttribute("CurrencyType")
+	if CurrencyType == "Robux" or CurrencyType == "Gamepass" then
+		Data["Robux Tycoon"][Item] = true
+	end
+
 	-- Add rewards
 	if Modules.AllAccessories.Unlockables[Item] then
 		Modules.Accessories:ItemAcquired(Player, Modules.AllAccessories.Unlockables[Item], "Accessory")
 	end
-	
+
 	-- Badges
 	if Modules.Badges.Purchases[Item] then
 		Modules.Badges:AwardBadge(Player.UserId, Modules.Badges.Purchases[Item])
 	end
-	
+
 	-- Remove button
-	local Tycoon = Modules.Ownership:GetPlayerTycoon(Player)
-	local ButtonToRemove = Tycoon.Buttons:FindFirstChild(Item)
-	if ButtonToRemove then
-		ButtonToRemove:SetAttribute("Purchased", true)
-		Modules.Placement:AnimateOut(ButtonToRemove)
+	if not ForceLoad then -- There is no button on force loads
+		local Tycoon = Modules.Ownership:GetPlayerTycoon(Player)
+		local ButtonToRemove = Tycoon.Buttons:FindFirstChild(Item)
+
+		if ButtonToRemove then
+			ButtonToRemove:SetAttribute("Purchased", true)
+			Modules.Placement:AnimateOut(ButtonToRemove)
+		end
+
 	end
 
 	-- Place item

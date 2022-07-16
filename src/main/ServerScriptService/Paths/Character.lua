@@ -136,7 +136,6 @@ function Character:Spawn(Player, Type, Anchor)
 	
 	Modules.Penguins:LoadPenguin(Penguin, Data["My Penguin"])
 	
-	
 	-- connect character functions
 	Penguin.Humanoid.Died:Connect(function()
 		c:Disconnect()

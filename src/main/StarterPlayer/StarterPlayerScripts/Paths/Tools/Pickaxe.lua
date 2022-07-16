@@ -1,4 +1,5 @@
 local DataStoreService = game:GetService("DataStoreService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
 local Pickaxe = {}
 
 local MINE_COOLDOWN = 1
@@ -10,20 +11,15 @@ local Paths = require(script.Parent.Parent)
 local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
-local UI = Paths.UI
-local ParticleSystem = require(Services.RStorage.Modules.FreshParticles)
 
-
-
-local Island = workspace.Islands["Mining Island"]
-local Camera = workspace.CurrentCamera
-
-local Char, MineTrack, Hrp
 
 local Rand = Random.new()
 
+local Char, MineTrack, Hrp
+
+local Island = workspace.Islands["Mining Island"]
 local GoldPickaxePurchaseConn
-local FirstTeleport = false
+
 
 --- Functions ---
 function GetCFramer(Model)
@@ -137,25 +133,6 @@ local function LoadCharacter(C)
 
 end
 
-local function LoadMine(Mine)
-    repeat task.wait() until Mine.PrimaryPart
-
-    local prompt = Instance.new("ProximityPrompt")
-	prompt.HoldDuration = 0.25
-	prompt.MaxActivationDistance = 50
-	prompt.RequiresLineOfSight = false
-	prompt.ActionText = "Visit mine"
-	prompt.Parent = Mine.PrimaryPart
-
-    prompt.Triggered:Connect(function()
-        prompt.Enabled = false
-        Teleport("Mining Island")
-        prompt.Enabled = true
-    end)
-
-end
-
-
 --- Events ---
 local LastMined = 0
 task.spawn(function()
@@ -232,37 +209,11 @@ Paths.Player.CharacterRemoving:Connect(function()
 end)
 
 function Init()
-    if Remotes.GetStat:InvokeServer("Tycoon")["Mine#1"]then
-        LoadMine(Paths.Tycoon.Tycoon:WaitForChild("Mine#1"))
-    else
-        local Conn
-        Conn = Paths.Tycoon.Tycoon.ChildAdded:Connect(function(Child)
-            if Child.Name == "Mine#1" then
-                Conn:Disconnect()
-                LoadMine(Child)
-            end
-        end)
-
-    end
-
-    -- Island
+    -- Remove gold pickaxe
     task.spawn(function()
-        -- Teleport back
-        local prompt = Instance.new("ProximityPrompt")
-    	prompt.HoldDuration = 0.25
-    	prompt.MaxActivationDistance = 50
-    	prompt.RequiresLineOfSight = false
-    	prompt.ActionText = "Return home"
-    	prompt.Parent = Island.Teleport:WaitForChild("Hitbox", math.huge)
-
-    	prompt.Triggered:Connect(function()
-            prompt.Enabled = false
-            Teleport(Paths.Player.Name)
-            prompt.Enabled = true
-        end)
-
         local GoldPickaxe = Island.GoldPickaxe
         GoldPickaxe:WaitForChild("Loader", math.huge)
+
         if Remotes.GetStat:InvokeServer("Tycoon")["Gold Pickaxe#1"] then
             if GoldPickaxe:FindFirstChild("Model") then
                 GoldPickaxe.Model:Destroy()
@@ -275,13 +226,16 @@ function Init()
 
                     GoldPickaxe.Model:Destroy()
                 end
+
             end)
+
         end
 
     end)
 
 end
 
+-- Dividers
 task.spawn(function()
     -- Initialize dividers
     local Level = Remotes.GetStat:InvokeServer("Mining").Level
@@ -296,16 +250,36 @@ task.spawn(function()
 
 end)
 
--- Initialize teleportation1
-Init()
+Remotes.MiningLevelUp.OnClientEvent:Connect(DestroyDividers)
 
+-- Teleporting
+Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
+    if Player == Paths.Player then
+        local ActionText = Prompt.ActionText
 
+        if ActionText == "Visit Mine" then
+            Prompt.Enabled = false
+            Teleport("Mining Island")
+            Prompt.Enabled = true
+
+        elseif ActionText == "Return Home" then
+            Prompt.Enabled = false
+            Teleport(Paths.Player.Name)
+            Prompt.Enabled = true
+        end
+
+    end
+
+end)
+
+-- Rebirthing
 task.spawn(function()
     repeat task.wait() until Modules.Rebirths
     Modules.Rebirths.Rebirthed:Connect(function()
         Init()
     end)
 end)
-Remotes.MiningLevelUp.OnClientEvent:Connect(DestroyDividers)
+
+Init()
 
 return Pickaxe

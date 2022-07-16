@@ -48,8 +48,6 @@ function Tools.RemoveTool(Player, Tool)
 			Data["Tools"][Tool] = nil
 			Remotes.Tools:FireClient(Player, "Remove Tool", Tool)
 		end
-	else
-		warn(Tool, "On no")
 	end
 
 end

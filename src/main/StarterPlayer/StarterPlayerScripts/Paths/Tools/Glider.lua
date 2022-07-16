@@ -37,8 +37,10 @@ Services.InputService.InputEnded:Connect(function(input, gameProcessed)
 	end
 end)
 
-coroutine.wrap(function()
-	repeat wait() until Modules.PlatformAdjustments and Modules.PlatformAdjustments.CurrentPlatform
+task.spawn(function()
+	repeat
+		task.wait()
+	until Modules.PlatformAdjustments and Modules.PlatformAdjustments.CurrentPlatform
 	
 	if Modules.PlatformAdjustments.CurrentPlatform == "Mobile" then
 		local PlayerGui = Paths.Player.PlayerGui
@@ -51,12 +53,14 @@ coroutine.wrap(function()
 				IsHoldingSpace = false
 			end)
 		end
+
 	end
-end)()
+
+end)
 	
 	
 --- Functions ---
-coroutine.wrap(function()
+task.spawn(function()
 	Services.RunService.RenderStepped:Connect(function()
 		if string.match(Paths.Player:GetAttribute("Tool"), "Glider") then
 			if Paths.Player:GetAttribute("Tool") == "Glider" then
@@ -111,7 +115,7 @@ coroutine.wrap(function()
 			end
 		end
 	end)
-end)()
+end)
 
 
 

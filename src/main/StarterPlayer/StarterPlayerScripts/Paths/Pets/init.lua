@@ -425,9 +425,6 @@ function updateIndex(data,islandId)
 	if frame then
 		local Pets = frame.Pets.Pets:GetChildren()
 
-		warn("Client:", data.Unlocked)
-		warn(" ")
-
 		for i,v in pairs (Pets) do
 			local PetId = tonumber(v.Name)
 			if PetId and data.Unlocked[tostring(PetId)] then

@@ -255,7 +255,6 @@ function BuyEgg(Player,Island,Type)
 						})
 					end
 				end)
-				warn(Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].Unlocked)
 
 				return true, Modules.PlayerData.sessionData[Player.Name]["Pets_Data"], petInfo, newId
 			else

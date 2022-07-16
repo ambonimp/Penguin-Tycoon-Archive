@@ -188,6 +188,7 @@ Players.PlayerAdded:Connect(function(player)
 
 					end
 
+					Data.Tycoon["Snow#1"] = nil
 				end
 
 				task.wait(0.5)

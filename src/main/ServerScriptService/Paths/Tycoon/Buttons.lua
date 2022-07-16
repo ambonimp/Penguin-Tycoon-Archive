@@ -146,6 +146,7 @@ function Buttons:NewButton(Player, Button)
 
 		end)
 
+		return true
 	end
 
 end
