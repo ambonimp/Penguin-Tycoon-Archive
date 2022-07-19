@@ -1231,7 +1231,7 @@ task.spawn(function()
 				UI.Right.Visible = false
 				UI.Bottom.Visible = false
 				Paths.Modules.Buttons:UIOn(Paths.UI.Center.FreePet,true)
-			elseif c.Name == "Beach House#1" then
+			elseif c.Name == "Pickaxe#1" then
 				Paths.Modules.Buttons:UIOn(Paths.UI.Center.CompleteRocket,true)
 			elseif UI.Center.UnlockedEggs.Eggs.Pets:FindFirstChild(c.Name) then
 				local v = UI.Center.UnlockedEggs.Eggs.Pets:FindFirstChild(c.Name)
