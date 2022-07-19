@@ -44,15 +44,30 @@ function Initiate:InitiateButtons()
 				if Player then
 					Remotes.ButtonPurchased:FireClient(Player, GetIslandIndex(ButtonRemoved), ButtonRemoved.Name, ButtonRemoved:GetAttribute("Island"))
 
+					local HasDependents = false
+
 					for _, Button in pairs(Buttons:GetChildren()) do
 						if Button:GetAttribute("Dependency") == ButtonRemoved.Name then
-							if Modules.PlayerData.sessionData[Player.Name].Rebirths ~= 0 and Button.Name == "Pets#1" then continue end
-							Modules.Buttons:NewButton(Player, Button.Name)
+							local NewItem = Button.Name
+
+							local Data = Modules.PlayerData.sessionData[Player.Name]
+							if not (Data.Rebirths ~= 0 and Button.Name == "Pets#1") then -- Ignored after a rebirth
+								if Data["Robux Tycoon"][NewItem] then
+									Modules.Purchasing:ItemPurchased(Player, NewItem, true, true)
+								else
+									if Modules.Buttons:NewButton(Player, NewItem) and Button:GetAttribute("CurrencyType") == "Money" then
+										HasDependents = true
+									end
+
+								end
+
+							end
+
 						end
 
 					end
 
-					if not ButtonRemoved.Name == "RebirthMachine"then
+					if not HasDependents then
 						Modules.Rebirths.LoadRebirth(Player)
 					end
 
@@ -92,7 +107,6 @@ Remotes.IslandProgressRewardCollected.OnServerEvent:Connect(function(Client, Ind
 			end
 		end
 
-		-- warn(Unlocked, Unlockables)
 		if Unlocked == math.floor(Unlockables/2) then
 			Modules.Income:AddGems(Client, 3, "Tycoon Reward")
 		end

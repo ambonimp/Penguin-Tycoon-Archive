@@ -63,8 +63,6 @@ for Level in pairs(Modules.MiningDetails) do
                             end
                         end)
 
-                    else
-                        warn(Data, Data.Mining.Level + 1, Level)
                     end
 
                 end)

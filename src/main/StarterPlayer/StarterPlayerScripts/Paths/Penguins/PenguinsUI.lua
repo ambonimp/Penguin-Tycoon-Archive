@@ -227,7 +227,6 @@ PenguinList.Player.Upgrade.MouseButton1Down:Connect(function()
 
 		if UpgradeSuccess then
 			PenguinsUI:PenguinInfoUpdated(Paths.Player.Character)
-
 		else
 			local Reason = Info
 
@@ -251,5 +250,19 @@ if Char and Char:FindFirstChild("HumanoidRootPart") then
 	PenguinsUI:PenguinInfoUpdated(Paths.Player.Character)
 end
 
+-- Rebirthing
+task.spawn(function()
+	repeat task.wait() until Modules.Rebirths
+	Modules.Rebirths.Rebirthed:Connect(function()
+		PenguinsUI:PenguinInfoUpdated(Paths.Player.Character)
+		for _, Penguin in ipairs(PenguinList:GetChildren()) do
+			if Penguin:IsA("Frame") and Penguin.Name ~= Paths.Player.Name then
+				Penguin:Destroy()
+			end
+		end
+
+	end)
+
+end)
 
 return PenguinsUI

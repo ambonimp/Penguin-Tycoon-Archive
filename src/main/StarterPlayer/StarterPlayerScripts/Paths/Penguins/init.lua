@@ -85,7 +85,7 @@ end
 --- Connecting penguins to SetupPenguin() function ---
 local PlayerTycoon = Paths.Player:GetAttribute("Tycoon")
 
-coroutine.wrap(function()
+task.spawn(function()
 	workspace.Tycoons[PlayerTycoon].Tycoon.ChildAdded:Connect(function(Object)
 		local Type = Object:GetAttribute("Type")
 		if Type == "Penguin" then
@@ -99,7 +99,7 @@ coroutine.wrap(function()
 			Penguins:SetupPenguin(Object)
 		end
 	end
-end)()
+end)
 
 
 --- Upgrading Penguins ---

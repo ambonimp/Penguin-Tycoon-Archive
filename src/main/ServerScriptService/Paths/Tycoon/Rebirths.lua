@@ -26,7 +26,9 @@ end
 function Rebirths.LoadRebirth(Player)
     local Data = Modules.PlayerData.sessionData[Player.Name]
     if Data then
-        if Data.Tycoon[UPGRADE] then return end
+        if Data.Tycoon[UPGRADE] or Modules.Ownership:GetPlayerTycoon(Player).Buttons:FindFirstChild(UPGRADE) then
+            return
+        end
 
         for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
             local Name = Button.Name
@@ -60,20 +62,26 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
             end
 
             if Purchased then
+                local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
+
                 Data.Rebirths += 1
                 Data["Income Multiplier"] += 0.1
-
                 Client.leaderstats.Rebirths.Value = Data.Rebirths
 
                 -- Reset data
                 local Defaults = Modules.PlayerData.Defaults(Client)
 
                 Data.Money = Defaults.Money
-                -- Data.Gems = Defaults.Gems
+                Client:SetAttribute("Money", Data.Money)
+
+                Data.Income = Defaults.Income
+                Client.leaderstats.Income.Value = Data.Income
+
+                Data["My Penguin"].Level = 0
+                Client:SetAttribute("Level", 0)
 
                 Data.Tycoon = Defaults.Tycoon
-                -- Data.Woodcutting = Defaults.Woodcutting
-                -- Data.Mining = Defaults.Mining
+                Data.Penguins = Defaults.Penguins
                 Data.YoutubeStats = Defaults.YoutubeStats
                 Data.PlaneUnlocked = Defaults.PlaneUnlocked
                 Data.RocketUnlocked = Defaults.RocketUnlocked
@@ -89,6 +97,10 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
                 local Tycoon = Client:GetAttribute("Tycoon")
                 Modules.Ownership:UnclaimTycoon(Tycoon)
                 Modules.Tycoon:InitializePlayer(Client, Tycoon)
+
+                EventHandler:Fire("Rebirth", Client, {
+                    Amount = Data.Rebirths,
+                })
 
                 return Data.Rebirths
             end

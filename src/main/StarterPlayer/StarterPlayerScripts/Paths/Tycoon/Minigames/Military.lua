@@ -252,15 +252,9 @@ local function Level(Lvl)
 
 end
 
-local function LoadUpgrade(Upgrade)
-    local Prompt = Instance.new("ProximityPrompt")
-	Prompt.HoldDuration = 0.25
-	Prompt.MaxActivationDistance = 15
-	Prompt.RequiresLineOfSight = false
-	Prompt.ActionText = "Penguin Rescue"
-	Prompt.Parent = Upgrade:WaitForChild("LapTop"):WaitForChild("Hitbox")
-
-    Prompt.Triggered:Connect(function()
+-- Open
+Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
+    if Prompt.ActionText == "Penguin Rescue" and Player == Paths.Player then
         Character = Paths.Player.Character
         if Character then
     		Prompt.Enabled = false
@@ -335,36 +329,15 @@ local function LoadUpgrade(Upgrade)
                 end
 
                 HiddenParts = nil
+
             end)
 
     		Prompt.Enabled = true
 
         end
 
-    end)
-
-end
-
-local function Init()
-    if Remotes.GetStat:InvokeServer("Tycoon")[UPGRADE_NAME] then
-        LoadUpgrade(Paths.Tycoon.Tycoon:WaitForChild(UPGRADE_NAME))
-    else
-        local Conn
-        Conn = Paths.Tycoon.Tycoon.ChildAdded:Connect(function(Added)
-            if Added.Name == UPGRADE_NAME then
-                Conn:Disconnect()
-                LoadUpgrade(Added)
-            end
-        end)
-
     end
 
-end
-
-Init()
-task.spawn(function()
-    repeat task.wait() until Modules.Rebirths
-    Modules.Rebirths.Rebirthed:Connect(Init)
 end)
 
 return Minigame

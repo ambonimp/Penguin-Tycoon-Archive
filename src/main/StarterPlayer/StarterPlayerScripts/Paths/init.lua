@@ -22,7 +22,7 @@ function Paths.Initiliaze()
 	Paths.Services.ContextActionService = game:GetService("ContextActionService");
 	Paths.Services.CollectionService = game:GetService("CollectionService");
 	Paths.Services.PhysicsService = game:GetService("PhysicsService")
-	Paths.Services.ProximityPromptService = game:GetService("ProximityPromptService")
+	Paths.Services.ProximityPrompt = game:GetService("ProximityPromptService")
 
 	Paths.Services.GuiService = game:GetService("GuiService");
 	
@@ -112,7 +112,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
 	ModuleLoader.Register("TycoonTeleporting", script.UI.TycoonTeleporting)
 	ModuleLoader.Register("PlatformAdjustments", script.UI.PlatformAdjustments)
-	ModuleLoader.Register("PlatformAdjustments", script.UI.Snackbars)
+	-- ModuleLoader.Register("Snackbars", script.UI.Snackbars)
 	ModuleLoader.Register("UI", script.UI)
 	ModuleLoader.Register("Index", script.UI.Index)
 	ModuleLoader.Register("Achievements", script.Achievements)

@@ -550,59 +550,12 @@ end
 
 local function loadComputer(computer)
 	table.insert(computers, computer)
-
-	local screen = computer:WaitForChild("Screen")
-	local seat = computer:WaitForChild("Seat") -- Created on the client so no one else can use it
-
-	local prompt = Instance.new("ProximityPrompt")
-	prompt.HoldDuration = 0.25
-	prompt.MaxActivationDistance = 7
-	prompt.RequiresLineOfSight = false
-	prompt.ActionText = "Upload video"
-	prompt.Parent = seat
-	prompt.Enabled = if #computers == 0 then true else computers[1].Seat.ProximityPrompt.Enabled
-
-	prompt.Triggered:Connect(function()
-		toggleProximityPrompts(false)
-
-		character = player.Character
-		if character then
-			local humanoid = character.Humanoid
-
-			seat:Sit(humanoid)
-			character.PrimaryPart.Anchored = true
-
-			-- Let player see their character sit down
-			task.wait(0.2)
-
-			-- Hide character so it doesn't get in the way
-			for _, basePart in ipairs(character:GetDescendants()) do
-				if basePart:IsA("BasePart") and basePart.Transparency == 0 then
-					table.insert(partsMadeInvisible, basePart)
-					basePart.Transparency = 1
-				end
-			end
-
-			-- Position camera so can display ui on screen
-			camera.CameraType = Enum.CameraType.Scriptable
-
-			local scale = 1 + (1 - frame.Size.Y.Scale)
-			local screenSize = screen.Size * scale
-			local deph = (screenSize.Y / 2) / math.tan(math.rad(camera.FieldOfView / 2)) + (screenSize.Z / 2)
-
-			local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-			local transition = services.TweenService:Create(camera, tweenInfo, {CFrame = screen.CFrame * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, deph)})
-			transition.Completed:Connect(function()
-				currentComputer = computer.Name
-				open()
-			end)
-
-			transition:Play()
-		end
-
+	task.spawn(function() -- Might not stream in yet
+		computer:WaitForChild("Seat"):WaitForChild("ProximityPrompt").Enabled = if #computers == 0 then true else computers[1].Seat.ProximityPrompt.Enabled
 	end)
-
 end
+
+
 
 
 startScreen.Buttons.Play.MouseButton1Down:Connect(function()
@@ -638,6 +591,7 @@ local function init()
 					conn:Disconnect()
 					loadComputer(child)
 				end
+
 			end)
 
 		end
@@ -646,6 +600,57 @@ local function init()
 
 end
 
+services.ProximityPrompt.PromptTriggered:Connect(function(prompt, player)
+    if player == paths.Player then
+		character = player.Character
+
+        if prompt.ActionText == "Upload Video" then
+			local computer = prompt.Parent.Parent
+			local seat = computer.Seat
+			local screen = computer.Screen
+
+			toggleProximityPrompts(false)
+
+
+			seat:Sit(character.Humanoid)
+			character.PrimaryPart.Anchored = true
+
+			-- Let player see their character sit down
+			task.wait(0.2)
+
+			-- Hide character so it doesn't get in the way
+			for _, basePart in ipairs(character:GetDescendants()) do
+				if basePart:IsA("BasePart") and basePart.Transparency == 0 then
+					table.insert(partsMadeInvisible, basePart)
+					basePart.Transparency = 1
+				end
+
+			end
+
+			-- Position camera so can display ui on screen
+			camera.CameraType = Enum.CameraType.Scriptable
+
+			local scale = 1 + (1 - frame.Size.Y.Scale)
+			local screenSize = screen.Size * scale
+			local deph = (screenSize.Y / 2) / math.tan(math.rad(camera.FieldOfView / 2)) + (screenSize.Z / 2)
+
+			local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+			local transition = services.TweenService:Create(camera, tweenInfo, {CFrame = screen.CFrame * CFrame.fromEulerAnglesYXZ(0, math.pi, 0) * CFrame.new(0, 0, deph)})
+			transition.Completed:Connect(function()
+				currentComputer = computer.Name
+				open()
+			end)
+
+			transition:Play()
+
+        end
+
+    end
+
+end)
+
+
+-- Load
 init()
 task.spawn(function()
     repeat task.wait() until modules.Rebirths

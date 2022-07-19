@@ -174,7 +174,7 @@ Players.PlayerAdded:Connect(function(player)
 
 					for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
 						local Name = Button.Name
-						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and Button:GetAttribute("Island") ~= "School" then
+						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and Button.Name ~= "Snow#1" then
 							Data.Tycoon[Name] = true
 							Data.Income += Button:GetAttribute("Income") or 0
 
@@ -188,6 +188,7 @@ Players.PlayerAdded:Connect(function(player)
 
 					end
 
+					Data.Tycoon["Snow#1"] = nil
 				end
 
 				task.wait(0.5)

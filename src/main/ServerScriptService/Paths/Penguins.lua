@@ -16,7 +16,7 @@ function Penguins:PenguinPurchased(Player, PenguinName)
 	if Data then
 		Data["Penguins"][PenguinName] = {
 			["Name"] = 	 string.split(PenguinName, "#")[1];
-			["Level"] = 	 1;
+			["Level"] = 1;
 			["BodyColor"] = "Default";
 			["Accessory"] = "Default";
 			["Eyes"] = "Default";

@@ -23,10 +23,10 @@ function Paths.Initiliaze()
 	Paths.Services.TeleportService = game:GetService("TeleportService");
 	Paths.Services.HttpService = game:GetService("HttpService")
 	Paths.Services.CollectionService = game:GetService("CollectionService")
-	
-	coroutine.wrap(function()
+
+	task.spawn(function()
 		Paths.Services.ChatService = require(script.Parent:WaitForChild("ChatServiceRunner").ChatService)
-	end)()
+	end)
 
 	
 	Paths.Dependency = Paths.Services.SStorage:WaitForChild("ServerDependency")

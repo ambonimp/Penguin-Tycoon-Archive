@@ -38,8 +38,8 @@ Services.InputService.InputEnded:Connect(function(input, gameProcessed)
 end)
 
 coroutine.wrap(function()
-	repeat wait() until Modules.PlatformAdjustments and Modules.PlatformAdjustments.CurrentPlatform
-	
+	repeat task.wait() until Modules.PlatformAdjustments and Modules.PlatformAdjustments.CurrentPlatform
+
 	if Modules.PlatformAdjustments.CurrentPlatform == "Mobile" then
 		local PlayerGui = Paths.Player.PlayerGui
 		if PlayerGui:WaitForChild("TouchGui", 3) and PlayerGui.TouchGui:WaitForChild("TouchControlFrame", 1) and PlayerGui.TouchGui.TouchControlFrame:WaitForChild("JumpButton", 1) then

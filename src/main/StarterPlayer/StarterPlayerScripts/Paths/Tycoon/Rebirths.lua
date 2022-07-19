@@ -23,43 +23,7 @@ local function updateRebirths(Rebirths)
     Frame.Purchase.Gems.Amount.Text = Modules.Format:FormatAbbreviated(priceGems)
 end
 
-local function CreatePrompt(Parent, ActionText, ObjectText)
-    local Prompt = Instance.new("ProximityPrompt")
-    Prompt.HoldDuration = 0.25
-    Prompt.MaxActivationDistance = 15
-    Prompt.RequiresLineOfSight = false
-    Prompt.ObjectText = ObjectText or ""
-    Prompt.ActionText = ActionText
-    Prompt.Parent = Parent
-
-    return Prompt
-end
-
-local function LoadMachine()
-    local Prompt = CreatePrompt(Paths.Tycoon.Tycoon:WaitForChild(UPGRADE):WaitForChild("PromptPart"), "Rebirth")
-    Prompt.Triggered:Connect(function()
-
-        Modules.Buttons:UIOn(Frame, true)
-    end)
-end
-
 -- Interaction
-local function Init()
-    if Remotes.GetStat:InvokeServer("Tycoon")[UPGRADE] then
-        LoadMachine()
-    else
-        local Conn
-        Conn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(_, Button)
-            if Button == UPGRADE then
-                Conn:Disconnect()
-                LoadMachine()
-            end
-        end)
-
-    end
-
-end
-
 local function Rebirth(Count)
     if not Count then return end
 
@@ -72,15 +36,16 @@ local function Rebirth(Count)
 
     -- Reset
     Modules.Buttons:UIOff(Frame, true)
-    Init()
-
 end
 
--- Init
-updateRebirths(Remotes.GetStat:InvokeServer("Rebirths"))
-Init()
-
 -- UI
+updateRebirths(Remotes.GetStat:InvokeServer("Rebirths"))
+Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
+    if Prompt.ActionText == "Rebirth" and Player == Paths.Player then
+        Modules.Buttons:UIOn(Frame, true)
+    end
+end)
+
 Frame.Exit.MouseButton1Down:Connect(function()
     Modules.Buttons:UIOff(Frame, true)
 end)
@@ -109,6 +74,7 @@ Frame.Purchase.Gems.MouseButton1Down:Connect(function()
     end
 end)
 
+-- Rebirth popup
 Remotes.RebirthReady.OnClientEvent:Connect(function()
     Popup.Size = UDim2.fromScale(0,0)
     Popup.Visible = true
