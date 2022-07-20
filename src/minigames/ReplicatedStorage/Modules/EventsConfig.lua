@@ -95,10 +95,11 @@ EventsConfig["Egg Hunt"] = {
 
 if game.PlaceId == 9647797909 then -- Testing
 	EventsConfig.INTERMISSION_INTERVAL = 5
-	EventsConfig.Names[9647797909] = "Soccer"
+	EventsConfig.Names[9647797909] = "Skate Race"
 	-- EventsConfig[EventsConfig.Names[9647797909]].Duration = 20
+
 	EventsConfig[EventsConfig.Names[9647797909]].FastestPossible = 1
-	EventsConfig[EventsConfig.Names[9647797909]].Laps = 2
+	EventsConfig[EventsConfig.Names[9647797909]].Laps = 1
 	EventsConfig[EventsConfig.Names[9647797909]].MinPlayers = 1
 end
 

@@ -343,6 +343,14 @@ function Soccer:StartEvent()
 				player.Character:SetPrimaryPartCFrame(Map.Winners.Spawns:GetChildren()[i].CFrame)
 				Modules.Quests.GiveQuest(player,"Win","Minigame","Soccer",1)
 				Modules.Quests.GiveQuest(player,"Win","Minigame","All",1)
+
+				local stats = Modules.PlayerData.sessionData[player.Name].Stats
+				if stats["Soccer Wins"] then
+					stats["Soccer Wins"] += 1
+				else
+					stats["Soccer Wins"] = 1
+				end
+
 			end
 		end
 		addGems(15,0)
@@ -365,6 +373,14 @@ function Soccer:StartEvent()
 				player.Character:SetPrimaryPartCFrame(Map.Winners.Spawns:GetChildren()[i].CFrame)
 				Modules.Quests.GiveQuest(player,"Win","Minigame","Soccer",1)
 				Modules.Quests.GiveQuest(player,"Win","Minigame","All",1)
+
+				local stats = Modules.PlayerData.sessionData[player.Name].Stats
+				if stats["Soccer Wins"] then
+					stats["Soccer Wins"] += 1
+				else
+					stats["Soccer Wins"] = 1
+				end
+
 			end
 		end
 		addGems(0,15)

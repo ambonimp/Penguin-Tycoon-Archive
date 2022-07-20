@@ -384,7 +384,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 	NetworthStat.Name = "Networth"
 	NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
 
-
 	-- Updating Leaderstats
 	Player:GetAttributeChangedSignal("Money"):Connect(function()
 		NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]

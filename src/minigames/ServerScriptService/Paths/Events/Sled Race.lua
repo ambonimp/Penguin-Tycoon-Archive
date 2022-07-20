@@ -191,7 +191,7 @@ function SledRace:StartEvent()
 
 		if Event == "OnRaceFinished" then
 			local PlayerName = Client.Name
-			local Time = math.floor((Config.Duration - TimeLeft) * 100) / 100
+			local Time = Config.Duration - TimeLeft
 
 			-- Anti exploit
 			local Infractions = SpeedInfractions[Client]
@@ -218,13 +218,19 @@ function SledRace:StartEvent()
 				if Data then
 					local Stats = Data["Stats"]
 					local PreviousRecord =  Stats[EVENT_NAME]
+					local FormattedTime = math.floor(Time * 100)
 
 					if not PreviousRecord or PreviousRecord == 0 then
-						Stats[EVENT_NAME] = Time
-
+						Stats[EVENT_NAME] = FormattedTime
 					else
-						if Time < PreviousRecord then
-							Stats[EVENT_NAME] = Time
+						-- Previously set this to doubles, this corrects that
+						if PreviousRecord < 100 then
+							PreviousRecord *= 100
+							Stats[EVENT_NAME] = PreviousRecord
+						end
+
+						if FormattedTime < PreviousRecord then
+							Stats[EVENT_NAME] = FormattedTime
 						end
 
 					end
@@ -305,11 +311,22 @@ function SledRace:StartEvent()
 		local Player = game.Players[PlayerName]
 
 		if i <= 3 then
+			if i == 1 then
+				local Stats = Modules.PlayerData.sessionData[PlayerName].Stats
+				if Stats["Sled Race Wins"] then
+					Stats["Sled Race Wins"] += 1
+				else
+					Stats["Sled Race Wins"] = 1
+				end
+			end
+
 			table.insert(Winners, PlayerName)
 			RewardGems(Player, WINNER_REWARDS[i])
+
 		else
 			RewardGems(Player, PARTICIPATION_REWARD)
 		end
+
 	end
 
 	return #Winners > 0 and Winners or nil

@@ -8,6 +8,7 @@ local accessories = modules.Accessories
 
 local remotes = paths.Remotes
 
+local DataStoreService = game:GetService("DataStoreService")
 local ServerStorage = game:GetService("ServerStorage")
 local EventHandler = ServerStorage:FindFirstChild("EventHandler")
 
@@ -321,6 +322,8 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 
 			-- all fish
 		else
+			sessionData[player.Name].Stats["Total Fished"] += 1
+
 			local fishFound = sessionData[player.Name]["Fish Found"]
 			local enchantedFishFound = sessionData[player.Name]["Enchanted Fish Found"]
 			returnData.Enchanted = GetEnchantState(hitPosition,player)
@@ -371,11 +374,11 @@ function Main(player, hitPosition, reroll, AFKFishing)
 			local data = {}
 			local characterPosition = player.Character:GetPivot().Position
 			data.LootInfo = Fishing.GetRandomFish(player.Character:GetPivot().Position,player)
-		
+
 			if data.LootInfo["IncomeMultiplier"] then
 				data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
-				
-				
+
+
 				local old = data.Worth
 				if old ~= 0 then
 					local mult = paths.Modules.Pets.getBonus(player,"Fishing","Income")
@@ -383,7 +386,7 @@ function Main(player, hitPosition, reroll, AFKFishing)
 					data.Worth = math.ceil(data.Worth * multiplier)
 				end
 			end
-		
+
 			if modules.Income then
 				AddReward(player, data, hitPosition, AFKFishing)
 				announcementRemote:FireAllClients(player, data.LootInfo)
