@@ -106,11 +106,22 @@ function CandyRush:InitiateEvent(Event)
 			con = spawn.Touched:Connect(function(hit)
 				if collected then return end
 				if hit.Parent:FindFirstChild("Humanoid") then
+					local playerName = hit.Parent.Name
+					local player = game.Players:FindFirstChild(playerName)
+
 					collected = true
-					Modules.Quests.GiveQuest(game.Players:FindFirstChild(hit.Parent.Name),"Collect","Minigame","Candy Rush",1)
-					local tbl = findTbl(hit.Parent.Name)
+					Modules.Quests.GiveQuest(player,"Collect","Minigame","Candy Rush",1)
+
+					local stats = Modules.PlayerData.sessionData[playerName].Stats
+					if stats["Candy Collected"] then
+						stats["Candy Collected"] += 1
+					else
+						stats["Candy Collected"] = 1
+					end
+
+					local tbl = findTbl(playerName)
 					if tbl == nil then
-						table.insert(EggsCollected,{hit.Parent.Name,0,{
+						table.insert(EggsCollected,{playerName,0,{
 							["Gold"] = 0,
 							["Red"] = 0,
 							["Purple"] = 0,
@@ -119,7 +130,7 @@ function CandyRush:InitiateEvent(Event)
 						})
 					end
 
-					Remotes.CandyRush:FireClient(game.Players:FindFirstChild(hit.Parent.Name),"Collected",spawn)
+					Remotes.CandyRush:FireClient(player, "Collected",spawn)
 					local tbl = findTbl(hit.Parent.Name)
 					
 					EggsCollected[tbl][2] += egg:GetAttribute("Score")

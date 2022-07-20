@@ -122,6 +122,9 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("SettingDetails", Paths.Services.RStorage.Modules.SettingDetails)
 	ModuleLoader.Register("Settings", script.Settings)
 
+	ModuleLoader.Register("LeaderboardDetails", Paths.Services.RStorage.Modules.LeaderboardDetails)
+	ModuleLoader.Register("Leaderboards", script.Leaderboards)
+
 	-- Load Version
 	ModuleLoader.Load()
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version

@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local Leaderboards = {}
 
 --- Main Variables ---
@@ -8,150 +9,170 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
+
 --- Variables ---
-local DATASTORE_RETRIES = 3
-local LOOP_INTERVAL = 5
+local LOOP_INTERVAL = 3 * 60
 
-local function dataStoreRetry(dataStoreFunction)
-	local tries = 0	
-	local success = true
-	local data = nil
-	repeat
-		tries = tries + 1
-		success = pcall(function() data = dataStoreFunction() end)
-		if not success then wait(1) end
-	until tries == DATASTORE_RETRIES or success
-	if not success then
-		error("Could not access DataStore! Warn players that their data might not get saved!")
-	end
-	return success, data
-end
+local MIN_VALUE = 0
+local MAX_VALUE = 10e50
 
-local leaderboards = {
-	["Total Money"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Total Money_v-RELEASE"),
-		Leaderboard = workspace.Leaderboards["Total Money"];
-		smallestFirst = false;};
-	["Total Gems"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Total Gems_v-RELEASE"),
-		Leaderboard = workspace.Leaderboards["Total Gems"];
-		smallestFirst = false;};
-	["Hearts"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Hearts_v-RELEASE"),
-		Leaderboard = workspace.Leaderboards["Hearts"];
-		smallestFirst = false;};
-	["Skate Race Record"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Skate Race Record_v-RELEASE"),
-		Leaderboard = workspace.Leaderboards["Skate Race Record"];
-		smallestFirst = true;};
-	["Soccer"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Soccer_v-RELEASE"),
-		Leaderboard = workspace.Leaderboards["Soccer"];
-		smallestFirst = false;};
-	["Falling Tiles"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Falling Tiles_v-RELEASE"),
-		Leaderboard = workspace.Leaderboards["Falling Tiles"];
-		smallestFirst = false;};
-	["Candy Rush"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Candy Rush_v-RELEASE"),
-		Leaderboard = workspace.Leaderboards["Candy Rush"];
-		smallestFirst = false;};
-	["Ice Cream Extravaganza"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Ice Cream Extravaganza_v-RELEASE"),
-		Leaderboard = workspace.Leaderboards["Ice Cream Extravaganza"];
-		smallestFirst = false;};
-	["Sled Race"] = {
-		DataStore = Services.DataStoreService:GetOrderedDataStore("Sled Race_v-RELEASE1"),
-		Leaderboard = workspace.Leaderboards["Sled Race"];
-		smallestFirst = true;};
-}
+local MAX_LIST_SIZE = 200
 
-local function LoadPenguin(userId, penguin,scale)
+
+
+local LastRichestPlayer
+
+local function LoadPenguinModel(UserId, Penguin, Scale)
 	coroutine.wrap(function()
-		local success, data = Modules.PlayerData.getData(userId)
+		local Success, Data = Modules.PlayerData.getData(UserId)
 
-		if success and data then
-			local PenguinInfo = data["My Penguin"]
-			if scale then
-				Modules.Penguins:LoadPenguin(penguin, PenguinInfo,"SCALE",scale)
+		if Success and Data then
+			local PenguinInfo = Data["My Penguin"]
+			if Scale then
+				Modules.Penguins:LoadPenguin(Penguin, PenguinInfo, "SCALE", Scale)
 			else
-				Modules.Penguins:LoadPenguin(penguin, PenguinInfo)
+				Modules.Penguins:LoadPenguin(Penguin, PenguinInfo)
 			end
 		end
+
 	end)()
 end
 
-local last = nil
+function ShowRichestInServer()
+	local RichestPlayer
+	local RichestNetworth = -1
 
-function IsValueValid(Stat, Value)
+	for _, Player in ipairs (game.Players:GetPlayers()) do
+		local Leaderstats = Players:FindFirstChild("leaderstats")
+		if Leaderstats then
+			local Networth = Leaderstats:WaitForChild("Networth")
+
+			if Networth then
+				Networth = Networth.Value
+
+				if Networth > RichestNetworth then
+					RichestNetworth = Networth
+					RichestPlayer = Player
+				end
+			end
+
+		end
+
+	end
+
+	if RichestPlayer and not (LastRichestPlayer or LastRichestPlayer.Name == RichestPlayer.Name) then
+		if LastRichestPlayer then
+			LastRichestPlayer:Destroy()
+		end
+
+		local Model = Services.SStorage.Leader:Clone()
+		Model.Name = RichestPlayer.Name
+		Model.Parent = workspace.KingPenguin
+
+		LoadPenguinModel(RichestPlayer.UserId, Model, 8.45540498)
+
+		Model:SetPrimaryPartCFrame(workspace.KingPenguin.CF.CFrame)
+		workspace.KingPenguin.PlayerName.SurfaceGui.TextLabel.Text = RichestPlayer.Name
+
+		LastRichestPlayer = Model
+
+	end
+
+end
+
+function IsValueValid(Stat, Store)
+	local Value = Store.value
+	local FixedValue
 	if Stat == "Skate Race Record" then
-		return Value > Modules.EventsConfig["Skate Race"].FastestPossible*100
+		if Value < Modules.EventsConfig["Skate Race"].FastestPossible*100 then
+			FixedValue = 1200
+		end
 	elseif Stat == "Sled Race" then
-		return Value > 30
+		if Value < 100 then
+			FixedValue = Value * 100
+		end
+
+		if (FixedValue or Value) < 3000 then
+			FixedValue = 6000
+		end
+
 	end
 
-	return true
+	if FixedValue then
+		warn(Stat, Value, FixedValue)
+		task.spawn(function()
+			Services.DataStoreService:GetOrderedDataStore(Modules.LeaderboardDetails[Stat].DataStore):UpdateAsync(Store.key, function(oldVal)
+				return tonumber(FixedValue)
+			end)
+		end)
+		return false
+	else
+		return true
+	end
+
 end
 
-function CheckGreastest()
-	local highest = {}
-	for i,v in pairs (game.Players:GetPlayers()) do
-		if v:FindFirstChild("leaderstats") and v:FindFirstChild("leaderstats"):FindFirstChild("Networth") then
-			local va = v:FindFirstChild("leaderstats"):FindFirstChild("Networth").Value
-			if highest[1] == nil then
-				highest = {va,v}
-			elseif va >= highest[1] then
-				highest = {va,v}
-			end
-		end
-	end
-	if highest[1] and highest[2] then	
-		if last == nil or (last and last.Name ~= highest[2].Name) then
-			if last then
-				last:Destroy()
-			end
-			local character = Services.SStorage.Leader:Clone()
-			character.Parent = workspace.KingPenguin
-			character.Name = highest[2].Name
-			LoadPenguin(highest[2].UserId, character,8.45540498)
-			character:SetPrimaryPartCFrame(workspace.KingPenguin.CF.CFrame)
-			workspace.KingPenguin.PlayerName.SurfaceGui.TextLabel.Text = highest[2].Name
-			last = character
-		end
-	end
-end
-
---- Functions ---
-function Leaderboards:beginLeaderboardUpdate()
+task.spawn(function()
+	task.wait(8)
 	while true do
-		--	-- Datastore variables:
-		local numberToShow = 100
-		local minValue = 0
-		local maxValue = 10e50
+		ShowRichestInServer()
+		task.wait(20)
+	end
+end)
 
-		for Stat, lbInfo in pairs(leaderboards) do
-			for i, Player in pairs(game.Players:GetChildren()) do--Loop through players
+task.spawn(function()
+	for Stat in pairs(Modules.LeaderboardDetails) do
+		local PlayerList = Dependency.PlayerList:Clone()
+		PlayerList.Parent = workspace.Leaderboards[Stat].Display.GUI
+
+		for i = 1, MAX_LIST_SIZE do
+			local Lbl = Dependency.PlayerTemplate:Clone()
+			Lbl.LayoutOrder = i
+			Lbl.Name = i
+			Lbl.Visible = false
+			Lbl.Parent = PlayerList
+		end
+
+	end
+
+	while true do
+		print("LEADERBOARD UPDATE")
+		Remotes.LeaderboardUpdated:FireAllClients()
+
+		-- Update
+		for Stat, Details in pairs(Modules.LeaderboardDetails) do
+			local Leaderboard = workspace.Leaderboards[Stat]
+			local DataStore = Services.DataStoreService:GetOrderedDataStore(Details.DataStore)
+
+			for _, Player in ipairs(game.Players:GetPlayers()) do -- Loop through players
+				local UserId = Player.UserId
 				local Data = Modules.PlayerData.sessionData[Player.Name]
 
-				if Player.UserId > 0 and Data ~= nil then--Prevent errors
+				if UserId > 0 and Data then --Prevent errors
 					local PlrStat = Data["Stats"][Stat] or Data[Stat]
+
 					if PlrStat then
-						if Stat == "Skate Race Record" and PlrStat < Modules.EventsConfig["Skate Race"].FastestPossible*100 then
-							pcall(function()
+						-- Filter
+						if Stat == "Skate Race Record" then
+							if PlrStat < Modules.EventsConfig["Skate Race"].FastestPossible * 100 then
 								Data["Stats"][Stat] = 12000
-								lbInfo.DataStore:SetAsync(Player.UserId, 12000)
-							end)
-						elseif Stat == "Sled Race" then
-							if Data["Stats"][Stat] < 30 then
-								Data["Stats"][Stat] = 1000000
 							end
-						else
-							PlrStat = math.floor(PlrStat)
-							pcall(function()
-								lbInfo.DataStore:UpdateAsync(Player.UserId,function(oldVal)
-									return tonumber(PlrStat) --Set new value
-								end)
-							end)
+						elseif Stat == "Sled Race" then
+							if PlrStat < 100 then -- I made a mistake and saved doubles, this should fix that.
+								Data["Stats"][Stat] *= 100
+							end
+							if Data["Stats"][Stat] < 3000 then
+								Data["Stats"][Stat] = 6000
+							end
+						end
+
+						-- Leaderboards don't take doubles
+						PlrStat = math.floor(Data["Stats"][Stat] or Data[Stat])
+						local succ, err = pcall(function()
+							return DataStore:SetAsync(Player.UserId, PlrStat)
+						end)
+						if not succ then
+							warn(PlrStat, Stat, Player, err)
 						end
 
 					end
@@ -160,91 +181,77 @@ function Leaderboards:beginLeaderboardUpdate()
 
 			end
 
-			local pages = nil
-			pcall(function()
-				pages = lbInfo.DataStore:GetSortedAsync(lbInfo.smallestFirst, numberToShow, minValue, maxValue)
+			local Pages
+			local succ, err = pcall(function()
+				Pages = DataStore:GetSortedAsync(Details.smallestFirst, 100, MIN_VALUE, MAX_VALUE)
 			end)
+			if not succ then warn(err) end
 
-			if pages then
-				local top = pages:GetCurrentPage()
+			if Pages then
+				local Removed = 0
 
-				-- Reset player list
-				Dependency.PlayerList:ClearAllChildren()
-				Dependency.UIListLayout:Clone().Parent = Dependency.PlayerList
+				local PageIndex = 0
+				local Page = Pages:GetCurrentPage()
 
 				-- Load players into playerlist
-				for rank, player in ipairs(top) do
-					local Value = player.value
-					if not IsValueValid(Stat, Value) then
-						table.remove(top, rank)
-						continue
-					end
+				for ListIndex = 1, MAX_LIST_SIZE do
+					local Rank = ListIndex - Removed
+					PageIndex += 1
 
-					local userid = player.key
-					local username = "[Failed To Load]"
-					pcall(function()
-						username = game.Players:GetNameFromUserIdAsync(userid)
-					end)
+					local Lbl = Leaderboard.Display.GUI.PlayerList[Rank]
+					local Player = Page[PageIndex]
+					if Player then
+						-- Don't display invalid values
+						local Value = Player.value
+						if not IsValueValid(Stat, Player) then
+							Removed += 1
+							continue
+						end
 
 
-					local ValueFormatted
+						local UserId = Player.key
+						local UserName = "[Failed To Load]"
+						pcall(function()
+							UserName = game.Players:GetNameFromUserIdAsync(UserId)
+						end)
 
-					if Stat == "Total Playtime" then
-						ValueFormatted = Modules.Format:FormatTimeDHM(Value)
-					elseif Stat == "Skate Race Record" then
-						ValueFormatted = Value/100
-					elseif Value then
-						ValueFormatted = Modules.Format:FormatAbbreviated(Value)
-					end
+						Lbl.Visible = true
+						Lbl.Rank.Text = Rank .. "."
+						Lbl.PlrName.Text = UserName
+						Lbl.Value.Text = if Details.Format then Details.Format(Value) else Modules.Format.FormatAbbreviated(Value)
 
-					local PlrCard = Dependency.PlayerTemplate:Clone()
-					PlrCard.Rank.Text = rank.."."
-					PlrCard.PlrName.Text = username
-					PlrCard.Value.Text = ValueFormatted
-					PlrCard.Parent = Dependency.PlayerList
-					PlrCard.LayoutOrder = rank
-					PlrCard.Name = rank
+						if Rank <= 3 and Rank >= 1 then
+							local PenguinModel = Leaderboard["Penguin#" .. Rank]
+							LoadPenguinModel(UserId, PenguinModel)
 
-					if rank <= 3 and rank >= 1 then
-						local Leaderboard = lbInfo.Leaderboard
-						local penguin = Leaderboard["Penguin#"..rank]
-						LoadPenguin(userid, penguin)
+							Leaderboard.Podiums["Penguin#" .. Rank].PlayerName.SurfaceGui.TextLabel.Text = UserName
+						end
 
-						Leaderboard.Podiums["Penguin#"..rank].PlayerName.SurfaceGui.TextLabel.Text = username
+						if ListIndex % 100 == 0 and not Pages.IsFinished then
+							Pages:AdvanceToNextPageAsync()
+							Page = Pages:GetCurrentPage()
+
+							PageIndex = 0
+						end
+
+					else
+						Lbl.Visible = false
 					end
 
 				end
 
-				-- Paste playerlist into leaderboards
-				if lbInfo.Leaderboard:FindFirstChild("Display") and lbInfo.Leaderboard.Display:FindFirstChild("GUI") then
-					if lbInfo.Leaderboard.Display.GUI:FindFirstChild("PlayerList") then
-						lbInfo.Leaderboard.Display.GUI.PlayerList:Destroy()
-					end
-
-					Dependency.PlayerList:Clone().Parent = lbInfo.Leaderboard.Display.GUI
+				for i = 1, Removed do
+					Leaderboard.Display.GUI.PlayerList[MAX_LIST_SIZE + 1 - i].Visible = false
 				end
-
-				task.wait(LOOP_INTERVAL)
 
 			end
 
 		end
 
-		task.wait(LOOP_INTERVAL*4)
-
+		task.wait(LOOP_INTERVAL)
 	end
 
-end
-task.spawn(function()
-	task.wait(8)
-	while true do
-		CheckGreastest()
-		task.wait(20)
-	end
 end)
-coroutine.wrap(function()
-	Leaderboards:beginLeaderboardUpdate()
-end)()
 
 
 

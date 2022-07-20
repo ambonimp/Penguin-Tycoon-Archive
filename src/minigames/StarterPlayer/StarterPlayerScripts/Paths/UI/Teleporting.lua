@@ -33,7 +33,7 @@ local Locations = {
 		PlaceId = PlaceIds["Penguin City"],
 		Alias = "City",
 		Description = "Play Minigames, Visit your Friends, and Roleplay",
-		Thumbnail = "rbxassetid://8455934474"
+		Thumbnail = "rbxassetid://10307766036"
 	},
 	["Falling Tiles"] = {
 		PlaceId = PlaceIds["Falling Tiles"],

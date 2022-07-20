@@ -2,7 +2,8 @@
     "name": "Penguin City",
     "servePlaceIds": [
       9170899192,
-      9706820537 
+      9706820537,
+      9925648281
     ],
     "tree": {
       "$className": "DataModel",

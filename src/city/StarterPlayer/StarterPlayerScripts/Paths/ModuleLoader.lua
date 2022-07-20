@@ -37,7 +37,6 @@ function Loader.Register(Name, Module)
     table.insert(ToLoad, {Name, Module})
  end
 
-
 function Loader.Load()
     local Count = #ToLoad
     local Loaded = 0

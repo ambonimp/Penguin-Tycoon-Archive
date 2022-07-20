@@ -145,7 +145,9 @@ function PlayerData:SetupPlayerData(player)
 		else
 			PlayerData.sessionData[player.Name] = data
 		end
+
 	end
+
 end
 
 
@@ -419,8 +421,11 @@ game.Players.PlayerAdded:Connect(function(Player)
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
 	NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
-	 
 	
+	local RebirthStat = Instance.new("IntValue", leaderstats)
+	RebirthStat.Name = "Rebirths"
+	RebirthStat.Value = PlayerData.sessionData[Player.Name]["Rebirths"]
+
 	-- Updating Leaderstats
 	Player:GetAttributeChangedSignal("Money"):Connect(function()
 		NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
@@ -432,6 +437,15 @@ game.Players.PlayerAdded:Connect(function(Player)
 		end
 	end)
 	
+	-- Fixes an issue i caused that was in dev and QA
+	if PlayerData.sessionData[Player.Name]["Stats"]["Rebirths"] then
+		PlayerData.sessionData[Player.Name]["Stats"]["Rebirths"] = nil
+	end
+
+	if PlayerData.sessionData[Player.Name]["Stats"]["Hearts"] then
+		PlayerData.sessionData[Player.Name]["Stats"]["Hearts"] = nil
+	end
+
 	--Player:GetAttributeChangedSignal("Income"):Connect(function()
 	--	IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"] * PlayerData.sessionData[Player.Name]["Income Multiplier"]
 	--end)
