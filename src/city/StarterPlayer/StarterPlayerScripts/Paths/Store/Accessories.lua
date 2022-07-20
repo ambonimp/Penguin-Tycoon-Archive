@@ -389,7 +389,7 @@ coroutine.wrap(function()
 		local TimeSinceRotation = os.time() - RotationTimer
 		local TimeUntilRotation = Modules.AllAccessories.RotationInterval - TimeSinceRotation
 
-		local Timer = Modules.Format:FormatTimeHMS(TimeUntilRotation)
+		local Timer = Modules.Format.FormatTimeHMS(TimeUntilRotation)
 
 		StoreSections.Parent.Timer.Text = "New Store In: "..Timer
 		ClothingSections.Parent.Timer.Text = "New Store In: "..Timer

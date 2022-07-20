@@ -110,10 +110,11 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
         local OresMinedThisLevel = Data.Mining.Mined[Details.Ore] + 1
 
         Data.Mining.Mined[Details.Ore] = OresMinedThisLevel
+        Data.Stats["Total Mined"] += 1
 
         local Earnings = Data.Income * Data["Income Multiplier"] * Details.EarningMultiplier * (Client:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1)
         local mult = Modules.Pets.getBonus(Client,"Mining","Income")
-        print(mult)
+
 		Earnings = math.floor(Earnings * mult)
         Modules.Income:AddMoney(Client, Earnings)
 

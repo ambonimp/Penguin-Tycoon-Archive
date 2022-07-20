@@ -11,7 +11,7 @@ if GameId == 3073627998 then -- Main
 	Ids["Soccer"] = 9731106565
 	Ids["Ice Cream Extravaganza"] = 9731108400
 	Ids["Sled Race"] = 9868356736
-elseif GameId == 3425588324 then -- DEV
+elseif GameId == 3425588324 or GameId == 3662230549 then -- DEV
 	Ids["Penguin Tycoon"] = 9118436978
 	Ids["Penguin City"] = 9170899192
 	Ids["Falling Tiles"] = 9648022475

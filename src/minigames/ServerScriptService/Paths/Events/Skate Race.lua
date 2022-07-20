@@ -295,7 +295,16 @@ function SkateRace:StartEvent()
 				if i == 1 then
 					Modules.Quests.GiveQuest(Player, "Win", "Minigame", "Skate Race", 1)
 					Modules.Quests.GiveQuest(Player, "Win"," Minigame", "All", 1)
+
+					local Stats = Modules.PlayerData.sessionData[PlayerName].Stats
+					if Stats["Skate Race Wins"] then
+						Stats["Skate Race Wins"] += 1
+					else
+						Stats["Skate Race Wins"] = 1
+					end
+
 				end
+
 				table.insert(Winners, PlayerName)
 
 				-- Put character on pedestal

@@ -32,11 +32,13 @@ end
 local LeaderboardDataStores = {
 	["Total Money"] = Services.DataStoreService:GetOrderedDataStore("Total Money_v-RELEASE");
 	["Total Playtime"] = Services.DataStoreService:GetOrderedDataStore("Total Playtime-RELEASE");
+	["Youtube Minigame Score"] = Services.DataStoreService:GetOrderedDataStore("Youtube Minigame Score_v-RELEASE");
 }
 
 local LeaderboardModels = {
 	["Total Money"] = {};
 	["Total Playtime"] = {};
+	["Youtube Minigame Score"] = {};
 }
 
 
@@ -54,6 +56,8 @@ end
 -- infinite loop to continuously update all leaderboards
 function Leaderboards:beginLeaderboardUpdate()
 	while true do
+		Remotes.LeaderboardUpdated:FireAllClients()
+
 		--	-- Datastore variables:
 		local smallestFirst = false
 		local numberToShow = 100

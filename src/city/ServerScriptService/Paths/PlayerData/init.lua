@@ -419,8 +419,16 @@ game.Players.PlayerAdded:Connect(function(Player)
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
 	NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
-	 
 	
+	local RebirthStat = Instance.new("IntValue", leaderstats)
+	RebirthStat.Name = "Rebirths"
+	RebirthStat.Value = PlayerData.sessionData[Player.Name]["Rebirths"]
+
+	-- Fixes an issue that was in dev and QA
+	if PlayerData.sessionData[Player.Name]["Stats"]["Rebirths"] then
+		PlayerData.sessionData[Player.Name]["Stats"]["Rebirths"] = nil
+	end
+
 	-- Updating Leaderstats
 	Player:GetAttributeChangedSignal("Money"):Connect(function()
 		NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]

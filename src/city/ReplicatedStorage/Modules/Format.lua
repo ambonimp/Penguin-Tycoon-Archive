@@ -4,7 +4,7 @@ local prefixes = {
 	[2] = "K", [3] = "M", [4] = "B", [5] = "T",[6] = "QD", [7] = "QT", [8] = "ST",[9] = "SP",[10] = "OT",[11] = "N",[12] = "D"
 }
 
-function Format:FormatAbbreviated(n)
+function Format.FormatAbbreviated(n)
 	if n ~= nil then
 		n = math.floor(n)
 
@@ -46,7 +46,7 @@ end
 
 
 --- Time Formatting ---
-function Format:FormatTimeDHM(Time)
+function Format.FormatTimeDHM(Time)
 	local days = math.floor(Time / 86400)
 	local hours = math.floor(Time / 3600) - days * 24
 	local minutes = math.floor(Time / 60) - days * 1440 - hours * 60
@@ -66,7 +66,7 @@ function Format:FormatTimeDHM(Time)
 	return days.."D "..hours.."H "..minutes.."M "
 end
 
-function Format:FormatTimeHMS(Time)
+function Format.FormatTimeHMS(Time)
 	local hours = math.floor(Time / 3600)
 	local minutes = math.floor(Time / 60) - hours * 60
 	local totalMinutes = (hours * 60 + minutes)
