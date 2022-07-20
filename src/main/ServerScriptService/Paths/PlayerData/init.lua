@@ -128,6 +128,9 @@ function PlayerData.Defaults(Player)
 		["Total Money"] = 50,
 		["Total Playtime"] = 0,
 		["Total Gems"] = 0,
+		["Total Mined"] = nil,
+		["Total Chopped"] = nil,
+		["Total Fished"] = nil,
 	}
 
 	Returning["LastPlayTime"] = os.time()-(30*60)
@@ -345,8 +348,6 @@ local function SetupNewStats(Player)
 	if IsTesting then
 		Data["Money"] = 1000000000
 		Data["Gems"] = 1000000000
-	elseif IsQA then
-		-- Data["Money"] = 0
 	end
 
 end
@@ -422,6 +423,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Player:SetAttribute("Next5Gems", Data["NextGemReward"])
 		Modules.Data["NextGemRewardSaved"] = "tycoon"
 	end]]
+
 	if Data["Pets"] then
 		for i,v in pairs (Data["Pets"].PetsOwned) do
 			local breed = string.split(v.RealName," ")[2]
@@ -481,6 +483,31 @@ game.Players.PlayerAdded:Connect(function(Player)
 		end
 
 	end
+
+	if not Data.Stats["Total Mined"] then
+		local Total = 0
+		for _, OresMined in ipairs(Data.Mining.Mined) do
+			Total += OresMined
+		end
+		Data.Stats["Total Mined"] = Total
+	end
+
+	if not Data.Stats["Total Chopped"] then
+		local Total = 0
+		for _, WoodCut in ipairs(Data.Woodcutting.Cut) do
+			Total += WoodCut
+		end
+		Data.Stats["Total Chopped"] = Total
+	end
+
+	if not Data.Stats["Total Fished"] then
+		local Total = 0
+		for _, FishCaught in pairs(Data["Fish Found"]) do
+			Total += FishCaught
+		end
+		Data.Stats["Total Fished"] = Total
+	end
+
 
 	-- Setup Leaderstats
 	local leaderstats = Instance.new("Folder", Player)

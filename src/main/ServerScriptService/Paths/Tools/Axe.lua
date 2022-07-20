@@ -227,6 +227,9 @@ function Axe.checkUnlocked(Player,TreeModel)
 			else
 				Data["Woodcutting"].Cut[TreeModel.Name] = 1
 			end
+            Data.Stats["Total Chopped"] += 1
+
+
             if TreeDetails[TreeModel.Name][1] and TreeDetails[TreeModel.Name][2] and not table.find(Data["Woodcutting"].Unlocked,TreeDetails[TreeModel.Name][2]) and Data["Woodcutting"].Cut[TreeModel.Name] >= TreeDetails[TreeModel.Name][1] then
                 Player:SetAttribute("Tree"..TreeDetails[TreeModel.Name][2],true)
                 table.insert(Data["Woodcutting"].Unlocked,TreeDetails[TreeModel.Name][2])
