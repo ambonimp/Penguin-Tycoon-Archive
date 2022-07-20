@@ -130,7 +130,6 @@ function Buttons:NewButton(Player, Button)
 					PurchaseDBs[Button.Name] = true
 
 					local CurrencyType = Button:GetAttribute("CurrencyType")
-					local ItemType = Button:GetAttribute("Type") or "Normal"
 					
 					if CurrencyType == "Robux" then
 						Modules.Products:PromptRobuxItemPurchase(Player, Button:GetAttribute("ID"), Button)
@@ -140,7 +139,6 @@ function Buttons:NewButton(Player, Button)
 					
 					task.wait(0.3)
 					PurchaseDBs[Button.Name] = nil
-
 				end
 			end
 

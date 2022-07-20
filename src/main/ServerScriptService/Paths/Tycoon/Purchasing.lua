@@ -155,17 +155,21 @@ function Purchasing:PurchaseItem(Player, Item, IsAnimated)
 
 	elseif CurrencyType == "Gamepass" then
 		local Id = tonumber(Button:GetAttribute("ID"))
-		Services.MPService:PromptGamePassPurchase(Player, Id)
-
 		if Services.MPService:UserOwnsGamePassAsync(Player.UserId, Id) then
 			Purchased = true
 		else
+			Services.MPService:PromptGamePassPurchase(Player, Id)
 			local Conn
 			Conn = Services.MPService.PromptGamePassPurchaseFinished:Connect(function(_Player, _Id, Success)
-				if Player  == _Player and _Id == Id then
-					Purchased = Success
+				if Player == _Player then
+					if _Id == Id then
+						Purchased = Success
+					else
+						Purchased = false
+					end
 					Conn:Disconnect()
 				end
+
 	        end)
 
 	        repeat

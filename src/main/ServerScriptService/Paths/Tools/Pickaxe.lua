@@ -54,8 +54,8 @@ for Level in pairs(Modules.MiningDetails) do
 
                         local Conn
                         Conn = Services.MPService.PromptProductPurchaseFinished:Connect(function(UserId, _Id, Purchased)
-                            if UserId == Player.UserId and _Id == Id then
-                                if Purchased then
+                            if UserId == Player.UserId then
+                                if Id == Id and Purchased then
                                     Data.Mining.Level = Level
                                     Remotes.MiningLevelUp:FireClient(Player, Level)
                                 end
