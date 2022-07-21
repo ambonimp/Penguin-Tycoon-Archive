@@ -70,6 +70,7 @@ Accessories.Unlockables = {
 	["Youtuber#1"] = "Cap";
 	["Ice Hockey Player#1"] = "Hockey Helmet";
 	["Bumble Bee#1"] = "Bee Hat";
+	["Factory Owner#1"] = "Steampunk Hat";
 	-- Pick-up Unlockables
 	["Bunny Ears"] = true;
 	["Feather Hat"] = true;
@@ -97,6 +98,7 @@ Accessories.All = {
 	["Bee Hat"] = {Rarity = "Free", IsForSale = false};
 	["Hockey Helmet"] = {Rarity = "Free", IsForSale = false};
 	-- Penguin Hats
+	["Steampunk Hat"] = {Rarity = "Free", IsForSale = false};
 	["Fisher Hat"] = {Rarity = "Free", IsForSale = false};
 	["Ninja Hat"] = {Rarity = "Free", IsForSale = false};
 	["Pirate Hat"] = {Rarity = "Free", IsForSale = false};

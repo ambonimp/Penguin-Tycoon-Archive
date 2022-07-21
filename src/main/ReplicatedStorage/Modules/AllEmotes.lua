@@ -88,18 +88,93 @@ Emotes.Unlockables = {
 
 
 Emotes.All = {	
+	["Air Dance"] = {ID = 10308299790 , Rarity = "Free", IsForSale = false,Image = 10308463999};
+	["Airplane"] = {ID = 10308304507 , Rarity = "Free", IsForSale = false,Image = 10308463787};
+	["Book Reading"] = {ID = 10308309569 , Rarity = "Free", IsForSale = false,Image = 10308456402,Prop = true,
+	PropFunction = function(player,track)
+		local prop = game.ReplicatedStorage.Assets.BookEmote:Clone()
+		prop:SetAttribute("Player",player.Name)
+		local runservice = game:GetService("RunService")
+		local cf = player.Character.PrimaryPart.CFrame * CFrame.new(0,.75,-3)
+		local ended = false
+		track:Play()
+		prop:SetPrimaryPartCFrame(cf)
+		prop.Parent = workspace.Props
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = player.Character.PrimaryPart
+		weld.Part1 = prop.PrimaryPart
+		weld.Parent = prop.PrimaryPart
+		track.Stopped:wait()
+		player.Character.Humanoid.WalkSpeed = 32
+		if prop then
+			prop:Destroy()
+		end
+		game.ReplicatedStorage.Remotes.PropEmote:FireClient(player,"Stop")
+	end};
+	["Swimming"] = {ID = 10308312282 , Rarity = "Free", IsForSale = false,Image = 10308455988};
+	["Celebrate"] = {ID = 10308315430 , Rarity = "Free", IsForSale = false,Image = 10308461952};
+
+	["Cheerlead"] = {ID = 10308321436, Rarity = "Free", IsForSale = false,Image = 10308460211};
+	["Clipboard"] = {ID = 10308324220, Rarity = "Free", IsForSale = false,Image = 10308459980};
+	["Crowd Hype"] = {ID = 10308326787, Rarity = "Free", IsForSale = false,Image = 10308459720};
+	["Dolphin Dance"] = {ID = 10308331035, Rarity = "Free", IsForSale = false,Image = 10308459508};
+	["Give Burger"] = {ID = 10308333873, Rarity = "Free", IsForSale = false,Image = 10308458934};
+
+	["Jumping Jacks"] = {ID = 10308338113, Rarity = "Free", IsForSale = false,Image = 10308458227};
+	["Snowball Throw"] = {ID = 10308344542 , Rarity = "Free", IsForSale = false,Image = 10308455671,Prop = true,
+	PropFunction = function(player,track)
+		local Character = player.Character
+		local snowball = game.ReplicatedStorage.Assets.Snowball:Clone()
+		local connection = nil
+
+		
+		track:Play()
+		connection = track.DidLoop:Connect(function()
+			track:Stop()
+			connection:Disconnect()
+		end)
+		task.wait(.35)
+		snowball.CFrame = Character.Main.CFrame * CFrame.new(0,0,-3)
+		snowball.Velocity = (Character.Main.CFrame.LookVector+Vector3.new(0,.75,0)) * 60
+		snowball:SetAttribute("Time",2)
+		snowball.Parent = workspace.Props
+		return true
+	end};
+	["TPose"] = {ID = 10308347090 , Rarity = "Free", IsForSale = false,Image = 10308455804};
+	["Drink Tea"] = {ID = 10308349329 , Rarity = "Free", IsForSale = false,Image = 10308459320,Prop = true,
+	PropFunction = function(player,track)
+		local Character = player.Character
+		local prop = game.ReplicatedStorage.Assets.TeaEmote:Clone()
+		local cf = player.Character["Arm L"].CFrame * CFrame.new(-.2,-1,0) * CFrame.Angles(math.rad(-90),0,0)
+		local connection = nil
+
+		prop:SetPrimaryPartCFrame(cf)
+		prop.Parent = workspace.Props
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = player.Character["Arm L"]
+		weld.Part1 = prop.PrimaryPart
+		weld.Parent = prop.PrimaryPart
+		track:Play()
+		connection = track.DidLoop:Connect(function()
+			prop:Destroy()
+			track:Stop()
+			connection:Disconnect()
+		end)
+		task.wait(.35)
+		return true
+	end};
 	--- Default Emotes ---
 	["Sit"] = {ID = 8210283194, Rarity = "Free", IsForSale = false,Image = 8528062745};
 	["Wave"] = {ID = 8210268481, Rarity = "Free", IsForSale = false,Image = 8528062380};
 	["Sleep"] = {ID = 8210256955, Rarity = "Free", IsForSale = false,Image = 8528062526};
 	["Point"] = {ID = 8210287558, Rarity = "Free", IsForSale = false,Image = 8528063110};
-	["Salute"] = {ID = 8210276719, Rarity = "Free", IsForSale = false,Image = 8528062955};
+	["Salute"] = {ID = 10308340859 , Rarity = "Free", IsForSale = false,Image = 10308456208};
 
 	["Whack"] = {ID = 8210292011, Rarity = "Free", IsForSale = false,Image = 8527636138};
 	["Dab"] = {ID = 8210285291, Rarity = "Free", IsForSale = false,Image = 8527637011};
 	["Wavy"] = {ID = 8210280508, Rarity = "Free", IsForSale = false,Image = 8527636283};
 	["Clap"] = {ID = 8210274153, Rarity = "Free", IsForSale = false,Image = 8527637084};
-	["Hug"] = {ID = 8210270788, Rarity = "Free", IsForSale = false,Image = 8527636836};
+	["Hug"] = {ID = 8210270788, Rarity = "Free", IsForSale = false,Image = 10308458488};
 
 	["Shy"] = {ID = 8210265638, Rarity = "Free", IsForSale = false,Image = 8527636506};
 	["Floss"] = {ID = 8210262128, Rarity = "Free", IsForSale = false,Image = 8527636921};

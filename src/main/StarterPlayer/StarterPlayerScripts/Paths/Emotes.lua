@@ -282,6 +282,12 @@ function Emotes:NewEmote(Emote)
 	end)
 	
 	Template.Parent = EmoteMenu.Holder
+
+	local scrollingFrame = EmoteMenu.Holder
+	local uiGridLayout = EmoteMenu.Holder.UIGridLayout
+	local NewSize = Vector2.new(.3,.2) * scrollingFrame.AbsoluteSize
+	uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
+	scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 end
 
 function Emotes:EquipEmote(Emote, Slot)
@@ -319,10 +325,8 @@ coroutine.wrap(function()
 		if PlayerEmotes and EquippedEmotes then break else wait(1) end 
 	until PlayerEmotes and EquippedEmotes
 
-	for Emote, IsOwned in pairs(PlayerEmotes) do
-		if IsOwned then
-			Emotes:NewEmote(Emote)
-		end
+	for Emote, i in pairs(AllEmotes.All) do
+		Emotes:NewEmote(Emote)
 	end
 
 	for Slot, EquippedEmote in pairs(EquippedEmotes) do

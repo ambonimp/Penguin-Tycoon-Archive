@@ -7,17 +7,23 @@ local Modules = ReplicatedStorage:WaitForChild("Modules")
 local AllEmotes = require(Modules:WaitForChild("AllEmotes"))
 local PropEmoteEvent = Remotes:WaitForChild("PropEmote")
 
+local playerProps = {}
 local LoadedAnims = {}
 local Playing = {}
 
 workspace:WaitForChild("Props").ChildAdded:Connect(function(object)
-	local t = object:GetAttribute("Time") or 7
-	if t == 0 then
-		t = 3
+	if object:GetAttribute("Player") then
+		playerProps[game.Players:FindFirstChild(object:GetAttribute("Player")).Name] = object
 	end
-	wait(7)
-	if object then
-		object:Destroy()
+	if object:GetAttribute("Time") then
+		local t = object:GetAttribute("Time") or 7
+		if t == 0 then
+			t = 3
+		end
+		task.wait(7)
+		if object then
+			object:Destroy()
+		end
 	end
 end)
 
@@ -38,7 +44,11 @@ PropEmoteEvent.OnServerEvent:Connect(function(Player,Emote,Kind)
 			LoadedAnims[Player.Name][Emote] = Player.Character.Humanoid.Animator:LoadAnimation(newAnim)
 			Playing[Player.Name] = Emote
 			newAnim:Destroy()
-			emote.PropFunction(Player,LoadedAnims[Player.Name][Emote])
+			local ended = emote.PropFunction(Player,LoadedAnims[Player.Name][Emote])
+			if ended then
+				Playing[Player.Name] = nil
+				LoadedAnims[Player.Name][Emote] = nil
+			end
 		elseif LoadedAnims[Player.Name][Emote] then
 			Playing[Player.Name] = nil
 			LoadedAnims[Player.Name][Emote]:Stop()
@@ -50,6 +60,10 @@ end)
 game.Players.PlayerRemoving:Connect(function(Player)
 	if LoadedAnims[Player.Name] then
 		LoadedAnims[Player.Name] = {}
+	end
+	if playerProps[Player.Name] then
+		playerProps[Player.Name]:Destroy()
+		playerProps[Player.Name] = nil
 	end
 end)
 
