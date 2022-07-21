@@ -93,6 +93,7 @@ Accessories.All = {
 	["Bee Hat"] = {Rarity = "Free", IsForSale = false};
 	["Hockey Helmet"] = {Rarity = "Free", IsForSale = false};
 	-- Penguin Hats
+	["Steampunk Hat"] = {Rarity = "Free", IsForSale = false};
 	["Fisher Hat"] = {Rarity = "Free", IsForSale = false};
 	["Ninja Hat"] = {Rarity = "Free", IsForSale = false};
 	["Pirate Hat"] = {Rarity = "Free", IsForSale = false};

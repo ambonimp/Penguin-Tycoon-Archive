@@ -143,7 +143,7 @@ Emotes.All = {
 	PropFunction = function(player,track)
 		local Character = player.Character
 		local prop = game.ReplicatedStorage.Assets.BurgerEmote:Clone()
-		local cf = CFrame.new(player.Character["Arm R"].Tool_RightHand.WorldPosition) * CFrame.new(0,-1,0) * CFrame.Angles(math.rad(90),0,0)
+		local cf =  CFrame.new(player.Character["Arm R"].Tool_RightHand.WorldPosition-Vector3.new(0,1,0)) * CFrame.new(0,-1,0) * CFrame.Angles(math.rad(90),0,0)
 		local connection = nil
 		prop:SetAttribute("Time",2)
 		prop:SetPrimaryPartCFrame(cf)
