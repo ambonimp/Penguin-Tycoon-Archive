@@ -31,13 +31,9 @@ local function LoadLeaderboard(Leaderboard)
     if string.find(Leaderboard.Name, "Leaderboard") then
         task.spawn(function()
             local Display = Leaderboard:WaitForChild("Display", math.huge)
-            local GUI = Display:WaitForChild("GUI")
-            local PlayerPosition = GUI:WaitForChild("PlayerPosition")
-            local PlayerList = GUI:WaitForChild("PlayerList")
 
-            PlayerList.Size = UDim2.fromScale(PlayerList.Size.X.Scale, PlayerList.Size.Y.Scale - PlayerPosition.Size.Y.Scale)
+            local PlayerPosition = Display:WaitForChild("GUI"):WaitForChild("PlayerPosition")
             PlayerPosition.Visible = true
-
             PlayerPosition.PlrName.Text = Paths.Player.Name
 
             UpdatePosition(Leaderboard)
