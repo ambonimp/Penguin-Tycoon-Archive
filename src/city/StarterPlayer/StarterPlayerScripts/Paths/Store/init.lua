@@ -64,7 +64,7 @@ for i, Button in pairs(Store.Buttons:GetChildren()) do
 end
 
 UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Accessories,Store)
+	ButtonClicked(Store.Buttons.Accessory,Store)
 end)
 
 UI.Left.Customization.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButton1Down:Connect(function()
@@ -72,7 +72,7 @@ UI.Left.Customization.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButt
 end)
 
 UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Accessories,Store)
+	ButtonClicked(Store.Buttons.Accessory,Store)
 end)
 
 UI.BLCorner.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()

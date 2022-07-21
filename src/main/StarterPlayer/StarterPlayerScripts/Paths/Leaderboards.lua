@@ -20,17 +20,32 @@ local function UpdatePosition(Leaderboard)
         Value = Modules.Format:FormatAbbreviated(Value)
     end
 
-    Leaderboard.Display.GUI.PlayerPosition.Value.Text = Value
+    local Display = Leaderboard:FindFirstChild("Display")
+    if Display then
+        Display:WaitForChild("GUI"):WaitForChild("PlayerPosition"):WaitForChild("Value").Text = Value
+    end
+
 end
 
 local function LoadLeaderboard(Leaderboard)
     if string.find(Leaderboard.Name, "Leaderboard") then
-        table.insert(RegisteredLeaderboards, Leaderboard)
+        task.spawn(function()
+            local Display = Leaderboard:WaitForChild("Display", math.huge)
+            local GUI = Display:WaitForChild("GUI")
+            local PlayerPosition = GUI:WaitForChild("PlayerPosition")
+            local PlayerList = GUI:WaitForChild("PlayerList")
 
-        Leaderboard.Display.GUI.PlayerPosition.PlrName.Text = Paths.Player.Name
-        UpdatePosition(Leaderboard)
+            PlayerList.Size = UDim2.fromScale(PlayerList.Size.X.Scale, PlayerList.Size.Y.Scale - PlayerPosition.Size.Y.Scale)
+            PlayerPosition.Visible = true
+
+            PlayerPosition.PlrName.Text = Paths.Player.Name
+
+            UpdatePosition(Leaderboard)
+            table.insert(RegisteredLeaderboards, Leaderboard)
+        end)
 
     end
+
 end
 
 

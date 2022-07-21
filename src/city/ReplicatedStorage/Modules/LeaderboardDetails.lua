@@ -40,10 +40,10 @@ return {
 		DataStore = ("Sled Race_v-RELEASE1"),
 		smallestFirst = true;
 		Format = function(Value)
-			if Value < 100 then
+--[[ 			if Value < 100 then
 				Value *= 100
 			end
-
+ *]]
 			Value /= 100
 			return string.format("%.2f", Value)
 		end

@@ -297,17 +297,13 @@ local function NewStoreTemplate(Item, ItemType)
 			Remotes.Store:FireServer("Buy Item", Item, ItemType, "Gems")
 		end)
 	end
-	local Template2 = Template:Clone()
+
 	if ItemType ~= "Outfits" then
 		Template.Parent = StoreSections.Accessory.Holder[ItemType]
-
-		local scrollingFrame =StoreSections.Accessory.Holder[ItemType]
-		local uiGridLayout = StoreSections.Accessory.Holder[ItemType].UIGridLayout
-		local NewSize = Vector2.new(.32,.165*2.85) * scrollingFrame.AbsoluteSize
-		uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
-		scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 	end
 
+
+	local Template2 = Template:Clone()
 	Template2.Parent = ClothingSections[ItemType].Holder
 	if Template2 then
 		if PlayerAccessories[Item] or PlayerEyes[Item] or PlayerOutfits[Item] then
@@ -321,12 +317,9 @@ local function NewStoreTemplate(Item, ItemType)
 				Remotes.Store:FireServer("Buy Item", Item, ItemType, "Gems")
 			end)
 		end
+
 	end
-	local scrollingFrame = ClothingSections[ItemType].Holder
-	local uiGridLayout = ClothingSections[ItemType].Holder.UIGridLayout
-	local NewSize = Vector2.new(.325,.165*3.15) * scrollingFrame.AbsoluteSize
-	uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
-	scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
+
 end
 
 
@@ -438,6 +431,22 @@ if ProximityPrompt2 then
 	end)
 end
 
+task.spawn(function()
+	repeat task.wait() until Modules.PlatformAdjustments and Modules.PlatformAdjustments.CurrentPlatform
+	if Modules.PlatformAdjustments.CurrentPlatform == "Mobile" then
+		for _, Section in ipairs(ClothingSections:GetChildren()) do
+			Section.Holder.UIGridLayout.CellSize = UDim2.new(0.485, 0,0.59, 0)
+		end
 
+		for _, Section in ipairs(StoreSections.Accessory.Holder:GetChildren()) do
+			if Section.Name ~= "Buttons" then
+				Section.UIGridLayout.CellSize = UDim2.new(0.485, 0,0.59, 0)
+			end
+
+		end
+
+	end
+
+end)
 
 return Accessories

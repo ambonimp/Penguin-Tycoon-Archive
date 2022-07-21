@@ -80,14 +80,36 @@ function ShowRichestInServer()
 
 end
 
-function IsValueValid(Stat, Value)
+function IsValueValid(Stat, Store)
+	local Value = Store.value
+	local FixedValue
 	if Stat == "Skate Race Record" then
-		return Value > Modules.EventsConfig["Skate Race"].FastestPossible*100
+		if Value < Modules.EventsConfig["Skate Race"].FastestPossible*100 then
+			FixedValue = 1200
+		end
 	elseif Stat == "Sled Race" then
-		return Value > 30
+		if Value < 100 then
+			FixedValue = Value * 100
+		end
+
+		if (FixedValue or Value) < 3000 then
+			FixedValue = 6000
+		end
+
 	end
 
-	return true
+	if FixedValue then
+		warn(Stat, Value, FixedValue)
+		task.spawn(function()
+			Services.DataStoreService:GetOrderedDataStore(Modules.LeaderboardDetails[Stat].DataStore):UpdateAsync(Store.key, function(oldVal)
+				return tonumber(FixedValue)
+			end)
+		end)
+		return false
+	else
+		return true
+	end
+
 end
 
 task.spawn(function()
@@ -114,6 +136,7 @@ task.spawn(function()
 	end
 
 	while true do
+		print("LEADERBOARD UPDATE")
 		Remotes.LeaderboardUpdated:FireAllClients()
 
 		-- Update
@@ -135,10 +158,11 @@ task.spawn(function()
 								Data["Stats"][Stat] = 12000
 							end
 						elseif Stat == "Sled Race" then
-							if PlrStat < 30 then
-								Data["Stats"][Stat] = 400
-							elseif PlrStat < 100 then -- I made a mistake and saved doubles, this should fix that.
+							if PlrStat < 100 then -- I made a mistake and saved doubles, this should fix that.
 								Data["Stats"][Stat] *= 100
+							end
+							if Data["Stats"][Stat] < 3000 then
+								Data["Stats"][Stat] = 6000
 							end
 						end
 
@@ -179,7 +203,7 @@ task.spawn(function()
 					if Player then
 						-- Don't display invalid values
 						local Value = Player.value
-						if not IsValueValid(Stat, Value) then
+						if not IsValueValid(Stat, Player) then
 							Removed += 1
 							continue
 						end
