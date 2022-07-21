@@ -115,11 +115,52 @@ Emotes.All = {
 	["Celebrate"] = {ID = 10308315430 , Rarity = "Free", IsForSale = false,Image = 10308461952};
 
 	["Cheerlead"] = {ID = 10308321436, Rarity = "Free", IsForSale = false,Image = 10308460211};
-	["Clipboard"] = {ID = 10308324220, Rarity = "Free", IsForSale = false,Image = 10308459980};
+	["Clipboard"] = {ID = 10308324220, Rarity = "Free", IsForSale = false,Image = 10308459980,Prop = true,
+	PropFunction = function(player,track)
+		local Character = player.Character
+		local prop = game.ReplicatedStorage.Assets.ClipboardEmote:Clone()
+		local cf = player.Character["Arm R"].CFrame * CFrame.new(-.5,-1,0) * CFrame.Angles(math.rad(20),math.rad(-90),0)
+		local connection = nil
+		prop:SetAttribute("Time",2)
+		prop:SetPrimaryPartCFrame(cf)
+		prop.Parent = workspace.Props
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = player.Character["Arm R"]
+		weld.Part1 = prop.PrimaryPart
+		weld.Parent = prop.PrimaryPart
+		track:Play()
+		connection = track.DidLoop:Connect(function()
+			prop:Destroy()
+			track:Stop()
+			connection:Disconnect()
+		end)
+		task.wait(.8)
+		return true
+	end};
 	["Crowd Hype"] = {ID = 10308326787, Rarity = "Free", IsForSale = false,Image = 10308459720};
 	["Dolphin Dance"] = {ID = 10308331035, Rarity = "Free", IsForSale = false,Image = 10308459508};
-	["Give Burger"] = {ID = 10308333873, Rarity = "Free", IsForSale = false,Image = 10308458934};
-
+	["Give Burger"] = {ID = 10308333873, Rarity = "Free", IsForSale = false,Image = 10308458934,Prop = true,
+	PropFunction = function(player,track)
+		local Character = player.Character
+		local prop = game.ReplicatedStorage.Assets.BurgerEmote:Clone()
+		local cf = CFrame.new(player.Character["Arm R"].Tool_RightHand.WorldPosition) * CFrame.new(0,-1,0) * CFrame.Angles(math.rad(90),0,0)
+		local connection = nil
+		prop:SetAttribute("Time",2)
+		prop:SetPrimaryPartCFrame(cf)
+		prop.Parent = workspace.Props
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = player.Character["Arm R"]
+		weld.Part1 = prop.PrimaryPart
+		weld.Parent = prop.PrimaryPart
+		track:Play()
+		connection = track.DidLoop:Connect(function()
+			prop:Destroy()
+			track:Stop()
+			connection:Disconnect()
+		end)
+		task.wait(.8)
+		return true
+	end};
 	["Jumping Jacks"] = {ID = 10308338113, Rarity = "Free", IsForSale = false,Image = 10308458227};
 	["Snowball Throw"] = {ID = 10308344542 , Rarity = "Free", IsForSale = false,Image = 10308455671,Prop = true,
 	PropFunction = function(player,track)
