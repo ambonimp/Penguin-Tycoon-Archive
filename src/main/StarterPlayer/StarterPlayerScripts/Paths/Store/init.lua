@@ -15,7 +15,6 @@ local Store = UI.Center.Store
 
 local PreviousOpen = {
 	[Store] = Store.Sections.Accessory,
-	[UI.Center.Clothing] = UI.Center.Clothing.Sections.Accessory,
 }
 
 local Debounce = false
@@ -62,19 +61,19 @@ for i, Button in pairs(Store.Buttons:GetChildren()) do
 end
 
 UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Accessories,Store)
+	ButtonClicked(Store.Buttons.Accessory,Store)
 end)
 
 UI.Left.Buttons.Store.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Gamepasses,Store)
+	ButtonClicked(Store.Buttons.Accessory,Store)
 end)
 
 UI.Left.Customization.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButton1Down:Connect(function()
-	ButtonClicked(UI.Center.Clothing.Buttons.Outfits,UI.Center.Clothing)
+	ButtonClicked(Store.Buttons.Accessory,Store)
 end)
 
 UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Accessories,Store)
+	ButtonClicked(Store.Buttons.Accessory,Store)
 end)
 
 UI.Top.Currencies.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
@@ -85,11 +84,6 @@ UI.Top.Currencies.GemDisplay.BuyMore.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Gems,Store)
 end)
 
-for i, Button in pairs(UI.Center.Clothing.Buttons:GetChildren()) do
-	Button.MouseButton1Down:Connect(function()
-		ButtonClicked(Button,UI.Center.Clothing)
-	end)
-end
 
 
 return Store1

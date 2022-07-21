@@ -10,6 +10,15 @@ Outfits.StoreAmounts = {
 	["Legendary"] = 1;
 }
 
+Outfits.Bundles = {
+	[1] = {
+		{"Parrot Suit","Outfits"},
+		{"Cat Suit","Outfits"},
+		{"Dog Suit","Outfits"},
+		{"Turtle Suit","Outfits"},
+	}
+}
+
 Outfits.RarityInfo = {
 	["Free"] = {ID = 0000000000, PriceInRobux = 1, PriceInGems = 1};
 	["Event"] = {ID = 0000000000, PriceInRobux = 1000, PriceInGems = 100000};
@@ -81,7 +90,10 @@ Outfits.All = {
 	["Police Officer"] = {Rarity = "Legendary", IsForSale = true};
 	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true};
 	["Bee"] = {Rarity = "Legendary", IsForSale = true};
-	
+	["Parrot Suit"] = {Rarity = "Legendary", IsForSale = true};
+	["Dog Suit"] = {Rarity = "Legendary", IsForSale = true};
+	["Cat Suit"] = {Rarity = "Legendary", IsForSale = true};
+	["Turtle Suit"] = {Rarity = "Legendary", IsForSale = true};
 	--- Code Outfits ---
 	
 	--- Event Outfits ---
