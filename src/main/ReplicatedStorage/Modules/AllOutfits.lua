@@ -12,10 +12,14 @@ Outfits.StoreAmounts = {
 
 Outfits.Bundles = {
 	[1] = {
-		{"Parrot Suit","Outfits"},
-		{"Cat Suit","Outfits"},
-		{"Dog Suit","Outfits"},
-		{"Turtle Suit","Outfits"},
+		Outfits = {
+			{"Parrot Suit","Outfits"},
+			{"Cat Suit","Outfits"},
+			{"Dog Suit","Outfits"},
+			{"Turtle Suit","Outfits"},
+		},
+		Expires = 1659110400, --7/29 12pm est
+		DevId = 1287414995,
 	}
 }
 
@@ -74,6 +78,8 @@ Outfits.All = {
 	["Nurse"] = {Rarity = "Rare", IsForSale = true};
 	["Paramedic"] = {Rarity = "Rare", IsForSale = true};
 	["Alien"] = {Rarity = "Rare", IsForSale = true};
+	["Dog Suit"] = {Rarity = "Rare", IsForSale = false};
+	["Cat Suit"] = {Rarity = "Rare", IsForSale = false};
 	-- Epics
 	["Engineer"] = {Rarity = "Epic", IsForSale = true};
 	["Adventurer"] = {Rarity = "Epic", IsForSale = true};
@@ -82,6 +88,7 @@ Outfits.All = {
 	["Lumberjack"] = {Rarity = "Epic", IsForSale = true};
 	["Tuxedo"] = {Rarity = "Epic",IsForSale = true};
 	["Frog"] = {Rarity = "Epic",IsForSale = true};
+	["Turtle Suit"] = {Rarity = "Epic", IsForSale = false};
 	-- Legendaries
 	--["Red Coat"] = {Rarity = "Legendary", IsForSale = true};
 	["Firefighter"] = {Rarity = "Legendary", IsForSale = true};
@@ -90,10 +97,7 @@ Outfits.All = {
 	["Police Officer"] = {Rarity = "Legendary", IsForSale = true};
 	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true};
 	["Bee"] = {Rarity = "Legendary", IsForSale = true};
-	["Parrot Suit"] = {Rarity = "Legendary", IsForSale = true};
-	["Dog Suit"] = {Rarity = "Legendary", IsForSale = true};
-	["Cat Suit"] = {Rarity = "Legendary", IsForSale = true};
-	["Turtle Suit"] = {Rarity = "Legendary", IsForSale = true};
+	["Parrot Suit"] = {Rarity = "Legendary", IsForSale = false};
 	--- Code Outfits ---
 	
 	--- Event Outfits ---

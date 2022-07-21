@@ -122,6 +122,15 @@ Players.PlayerAdded:Connect(function(player)
 
 					Paths.Modules.Income:AddMoney(player,PlayerIncome*1000,"-1")
 				end
+			elseif msg == "givebundle" then
+				local bundle = Paths.Modules.AllOutfits.Bundles[1]
+				for i,item in pairs (bundle.Outfits) do
+					local name = item[1]
+					local typ = item[2]
+
+					Modules.Accessories:ItemAcquired(player, name, typ)
+					task.wait(1)
+				end
 			elseif msg == "complete" then
 				local Data = Paths.Modules.PlayerData.sessionData[player.Name]
 				if Data then

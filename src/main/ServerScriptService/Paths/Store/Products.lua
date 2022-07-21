@@ -118,7 +118,7 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 		-- Outfit Products
 		elseif Bundles[product] then
 			local bundle = Paths.Modules.AllOutfits.Bundles[Bundles[product]]
-			for i,item in pairs (bundle) do
+			for i,item in pairs (bundle.Outfits) do
 				local name = item[1]
 				local typ = item[2]
 

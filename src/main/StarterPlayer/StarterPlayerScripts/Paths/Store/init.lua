@@ -62,6 +62,7 @@ end
 
 UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Accessory,Store)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Accessory)
 end)
 
 UI.Left.Buttons.Store.MouseButton1Down:Connect(function()
@@ -70,10 +71,12 @@ end)
 
 UI.Left.Customization.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Accessory,Store)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Outfits)
 end)
 
 UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Accessory,Store)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Eyes)
 end)
 
 UI.Top.Currencies.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
