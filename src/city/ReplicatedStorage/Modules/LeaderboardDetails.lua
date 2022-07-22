@@ -37,7 +37,7 @@ return {
 		smallestFirst = false;
 	};
 	["Sled Race"] = {
-		DataStore = ("Sled Race_v-RELEASE1"),
+		DataStore = ("2"),
 		smallestFirst = true;
 		Format = function(Value)
 --[[ 			if Value < 100 then

@@ -320,12 +320,6 @@ local function NewStoreTemplate(Item, ItemType)
 	local Template2 = Template:Clone()
 	--if ItemType ~= "Outfits" then
 		Template.Parent = StoreSections.Accessory.Holder[ItemType]
-
-		local scrollingFrame =StoreSections.Accessory.Holder[ItemType]
-		local uiGridLayout = StoreSections.Accessory.Holder[ItemType].UIGridLayout
-		local NewSize = Vector2.new(.48,.165*2.85) * scrollingFrame.AbsoluteSize
-		uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
-		scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 	--end
 	
 	if Template2 then
@@ -474,6 +468,20 @@ coroutine.wrap(function()
 		task.wait(1)
 	end
 end)()]]
+
+task.spawn(function()
+	repeat task.wait() until Modules.PlatformAdjustments and Modules.PlatformAdjustments.CurrentPlatform
+	if Modules.PlatformAdjustments.CurrentPlatform == "Mobile" then
+		for _, Section in ipairs(StoreSections.Accessory.Holder:GetChildren()) do
+			if Section.Name ~= "Buttons" and Section.Name ~= "Bundles" then
+				Section.UIGridLayout.CellSize = UDim2.new(0.485, 0,0.59, 0)
+			end
+		end
+
+	end
+
+end)
+
 
 
 return Accessories
