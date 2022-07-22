@@ -81,6 +81,7 @@ Outfits.All = {
 	["Dog Suit"] = {Rarity = "Rare", IsForSale = false};
 	["Cat Suit"] = {Rarity = "Rare", IsForSale = false};
 	-- Epics
+	["Steampunk"] = {Rarity = "Epic", IsForSale = true};
 	["Engineer"] = {Rarity = "Epic", IsForSale = true};
 	["Adventurer"] = {Rarity = "Epic", IsForSale = true};
 	["Caveman"] = {Rarity = "Epic", IsForSale = true};

@@ -357,17 +357,17 @@ function Accessories:LoadStore()
 
 	-- Create new store
 	for Accessory, v in pairs(Modules.AllAccessories.All) do
-		if v.Rarity ~= "Event" and v.Rarity ~= "Free" then
+		if v.Rarity ~= "Event" and v.Rarity ~= "Free" and v.IsForSale then
 			NewStoreTemplate(Accessory, "Accessory")
 		end
 	end
 	for Outfit, v in pairs(Modules.AllOutfits.All) do
-		if v.Rarity ~= "Event" and v.Rarity ~= "Free" then
+		if v.Rarity ~= "Event" and v.Rarity ~= "Free" and v.IsForSale then
 			NewStoreTemplate(Outfit, "Outfits")
 		end
 	end
 	for Eyes, v in pairs(Modules.AllEyes.All) do
-		if v.Rarity ~= "Event" and v.Rarity ~= "Free" then
+		if v.Rarity ~= "Event" and v.Rarity ~= "Free" and v.IsForSale then
 			NewStoreTemplate(Eyes, "Eyes")
 		end
 	end
