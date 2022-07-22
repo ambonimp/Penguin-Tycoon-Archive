@@ -298,8 +298,10 @@ function SkateRace:StartEvent()
 
 					local Stats = Modules.PlayerData.sessionData[PlayerName].Stats
 					if Stats["Skate Race Wins"] then
+						warn("COOL")
 						Stats["Skate Race Wins"] += 1
 					else
+						warn("NICE")
 						Stats["Skate Race Wins"] = 1
 					end
 

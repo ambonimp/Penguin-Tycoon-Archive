@@ -27,7 +27,7 @@ local Locations = {
 		PlaceId = PlaceIds["Penguin Tycoon"],
 		Alias = "Tycoon",
 		Description = "Build your islands, customize your Penguins and earn money!",
-		Thumbnail = "rbxassetid://8455934474"
+		Thumbnail = "rbxassetid://10317615510"
 	},
 	["Penguin City"] = {
 		PlaceId = PlaceIds["Penguin City"],

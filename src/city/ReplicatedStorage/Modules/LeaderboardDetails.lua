@@ -6,7 +6,7 @@ return {
 		smallestFirst = false;
 	};
 	["Total Gems"] = {
-		DataStore = ("Total Gems_v-RELEASE"),
+		DataStore = ("Total Gems_v-RELEASE1"),
 		smallestFirst = false;
 	};
 	["Hearts"] = {

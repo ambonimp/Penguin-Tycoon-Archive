@@ -11,7 +11,7 @@ local Remotes = Paths.Remotes
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 --- Variables ---
-local LOOP_INTERVAL = 3 * 60
+local LOOP_INTERVAL = 2.5 * 60
 
 local MIN_VALUE = 0
 local MAX_VALUE = 10e50
@@ -136,7 +136,7 @@ task.spawn(function()
 	end
 
 	while true do
-		print("LEADERBOARD UPDATE")
+		warn("LEADERBOARD UPDATE")
 		Remotes.LeaderboardUpdated:FireAllClients()
 
 		-- Update
@@ -210,21 +210,34 @@ task.spawn(function()
 
 
 						local UserId = Player.key
-						local UserName = "[Failed To Load]"
-						pcall(function()
-							UserName = game.Players:GetNameFromUserIdAsync(UserId)
-						end)
 
 						Lbl.Visible = true
 						Lbl.Rank.Text = Rank .. "."
-						Lbl.PlrName.Text = UserName
 						Lbl.Value.Text = if Details.Format then Details.Format(Value) else Modules.Format.FormatAbbreviated(Value)
+
+						task.spawn(function()
+							local UserName = "[Failed To Load]"
+
+							local Succ
+							local Tries = 0
+							repeat
+								Tries += 1
+								Succ = pcall(function()
+									UserName = game.Players:GetNameFromUserIdAsync(UserId)
+								end)
+							until Tries == 4 or Succ
+
+							Lbl.PlrName.Text = UserName
+							if Rank <= 3 and Rank >= 1 then
+								Leaderboard.Podiums["Penguin#" .. Rank].PlayerName.SurfaceGui.TextLabel.Text = UserName
+							end
+
+						end)
+
 
 						if Rank <= 3 and Rank >= 1 then
 							local PenguinModel = Leaderboard["Penguin#" .. Rank]
 							LoadPenguinModel(UserId, PenguinModel)
-
-							Leaderboard.Podiums["Penguin#" .. Rank].PlayerName.SurfaceGui.TextLabel.Text = UserName
 						end
 
 						if ListIndex % 100 == 0 and not Pages.IsFinished then
@@ -245,9 +258,9 @@ task.spawn(function()
 				end
 
 			end
-
 		end
 
+		warn("LEADERBOARDS DONE UPDATING")
 		task.wait(LOOP_INTERVAL)
 	end
 

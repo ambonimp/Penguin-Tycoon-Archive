@@ -132,11 +132,8 @@ function Leaderboards:beginLeaderboardUpdate()
 
 				task.wait(LOOP_INTERVAL)
 			end
-
 		end
-
 	end
-
 end
 
 coroutine.wrap(function()
