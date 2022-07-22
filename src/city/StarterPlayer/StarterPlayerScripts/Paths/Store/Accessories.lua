@@ -286,16 +286,14 @@ local function NewStoreTemplate(Item, ItemType)
 	elseif ItemType == "Outfits" then
 		Module = Modules.AllOutfits
 	end
-
+	
 	local Rarity = Module.All[Item].Rarity
 	local Template = Dependency.ItemStoreTemplate:Clone()
 	Template.Name = Item
 	Template.ItemName.Text = Item
 	if ItemType == "Outfits" then
 		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,Template)
-		end
+		addModelToViewport(Model,Template)
 	else
 		Template.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
 	end
@@ -306,7 +304,7 @@ local function NewStoreTemplate(Item, ItemType)
 	Template.Background.BackgroundColor3 = RarityColors[Rarity]
 	Template.Background.UIStroke.Color = RarityColors[Rarity]
 	Template.ItemName.TextColor3 = RarityColors[Rarity]
-
+	
 	if ItemType == "Eyes" then
 		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.36, 0)
 	end
@@ -317,19 +315,22 @@ local function NewStoreTemplate(Item, ItemType)
 		Template.PurchaseRobux.MouseButton1Down:Connect(function()
 			Remotes.Store:FireServer("Buy Item", Item, ItemType, "Robux")
 		end)
-
+		
 		Template.PurchaseGems.MouseButton1Down:Connect(function()
 			Remotes.Store:FireServer("Buy Item", Item, ItemType, "Gems")
 		end)
 	end
-
-	if ItemType ~= "Outfits" then
-		Template.Parent = StoreSections.Accessory.Holder[ItemType]
-	end
-
-
 	local Template2 = Template:Clone()
-	Template2.Parent = ClothingSections[ItemType].Holder
+	--if ItemType ~= "Outfits" then
+		Template.Parent = StoreSections.Accessory.Holder[ItemType]
+
+		local scrollingFrame =StoreSections.Accessory.Holder[ItemType]
+		local uiGridLayout = StoreSections.Accessory.Holder[ItemType].UIGridLayout
+		local NewSize = Vector2.new(.32,.165*2.85) * scrollingFrame.AbsoluteSize
+		uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
+		scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
+	--end
+	
 	if Template2 then
 		if PlayerAccessories[Item] or PlayerEyes[Item] or PlayerOutfits[Item] then
 			Template2.Owned.Visible = true
@@ -337,14 +338,12 @@ local function NewStoreTemplate(Item, ItemType)
 			Template2.PurchaseRobux.MouseButton1Down:Connect(function()
 				Remotes.Store:FireServer("Buy Item", Item, ItemType, "Robux")
 			end)
-
+			
 			Template2.PurchaseGems.MouseButton1Down:Connect(function()
 				Remotes.Store:FireServer("Buy Item", Item, ItemType, "Gems")
 			end)
 		end
-
 	end
-
 end
 
 
