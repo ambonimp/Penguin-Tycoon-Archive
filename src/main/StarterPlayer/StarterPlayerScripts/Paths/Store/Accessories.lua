@@ -394,7 +394,7 @@ do
 	local UI = Paths.UI.Center.Store.Sections.Accessory.Holder
 	local Buttons = UI.Buttons
 
-	local lastOpen = Buttons.Accessory
+	local lastOpen = Buttons.Bundles
 
 	function Accessories.OpenFrame(button)
 		lastOpen.BackgroundTransparency = .8
