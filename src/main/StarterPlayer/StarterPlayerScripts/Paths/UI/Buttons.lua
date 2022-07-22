@@ -301,10 +301,6 @@ end)
 --- Initializing ---
 for i, v in pairs(MainButtons) do
 	v.MouseButton1Down:Connect(function()
-		local isKeyboard = game:GetService("UserInputService").KeyboardEnabled
-		if v:GetAttribute("UI") == "Achievements" and game.Players.LocalPlayer.PlayerGui.Chat.Frame.Visible and not isKeyboard then
-			return
-		end
 		if v:FindFirstChild("Notif") then
 			v.Notif.Visible = false
 		end
