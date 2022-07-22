@@ -176,6 +176,7 @@ function FallingTiles:StartEvent()
 		local Name = Winner.PlayerName
 		Winners[i] = Name
 
+
 		local Data = Modules.PlayerData.sessionData[Name]
 		if Data then
 			local Stats = Data["Stats"]
