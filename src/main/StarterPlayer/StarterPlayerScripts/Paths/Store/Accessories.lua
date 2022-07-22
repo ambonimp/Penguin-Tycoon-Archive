@@ -323,7 +323,7 @@ local function NewStoreTemplate(Item, ItemType)
 
 		local scrollingFrame =StoreSections.Accessory.Holder[ItemType]
 		local uiGridLayout = StoreSections.Accessory.Holder[ItemType].UIGridLayout
-		local NewSize = Vector2.new(.32,.165*2.85) * scrollingFrame.AbsoluteSize
+		local NewSize = Vector2.new(.48,.165*2.85) * scrollingFrame.AbsoluteSize
 		uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
 		scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 	--end
