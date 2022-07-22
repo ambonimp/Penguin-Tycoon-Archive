@@ -77,7 +77,7 @@ Outfits.All = {
 	["Farmer"] = {Rarity = "Rare", IsForSale = true};
 	["Nurse"] = {Rarity = "Rare", IsForSale = true};
 	["Paramedic"] = {Rarity = "Rare", IsForSale = true};
-	["Alien"] = {Rarity = "Rare", IsForSale = true};
+	["Alien"] = {Rarity = "Rare", IsForSale = false};
 	["Dog Suit"] = {Rarity = "Rare", IsForSale = false};
 	["Cat Suit"] = {Rarity = "Rare", IsForSale = false};
 	-- Epics

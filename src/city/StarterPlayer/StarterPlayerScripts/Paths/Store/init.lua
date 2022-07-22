@@ -65,14 +65,17 @@ end
 
 UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Accessory,Store)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Accessory)
 end)
 
 UI.Left.Customization.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButton1Down:Connect(function()
 	ButtonClicked(UI.Center.Clothing.Buttons.Outfits,UI.Center.Clothing)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Outfits)
 end)
 
 UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Accessory,Store)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Eyes)
 end)
 
 UI.BLCorner.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()

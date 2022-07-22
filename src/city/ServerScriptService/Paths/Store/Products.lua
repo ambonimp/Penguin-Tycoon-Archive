@@ -36,6 +36,11 @@ local EggProducts = {
 	[1251433285]  = "Egg1"
 }
 
+local Bundles = {
+	[1287414995] = 1
+}
+
+
 Services.MPService.PromptProductPurchaseFinished:Connect(function(id, assetId, isPurchased)
 	local player
 	for i,v in pairs (game.Players:GetPlayers()) do
@@ -88,6 +93,15 @@ Services.MPService.ProcessReceipt = function(purchaseInfo)
 			Modules.Accessories:AccessoryPurchased(Player)
 			
 		-- Outfit Products
+		elseif Bundles[product] then
+			local bundle = Paths.Modules.AllOutfits.Bundles[Bundles[product]]
+			for i,item in pairs (bundle.Outfits) do
+				local name = item[1]
+				local typ = item[2]
+
+				Modules.Accessories:ItemAcquired(Player, name, typ)
+				task.wait(1)
+			end
 		elseif OutfitProducts[product] then
 			Modules.Accessories:OutfitPurchased(Player)
 				

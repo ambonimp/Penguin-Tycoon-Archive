@@ -22,6 +22,7 @@ local ProximityPrompt
 local ProximityPrompt2
 
 local Store
+local bundleCons = {}
 local StoreSections = UI.Center.Store.Sections
 
 local ClothingSections = UI.Center.Clothing.Sections
@@ -187,6 +188,30 @@ Remotes.Store.OnClientEvent:Connect(function(ActionType, Accessory, Purchased)
 		Accessories:NewItem(Accessory, ActionType)
 		Accessories:AnimateNewItem(Accessory, ActionType)
 
+
+		if ActionType == "Outfits" then
+			PlayerOutfits[Accessory] = true
+			local AllOutfits = Paths.Modules.AllOutfits
+			local Bundles = AllOutfits.Bundles
+			for i,bundle in pairs (StoreSections.Accessory.Holder.Bundles:GetChildren()) do
+				local id = bundle:GetAttribute("BundleNumber")
+				if id then
+					local ownsAll = true
+					for i,v in pairs (Bundles[id].Outfits) do
+						if not PlayerOutfits[v[1]] then
+							ownsAll = false
+							break
+						end
+					end
+					if ownsAll then
+						bundle.Owned.Visible = true
+						if bundleCons[id] then
+							bundleCons[id]:Disconnect()
+						end
+					end
+				end
+			end
+		end
 	elseif ActionType == "Store Rotated" then
 		--RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
 		--Accessories:LoadStore()
@@ -375,6 +400,75 @@ function Accessories:LoadStore()
 end
 
 Accessories:LoadStore()
+
+
+
+--Store accessory buttons & Bundles
+do
+	
+	local UI = Paths.UI.Center.Store.Sections.Accessory.Holder
+	local Buttons = UI.Buttons
+
+	local lastOpen = Buttons.Accessory
+
+	function Accessories.OpenFrame(button)
+		lastOpen.BackgroundTransparency = .8
+		UI:FindFirstChild(lastOpen.Name).Visible = false
+		button.BackgroundTransparency = 0
+		UI:FindFirstChild(button.Name).Visible = true
+		lastOpen = button
+	end
+
+	for i,button in pairs (Buttons:GetChildren()) do
+		if button:IsA("ImageButton") then
+			button.MouseButton1Down:Connect(function()
+				Accessories.OpenFrame(button)
+			end)
+		end
+	end
+
+
+	local AllOutfits = Paths.Modules.AllOutfits
+	local Bundles = AllOutfits.Bundles
+
+
+	function connectTimer(text,expires)
+		task.spawn(function()
+			local timeLeft = expires-os.time()
+			while timeLeft > 0 do
+				timeLeft = expires-os.time()
+				local t = os.date('!%d:%H:%M:%S', timeLeft)
+				text.Text = t
+				task.wait(1)
+			end
+			text.Parent.Visible = false
+		end)
+	end
+
+	for i,Bundle in pairs (UI.Bundles:GetChildren()) do --currently only one bundle so UI already exists.. will make it create the UI for multiple bundles in the future
+		local id = Bundle:GetAttribute("BundleNumber")
+		if id then
+			local ownsAll = true
+			for i,v in pairs (Bundles[id].Outfits) do
+				if not PlayerOutfits[v[1]] then
+					ownsAll = false
+					break
+				end
+			end
+			
+			if ownsAll then
+				Bundle.Owned.Visible = true
+			else
+				connectTimer(Bundle.TimeLeft,Bundles[id].Expires)
+				bundleCons[id] = Bundle.PurchaseRobux.MouseButton1Down:Connect(function()
+					Services.MPService:PromptProductPurchase(Paths.Player, Bundles[id].DevId)--
+				end)
+			end
+			
+		end
+	end
+	
+end
 --[[
 --- Store timer ---
 coroutine.wrap(function()

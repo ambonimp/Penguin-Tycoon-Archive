@@ -95,7 +95,7 @@ Emotes.All = {
 		local prop = game.ReplicatedStorage.Assets.BookEmote:Clone()
 		prop:SetAttribute("Player",player.Name)
 		local runservice = game:GetService("RunService")
-		local cf = player.Character.PrimaryPart.CFrame * CFrame.new(0,.75,-3)
+		local cf = player.Character.PrimaryPart.CFrame * CFrame.new(0,1.4,-2.7) * CFrame.Angles(math.rad(45),0,0)
 		local ended = false
 		track:Play()
 		prop:SetPrimaryPartCFrame(cf)
@@ -119,7 +119,7 @@ Emotes.All = {
 	PropFunction = function(player,track)
 		local Character = player.Character
 		local prop = game.ReplicatedStorage.Assets.ClipboardEmote:Clone()
-		local cf = player.Character["Arm R"].CFrame * CFrame.new(-.5,-1,0) * CFrame.Angles(math.rad(20),math.rad(-90),0)
+		local cf = player.Character["Arm R"].CFrame * CFrame.new(-1.25,-1,0) * CFrame.Angles(math.rad(20),math.rad(-90),math.rad(-15))
 		local connection = nil
 		prop:SetAttribute("Time",2)
 		prop:SetPrimaryPartCFrame(cf)
@@ -132,6 +132,7 @@ Emotes.All = {
 		connection = track.DidLoop:Connect(function()
 			prop:Destroy()
 			track:Stop()
+			game.ReplicatedStorage.Remotes.PropEmote:FireClient(player,"Stop")
 			connection:Disconnect()
 		end)
 		task.wait(.8)
@@ -143,7 +144,7 @@ Emotes.All = {
 	PropFunction = function(player,track)
 		local Character = player.Character
 		local prop = game.ReplicatedStorage.Assets.BurgerEmote:Clone()
-		local cf = CFrame.new(player.Character["Arm R"].Tool_RightHand.WorldPosition-Vector3.new(0,1,0)) * CFrame.Angles(math.rad(90),0,0)
+		local cf =  CFrame.new(player.Character["Arm R"].Tool_RightHand.WorldPosition-Vector3.new(0,1,0)) * CFrame.Angles(math.rad(90),0,0)
 		local connection = nil
 		prop:SetAttribute("Time",2)
 		prop:SetPrimaryPartCFrame(cf)
@@ -156,6 +157,7 @@ Emotes.All = {
 		connection = track.DidLoop:Connect(function()
 			prop:Destroy()
 			track:Stop()
+			game.ReplicatedStorage.Remotes.PropEmote:FireClient(player,"Stop")
 			connection:Disconnect()
 		end)
 		task.wait(.8)
@@ -172,10 +174,11 @@ Emotes.All = {
 		track:Play()
 		connection = track.DidLoop:Connect(function()
 			track:Stop()
+			game.ReplicatedStorage.Remotes.PropEmote:FireClient(player,"Stop")
 			connection:Disconnect()
 		end)
 		task.wait(.35)
-		snowball.CFrame = Character.Main.CFrame * CFrame.new(0,0,-3)
+		snowball.CFrame = Character.Main.CFrame * CFrame.new(-1.4,0,-3)
 		snowball.Velocity = (Character.Main.CFrame.LookVector+Vector3.new(0,.75,0)) * 60
 		snowball:SetAttribute("Time",2)
 		snowball.Parent = workspace.Props
