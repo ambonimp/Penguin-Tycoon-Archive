@@ -22,8 +22,8 @@ end
 
 function FuncLib.DictLength(t)
     local length = 0
-    for _, _ in pairs(t) do
-        length+= 1;
+    for _ in pairs(t) do
+        length+= 1
     end
 
     return length

@@ -38,6 +38,9 @@ function Paths.Initiliaze()
 --- Initializing Remotes ---
 	Paths.Remotes = Paths.Services.RStorage.Remotes;
 	
+	Paths.Modules.Signal = require(Paths.Services.RStorage.Modules.Signal)
+	Paths.Modules.Achievements = require(script.Achievements)
+
 	print("Pets Modules")
 	-- Pets
 	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
@@ -50,6 +53,7 @@ function Paths.Initiliaze()
 	Paths.Modules.GameInfo = require(Paths.Services.RStorage.Modules.GameInfo)
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
+	Paths.Modules.AllAchievements = require(Paths.Services.RStorage.Modules.AllAchievements)
 	Paths.Modules.AllEmotes = require(Paths.Services.RStorage.Modules.AllEmotes)
 	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
 	Paths.Modules.MiningDetails = require(Paths.Services.RStorage.Modules.MiningDetails)
@@ -111,10 +115,11 @@ function Paths.Initiliaze()
 	Paths.Modules.Quests = require(script.Quests)
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
 	Paths.Modules.PoolSpawner = require(script.Tycoon.Fishing.PoolSpawner)
+	Paths.Modules.Miningames = require(script.Minigames)
 
-	
 	--- Other Variables ---
 	Paths.Initialized = true
+
 end
 
 return Paths

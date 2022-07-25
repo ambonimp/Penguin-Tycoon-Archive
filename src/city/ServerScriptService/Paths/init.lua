@@ -45,6 +45,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.FishingConfig = require(Paths.Services.RStorage.Modules.FishingConfig)
 	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
+	Paths.Modules.AllAchievements = require(Paths.Services.RStorage.Modules.AllAchievements)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
 	Paths.Modules.ActiveCodes = require(script.Codes.ActiveCodes)
@@ -67,6 +68,7 @@ function Paths.Initiliaze()
 	-- Tool Modules
 	Paths.Modules.Tools = require(script.Tools)
 	
+	Paths.Modules.Achievements = require(script.Achievements)
 	Paths.Modules.SpinTheWheel = require(script.SpinTheWheel)
 	Paths.Modules.Playtime = require(script.Playtime)
 	Paths.Modules.Quests = require(script.Quests)

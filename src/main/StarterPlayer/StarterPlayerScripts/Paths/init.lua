@@ -25,7 +25,7 @@ function Paths.Initiliaze()
 	Paths.Services.ProximityPrompt = game:GetService("ProximityPromptService")
 
 	Paths.Services.GuiService = game:GetService("GuiService");
-	
+
 	Paths.Dependency = Paths.Services.RStorage:WaitForChild("ClientDependency")
 	--- Initializing UI ---
 	-- print("Load UI")
@@ -44,21 +44,21 @@ function Paths.Initiliaze()
 	Paths.UI.BLCorner = Paths.UI.Main:WaitForChild("BLCorner")
 	Paths.UI.CharacterSelect = PlayerGui:WaitForChild("CharacterSelect"):WaitForChild("Background"):WaitForChild("Center")
 	Paths.UI.Tools = Paths.UI.Bottom.Tools
-	
-	
+
+
 --- Initializing Remotes ---
 	Paths.Remotes = Paths.Services.RStorage.Remotes;
-	
-	
+
+
 --- Initializing Player Variables ---
 	Paths.Player = game.Players.LocalPlayer;
 	local TycoonName = Paths.Player:GetAttribute("Tycoon")
 	Paths.Tycoon = workspace.Tycoons:WaitForChild(TycoonName)
-	
+
 	-- Other Variables
 	Paths.Audio = script.Parent.Audio
-	
-	
+
+
 --- Initializing Modules ---
 	local ModuleLoader = require(script.ModuleLoader)
 
@@ -74,7 +74,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Help", script.Tycoon.Help)
 	ModuleLoader.Register("AllOutfits", Paths.Services.RStorage.Modules.AllOutfits)
 	ModuleLoader.Register("AllAccessories", Paths.Services.RStorage.Modules.AllAccessories)
-	ModuleLoader.Register("AchievementsDictionary", Paths.Services.RStorage.Modules.Achievements)
+	ModuleLoader.Register("AllAchievements", Paths.Services.RStorage.Modules.AllAchievements)
 	ModuleLoader.Register("AllEyes", Paths.Services.RStorage.Modules.AllEyes)
 	ModuleLoader.Register("AllEmotes", Paths.Services.RStorage.Modules.AllEmotes)
 	ModuleLoader.Register("Indicators", script.Setup.Indicators)
@@ -92,7 +92,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("BuildADetails", Paths.Services.RStorage.Modules.BuildADetails)
 	ModuleLoader.Register("DeviceDetector", script.DeviceDetector)
 	ModuleLoader.Register("Feedback", script.Feedback)
-	
+
 
 	-- Tool Modules
 	ModuleLoader.Register("Tools", script.Tools);
@@ -103,7 +103,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("DoubleJump", script.Character.DoubleJump);
 	ModuleLoader.Register("Character", script.Character);
 	ModuleLoader.Register("CharacterSelect", script.Character.CharacterSelect);
-	
+
 	-- UI Modules
 	-- print("ui modules")
 	ModuleLoader.Register("UpdatingUI", script.UI.Updating)
@@ -115,11 +115,12 @@ function Paths.Initiliaze()
 	-- ModuleLoader.Register("Snackbars", script.UI.Snackbars)
 	ModuleLoader.Register("UI", script.UI)
 	ModuleLoader.Register("Index", script.UI.Index)
-	ModuleLoader.Register("Achievements", script.Achievements)
-	ModuleLoader.Register("SpinTheWheel", script.Achievements.SpinTheWheel)
-	ModuleLoader.Register("Playtime", script.Achievements.Playtime)
-	ModuleLoader.Register("AllAchievements", script.Achievements.AllAchievements)
-	ModuleLoader.Register("Quests", script.Achievements.Quests)
+
+	ModuleLoader.Register("Milestones", script.Milestones)
+	-- ModuleLoader.Register("SpinTheWheel", script.Milestones.SpinTheWheel)
+	ModuleLoader.Register("Playtime", script.Milestones.Playtime)
+	ModuleLoader.Register("Achievements", script.Milestones.Achievements)
+	ModuleLoader.Register("Quests", script.Milestones.Quests)
 
 	-- print("store modules")
 	-- Store Modules
@@ -129,18 +130,18 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Gems", script.Store.Gems)
 	ModuleLoader.Register("Boosts", script.Store.Boosts)
 	ModuleLoader.Register("Accessories", script.Store.Accessories)
-	
+
 	-- print("penguin modules")
 	-- Penguin Modules
 	ModuleLoader.Register("PenguinsUI", script.Penguins.PenguinsUI)
 	ModuleLoader.Register("Penguins", script.Penguins)
 	ModuleLoader.Register("Customization", script.Penguins.Customization)
-	
+
 	-- print("audio modules")
 	-- Audio Modules
 	ModuleLoader.Register("Audio", Paths.Services.RStorage.Modules.Audio)
 	ModuleLoader.Register("AudioHandler", script.AudioHandler)
-	
+
 	-- print("tycoon/fishing modules")
 	-- Other Modules (That have to be required after)
 	ModuleLoader.Register("Tycoon", script.Tycoon)

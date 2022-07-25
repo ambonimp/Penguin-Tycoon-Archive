@@ -110,7 +110,8 @@ function CandyRush:InitiateEvent(Event)
 					local player = game.Players:FindFirstChild(playerName)
 
 					collected = true
-					Modules.Quests.GiveQuest(player,"Collect","Minigame","Candy Rush",1)
+					Modules.Quests.GiveQuest(player, "Collect","Minigame", "Candy Rush", 1)
+					Modules.Achievements.Progress(player, 27)
 
 					local stats = Modules.PlayerData.sessionData[playerName].Stats
 					if stats["Candy Collected"] then

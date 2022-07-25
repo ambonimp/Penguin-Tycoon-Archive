@@ -17,6 +17,13 @@ local FreePets = {
 	[3] = {"Glacyx","Default",1.05,"Paycheck","Income",5,25},
 }
 
+local RARITY_ACHIEVEMENTS = {
+	Common = 14,
+	Rare = 15,
+	Eoic = 16,
+	Legendary = 17
+}
+
 function getEmptyNum(data)
 	for i=1,math.huge do
 		if data[tostring(i)] == nil then
@@ -184,11 +191,12 @@ function givePet(Player, PetId, Chosen, IslandId)
 		local petInfo = PetDetails.Pets[PetId]
 		local newId = getEmptyNum(Data.PetsOwned)
 
+		local rarity = PetDetails.Rarities[Chosen.Percentage]
 		Data.PetsOwned[newId] = {
 			petInfo[1],
 			petInfo[2],
 			petInfo[1],
-			PetDetails.Rarities[Chosen.Percentage],
+			rarity,
 			1,
 			{
 				petInfo[3],
@@ -197,6 +205,8 @@ function givePet(Player, PetId, Chosen, IslandId)
 			},
 			PetId,IslandId
 		}
+
+		Modules.Achievements.Progress(Player, RARITY_ACHIEVEMENTS[rarity])
 
 		warn(Chosen.Id, typeof(Chosen.Id))
 		if Data.Unlocked[tostring(Chosen.Id)] then

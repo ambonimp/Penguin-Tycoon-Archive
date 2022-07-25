@@ -293,16 +293,19 @@ function SkateRace:StartEvent()
 		if Player then
 			if i <= 3 then
 				if i == 1 then
-					Modules.Quests.GiveQuest(Player, "Win", "Minigame", "Skate Race", 1)
-					Modules.Quests.GiveQuest(Player, "Win"," Minigame", "All", 1)
+					local Data = Modules.PlayerData.sessionData[PlayerName]
+					if Data then
+						Modules.Quests.GiveQuest(Player, "Win", "Minigame", "Skate Race", 1)
+						Modules.Quests.GiveQuest(Player, "Win"," Minigame", "All", 1)
+						Modules.Achievements.Progress(Player, 24)
 
-					local Stats = Modules.PlayerData.sessionData[PlayerName].Stats
-					if Stats["Skate Race Wins"] then
-						warn("COOL")
-						Stats["Skate Race Wins"] += 1
-					else
-						warn("NICE")
-						Stats["Skate Race Wins"] = 1
+						local Stats = Data.Stats
+						if Stats["Skate Race Wins"] then
+							Stats["Skate Race Wins"] += 1
+						else
+							Stats["Skate Race Wins"] = 1
+						end
+
 					end
 
 				end

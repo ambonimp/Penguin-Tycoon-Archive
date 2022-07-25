@@ -1,4 +1,4 @@
-local paths = require(script.Parent)
+local paths = require(script.Parent.Parent)
 
 local modules = paths.Modules
 local config = modules.FishingConfig
@@ -12,6 +12,14 @@ local DataStoreService = game:GetService("DataStoreService")
 local ServerStorage = game:GetService("ServerStorage")
 local EventHandler = ServerStorage:FindFirstChild("EventHandler")
 
+local FISH_RARITY_ACHIEVEMENTS = {
+	[config.Rarity.Common] = 1,
+	[config.Rarity.Rare] = 2,
+	[config.Rarity.Epic] = 3,
+	[config.Rarity.Legendary] = 4,
+	[config.Rarity.Mythic] = 5,
+}
+
 local REEL_DEBOUNCE = 2.9 -- seconds
 local MAXIMUM_THROW_DISTANCE = 100
 local ISLAND_RADIUS = 450
@@ -24,77 +32,22 @@ local RequestList = {}
 local itemTypes = config.ItemType
 
 local Fishing = {}
-local RewardQueue = {}
-
-local awards = {
-	["Common"] = 40,
-	["Rare"] = 50,
-	["Epic"] = 75,
-	["Legendary"] = 100,
-	["Mythic"] = 200,
-}
-local RarityAmount = {}
 local FishCategories = {
 	["Common"] = {},
 	["Rare"] = {},
 	["Epic"] = {},
 	["Legendary"] = {},
 	["Mythic"] = {},
+	["All"] = {}
 }
 
 for i,v in pairs (config.ItemList) do
 	if v.Rarity and FishCategories[v.Rarity] then
 		table.insert(FishCategories[v.Rarity],i)
 	end
-end
-for i,v in pairs (FishCategories) do
-	RarityAmount[i] = #v
+	table.insert(FishCategories["All"],i)
 end
 
-function checkFishRewards(Player)
-	local sessionData = modules.PlayerData.sessionData[Player.Name]
-	if sessionData then
-		if modules.PlayerData.sessionData[Player.Name]["Fish Rewards"] == nil then
-			modules.PlayerData.sessionData[Player.Name]["Fish Rewards"] = {}
-		end
-		local CaughtFish = sessionData["Fish Found"]
-		local CaughtJunk = sessionData["Junk Found"]
-		local ownedRarity = {
-			["Common"] = 0,
-			["Rare"] = 0,
-			["Epic"] = 0,
-			["Legendary"] = 0,
-			["Mythic"] = 0,
-		}
-		for ID,fishData in pairs (config.ItemList) do
-			if fishData.Rarity and CaughtFish[tostring(ID)] and CaughtFish[tostring(ID)] >= 1 and ownedRarity[fishData.Rarity] then
-				ownedRarity[fishData.Rarity] += 1
-			end
-		end
-		for rarity,amount in pairs (ownedRarity) do
-			if amount >= RarityAmount[rarity] and sessionData["Fish Rewards"][rarity] == nil then
-				modules.PlayerData.sessionData[Player.Name]["Fish Rewards"][rarity] = true
-				modules.Income:AddGems(Player, awards[rarity], "Fish Reward")
-				remotes.FishRewards:FireClient(Player,rarity,awards[rarity])
-			end
-		end
-
-		if CaughtJunk then
-			if CaughtJunk["51"] and CaughtJunk["51"] >= 200 and sessionData["Accessories"]["Boot Hat"] == nil then --boot
-				modules.Accessories:ItemAcquired(Player, "Boot Hat", "Accessory")
-				remotes.FishRewards:FireClient(Player,"Boot Hat")
-			end
-			if CaughtJunk["52"] and CaughtJunk["52"] >= 200 and sessionData["Accessories"]["Bottle Hat"] == nil then
-				modules.Accessories:ItemAcquired(Player, "Bottle Hat", "Accessory")
-				remotes.FishRewards:FireClient(Player,"Bottle Hat")
-			end
-			if CaughtJunk["53"] and CaughtJunk["53"] >= 200 and sessionData["Accessories"]["Seaweed Hat"] == nil then
-				modules.Accessories:ItemAcquired(Player, "Seaweed Hat", "Accessory")
-				remotes.FishRewards:FireClient(Player,"Seaweed Hat")
-			end
-		end
-	end
-end
 
 function Fishing.GetRandomId(chanceTable,Player)
 	if not chanceTable then
@@ -104,15 +57,19 @@ function Fishing.GetRandomId(chanceTable,Player)
 	local randomNumber = rand:NextNumber(0, 1)
 	local previousValue
 	if Player:GetAttribute("FishingSuperLuckBoost") then
-		randomNumber *= rand:NextNumber(1.08, 1.11)
+		randomNumber *= rand:NextNumber(1.08, 1.115)
 	end
 	if Player:GetAttribute("FishingUltraLuckBoost") then
-		randomNumber *= rand:NextNumber(1.13, 1.15)
+		randomNumber *= rand:NextNumber(1.13, 1.155)
 	end
 	if randomNumber > 1 and (Player:GetAttribute("FishingUltraLuckBoost") or Player:GetAttribute("FishingSuperLuckBoost"))then
 		local n = math.random(1,20)
 		if n >= 18 then
-			randomNumber = .99999
+			if math.random(1,2) == 1 then
+				randomNumber = 0.99994
+			else
+				randomNumber = .99999
+			end
 		elseif n >= 12 and n <= 18 then
 			randomNumber = .99989 * rand:NextNumber(.999, 1)
 		else
@@ -129,16 +86,12 @@ function Fishing.GetRandomId(chanceTable,Player)
 		if randomNumber >= previousValue and randomNumber <= entry.Percentage then
 			return entry.Id
 		end
+
 	end
+
 end
 
 function Fishing.FindNearestIsland(playerPosition)
-	local items = {"OpenSea"}
-	for island, data in pairs(config.IslandsData) do
-		table.insert(items,island)
-	end
-
-	return items[math.random(1,#items)]--[[
 	local dataTable = {}
 
 	for island, data in pairs(config.IslandsData) do
@@ -157,7 +110,7 @@ function Fishing.FindNearestIsland(playerPosition)
 		return dataTable[1].IslandName
 	else
 		return "OpenSea"
-	end]]
+	end
 end
 
 function Fishing.GetRandomFish(playerPosition,Player)
@@ -185,9 +138,9 @@ function GetDebounceSeconds(player)
 	local debounce
 
 	if rod and (rod == "Gold Fishing Rod" or rod == "Rainbow Fishing Rod") then
-		debounce = 1
+		debounce = 1 / modules.Pets.getBonus(player,"Fishing","Speed")
 	else
-		debounce = 3
+		debounce = 3 / modules.Pets.getBonus(player,"Fishing","Speed")
 	end
 	return debounce
 end
@@ -241,6 +194,9 @@ function GetEnchantState(position,player)
 	if rod == "Rainbow Fishing Rod" then
 		decimalChance *= 1.15
 	end
+	if decimalChance > 1 then
+		decimalChance = 1
+	end
 	return rand:NextNumber(0, 1) <= decimalChance
 end
 
@@ -275,6 +231,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 
 	if sessionData and sessionData[player.Name] then
 		-- should hats be added to some sort of index?
+
 		if lootInfo.Type == itemTypes.Hat then
 			local result = GiveHat(player, sessionData[player.Name])
 
@@ -285,6 +242,10 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 			--if not AFKFishing then
 			modules.Income:AddGems(player, lootInfo.Gems, "Reward")
 			--end
+
+			if lootInfo.Id == 55 then -- Treasure chest
+				modules.Achievements.Progress(player, 10)
+			end
 
 			-- no need to save junk to index, just give money
 		elseif lootInfo.Type == itemTypes.Junk then
@@ -297,17 +258,26 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 					["53"] = 0,
 				}
 			end
-			
 			if lootInfo.Id then
 				sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)] += 1
 				returnData.Amount = sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)]
-			end
 
+				if lootInfo.Id == 51 then -- Boots
+					modules.Achievements.Progress(player, 8)
+				elseif lootInfo.Id == 52 then -- Bottles
+					modules.Achievements.Progress(player, 9)
+				elseif lootInfo.Id == 53 then
+					modules.Achievements.Progress(player, 7)
+				end
+
+			end
 			modules.Income:AddMoney(player, returnData.Worth)
 			--end
 
 			-- all fish
 		else
+			sessionData[player.Name].Stats["Total Fished"] += 1
+
 			local fishFound = sessionData[player.Name]["Fish Found"]
 			local enchantedFishFound = sessionData[player.Name]["Enchanted Fish Found"]
 			returnData.Enchanted = GetEnchantState(hitPosition,player)
@@ -315,7 +285,10 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 				returnData.Worth *= 10
 			end
 
-			modules.Quests.GiveQuest(player,"Catch",config.ItemList[lootInfo.Id].Rarity,"Fish",1)
+			local rarity = config.ItemList[lootInfo.Id].Rarity
+			modules.Quests.GiveQuest(player,"Catch", rarity,"Fish",1)
+			modules.Achievements.Progress(player, FISH_RARITY_ACHIEVEMENTS[rarity])
+
 			--if not AFKFishing then
 			modules.Income:AddMoney(player, returnData.Worth)
 			--end
@@ -331,22 +304,26 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 					fishFound[tostring(lootInfo.Id)] += 1
 				else
 					fishFound[tostring(lootInfo.Id)] = 1
+					modules.Achievements.Progress(player, 6) -- All fish in the index
 				end
+
 			end
+
 		end
-		checkFishRewards(player)
+
 	end
+
 end
 
 function Main(player, hitPosition, reroll, AFKFishing)
 	if not reroll and not GetPlayerRequest(player) then
 		return
-	end--[[
+	end
 	task.defer(function()
-		if math.random(1,100) <= 2 then
+		if math.random(1,100) <= 7 then
 			paths.Modules.PoolSpawner.createCustom(player,hitPosition + Vector3.new(math.random(-10,10),0,math.random(-10,10)))
 		end
-	end)]]
+	end)
 	local multiplier = 1
 	if AFKFishing then
 		multiplier = 0.25 
@@ -359,15 +336,19 @@ function Main(player, hitPosition, reroll, AFKFishing)
 			local data = {}
 			local characterPosition = player.Character:GetPivot().Position
 			data.LootInfo = Fishing.GetRandomFish(player.Character:GetPivot().Position,player)
-		
+
 			if data.LootInfo["IncomeMultiplier"] then
 				data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
+
+
 				local old = data.Worth
 				if old ~= 0 then
+					local mult = paths.Modules.Pets.getBonus(player,"Fishing","Income")
+					data.Worth = data.Worth * mult
 					data.Worth = math.ceil(data.Worth * multiplier)
 				end
 			end
-		
+
 			if modules.Income then
 				AddReward(player, data, hitPosition, AFKFishing)
 				announcementRemote:FireAllClients(player, data.LootInfo)
@@ -384,6 +365,8 @@ function Main(player, hitPosition, reroll, AFKFishing)
 			data.Worth = math.floor(playerIncome * data.LootInfo.IncomeMultiplier) or 0
 			local old = data.Worth
 			if old ~= 0 then
+				local mult = paths.Modules.Pets.getBonus(player,"Fishing","Income")
+				data.Worth = data.Worth * mult
 				data.Worth = math.ceil(data.Worth * multiplier)
 			end
 		end
@@ -394,6 +377,7 @@ function Main(player, hitPosition, reroll, AFKFishing)
 			return data
 		end
 	end
+
 end
 
 reelFish.OnServerInvoke = Main

@@ -77,7 +77,7 @@ Outfits.All = {
 	["Farmer"] = {Rarity = "Rare", IsForSale = true};
 	["Nurse"] = {Rarity = "Rare", IsForSale = true};
 	["Paramedic"] = {Rarity = "Rare", IsForSale = true};
-	["Alien"] = {Rarity = "Rare", IsForSale = true};
+	["Alien"] = {Rarity = "Rare", IsForSale = false};
 	["Dog Suit"] = {Rarity = "Rare", IsForSale = false};
 	["Cat Suit"] = {Rarity = "Rare", IsForSale = false};
 	-- Epics
@@ -107,6 +107,13 @@ Outfits.All = {
 
 	-- Mining Outfits
 	["Miner"] = {Rarity = "Free", IsForSale = false};
+
+	-- Achievement
+	["Banana"] = {Rarity = "Free", IsForSale = false};
+	["Disco"] = {Rarity = "Free", IsForSale = false};
+	["Ghost"] = {Rarity = "Free", IsForSale = false};
+	["Mummy"] = {Rarity = "Free", IsForSale = false};
+	["Ninja"] = {Rarity = "Free", IsForSale = false};
 
 }
 

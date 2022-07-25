@@ -312,12 +312,19 @@ function SledRace:StartEvent()
 
 		if i <= 3 then
 			if i == 1 then
-				local Stats = Modules.PlayerData.sessionData[PlayerName].Stats
-				if Stats["Sled Race Wins"] then
-					Stats["Sled Race Wins"] += 1
-				else
-					Stats["Sled Race Wins"] = 1
+				local Data = Modules.PlayerData.sessionData[PlayerName]
+				if Data then
+					local Stats = Data.Stats
+
+					if Stats["Sled Race Wins"] then
+						Stats["Sled Race Wins"] += 1
+					else
+						Stats["Sled Race Wins"] = 1
+					end
+
+					Modules.Achievements.Progress(Player, 24)
 				end
+
 			end
 
 			table.insert(Winners, PlayerName)
