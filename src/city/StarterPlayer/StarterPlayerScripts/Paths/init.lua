@@ -16,6 +16,7 @@ function Paths.Initiliaze()
 	Paths.Services.ContentProvider = game:GetService("ContentProvider");
 	Paths.Services.GuiService = game:GetService("GuiService")
 	Paths.Services.Lighting = game:GetService("Lighting")
+	Paths.Services.ProximityPrompt = game:GetService("ProximityPromptService")
 	
 	
 	Paths.Dependency = Paths.Services.RStorage:WaitForChild("ClientDependency")
