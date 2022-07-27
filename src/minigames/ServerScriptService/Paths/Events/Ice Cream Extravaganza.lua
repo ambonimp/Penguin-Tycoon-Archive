@@ -339,14 +339,17 @@ function IceCreamExtravaganza:StartEvent()
 					Stats[EVENT_NAME] = 1
 				end
 
+				Modules.Achievements.Progress(Player, 28)
+
+				Modules.Quests.GiveQuest(Player,"Win","Minigame","Ice Cream Extravanganza",1)
+				Modules.Quests.GiveQuest(Player,"Win","Minigame","All",1)
 			end
+
 		end
 
 		if i <= 3 then
 			table.insert(Winners, PlayerName)
 			RewardGems(Player, WINNER_REWARDS[i])
-			Modules.Quests.GiveQuest(Player,"Win","Minigame","Ice Cream Extravanganza",1)
-			Modules.Quests.GiveQuest(Player,"Win","Minigame","All",1)
 		else
 			RewardGems(Player, PARTICIPATION_REWARD)
 		end

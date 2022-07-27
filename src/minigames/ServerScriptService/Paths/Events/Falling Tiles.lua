@@ -174,8 +174,9 @@ function FallingTiles:StartEvent()
 	-- Leaderboard stuff
 	for i, Winner in ipairs(Winners) do
 		local Name = Winner.PlayerName
-		Winners[i] = Name
+		local Player = game.Players:FindFirstChild(Name)
 
+		Winners[i] = Name
 
 		local Data = Modules.PlayerData.sessionData[Name]
 		if Data then
@@ -187,9 +188,12 @@ function FallingTiles:StartEvent()
 				Stats[EVENT_NAME] = 1
 			end
 
+			Modules.Achievements.Progress(Player, 25)
+
+			Modules.Quests.GiveQuest(Player, "Win", "Minigame", "Falling Tiles", 1)
+			Modules.Quests.GiveQuest(Player, "Win", "Minigame", "All", 1)
 		end
-		Modules.Quests.GiveQuest(game.Players:FindFirstChild(Name),"Win","Minigame","Falling Tiles",1)
-		Modules.Quests.GiveQuest(game.Players:FindFirstChild(Name),"Win","Minigame","All",1)
+
 	end
 
 	-- Reward

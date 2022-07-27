@@ -108,7 +108,6 @@ function Accessories:NewItem(Item, ItemType)
 		Module = Modules.AllOutfits
 	end
 
-	print(Item)
 	local x = assert(Module.All[Item], (Item or "NIL ITEM") .. " " .. "Item").Rarity
 
 	local Rarity = Module.All[Item].Rarity
