@@ -8,6 +8,11 @@ Config.Constants = {
 }
 
 Config.ItemType = {
+	Common = "Common",
+	Rare = "Rare",
+	Epic = "Epic",
+	Legendary = "Legendary",
+	Mythic = "Mythic",
 	Junk = "Junk",
 	Gem = "Gem",
 	Hat = "Hat",

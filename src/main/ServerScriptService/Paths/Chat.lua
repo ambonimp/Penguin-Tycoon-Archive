@@ -183,7 +183,7 @@ Players.PlayerAdded:Connect(function(player)
 
 					for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
 						local Name = Button.Name
-						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and Button.Name ~= "Snow#1" then
+						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and Name ~= "Snow#1" then
 							Data.Tycoon[Name] = true
 							Data.Income += Button:GetAttribute("Income") or 0
 
@@ -202,6 +202,31 @@ Players.PlayerAdded:Connect(function(player)
 
 				task.wait(0.5)
 				player:Kick("Almost completing your tycoon")
+			elseif msg == "AmostComplete2" then
+				local Data = Paths.Modules.PlayerData.sessionData[player.Name]
+				if Data then
+					Data.RocketUnlocked[1] = true
+					Data.Tycoon["Rocketship#1"] = true
+
+					for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
+						local Name = Button.Name
+						if Button:GetAttribute("CurrencyType") == "Money" and Button:GetAttribute("Island") ~= "Zoo" then
+							Data.Tycoon[Name] = true
+							Data.Income += Button:GetAttribute("Income") or 0
+
+							if Button:GetAttribute("Type") == "Penguin" then
+								Modules.Penguins:PenguinPurchased(player, Name)
+							else
+								Data.Income += Button:GetAttribute("Income") or 0
+							end
+						end
+
+					end
+
+				end
+
+				task.wait(0.5)
+				player:Kick("Almost completing your tycoon2")
 			end
 
 		end)

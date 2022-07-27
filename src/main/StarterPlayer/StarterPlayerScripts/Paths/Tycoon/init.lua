@@ -52,6 +52,12 @@ coroutine.wrap(function()
 	end
 end)()
 
+Remotes.ButtonPurchased.OnClientEvent:Connect(function(IslandIndex, Button)
+--[[ 	if Button == Modules.ProgressionDetails[IslandIndex].Object then
+		Modules.UIAnimations.Confetti(2)
+	end *]]
+end)
+
 for _, MinigameHandler in ipairs(script.Minigames:GetChildren()) do
 	require(MinigameHandler)
 end

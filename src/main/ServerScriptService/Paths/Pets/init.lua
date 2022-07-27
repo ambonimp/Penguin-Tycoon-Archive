@@ -19,6 +19,13 @@ local FreePets = {
 	[3] = {"Glacyx","Default",1.05,"Paycheck","Income",5,25},
 }
 
+local RARITY_ACHIEVEMENTS = {
+	Common = 14,
+	Rare = 15,
+	Epic = 16,
+	Legendary = 17
+}
+
 function getEmptyNum(data)
 	for i=1,math.huge do
 		if data[tostring(i)] == nil then
@@ -186,11 +193,12 @@ function givePet(Player, PetId, Chosen, IslandId)
 		local petInfo = PetDetails.Pets[PetId]
 		local newId = getEmptyNum(Data.PetsOwned)
 
+		local rarity = PetDetails.Rarities[Chosen.Percentage]
 		Data.PetsOwned[newId] = {
 			petInfo[1],
 			petInfo[2],
 			petInfo[1],
-			PetDetails.Rarities[Chosen.Percentage],
+			rarity,
 			1,
 			{
 				petInfo[3],
@@ -199,6 +207,8 @@ function givePet(Player, PetId, Chosen, IslandId)
 			},
 			PetId,IslandId
 		}
+
+		Modules.Achievements.Progress(Player, RARITY_ACHIEVEMENTS[rarity])
 
 		if Data.Unlocked[tostring(Chosen.Id)] then
 			Data.Unlocked[tostring(Chosen.Id)] += 1
@@ -318,6 +328,12 @@ function UnequipPet(Player,PetIDs)
 	end
 	return false
 end
+
+Modules.Achievements.Reconciled:Connect(function(Data)
+	for _, Pet in pairs(Data["Pets_Data"].PetsOwned) do
+		Modules.Achievements.ReconcileSet(Data, RARITY_ACHIEVEMENTS[Pet[4]], 1)
+	end
+end)
 
 Remotes.BuyEgg.OnServerInvoke = BuyEgg
 Remotes.PetsRemote.OnServerInvoke = GetData

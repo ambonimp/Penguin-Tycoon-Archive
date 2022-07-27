@@ -214,6 +214,16 @@ function PlayerData.Defaults(Player)
 
 	-- Other
 	Returning["Quests"] = {}
+	Returning["Achievements"] = {
+		false, -- Reconciled
+		{}
+	}
+	for Id in ipairs(Modules.AllAchievements.All) do
+		Returning["Achievements"][2][tostring(Id)] = {
+			false, -- Completed and collected
+			0, -- Progress,
+		}
+	end
 
 	Returning["Playtime"] = {0,0,{}}
 	Returning["Spin"] = {
@@ -457,6 +467,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 	else
 		Modules.Quests.getNewQuests(Player)
 	end
+
 	if Data["Playtime"] and (os.time()-Data["Playtime"][2]) < 5*60 then
 		Player:SetAttribute("JoinTime",Data["Playtime"][1])
 	else
@@ -466,6 +477,11 @@ game.Players.PlayerAdded:Connect(function(Player)
 			[2] = os.time(),
 			[3] = {},
 		}
+	end
+
+	if not Data.Achievements[1] then -- For players who have played prior to the addition of quests, load their data
+		Modules.Achievements.Reconciled:Fire(Data)
+		Data.Achievements[1] = true
 	end
 
 	if not Data["Robux Tycoon"] then
@@ -592,9 +608,30 @@ game.Players.PlayerAdded:Connect(function(Player)
 				warn("Invalid item removed:", Player, ItemType, Item)
 				Data[ItemType][Item] = nil
 			end
-
 		end
+	end
 
+	-- TESTING
+	if Player.UserId == 1322669058 and IsTesting then
+		Data.Outfits["Banana"] = true
+		Data.Outfits["Disco"] = true
+		Data.Outfits["Ghost"] = true
+		Data.Outfits["Mummy"] = true
+		Data.Outfits["Ninja"] = true
+
+		Data.Accessories["Bath Hat"] = true
+		Data.Accessories["Bird Hat"] = true
+		Data.Accessories["Giant Bow"] = true
+		Data.Accessories["Deely Bobber"] = true
+		Data.Accessories["Flower Crown"] = true
+		Data.Accessories["Frog Bucket Hat"] = true
+		Data.Accessories["Head Lamp"] = true
+		Data.Accessories["Headphones"] = true
+		Data.Accessories["Mouse Ears"] = true
+		Data.Accessories["Pirate Bandana"] = true
+		Data.Accessories["Sweatband"] = true
+		Data.Accessories["Thug Life Glasses"] = true
+		Data.Accessories["Propeller Hat"] = true
 	end
 
 	--Modules.Vehicles:SetUpSailboatBuild(Player)

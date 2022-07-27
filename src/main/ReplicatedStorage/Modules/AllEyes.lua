@@ -79,11 +79,7 @@ Eyes.All = {
 	["Huh"] = {Rarity = "Regular", IsForSale = true};
 	["Tired"] = {Rarity = "Regular", IsForSale = true};
 	
-	
-	
 	--- Event Hats ---
-	
-	
 	
 	--- Code Eyes ---
 	["Heart Eyes"] = {Rarity = "Regular", IsForSale = false};

@@ -21,11 +21,24 @@ local AllVehicles = Services.RStorage.Assets.Vehicles
 
 local SpawningDBs = {}
 
+local function GetTruthsCount(t)
+    local Length = 0
+    for _, v  in pairs(t) do
+        if v then
+            Length+= 1
+		end
+    end
+
+    return Length
+end
+
 function SailboatBuild.OnServerInvoke(Player, Item)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
 	if Data then
 		local UnlockingData = Data["BoatUnlocked"]
 		Data["BoatUnlocked"][2][Item] = true
+
+		Modules.Achievements.Progress(Player, 11)
 
 		local Completed = true
 		for _, Unlocked in pairs (UnlockingData[2]) do
@@ -51,13 +64,11 @@ function SailboatBuild.OnServerInvoke(Player, Item)
 				if BrokenShip then
 					BrokenShip:Destroy()
 				end
-
 			end
 
 		end
 
 		return true
-
 	end
 
 end
@@ -102,8 +113,11 @@ function Vehicles:SetUpSailboatBuild(Player)
 					Tycoon.Tycoon:FindFirstChild("Dock#2"):FindFirstChild("Building"):Destroy()
 				end
 			end
+
 		end
+
 	end
+
 end
 
 function PlaneBuild.OnServerInvoke(Player,Item)
@@ -112,6 +126,7 @@ function PlaneBuild.OnServerInvoke(Player,Item)
 		local UnlockingData = Data["PlaneUnlocked"]
 
 		Data["PlaneUnlocked"][2][Item] = true
+		Modules.Achievements.Progress(Player, 12)
 
 		local Completed = true
 		for _, Unlocked in pairs (UnlockingData[2]) do
@@ -260,7 +275,9 @@ function Vehicles:SpawnVehicle(Player, Vehicle, CF)
 	end
 end
 
-
-
+Modules.Achievements.Reconciled:Connect(function(Data)
+	Modules.Achievements.ReconcileSet(Data, 11, GetTruthsCount(Data["BoatUnlocked"][2]))
+	Modules.Achievements.ReconcileSet(Data, 12, GetTruthsCount(Data["PlaneUnlocked"][2]))
+end)
 
 return Vehicles

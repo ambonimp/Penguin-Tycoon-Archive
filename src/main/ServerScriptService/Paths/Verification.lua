@@ -85,6 +85,9 @@ Remotes.DiscordVerification.OnServerInvoke = function(player, username)
 			Paths.Modules.Income:AddGems(player, 100)
 			data["Discord Verification"] = true
 
+			Modules.Achievements.Progress(player, 18)
+			Modules.Achievements.Progress(player, 19)
+
 			return true, "Success! 100 gems received"
 		else
 			return false, "Follower not found"
@@ -120,6 +123,8 @@ Remotes.Verification.OnServerInvoke = function(player, username)
 				data["Income Multiplier"] *= 1.1
 				data["Twitter Verification"] = true
 
+				Modules.Achievements.Progress(player, 18)
+
 				Modules.Chat:ApplyChatTag(player)
 
 				return true, "Success! 10% Income received"
@@ -139,5 +144,17 @@ Remotes.Verification.OnServerInvoke = function(player, username)
 
 	return false, "Error, try again later!"
 end
+
+Modules.Achievements.Reconciled:Connect(function(Data)
+	if Data["Discord Verification"] then
+		Modules.Achievements.ReconcileIncrement(Data, 1)
+		Modules.Achievements.ReconcileIncrement(Data, 18)
+	end
+
+	if Data["Twitter Verification"] then
+		Modules.Achievements.ReconcileIncrement(Data, 18)
+	end
+
+end)
 
 return Verification

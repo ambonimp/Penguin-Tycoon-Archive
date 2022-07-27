@@ -73,7 +73,6 @@ Outfits.All = {
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};
 	["Gardener"] = {Rarity = "Rare", IsForSale = true};
 	["Fisherman"] = {Rarity = "Rare", IsForSale = true};
-	["Scientist"] = {Rarity = "Rare", IsForSale = true};
 	["Farmer"] = {Rarity = "Rare", IsForSale = true};
 	["Nurse"] = {Rarity = "Rare", IsForSale = true};
 	["Paramedic"] = {Rarity = "Rare", IsForSale = true};
@@ -107,6 +106,14 @@ Outfits.All = {
 
 	-- Mining Outfits
 	["Miner"] = {Rarity = "Free", IsForSale = false};
+
+	-- Achievement
+	["Banana"] = {Rarity = "Free", IsForSale = false};
+	["Disco"] = {Rarity = "Free", IsForSale = false};
+	["Ghost"] = {Rarity = "Free", IsForSale = false};
+	["Mummy"] = {Rarity = "Free", IsForSale = false};
+	["Ninja"] = {Rarity = "Free", IsForSale = false};
+	["Scientist"] = {Rarity = "Free", IsForSale = false};
 
 }
 
