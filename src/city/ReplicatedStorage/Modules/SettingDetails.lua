@@ -13,7 +13,7 @@ return {
         LayoutOrder = 2,
     },
     ["Double Jump"] = {
-        Gamepass = 26268187,
+        Gamepass = 26268229,
         Default = false,
         AlwaysVisible = true,
         LayoutOrder = 3,
