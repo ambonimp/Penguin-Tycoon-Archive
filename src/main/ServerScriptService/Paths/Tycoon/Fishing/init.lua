@@ -287,7 +287,6 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 
 			local rarity = config.ItemList[lootInfo.Id].Rarity
 			modules.Quests.GiveQuest(player,"Catch", rarity,"Fish",1)
-			modules.Achievements.Progress(player, FISH_RARITY_ACHIEVEMENTS[rarity])
 
 			--if not AFKFishing then
 			modules.Income:AddMoney(player, returnData.Worth)
@@ -305,6 +304,7 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 				else
 					fishFound[tostring(lootInfo.Id)] = 1
 					modules.Achievements.Progress(player, 6) -- All fish in the index
+					modules.Achievements.Progress(player, FISH_RARITY_ACHIEVEMENTS[rarity])
 				end
 
 			end
@@ -400,6 +400,10 @@ modules.Achievements.Reconciled:Connect(function(Data)
 	end
 
 	local FishFound = Data["Fish Found"]
+	for _, Achievement in pairs(FISH_RARITY_ACHIEVEMENTS) do
+		modules.Achievements.ReconcileReset(Data, Achievement)
+	end
+
 	for Id in pairs(FishFound) do
 		modules.Achievements.ReconcileIncrement(Data, FISH_RARITY_ACHIEVEMENTS[config.ItemList[tonumber(Id)].Rarity])
 	end

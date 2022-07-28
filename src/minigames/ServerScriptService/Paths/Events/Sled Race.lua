@@ -322,7 +322,7 @@ function SledRace:StartEvent()
 						Stats["Sled Race Wins"] = 1
 					end
 
-					Modules.Achievements.Progress(Player, 24)
+					Modules.Achievements.Progress(Player, 29)
 				end
 
 			end

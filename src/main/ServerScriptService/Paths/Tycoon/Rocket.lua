@@ -55,7 +55,9 @@ Remotes.RocketBuild.OnServerInvoke = function(Client, Item)
                 Data.Tycoon["Rocketship#1"] = true
                 Modules.Placement:NewItem(Client, "Rocketship#1", true)
 
-                Data.Tycoon["New Island!#32"] = true
+                if not Modules.Ownership:GetPlayerTycoon(Client).Buttons:FindFirstChild("New Island!#32") then
+                    Modules.Initiate:UnlockDependents(Client, "New Island!#32")
+                end
                 Modules.Purchasing:ItemPurchased(Client, "New Island!#32", true)
 
                 Unlock(Client)

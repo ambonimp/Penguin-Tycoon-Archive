@@ -247,6 +247,19 @@ local function SetupNewStats(Player)
 		Data["Emotes"]["Cheering"] = true;
 	end
 
+	if not Data["Achievements"] then
+		Data["Achievements"] = {
+			false, -- Reconciled
+			{}
+		}
+		for Id in ipairs(Modules.AllAchievements) do
+			Data["Achievements"][2][tostring(Id)] = {
+				false, -- Completed and collected
+				0, -- Progress,
+			}
+		end
+
+	end
 
 	if not Data["Equipped Emotes"] then
 		Data["Equipped Emotes"] = {

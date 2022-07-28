@@ -8,7 +8,8 @@ local Remotes = Paths.Remotes
 local UPGRADE = "RebirthMachine"
 local BUTTONS_TO_IGNORE = {
     [UPGRADE] = true,
-    ["Pets#1"] = true
+    ["Pets#1"] = true,
+    ["Glider#1"] = true,
 }
 
 

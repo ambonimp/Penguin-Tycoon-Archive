@@ -11,6 +11,8 @@ local PetsAssets = Assets.Pets
 local Chat = game:GetService("Chat")
 local rand = Random.new()
 
+local announcementRemote = Remotes:WaitForChild("Announcement")
+
 local FreePets = {
 	[1] = {"Leafy","Default",1.05,"Fishing","Income",1,1},
 	[2] = {"Elebuddy","Default",1.05,"Walk","Speed",3,13},
@@ -20,9 +22,10 @@ local FreePets = {
 local RARITY_ACHIEVEMENTS = {
 	Common = 14,
 	Rare = 15,
-	Eoic = 16,
+	Epic = 16,
 	Legendary = 17
 }
+
 
 function getEmptyNum(data)
 	for i=1,math.huge do
@@ -208,7 +211,6 @@ function givePet(Player, PetId, Chosen, IslandId)
 
 		Modules.Achievements.Progress(Player, RARITY_ACHIEVEMENTS[rarity])
 
-		warn(Chosen.Id, typeof(Chosen.Id))
 		if Data.Unlocked[tostring(Chosen.Id)] then
 			Data.Unlocked[tostring(Chosen.Id)] += 1
 		else
@@ -226,6 +228,16 @@ function Pets.BuyRobuxPet(Player,IslandId)
 		local ChanceTable = PetDetails.ChanceTables[IslandId]
 		local chosen = getRandomPet(ChanceTable.Pets,Data["Gamepasses"]["56844198"],Player)
 		local petId, petInfo = givePet(Player,chosen.Id,chosen,IslandId)
+		task.spawn(function()
+			if chosen.Percentage == 1 then
+				announcementRemote:FireAllClients({
+					Type = "Poofie",
+					Name = Player.Name,
+					RealName = petInfo[1],
+
+				})
+			end
+		end)
 		Remotes.BuyEgg:InvokeClient(Player,"NewPet",Modules.PlayerData.sessionData[Player.Name]["Pets_Data"],petId,petInfo)
 	end
 end
@@ -244,8 +256,16 @@ function BuyEgg(Player,Island,Type)
 				local newId,petInfo = givePet(Player,chosen.Id,chosen,PetDetails.EggNameToId[Island])
 				Modules.PlayerData.sessionData[Player.Name]["Gems"] -= Price
 				Player:SetAttribute("Gems", Modules.PlayerData.sessionData[Player.Name]["Gems"])
+				task.spawn(function()
+					if chosen.Percentage == 1 then
+						announcementRemote:FireAllClients({
+							Type = "Poofie",
+							Name = Player.Name,
+							RealName = petInfo[1],
 
-				warn(Modules.PlayerData.sessionData[Player.Name]["Pets_Data"].Unlocked)
+						})
+					end
+				end)
 
 				return true, Modules.PlayerData.sessionData[Player.Name]["Pets_Data"], petInfo, newId
 			else

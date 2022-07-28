@@ -5,6 +5,7 @@ local MPService = game:GetService("MarketplaceService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
+local GameInfo = require(script.Parent.GameInfo)
 --- Accessory Variables ---
 Emotes.StoreAmounts = {
 	["Rare"] = 3;
@@ -105,7 +106,7 @@ Emotes.All = {
 		weld.Part1 = prop.PrimaryPart
 		weld.Parent = prop.PrimaryPart
 		track.Stopped:wait()
-		player.Character.Humanoid.WalkSpeed = 32
+		player.Character.Humanoid.WalkSpeed = GameInfo.WalkSpeed
 		if prop then
 			prop:Destroy()
 		end
@@ -247,7 +248,7 @@ Emotes.All = {
 					prop:Destroy()
 				end
 			end)
-			player.Character.Humanoid.WalkSpeed = 32
+			player.Character.Humanoid.WalkSpeed = GameInfo.WalkSpeed
 			track:Play()
 		end
 	};
@@ -288,7 +289,7 @@ Emotes.All = {
 					prop:Destroy()
 				end
 			end)
-			player.Character.Humanoid.WalkSpeed = 32
+			player.Character.Humanoid.WalkSpeed = GameInfo.WalkSpeed
 			track:Play()
 		end
 	};
@@ -361,7 +362,7 @@ Emotes.All = {
 				end
 			end)
 			track.Stopped:wait()
-			player.Character.Humanoid.WalkSpeed = 32
+			player.Character.Humanoid.WalkSpeed = GameInfo.WalkSpeed
 			ended = true
 			if prop then
 				spawn(function()
@@ -393,7 +394,7 @@ Emotes.All = {
 				end)
 			end)
 			track.Stopped:wait()
-			player.Character.Humanoid.WalkSpeed = 32
+			player.Character.Humanoid.WalkSpeed = GameInfo.WalkSpeed
 			if prop then
 				prop:Destroy()
 			end
@@ -429,7 +430,7 @@ Emotes.All = {
 				end)
 			end)
 			track.Stopped:wait()
-			player.Character.Humanoid.WalkSpeed = 32
+			player.Character.Humanoid.WalkSpeed = GameInfo.WalkSpeed
 			if prop then
 				prop:Destroy()
 			end

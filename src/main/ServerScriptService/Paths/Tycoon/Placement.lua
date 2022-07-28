@@ -52,7 +52,7 @@ function Placement:GetRelativePos(Tycoon, Item, IsButton)
 
 	if not Button then return end
 	
-	local Model 
+	local Model
 	
 	if IsButton then
 		Model = Button
@@ -98,6 +98,7 @@ function Placement:NewItem(Player, Item, IsAnimated)
 	end
 
 	if not Button then return end
+	IsAnimated = if Button:GetAttribute("Type") == "NPC" then false else IsAnimated
 	
 	local Island = Button:GetAttribute("Island")
 	local Island = Paths.Template.Upgrades:FindFirstChild(Island)

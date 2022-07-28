@@ -73,7 +73,6 @@ Outfits.All = {
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};
 	["Gardener"] = {Rarity = "Rare", IsForSale = true};
 	["Fisherman"] = {Rarity = "Rare", IsForSale = true};
-	["Scientist"] = {Rarity = "Rare", IsForSale = true};
 	["Farmer"] = {Rarity = "Rare", IsForSale = true};
 	["Nurse"] = {Rarity = "Rare", IsForSale = true};
 	["Paramedic"] = {Rarity = "Rare", IsForSale = true};
@@ -89,6 +88,7 @@ Outfits.All = {
 	["Lumberjack"] = {Rarity = "Epic", IsForSale = true};
 	["Tuxedo"] = {Rarity = "Epic",IsForSale = true};
 	["Frog"] = {Rarity = "Epic",IsForSale = true};
+	["Scientist"] = {Rarity = "Free", IsForSale = true};
 	["Turtle Suit"] = {Rarity = "Epic", IsForSale = false};
 	-- Legendaries
 	--["Red Coat"] = {Rarity = "Legendary", IsForSale = true};
@@ -114,7 +114,18 @@ Outfits.All = {
 	["Ghost"] = {Rarity = "Free", IsForSale = false};
 	["Mummy"] = {Rarity = "Free", IsForSale = false};
 	["Ninja"] = {Rarity = "Free", IsForSale = false};
+	["Mad Scientist"] = {Rarity = "Free", IsForSale = false};
 
 }
+
+if game:GetService("RunService"):IsServer() then
+	task.spawn(function()
+		for Outfit in pairs(Outfits.All) do
+			if Outfit ~= "None" then
+				assert(game:GetService("ReplicatedStorage").Assets.Shirts:FindFirstChild(Outfit), Outfit)
+			end
+		end
+	end)
+end
 
 return Outfits

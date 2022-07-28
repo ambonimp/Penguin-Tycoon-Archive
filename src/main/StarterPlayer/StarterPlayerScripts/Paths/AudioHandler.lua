@@ -18,23 +18,24 @@ local CurrentSong = false
 --- Audio Functions ---
 
 -- Playing all main tracks on loop
-coroutine.wrap(function()
+task.spawn(function()
+--[[
 	local StartingSong = Random.new():NextInteger(1, 4)
 	
 	for i = StartingSong, 4, 1 do
 		local Source = Modules.Audio:PlayMusic(AllAudio, tostring(i))
 		task.wait(Source.TimeLength - 5)
-	end
+	end *]]
 	
 	while true do
 		for i = 1, 4, 1 do
-			local Source = Modules.Audio:PlayMusic(AllAudio, tostring(i))
-			task.wait(Source.TimeLength - 5)
+			Modules.Audio:PlayMusic(AllAudio, tostring(i))
 		end
 		
 		task.wait()
 	end
-end)()
+
+end)
 
 
 function AudioHandler:ItemPurchased()

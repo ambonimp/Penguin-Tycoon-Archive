@@ -408,7 +408,7 @@ do
 	local UI = Paths.UI.Center.Store.Sections.Accessory.Holder
 	local Buttons = UI.Buttons
 
-	local lastOpen = Buttons.Bundles
+	local lastOpen = Buttons.Accessory
 
 	function Accessories.OpenFrame(button)
 		lastOpen.BackgroundTransparency = .8
@@ -534,7 +534,7 @@ task.spawn(function()
 		end
 
 		for _, Section in ipairs(StoreSections.Accessory.Holder:GetChildren()) do
-			if Section.Name ~= "Buttons" then
+			if Section.Name ~= "Buttons" and Section.Name ~= "Bundles" then
 				Section.UIGridLayout.CellSize = UDim2.new(0.485, 0,0.59, 0)
 			end
 

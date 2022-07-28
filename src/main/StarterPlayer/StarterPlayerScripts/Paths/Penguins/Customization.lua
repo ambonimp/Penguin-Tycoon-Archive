@@ -100,7 +100,7 @@ local UIToReOpen = nil
 function Customization:EnterUI(Penguin, PreviousUI)
 	UIToReOpen = PreviousUI
 	local CameraAngleCF = nil
-	
+
 	if Penguin:FindFirstChild("CameraAngle") then
 		CameraAngleCF = Penguin.CameraAngle.CFrame
 		Modules.Penguins.ButtonClicked(CustomizationUI.Customization.Buttons.Color)
@@ -115,10 +115,10 @@ function Customization:EnterUI(Penguin, PreviousUI)
 	else
 		return -- If the player selects to customize but has their avatar selected
 	end
-	
-	
+
+
 	CustomizationUI.PenguinSelected.Value = Penguin
-	
+
 
 	-- Disable things for entering ui
 	Modules.Character:Freeze()
@@ -174,7 +174,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		local UpgradePrice = Modules.GameFunctions:GetPlayerPenguinPrice(Level + 1)
 
 		CustomizationUI.Upgrade.TheText.Text = "N/A"
-		CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.HumanoidRootPart.CustomName.PlrName.Text
+		CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin:GetAttribute("CustomName")
 		CustomizationUI.PenguinNameBG.PenguinName.Rainbow.Enabled = false
 
 		CustomizationUI.PenguinNameBG.PenguinLevel.Text = "Level "..Level..' <font color="rgb(38,255,14)">(+ $'..Modules.Format:FormatComma(Income)..")</font>"

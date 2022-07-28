@@ -23,8 +23,8 @@ function Penguins:SetupPenguin(Penguin)
 		local ProximityPrompt = Info:WaitForChild("ProximityPrompt", 3)
 
 		if ProximityPrompt then
-			Penguins.Penguins[Penguin] = true -- Set the penguin as initiated so it doesn't get double setup 
-			
+			Penguins.Penguins[Penguin] = true -- Set the penguin as initiated so it doesn't get double setup
+
 			Modules.PenguinsUI:SetupPenguin(Penguin)
 
 			ProximityPrompt.Triggered:Connect(function(Player)
@@ -120,7 +120,7 @@ end)
 Remotes.Store.OnClientEvent:Connect(function(PurchaseType, PurchaseInfo, IsPurchased,NewPenguinsData)
 	if PurchaseType == "Penguin Upgraded" then
 		local Penguin = CustomizationUI.PenguinSelected.Value
-		if IsPurchased and Penguin then -- If purchase was true/successful then 
+		if IsPurchased and Penguin then -- If purchase was true/successful then
 			local NewLevel = tonumber(string.split(string.split(Penguin.Info.PenguinInfo.PenguinLevel.Text, "/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL))[1], " ")[2])
 
 			-- Update penguin UI
@@ -156,34 +156,34 @@ CustomizationUI.Upgrade.MouseButton1Down:Connect(function()
 
 		if UpgradeSuccess then
 			Modules.PenguinsUI:PenguinInfoUpdated(Penguin)
-			
+
 			local NewLevel = Info
 
 			-- Update penguin UI
 			if Penguin:GetAttribute("Income") then
 				local Income = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), NewLevel)
 				local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), NewLevel + 1)
-				
+
 				CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.Info.PenguinInfo.PenguinName.Text
 				CustomizationUI.PenguinNameBG.PenguinName.Rainbow.Enabled = NewLevel == 30
 				CustomizationUI.PenguinNameBG.PenguinLevel.Text = Penguin.Info.PenguinInfo.PenguinLevel.Text
-				
+
 				if NewLevel < Modules.GameInfo.MAX_PENGUIN_LEVEL then
 					CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
 				else
 					CustomizationUI.Upgrade.TheText.Text = "Max Level"
 				end
-				
+
 			elseif Penguin:GetAttribute("Penguin") then
 				local Income = Modules.GameFunctions:GetPlayerPenguinIncome(NewLevel)
 				local UpgradePrice = Modules.GameFunctions:GetPlayerPenguinPrice(NewLevel + 1)
-				
-				CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin.HumanoidRootPart.CustomName.PlrName.Text
+
+				CustomizationUI.PenguinNameBG.PenguinName.Text = Penguin:GetAttribute("CustomName")
 				CustomizationUI.PenguinNameBG.PenguinName.Rainbow.Enabled = false
 				CustomizationUI.PenguinNameBG.PenguinLevel.Text = "Level "..NewLevel..' <font color="rgb(38,255,14)">(+ $'..Modules.Format:FormatComma(Income)..")</font>"
 				CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
 			end
-			
+
 		else
 			local Reason = Info
 

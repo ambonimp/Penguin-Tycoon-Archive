@@ -99,6 +99,8 @@ function Character:Spawn(Player, Type, Anchor)
 	
 	-- Set up new character
 	Penguin.Humanoid.DisplayDistanceType = "None"
+	Penguin.Humanoid.WalkSpeed = Modules.GameInfo.WalkSpeed
+
 	Penguin:SetAttribute("PetAnimation","none")
 	if Data["Settings"]["Faster Speed"] then
 		Penguin.Humanoid.WalkSpeed *= Data["Walkspeed Multiplier"]
@@ -120,7 +122,7 @@ function Character:Spawn(Player, Type, Anchor)
 	end)
 	local c
 	c = Player:GetAttributeChangedSignal("PetsEquipped"):Connect(function()
-		Penguin.Humanoid.WalkSpeed = 32
+		Penguin.Humanoid.WalkSpeed = Modules.GameInfo.WalkSpeed
 		if Data["Settings"]["Faster Speed"] then
 			Penguin.Humanoid.WalkSpeed *= Data["Walkspeed Multiplier"]
 		end
@@ -132,8 +134,10 @@ function Character:Spawn(Player, Type, Anchor)
 	local NamePlate = Dependency.CustomName:Clone()
 	NamePlate.Parent = Penguin.HumanoidRootPart
 	NamePlate.PlrName.Text = Data["My Penguin"]["Name"]
-	--NamePlate.PlayerToHideFrom = Player
+	NamePlate.PlayerToHideFrom = Player
 	
+	Penguin:SetAttribute("CustomName", Data["My Penguin"]["Name"])
+
 	Modules.Penguins:LoadPenguin(Penguin, Data["My Penguin"])
 	
 	-- connect character functions

@@ -80,7 +80,7 @@ Accessories.Unlockables = {
 }
 
 
-Accessories.All = {	
+Accessories.All = {
 	--- Default Hat(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
 
@@ -138,13 +138,13 @@ Accessories.All = {
 	["Gentleman's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
 	["Bear Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
 	["Drinking Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	
+
 	["Chef's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
 	["Sombrero"] = {Rarity = "Epic", IsForSale = true,  Achievement = true};
 	["Viking Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
 	["Graduation Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
 	["Santa's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	
+
 	["Biker Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
 	["Flower Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
 	["Nurse's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
@@ -156,7 +156,7 @@ Accessories.All = {
 	["Football Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
 	["Balaclava"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
 	["Joker's Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
-	
+
 	["Firefighter Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
 	["Knight's Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
 
@@ -164,8 +164,8 @@ Accessories.All = {
 	--- Code Hats ---
 	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false};
 	["Miner Hat"] = {Rarity = "Epic", IsForSale = false};
-	
-	
+
+
 	--- Event Hats ---
 	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
 	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
@@ -178,7 +178,7 @@ Accessories.All = {
 	["Bath Hat"] = {Rarity = "Free", IsForSale = false};
 	["Bird Hat"] = {Rarity = "Free", IsForSale = false};
 	["Giant Bow"] = {Rarity = "Free", IsForSale = false};
-	["Deely Bobber"] = {Rarity = "Free", IsForSale = false};
+	["Deely Bopper"] = {Rarity = "Free", IsForSale = false};
 	["Flower Crown"] = {Rarity = "Free", IsForSale = false};
 	["Frog Bucket Hat"] = {Rarity = "Free", IsForSale = false};
 	["Head Lamp"] = {Rarity = "Free", IsForSale = false};
@@ -190,5 +190,16 @@ Accessories.All = {
 	["Propeller Hat"] = {Rarity = "Free", IsForSale = false};
 
 }
+
+if game:GetService("RunService"):IsServer() then
+	task.spawn(function()
+		for Accessory in pairs(Accessories.All) do
+			if Accessory ~= "None" then
+				assert(game:GetService("ServerStorage").Accessories:FindFirstChild(Accessory), Accessory)
+			end
+		end
+	end)
+end
+
 
 return Accessories

@@ -11,13 +11,13 @@ local Remotes = Paths.Remotes
 local HAT_RARITY_ACHIEVEMENTS = {
 	Rare = 20,
 	Epic = 21,
-	Legendary = 23
+	Legendary = 22
 }
 
 --- Functions ---
 function Accessories:ItemAcquired(Player, Item, ItemType)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	
+
 	if Data then
 		local Path
 		if ItemType == "Accessory" then
@@ -27,7 +27,7 @@ function Accessories:ItemAcquired(Player, Item, ItemType)
 		elseif ItemType == "Outfits" then
 			Path = "Outfits"
 		end
-		
+
 		local PlayerItems = Data[Path]
 		local Info = Modules["All" .. Path].All[Item]
 		if Info and not PlayerItems[Item] then
@@ -35,10 +35,10 @@ function Accessories:ItemAcquired(Player, Item, ItemType)
 
 			if ItemType == "Accessory" then
 				if Info.Achievement then
-					Modules.Achievement.Progress(Player, HAT_RARITY_ACHIEVEMENTS[Info.Rarity])
+					Modules.Achievements.Progress(Player, HAT_RARITY_ACHIEVEMENTS[Info.Rarity])
 				end
 			elseif ItemType == "Eyes" then
-				Modules.Achievement.Progress(Player, 23)
+				Modules.Achievements.Progress(Player, 23)
 			end
 
 			Remotes.Store:FireClient(Player, ItemType, Item, true)

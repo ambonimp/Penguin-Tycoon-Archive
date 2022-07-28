@@ -30,6 +30,36 @@ local function IsUnlockable(Index, Button)
     return Button:GetAttribute("CurrencyType") == "Money" and Button.Name ~= Modules.ProgressionDetails[Index].Object
 end
 
+function Initiate:UnlockDependents(Player, Dependee)
+	local HasDependents = false
+
+	for _, Button in pairs(Buttons:GetChildren()) do
+		if Button:GetAttribute("Dependency") == Dependee then
+			local NewItem = Button.Name
+
+			local Data = Modules.PlayerData.sessionData[Player.Name]
+			if not (Data.Rebirths ~= 0 and Button.Name == "Pets#1") then -- Ignored after a rebirth
+				if Data["Robux Tycoon"][NewItem] then
+					Modules.Purchasing:ItemPurchased(Player, NewItem, true, true)
+				else
+					if Modules.Buttons:NewButton(Player, NewItem) and Button:GetAttribute("CurrencyType") == "Money" then
+						HasDependents = true
+					end
+					-- print(Dependee, Button, HasDependents)
+				end
+
+			end
+
+		end
+
+	end
+
+	if not HasDependents then
+		Modules.Rebirths.LoadRebirth(Player)
+	end
+
+end
+
 --- Purchase Functions ---
 function Initiate:InitiateButtons()
 	Buttons = Paths.Template:WaitForChild("Buttons")
@@ -43,34 +73,7 @@ function Initiate:InitiateButtons()
 
 				if Player then
 					Remotes.ButtonPurchased:FireClient(Player, GetIslandIndex(ButtonRemoved), ButtonRemoved.Name, ButtonRemoved:GetAttribute("Island"))
-
-					local HasDependents = false
-
-					for _, Button in pairs(Buttons:GetChildren()) do
-						if Button:GetAttribute("Dependency") == ButtonRemoved.Name then
-							local NewItem = Button.Name
-
-							local Data = Modules.PlayerData.sessionData[Player.Name]
-							if not (Data.Rebirths ~= 0 and Button.Name == "Pets#1") then -- Ignored after a rebirth
-								if Data["Robux Tycoon"][NewItem] then
-									Modules.Purchasing:ItemPurchased(Player, NewItem, true, true)
-								else
-									if Modules.Buttons:NewButton(Player, NewItem) and Button:GetAttribute("CurrencyType") == "Money" then
-										HasDependents = true
-									end
-
-								end
-
-							end
-
-						end
-
-					end
-
-					if not HasDependents then
-						Modules.Rebirths.LoadRebirth(Player)
-					end
-
+					Initiate:UnlockDependents(Player, ButtonRemoved.Name)
 				end
 
 			end

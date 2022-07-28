@@ -49,7 +49,7 @@ function Audio:PlayMusic(Source, Music)
 			Source.Music.Volume = i
 			task.wait()
 		end
-		
+
 	elseif not Source:FindFirstChild("Music") then
 		local getId = getRandomSong(Music)
 		local Sound = Instance.new("Sound")
@@ -65,13 +65,13 @@ function Audio:PlayMusic(Source, Music)
 			task.wait()
 		end
 	end
-	
+
 	return Source.Music
 end
 
 function Audio:GetSound(ID, Source, Volume, PlaybackSpeed, StartPosition)
 	local Sound = Source:FindFirstChild(tostring(ID))
-	
+
 	if not Sound then
 		Sound = Instance.new("Sound")
 		Sound.Volume = Volume or 0.5
@@ -80,9 +80,9 @@ function Audio:GetSound(ID, Source, Volume, PlaybackSpeed, StartPosition)
 		Sound.SoundId = ID
 		Sound.Parent = Source
 	end
-	
+
 	Sound.TimePosition = StartPosition or 0
-	
+
 	return Sound
 end
 

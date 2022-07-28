@@ -230,7 +230,9 @@ function Vehicles:SetupVehicleButton(Player, Button)
 				SpawningDBs[Player.Name] = nil
 			end
 		end
+
 	end)
+
 end
 
 function Vehicles:SpawnButtonVehicle(Player, Button)

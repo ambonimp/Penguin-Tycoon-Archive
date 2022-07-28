@@ -34,6 +34,18 @@ if IsTesting or IsQA then
 	GEM_INTERVAL = 3*60
 end
 
+local function IncrementStoredIncome(Data, CollectPoint, Addend)
+	local PlayerIncome = CollectPoint:GetAttribute("Income") + Addend
+	Data["Stored Income"] = PlayerIncome
+	CollectPoint:SetAttribute("Income", PlayerIncome)
+	CollectPoint.Hitbox.BillboardGui.Value.Text = "$" .. Modules.Format:FormatAbbreviated(PlayerIncome)
+end
+
+local function SetStoredIncome(Data, CollectPoint, Value)
+	CollectPoint:SetAttribute("Income", Value)
+	Data["Stored Income"] = Value
+	CollectPoint.Hitbox.BillboardGui.Value.Text = "$" .. Modules.Format:FormatAbbreviated(Value)
+end
 
 --- Income Function ---
 function Income:AddMoney(Player, Amount,isBought)
@@ -80,7 +92,9 @@ function Income:AddGems(Player, Amount, Source)
 				source = Source
 			})
 		end)
+
 	end
+
 end
 
 
@@ -89,26 +103,44 @@ function Income:IncomeLoop()
 		for i, Player in pairs(game.Players:GetPlayers()) do
 			task.spawn(function()
 				local Data = Modules.PlayerData.sessionData[Player.Name]
+				local Tycoon = Modules.Ownership:GetPlayerTycoon(Player)
 				
-				if Data then
-					local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
+				if not Tycoon or not Data then return end
+				local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
 
-					if PlayerIncome > 0 then
-						-- Add Money
-						local mult = Paths.Modules.Pets.getBonus(Player,"Paycheck","Income")
-						PlayerIncome = math.floor(PlayerIncome * mult)
+				if PlayerIncome > 0 then
+					local CollectPoint = Tycoon.IncomeCollectPoint
+
+					-- Add Money
+					local mult = Paths.Modules.Pets.getBonus(Player,"Paycheck","Income")
+					PlayerIncome = math.floor(PlayerIncome * mult)
+
+					if Data["Auto Collect"] then
+						if CollectPoint:GetAttribute("Income") then
+							PlayerIncome += CollectPoint:GetAttribute("Income") * mult
+							CollectPoint.Hitbox.BillboardGui.Auto.Visible = true
+
+							SetStoredIncome(Data, CollectPoint, 0)
+						end
+
 						Income:AddMoney(Player, PlayerIncome)
+					else
+						IncrementStoredIncome(Data, CollectPoint, PlayerIncome)
 					end
 
 					-- Add to total playtime
 					Data["Stats"]["Total Playtime"] += INCOME_INTERVAL
+
 				end
+
 			end)
 
 		end
 		
 		task.wait(INCOME_INTERVAL)
+
 	end
+
 end
 
 function Income:GemLoop()
@@ -130,6 +162,22 @@ function Income:GemLoop()
 
 end
 
+Remotes.CollectIncome.OnServerEvent:Connect(function(Player)
+	local Data = Modules.PlayerData.sessionData[Player.Name]
+
+	if Data and not Data["Auto Collect"] then
+		local CollectPoint = Modules.Ownership:GetPlayerTycoon(Player).IncomeCollectPoint
+
+		local PlayerIncome = CollectPoint:GetAttribute("Income")
+		if PlayerIncome then
+			Income:AddMoney(Player, PlayerIncome)
+			SetStoredIncome(Data, CollectPoint, 0)
+
+		end
+
+	end
+
+end)
 
 coroutine.wrap(function()
 	Income:IncomeLoop()

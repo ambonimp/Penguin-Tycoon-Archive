@@ -111,7 +111,6 @@ function CandyRush:InitiateEvent(Event)
 
 					collected = true
 					Modules.Quests.GiveQuest(player, "Collect","Minigame", "Candy Rush", 1)
-					Modules.Achievements.Progress(player, 27)
 
 					local stats = Modules.PlayerData.sessionData[playerName].Stats
 					if stats["Candy Collected"] then
@@ -212,14 +211,18 @@ function CandyRush:StartEvent()
 		if tbl and player then
 			if i == 1 then
 				local data = Modules.PlayerData.sessionData[tbl[1]]
-				if data and data["Stats"][EVENT_NAME] then
-					data["Stats"][EVENT_NAME] = data["Stats"][EVENT_NAME] + 1
-				elseif data then
-					data["Stats"][EVENT_NAME] =  1
+				if data then
+					if data["Stats"][EVENT_NAME] then
+						data["Stats"][EVENT_NAME] = data["Stats"][EVENT_NAME] + 1
+					else
+						data["Stats"][EVENT_NAME] =  1
+					end
+					addGems(player, 7)
+					Modules.Quests.GiveQuest(player,"Win","Minigame","Candy Rush",1)
+					Modules.Quests.GiveQuest(player,"Win","Minigame","All",1)
+
+					Modules.Achievements.Progress(player, 27)
 				end
-				addGems(player, 7)
-				Modules.Quests.GiveQuest(player,"Win","Minigame","Candy Rush",1)
-				Modules.Quests.GiveQuest(player,"Win","Minigame","All",1)
 			elseif i == 2 then
 				addGems(player, 5)
 			elseif i == 3 then

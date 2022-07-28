@@ -1,3 +1,4 @@
+local TweenService = game:GetService("TweenService")
 local Audio = {}
 
 Audio.Music = {
@@ -12,39 +13,37 @@ Audio.BUTTON_CLICKED = "rbxassetid://8192378506"
 Audio.HEART_RECEIVED = "rbxassetid://8192378647"
 Audio.ITEM_COLLECTED = "rbxassetid://8192378776"
 
+local FADE_DURATION = 0.1
 
 function Audio:PlayMusic(Source, Music)
-	if Source:FindFirstChild("Music") then
-		for i = 0.2, 0, -0.02 do
-			Source.Music.Volume = i
-			task.wait()
-		end
-
-		Source.Music.Volume = 0
-		Source.Music.TimePosition = 0
-		Source.Music.SoundId = Audio.Music[Music]
-		Source.Music:Play()
-
-		for i = 0, 0.2, 0.01 do
-			Source.Music.Volume = i
-			task.wait()
-		end
-		
-	else
-		local Sound = Instance.new("Sound")
-		Sound.Volume = 0
-		Sound.Looped = false
+	local Sound = Source:FindFirstChild("Music")
+	if not Sound then
+		Sound = Instance.new("Sound")
 		Sound.Name = "Music"
 		Sound.SoundId = Audio.Music[Music]
+		Sound.Looped = false
 		Sound.Parent = Source
-		Sound:Play()
-
-		for i = 0, 0.2, 0.01 do
-			Sound.Volume = i
-			task.wait()
-		end
 	end
-	
+
+	Sound.Volume = 0
+	Sound.TimePosition = 0
+	Sound.SoundId = Audio.Music[Music]
+	Sound:Play()
+
+	local Length
+	repeat
+		task.wait()
+		Length = Sound.TimeLength
+	until Length ~= 0
+	local FadeLength = Length * FADE_DURATION
+
+	-- Fade in
+	TweenService:Create(Sound, TweenInfo.new(FadeLength, Enum.EasingStyle.Linear), {Volume = 0.2}):Play()
+	task.wait(Length - FadeLength)
+
+	TweenService:Create(Sound, TweenInfo.new(FadeLength, Enum.EasingStyle.Linear), {Volume = 0}):Play()
+	task.wait(FadeLength)
+
 	return Source.Music
 end
 

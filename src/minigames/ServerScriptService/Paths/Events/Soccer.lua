@@ -187,7 +187,9 @@ function Soccer:StartEvent()
 						data["Stats"][EVENT_NAME] =  ball:GetAttribute("Score")
 					end
 					if game.Players:FindFirstChild(ball.LastTouched.Value.Name) then
-						Modules.Quests.GiveQuest(game.Players:FindFirstChild(ball.LastTouched.Value.Name),"Collect","Minigame","Soccer",1)
+						local Player = game.Players:FindFirstChild(ball.LastTouched.Value.Name)
+						Modules.Quests.GiveQuest(Player,"Collect","Minigame","Soccer",1)
+						Modules.Achievements.Progress(Player, 30)
 					end
 					
 				end
@@ -374,6 +376,7 @@ function Soccer:StartEvent()
 				player.Character:SetPrimaryPartCFrame(Map.Winners.Spawns:GetChildren()[i].CFrame)
 				Modules.Quests.GiveQuest(player,"Win","Minigame","Soccer",1)
 				Modules.Quests.GiveQuest(player,"Win","Minigame","All",1)
+				Modules.Achievements.Progress(player, 26)
 
 				local stats = Modules.PlayerData.sessionData[player.Name].Stats
 				if stats["Soccer Wins"] then

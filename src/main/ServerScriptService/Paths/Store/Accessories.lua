@@ -11,13 +11,13 @@ local Remotes = Paths.Remotes
 local HAT_RARITY_ACHIEVEMENTS = {
 	Rare = 20,
 	Epic = 21,
-	Legendary = 23
+	Legendary = 22
 }
 
 --- Functions ---
 function Accessories:ItemAcquired(Player, Item, ItemType)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	
+
 	if Data then
 		local Path
 		if ItemType == "Accessory" then
@@ -27,7 +27,7 @@ function Accessories:ItemAcquired(Player, Item, ItemType)
 		elseif ItemType == "Outfits" then
 			Path = "Outfits"
 		end
-		
+
 		local PlayerItems = Data[Path]
 		local Info = Modules["All" .. Path].All[Item]
 		if Info and not PlayerItems[Item] then
@@ -55,16 +55,16 @@ local TouchDBs = {}
 
 for i, Accessory in pairs(workspace["Collectable Accessories"]:GetChildren()) do
 	local Reward = Accessory:GetAttribute("Reward")
-	
+
 	if Reward and Accessory:FindFirstChild("Circle") then
 		Accessory.Circle.Touched:Connect(function(Part)
 			if Part.Parent:FindFirstChild("Humanoid") then
 				local Char = Part.Parent
 				local Player = game.Players:GetPlayerFromCharacter(Char)
-				
+
 				if Char and Player and not TouchDBs[Player.Name] then
 					TouchDBs[Player.Name] = true
-					
+
 					Accessories:ItemAcquired(Player, Reward, "Accessory")
 					Modules.Achievements.Progress(Player, 13)
 
@@ -193,6 +193,10 @@ Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Item, ItemType,
 end)
 
 Modules.Achievements.Reconciled:Connect(function(Data)
+	for _, Achievement in pairs(HAT_RARITY_ACHIEVEMENTS) do
+		Modules.Achievements.ReconcileReset(Data, Achievement)
+	end
+
 	for Hat in pairs(Data.Accessories) do
 		local Info = Modules.AllAccessories.All[Hat]
 		if Info.Achievement then
@@ -200,16 +204,18 @@ Modules.Achievements.Reconciled:Connect(function(Data)
 		end
 	end
 
+	Modules.Achievements.ReconcileReset(Data, 23)
 	for EyePlural in pairs(Data.Eyes) do
 		if Modules.AllEyes.All[EyePlural].ForSale then
 			Modules.Achievements.ReconcileIncrement(Data, 23)
 		end
 	end
 
+	Modules.Achievements.ReconcileReset(Data, 13)
 	for _, Accessory in pairs(workspace["Collectable Accessories"]:GetChildren()) do
 		local Reward = Accessory:GetAttribute("Reward")
 
-		if Data.Accessories[Reward] then
+		if Reward and Data.Accessories[Reward] then
 			Modules.Achievements.ReconcileIncrement(Data, 13)
 		end
 

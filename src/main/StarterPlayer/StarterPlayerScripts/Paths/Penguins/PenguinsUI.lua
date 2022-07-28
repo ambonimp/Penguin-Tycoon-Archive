@@ -28,15 +28,15 @@ function PenguinsUI:SetupPenguin(Penguin)
 	Template.Name = Penguin.Name
 	Template.LayoutOrder = Penguin:GetAttribute("Income")
 	Template.Parent = PenguinList
-	
+
 	PenguinsUI:PenguinInfoUpdated(Penguin)
 	PenguinsUI:CreateViewport(Penguin)
-	
+
 	Template.Customize.MouseButton1Down:Connect(function()
 		Modules.Buttons:UIOff(UI.Center.Penguins, true)
 		Modules.Customization:EnterUI(Penguin, PenguinList.Parent)
 	end)
-	
+
 	if Penguin == Paths.Player.Character then
 		Template.Super.Visible = false
 		Template.Instant.AnchorPoint = Vector2.new(0,0)
@@ -62,7 +62,7 @@ function PenguinsUI:SetupPenguin(Penguin)
 			end
 		end
 	end)
-	
+
 	Template.Instant.MouseButton1Down:Connect(function()
 		Remotes.Store:FireServer("Penguin", Penguin)
 	end)
@@ -74,7 +74,7 @@ Remotes.Store.OnClientEvent:Connect(function(PurchaseType, PurchaseInfo, IsPurch
 		PenguinsData = NewPenguinsData
 	end
 	if PurchaseType == "Penguin Upgraded" then
-		if IsPurchased then -- If purchase was true/successful then 
+		if IsPurchased then -- If purchase was true/successful then
 			PenguinsUI:PenguinInfoUpdated(PurchaseInfo)
 		end
 	end
@@ -87,12 +87,12 @@ function PenguinsUI:UpdateViewport(Penguin)
 
 		if Template then
 			local Viewport = Template.Viewport
-			
+
 			-- Destroy old penguin if its there
 			if Viewport:FindFirstChildOfClass("Model") then
 				Viewport:FindFirstChildOfClass("Model"):Destroy()
 			end
-			
+
 			-- Make new clone
 			Penguin.Archivable = true
 			local Clone = Penguin:Clone()
@@ -112,14 +112,14 @@ end
 
 function PenguinsUI:CreateViewport(Penguin)
 	local Template = PenguinList:FindFirstChild(Penguin.Name)
-	
+
 	if Template then
 		local Viewport = Template.Viewport
 
 		local Camera = Instance.new("Camera", Viewport)
 		Camera.CameraType = Enum.CameraType.Scriptable
 		Viewport.CurrentCamera = Camera
-		
+
 		PenguinsUI:UpdateViewport(Penguin)
 	end
 end
@@ -127,7 +127,7 @@ end
 
 function PenguinsUI:PenguinInfoUpdated(Penguin)
 	local Template = PenguinList:FindFirstChild(Penguin.Name)
-	
+
 	if Template then
 		if Penguin == Paths.Player.Character then -- Is player character
 			local PenguinLevel = Paths.Player:GetAttribute("Level")
@@ -141,34 +141,34 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 			Template.PenguinIncome.Text = "Income: "..'<font color="rgb(38,255,14)"> $'..Modules.Format:FormatComma(Income).."</font>"
 
 			Template.PenguinPrice.Text = '$ '..Modules.Format:FormatComma(UpgradePrice)
-			
-			
+
+
 			if Penguin:FindFirstChild("HumanoidRootPart") then
-				local CustomName = Penguin.HumanoidRootPart:WaitForChild("CustomName", 1)
-				
+				local CustomName = Penguin:GetAttribute("CustomName")
+
 				if CustomName then
-					Template.PenguinName.Text = CustomName.PlrName.Text
+					Template.PenguinName.Text = CustomName
 				end
 			end
-			
-			
+
+
 		-- Is an npc penguin
-		else 
+		else
 			local PenguinName = Penguin.Info.PenguinInfo.PenguinName.Text
 			if Penguin.Info.PenguinInfo.PenguinLevel.Text == "Level X" then
 				Penguin.Info.PenguinInfo.PenguinLevel.Text = "Level 1"
 			end
 			local PenguinLevel = tonumber(string.split(string.split(Penguin.Info.PenguinInfo.PenguinLevel.Text, "/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL))[1], " ")[2])
-			
+
 			local Income = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), PenguinLevel)
-			
+
 			-- Update Level (Income) and Price
 			Template.PenguinName.Text = PenguinName
 			--Template.PenguinLevel.Text = Penguin.Info.PenguinInfo.PenguinLevel.Text
 
 			Template.PenguinLevel.Text = "Level: "..PenguinLevel.."/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL)
 			Template.PenguinIncome.Text = "Income: "..'<font color="rgb(38,255,14)"> $'..Modules.Format:FormatComma(Income).."</font>"
-			
+
 			if PenguinLevel < Modules.GameInfo.MAX_PENGUIN_LEVEL then -- If penguin isn't max level then
 				-- Price text
 				local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), PenguinLevel + 1)

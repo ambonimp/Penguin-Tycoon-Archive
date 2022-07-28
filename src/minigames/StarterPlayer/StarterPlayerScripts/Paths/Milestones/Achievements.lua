@@ -25,7 +25,7 @@ end
 
 
 function UpdateProgress(Id, Data)
-    local Details = Modules.AllAchievements.All[Id]
+    local Details = Modules.AllAchievements[Id]
 
     local Lbl = List[Id]
     local Progress = Lbl.Progress
@@ -38,12 +38,15 @@ function UpdateProgress(Id, Data)
         Progress.TextLabel.Text = "Completed"
 
         Lbl.Completed.Visible = true
-        Lbl.LayoutOrder = #Modules.AllAchievements.All + Id
+        Lbl.LayoutOrder = #Modules.AllAchievements + Id
 
     else
         Lbl.Completed.Visible = false
         local ToComplete = Details.ToComplete
         local Completed = math.min(Data[2], ToComplete)
+
+        Progress.Bar.Size = UDim2.fromScale(Completed / ToComplete, 1)
+        Progress.TextLabel.Text = Completed .. "/" .. ToComplete
 
         if Completed == ToComplete then
             if Details.AutoClaim then
@@ -74,9 +77,6 @@ function UpdateProgress(Id, Data)
                 Popup.Visible = false
             end)
 
-        else
-            Progress.Bar.Size = UDim2.fromScale(Completed / ToComplete, 1)
-            Progress.TextLabel.Text = Completed .. "/" .. ToComplete
         end
 
     end
@@ -84,7 +84,7 @@ function UpdateProgress(Id, Data)
 end
 
 local Data = Remotes.GetStat:InvokeServer("Achievements")[2]
-for Id , Achievement in pairs(Modules.AllAchievements.All) do
+for Id , Achievement in pairs(Modules.AllAchievements) do
     local Lbl = Template:Clone()
     Lbl.Name = Id
     Lbl.Description.Text = Achievement.Name
@@ -92,6 +92,7 @@ for Id , Achievement in pairs(Modules.AllAchievements.All) do
     Lbl.LayoutOrder = Id
 
     local Rewards = Lbl.Rewards
+    local SingleReward = #Achievement.Rewards == 1
     for i, Reward in ipairs(Achievement.Rewards) do
         if i ~= 1 then
             local PlusIcon = Dependency.Plus:Clone()
@@ -99,26 +100,28 @@ for Id , Achievement in pairs(Modules.AllAchievements.All) do
         end
 
         local RewardIcon = Dependency.RewardIcon:Clone()
-
         local RewardValue = Dependency.RewardValue:Clone()
 
         if Reward.Type == "Gems" then
             RewardIcon.Image = "rbxassetid://9846753652"
-            RewardValue.Text = Reward.Value
+            RewardValue.Text = if SingleReward then Reward.Value else "Gems"
 
         elseif Reward.Type == "Accessory" then -- TODO: Make it a hat icon
             RewardIcon.Image = "rbxassetid://10376007095" -- "rbxassetid://" .. Reward.Value .. "_Accessory"
-            RewardValue.Text = Reward.Value
+            RewardValue.Text = if SingleReward then Reward.Value else "Hat"
 
         elseif Reward.Type == "Outfit" then -- TODO: Make it a penguin name
             RewardIcon.Image = "rbxassetid://10376007313"
-            RewardValue.Text = Reward.Value .. " Outfit"
+            RewardValue.Text = if SingleReward then Reward.Value .. " Outfit" else "Outfit"
+
         elseif Reward.Type == "Vehicle" then
             RewardIcon.Image = "rbxassetid://10377606580"
-            RewardValue.Text = Reward.Value .. " Outfit"
+            RewardValue.Text = Reward.Value .. " Vehicle"
+
         elseif string.find(Reward.Type, "Multiplier") then
             RewardIcon.Image = "rbxassetid://10376081736"
             RewardValue.Text = string.format("%s%% %s", Reward.Value, Reward.Type)
+
         end
 
         RewardIcon.BackgroundTransparency = 1
@@ -157,5 +160,4 @@ end
 
 ScaleRewardTextLabels()
 Camera:GetPropertyChangedSignal("ViewportSize"):Connect(ScaleRewardTextLabels)
-
 return Achievements

@@ -74,6 +74,7 @@ function Chat:ApplyChatTag(player)
 			if GroupRank <= 1 and VIP then
 				speaker:SetExtraData("Tags", Tags["VIP"])
 			end
+
 		else
 			speaker:SetExtraData("Tags", nil)
 		end
@@ -202,7 +203,8 @@ Players.PlayerAdded:Connect(function(player)
 
 				task.wait(0.5)
 				player:Kick("Almost completing your tycoon")
-			elseif msg == "AmostComplete2" then
+
+			elseif msg == "AlmostComplete2" then
 				local Data = Paths.Modules.PlayerData.sessionData[player.Name]
 				if Data then
 					Data.RocketUnlocked[1] = true
@@ -210,7 +212,7 @@ Players.PlayerAdded:Connect(function(player)
 
 					for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
 						local Name = Button.Name
-						if Button:GetAttribute("CurrencyType") == "Money" and Button:GetAttribute("Island") ~= "Zoo" then
+						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and Button:GetAttribute("Island") ~= "Zoo" then
 							Data.Tycoon[Name] = true
 							Data.Income += Button:GetAttribute("Income") or 0
 
@@ -227,6 +229,7 @@ Players.PlayerAdded:Connect(function(player)
 
 				task.wait(0.5)
 				player:Kick("Almost completing your tycoon2")
+
 			end
 
 		end)

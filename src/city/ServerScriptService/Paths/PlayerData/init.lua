@@ -396,6 +396,21 @@ game.Players.PlayerAdded:Connect(function(Player)
 	else
 		Modules.Quests.getNewQuests(Player)
 	end
+
+	if not Data["Achievements"] then
+		Data["Achievements"] = {
+			false, -- Reconciled
+			{}
+		}
+		for Id in ipairs(Modules.AllAchievements) do
+			Data["Achievements"][2][tostring(Id)] = {
+				false, -- Completed and collected
+				0, -- Progress,
+			}
+		end
+
+	end
+
 	if PlayerData.sessionData[Player.Name]["Playtime"] and (os.time()-PlayerData.sessionData[Player.Name]["Playtime"][2]) < 5*60 then
 		Player:SetAttribute("JoinTime",PlayerData.sessionData[Player.Name]["Playtime"][1])
 	else

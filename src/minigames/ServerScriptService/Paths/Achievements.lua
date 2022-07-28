@@ -9,9 +9,9 @@ Remotes.CollectAchievement.OnServerInvoke = function(Player, Id)
     local Data = Modules.PlayerData.sessionData[Player.Name]
     if Data then
         local Store = Data.Achievements[2][tostring(Id)]
-        if not Store[1] and Store[2] >= Modules.AllAchievements.All[Id].ToComplete then -- Not completed yet
+        if not Store[1] and Store[2] >= Modules.AllAchievements[Id].ToComplete then -- Not completed yet
             -- Rewards
-            for _, Reward in pairs(Modules.AllAchievements.All[Id].Rewards) do
+            for _, Reward in pairs(Modules.AllAchievements[Id].Rewards) do
                 if Reward.Type == "Gems" then
                     Modules.Income:AddGems(Player, Reward.Value)
                 elseif Reward.Type == "Accessory" then
@@ -40,13 +40,14 @@ function Achievements.Progress(Player : Player, Id : number)
     local Data = Modules.PlayerData.sessionData[Player.Name]
     if Data then
         local Store = Data.Achievements[2][tostring(Id)]
-        if not Store[1] and Store[2] < Modules.AllAchievements.All[Id].ToComplete then -- Second check is so that we don't spam client
+        if not Store[1] and Store[2] < Modules.AllAchievements[Id].ToComplete then -- Second check is so that we don't spam client
             Store[2] += 1
             Remotes.AchievementProgress:FireClient(Player, Id, Store)
         end
     end
 
 end
+
 
 
 return Achievements

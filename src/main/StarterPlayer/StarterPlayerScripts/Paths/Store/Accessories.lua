@@ -360,7 +360,7 @@ function Accessories:LoadStore()
 
 	-- Create new store
 	for Accessory, v in pairs(Modules.AllAccessories.All) do
-		if v.Rarity ~= "Event" and v.Rarity ~= "Free" then
+		if v.Rarity ~= "Event" and v.Rarity ~= "Free" and v.IsForSale then
 			NewStoreTemplate(Accessory, "Accessory")
 		end
 	end
@@ -370,10 +370,11 @@ function Accessories:LoadStore()
 		end
 	end
 	for Eyes, v in pairs(Modules.AllEyes.All) do
-		if v.Rarity ~= "Event" and v.Rarity ~= "Free" then
+		if v.Rarity ~= "Event" and v.Rarity ~= "Free" and v.IsForSale then
 			NewStoreTemplate(Eyes, "Eyes")
 		end
 	end
+
 end
 
 Accessories:LoadStore()
@@ -386,7 +387,7 @@ do
 	local UI = Paths.UI.Center.Store.Sections.Accessory.Holder
 	local Buttons = UI.Buttons
 
-	local lastOpen = Buttons.Bundles
+	local lastOpen = Buttons.Accessory
 
 	function Accessories.OpenFrame(button)
 		lastOpen.BackgroundTransparency = .8

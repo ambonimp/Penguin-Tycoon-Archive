@@ -43,6 +43,8 @@ function PlayerData.Defaults(Player)
 	Returning["Robux Tycoon"] = nil -- Initialized later on, it being nil is a flag for whether or previous purchases have been recorded
 	Returning["Penguins"] = {}
 	Returning["Rebirths"] = 0
+	Returning["Auto Collect"] = nil
+	Returning["Stored Income"] = 0
 
 	Returning["My Penguin"] = {
 		["Name"] = Player.DisplayName;
@@ -218,7 +220,7 @@ function PlayerData.Defaults(Player)
 		false, -- Reconciled
 		{}
 	}
-	for Id in ipairs(Modules.AllAchievements.All) do
+	for Id in ipairs(Modules.AllAchievements) do
 		Returning["Achievements"][2][tostring(Id)] = {
 			false, -- Completed and collected
 			0, -- Progress,
@@ -479,11 +481,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 		}
 	end
 
-	if not Data.Achievements[1] then -- For players who have played prior to the addition of quests, load their data
-		Modules.Achievements.Reconciled:Fire(Data)
-		Data.Achievements[1] = true
-	end
-
 	if not Data["Robux Tycoon"] then
 		Data["Robux Tycoon"] = {}
 
@@ -569,6 +566,12 @@ game.Players.PlayerAdded:Connect(function(Player)
 	if not table.find(Data["Woodcutting"].Unlocked,"Tree") then
 		table.insert(Data["Woodcutting"].Unlocked,"Tree")
 	end
+
+	-- Players path the 6th island get auto collect
+	if Data["Auto Collect"] == nil then
+		Data["Auto Collect"] = if Data.Tycoon[Modules.ProgressionDetails[23].Object] or Data.Rebirths > 0 then true else false
+	end
+
 	-- Initialize Tycoon
 	Modules.Tycoon:InitializePlayer(Player)
 
@@ -611,18 +614,25 @@ game.Players.PlayerAdded:Connect(function(Player)
 		end
 	end
 
+	if not Data.Achievements[1] then-- For players who have played prior to the addition of quests, load their data
+		Modules.Achievements.Reconciled:Fire(Data)
+		Data.Achievements[1] = true
+	end
+
 	-- TESTING
-	if Player.UserId == 1322669058 and IsTesting then
+--[[ 	if Player.UserId == 1322669058 and IsTesting then
 		Data.Outfits["Banana"] = true
 		Data.Outfits["Disco"] = true
 		Data.Outfits["Ghost"] = true
 		Data.Outfits["Mummy"] = true
 		Data.Outfits["Ninja"] = true
+		Data.Outfits["Mad Scientist"] = true
 
+		Data.Accessories = PlayerData.Defaults(Player).Accessories
 		Data.Accessories["Bath Hat"] = true
 		Data.Accessories["Bird Hat"] = true
 		Data.Accessories["Giant Bow"] = true
-		Data.Accessories["Deely Bobber"] = true
+		Data.Accessories["Deely Bopper"] = true
 		Data.Accessories["Flower Crown"] = true
 		Data.Accessories["Frog Bucket Hat"] = true
 		Data.Accessories["Head Lamp"] = true
@@ -632,7 +642,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 		Data.Accessories["Sweatband"] = true
 		Data.Accessories["Thug Life Glasses"] = true
 		Data.Accessories["Propeller Hat"] = true
-	end
+	end *]]
 
 	--Modules.Vehicles:SetUpSailboatBuild(Player)
 	Modules.Chat:ApplyChatTag(Player)

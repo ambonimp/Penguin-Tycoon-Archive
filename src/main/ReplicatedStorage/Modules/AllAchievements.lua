@@ -4,12 +4,9 @@ local FishingConfig = require(Modules.FishingConfig)
 local AllAccessories = require(Modules.AllAccessories)
 local AllEyes = require(Modules.AllEyes)
 
-local Achievements = {}
-
-
 -- Counts how many membes have certain values
 -- Used for achievement reward requirements
-function Achievements.GetMembersWithAttributes(Table, Attributes)
+local function GetMembersWithAttributes(Table, Attributes)
 	local Count = 0
 	for k, Member in pairs(Table) do
 		local HasAttributes = true
@@ -34,60 +31,60 @@ local function Reward(type, value)
 end
 
 
-Achievements.All = {
+return {
 	[1] = {
 		Name = "Catch all common fish",
 		Icon = "rbxassetid://10345555415",
 		Rewards = {Reward("Gems", 5)},
-		ToComplete = Achievements.GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Common, Type = FishingConfig.ItemType.Fish})
+		ToComplete = GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Common, Type = FishingConfig.ItemType.Fish})
 	},
 	[2] = {
 		Name = "Catch all rare fish",
 		Icon = "rbxassetid://10345552847",
 		Rewards = {Reward("Gems", 10)},
-		ToComplete = Achievements.GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Rare, Type = FishingConfig.ItemType.Fish})
+		ToComplete = GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Rare, Type = FishingConfig.ItemType.Fish})
 	},
 	[3] = {
 		Name = "Catch all epic fish",
 		Icon = "rbxassetid://10345555182",
 		Rewards = {Reward("Accessory", "Head Lamp")},
-		ToComplete = Achievements.GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Epic, Type = FishingConfig.ItemType.Fish})
+		ToComplete = GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Epic, Type = FishingConfig.ItemType.Fish})
 	},
 	[4] = {
 		Name = "Catch all legendary fish",
 		Icon = "rbxassetid://10345553421",
 		Rewards = {Reward("Accessory", "Mouse Ears")},
-		ToComplete = Achievements.GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Legendary, Type = FishingConfig.ItemType.Fish})
+		ToComplete = GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Legendary, Type = FishingConfig.ItemType.Fish})
 	},
 	[5] = {
 		Name = "Catch all mythic fish",
 		Icon = "rbxassetid://10345553068",
-		Rewards = {Reward("Outfit", "Scientist")},
-		ToComplete = Achievements.GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Mythic, Type = FishingConfig.ItemType.Fish})
+		Rewards = {Reward("Outfit", "Mad Scientist")},
+		ToComplete = GetMembersWithAttributes(FishingConfig.ItemList, {Rarity = FishingConfig.Rarity.Mythic, Type = FishingConfig.ItemType.Fish})
 	},
 	[6] = {
 		Name = "Catch all fish in the fish index",
 		Icon = "rbxassetid://10375957835",
-		Rewards = {Reward("Gems", "Ghost")},
-		ToComplete = Achievements.GetMembersWithAttributes(FishingConfig.ItemList, {Type = FishingConfig.ItemType.Fish})
+		Rewards = {Reward("Outfit", "Ghost")},
+		ToComplete = GetMembersWithAttributes(FishingConfig.ItemList, {Type = FishingConfig.ItemType.Fish})
 	},
 	[7] = {
-		Name = "Catch 15 seaweed",
+		Name = "Catch 200 seaweed",
 		Icon = "rbxassetid://10345557201",
 		Rewards = {Reward("Accessory", "Seaweed Hat")},
-		ToComplete = 15,
+		ToComplete = 200,
 	},
 	[8] = {
-		Name = "Catch 15 boots",
+		Name = "Catch 200 boots",
 		Icon = "rbxassetid://10345557924",
 		Rewards = {Reward("Accessory", "Boot Hat")},
-		ToComplete = 15,
+		ToComplete = 200,
 	},
 	[9] = {
-		Name = "Catch 15 bottles",
+		Name = "Catch 200 bottles",
 		Icon = "rbxassetid://10345557513",
 		Rewards = {Reward("Accessory", "Bottle Hat")},
-		ToComplete = 15,
+		ToComplete = 200,
 	},
 	[10] = {
 		Name = "Catch a treasure chest",
@@ -109,7 +106,7 @@ Achievements.All = {
 		AutoClaim = true,
 	},
 	[13] = {
-		Name = "Find all of the hidden hats (Located on middle islands)",
+		Name = "Find all of the hidden hats",
 		Icon = "rbxassetid://10345553663",
 		Rewards = {Reward("Gems", 5)},
 		ToComplete = 4,
@@ -124,11 +121,11 @@ Achievements.All = {
 	[15] = {
 		Name = "Own a rare pet",
 		Icon = "rbxassetid://10345551550",
-		Rewards = {Reward("Accessory", "Deely Bobber")},
+		Rewards = {Reward("Accessory", "Deely Bopper")},
 		ToComplete = 1,
 	},
 	[16] = {
-		Name = "Own a epic pet",
+		Name = "Own an epic pet",
 		Icon = "rbxassetid://10345551221",
 		Rewards = {Reward("Accessory", "Frog Bucket Hat")},
 		ToComplete = 1,
@@ -147,7 +144,7 @@ Achievements.All = {
 	},
 	[19] = {
 		Name = "Join our community server",
-		Icon = "rbxassetid://10345551805",
+		Icon = "rbxassetid://10388924030",
 		Rewards = {Reward("Gems", 100)},
 		ToComplete = 1,
 	},
@@ -155,79 +152,79 @@ Achievements.All = {
 		Name = "Collect all of the rare hats",
 		Icon = "rbxassetid://10345552611",
 		Rewards = {Reward("Accessory", "Flower Crown")},
-		ToComplete = Achievements.GetMembersWithAttributes(AllAccessories.All, {Rarity = "Rare", Achievement = true})
+		ToComplete = GetMembersWithAttributes(AllAccessories.All, {Rarity = "Rare", Achievement = true})
 	},
 	[21] = {
 		Name = "Collect all of the epic hats",
 		Icon = "rbxassetid://10375956917",
 		Rewards = {Reward("Accessory", "Bath Hat")},
-		ToComplete = Achievements.GetMembersWithAttributes(AllAccessories.All, {Rarity = "Epic", Achievement = true}),
+		ToComplete = GetMembersWithAttributes(AllAccessories.All, {Rarity = "Epic", Achievement = true}),
 	},
 	[22] = {
 		Name = "Collect all of the legendary hats",
 		Icon = "rbxassetid://10345553223",
 		Rewards = {Reward("Outfit", "Disco")},
-		ToComplete = Achievements.GetMembersWithAttributes(AllAccessories.All, {Rarity = "Legendary", Achievement = true}),
+		ToComplete = GetMembersWithAttributes(AllAccessories.All, {Rarity = "Legendary", Achievement = true}),
 	},
 	[23] = {
 		Name = "Collect all eyes",
 		Icon = "rbxassetid://10345554577",
 		Rewards = {Reward("Accessory", "Thug Life Glasses")},
-		ToComplete = Achievements.GetMembersWithAttributes(AllEyes.All, {IsForSale = true})
+		ToComplete = GetMembersWithAttributes(AllEyes.All, {IsForSale = true})
 	},
 	[24] = {
-		Name = "Win 3 skate race minigames",
+		Name = "Win 500 skate race minigames",
 		Icon = "rbxassetid://10375958054",
 		Rewards = {Reward("Outfit", "Poncho")},
-		ToComplete = 3,
+		ToComplete = 500,
 	},
 	[25] = {
-		Name = "Win 3 falling tile minigames",
+		Name = "Win 500 falling tile minigames",
 		Icon = "rbxassetid://10375956572",
 		Rewards = {Reward("Outfit", "Ninja")},
-		ToComplete = 3,
+		ToComplete = 500,
 	},
 	[26] = {
-		Name = "Win 3 soccer minigames",
+		Name = "Win 500 soccer minigames",
 		Icon = "rbxassetid://10345556263",
 		Rewards = {Reward("Accessory", "Sweatband")},
-		ToComplete = 3,
+		ToComplete = 500,
 	},
 	[27] = {
-		Name = "Win 3 candy rush minigames",
+		Name = "Win 500 candy rush minigames",
 		Icon = "rbxassetid://10345556887",
 		Rewards = {Reward("Accessory", "Headphones")},
-		ToComplete = 3,
+		ToComplete = 500,
 	},
 	[28] = {
-		Name = "Win 3 ice cream minigames",
+		Name = "Win 500 ice cream minigames",
 		Icon = "rbxassetid://10375957605",
 		Rewards = {Reward("Accessory", "Bird Hat")},
-		ToComplete = 3,
+		ToComplete = 500,
 	},
 	[29] = {
-		Name = "Win 3 sled race minigames",
+		Name = "Win 500 sled race minigames",
 		Icon = "rbxassetid://10375958287",
 		Rewards = {Reward("Accessory", "Cat Ears")},
-		ToComplete = 3,
+		ToComplete = 500,
 	},
 	[30] = {
-		Name = "Score 5 goals in soccer",
+		Name = "Score 1000 goals in soccer",
 		Icon = "rbxassetid://10345556017",
 		Rewards = {Reward("Outfit", "Banana")},
-		ToComplete = 5,
+		ToComplete = 1000,
 	},
 	[31] = {
 		Name = "Unlock mining zone 3",
-		Icon = "",
+		Icon = "rbxassetid://10395105398",
 		Rewards = {Reward("Accessory", "Hard Hat")},
 		ToComplete = 3,
 	},
 	[32] = {
-		Name = "Mine 100 diamonds",
-		Icon = "",
+		Name = "Mine 2000 diamonds",
+		Icon = "rbxassetid://10395105799",
 		Rewards = {Reward("Outfit", "Miner")},
-		ToComplete = 100,
+		ToComplete = 2000,
 	},
 	[33] = {
 		Name = "Complete all achievements",
@@ -240,5 +237,3 @@ Achievements.All = {
 		ToComplete = 32
 	}
 }
-
-return Achievements
