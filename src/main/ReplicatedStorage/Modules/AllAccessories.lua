@@ -85,109 +85,109 @@ Accessories.All = {
 	["None"] = {Rarity = "Free", IsForSale = false};
 
 	--Rewards
-	["Jellyfish Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Traffic Cone"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Shark Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Goal 150k"] = {Rarity = "Free", IsForSale = false, Achievement = true};
+	["Jellyfish Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Traffic Cone"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Shark Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Goal 150k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
 
 	--- Unlockable Hats ---
 	-- Collectable
-	["Pirate Captain Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Bunny Ears"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Straw Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Feather Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Beret"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Bee Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Hockey Helmet"] = {Rarity = "Free", IsForSale = false, Achievement = true};
+	["Pirate Captain Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Bunny Ears"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Straw Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Feather Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Beret"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Bee Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Hockey Helmet"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
 	-- Penguin Hats
-	["Steampunk Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Fisher Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Ninja Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Pirate Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Backwards Cap"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Gardening Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Adventurer Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Witch Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Bowl Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Cap"] = {Rarity = "Free", IsForSale = false, Achievement = true};
+	["Steampunk Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Fisher Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Ninja Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Pirate Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Backwards Cap"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Gardening Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Adventurer Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Witch Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Bowl Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Cap"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
 
 	--Fish Rewards
-	["Boot Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Bottle Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
-	["Seaweed Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
+	["Boot Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Bottle Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Seaweed Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
 
 	--- Purchaseable Hats ---
 	-- Rares
-	["Conical Straw Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Soldier Helmet"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Party Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Pink Sunhat"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Robin Hood"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Cat Ears"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Cowboy"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Spiky Top Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Hair Headband"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Bucket Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Umbrella"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
-	["Detective's Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
+	["Conical Straw Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Soldier Helmet"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Party Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Pink Sunhat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Robin Hood"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Cat Ears"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Cowboy"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Spiky Top Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Hair Headband"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Bucket Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Umbrella"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Detective's Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
 
 	-- Epics
-	["Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Wizard Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Gentleman's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Bear Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Drinking Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
+	["Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Wizard Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Gentleman's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Bear Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Drinking Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
 
-	["Chef's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Sombrero"] = {Rarity = "Epic", IsForSale = true,  Achievement = true};
-	["Viking Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Graduation Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Santa's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
+	["Chef's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Sombrero"] = {Rarity = "Epic", IsForSale = true,  Achievement = true, Icon = ""};
+	["Viking Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Graduation Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Santa's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
 
-	["Biker Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Flower Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
-	["Nurse's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
+	["Biker Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Flower Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Nurse's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
 
 
 	-- Legendaries
-	["Crown"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
-	["Police Cap"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
-	["Football Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
-	["Balaclava"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
-	["Joker's Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
+	["Crown"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
+	["Police Cap"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
+	["Football Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
+	["Balaclava"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
+	["Joker's Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
 
-	["Firefighter Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
-	["Knight's Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
+	["Firefighter Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
+	["Knight's Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
 
 
 	--- Code Hats ---
-	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false};
-	["Miner Hat"] = {Rarity = "Epic", IsForSale = false};
+	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
+	["Miner Hat"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
 
 
 	--- Event Hats ---
-	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
-	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
-	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false};
+	["Valentine's Day"] = {Rarity = "Event", IsForSale = false, Icon = ""};
+	["Easter Basket"] = {Rarity = "Event", IsForSale = false, Icon = ""};
+	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false, Icon = ""};
 
 	-- Mining Hats ===
-	["Hard Hat"] = {Rarity = "Free", IsForSale = false};
+	["Hard Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
 
 	-- Achievements
-	["Bath Hat"] = {Rarity = "Free", IsForSale = false};
-	["Bird Hat"] = {Rarity = "Free", IsForSale = false};
-	["Giant Bow"] = {Rarity = "Free", IsForSale = false};
-	["Deely Bopper"] = {Rarity = "Free", IsForSale = false};
-	["Flower Crown"] = {Rarity = "Free", IsForSale = false};
-	["Frog Bucket Hat"] = {Rarity = "Free", IsForSale = false};
-	["Head Lamp"] = {Rarity = "Free", IsForSale = false};
-	["Headphones"] = {Rarity = "Free", IsForSale = false};
-	["Mouse Ears"] = {Rarity = "Free", IsForSale = false};
-	["Pirate Bandana"] = {Rarity = "Free", IsForSale = false};
-	["Sweatband"] = {Rarity = "Free", IsForSale = false};
-	["Thug Life Glasses"] = {Rarity = "Free", IsForSale = false};
-	["Propeller Hat"] = {Rarity = "Free", IsForSale = false};
+	["Bath Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Bird Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Giant Bow"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Deely Bopper"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Flower Crown"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Frog Bucket Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Head Lamp"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Headphones"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Mouse Ears"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Pirate Bandana"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Sweatband"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Thug Life Glasses"] = {Rarity = "Free", IsForSale = false}, Icon = "";
+	["Propeller Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
 
 }
 
