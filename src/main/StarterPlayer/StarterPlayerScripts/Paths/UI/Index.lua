@@ -273,7 +273,7 @@ local function LoadAllItems()
 		Template.ItemName.Text = Accessory
 		Template.ItemRarity.Text = Info.Rarity
 		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = "rbxgameasset://Images/"..Accessory.."_Accessory"
+		Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Accessory.."_Accessory"
 
 		Template.Name = Accessory
 		Template.Parent = indexUI.Sections.Accessories.Accessories.List

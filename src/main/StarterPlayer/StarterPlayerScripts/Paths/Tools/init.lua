@@ -14,20 +14,6 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 local isStillPlaying = 0
 local IS_QA = (game.GameId == 3425594443)
 
-
---- Tool Variables ---
-local TOOL_REPLACEMENTS = {
-	["Gold Axe"] = "Axe",
-	["Gold Fishing Rod"] = "Fishing Rod",
-	["Powered Glider"] = "Glider",
-	["Gold Pickaxe"] = "Pickaxe"
-}
-
--- Always appear at the end
-local PINNED_TOOLS = {
-	["Vehicle Spawner"] = true
-}
-
 local KEYBINDS = {
 	[Enum.KeyCode.One] = 1, [Enum.KeyCode.Two] = 2, [Enum.KeyCode.Three] = 3, [Enum.KeyCode.Four] = 4, [Enum.KeyCode.Five] = 5,
 	[Enum.KeyCode.Six] = 6, [Enum.KeyCode.Seven] = 7, [Enum.KeyCode.Eight] = 8, [Enum.KeyCode.Nine] = 9, [Enum.KeyCode.Zero] = 0,
@@ -52,7 +38,7 @@ local function OpenNewItem(Tool)
 
 	-- Setup accessory info
 	NewItemUI.ItemName.Text = Tool
-	NewItemUI.ItemIcon.Image = "rbxgameasset://Images/"..Tool.."_Tool"
+	NewItemUI.ItemIcon.Image = Modules.AllTools[Tool].Icon or "rbxgameasset://Images/"..Tool.."_Tool"
 
 	-- Play animation
 	NewItemUI:TweenPosition(UDim2.new(0, 0, 0, -50), "Out", "Quart", 0.4, true)
@@ -103,10 +89,14 @@ local function LoadTools(Whitelist)
 		end
 	end
 
-	for name,exception in pairs (TOOL_REPLACEMENTS) do
-		if table.find(Adding,name) and table.find(Adding,exception) then
-			table.remove(Adding,table.find(Adding,exception))
+	for Tool, Info in pairs(Modules.AllTools) do
+		local Replacee = Info.Replacee
+		if Replacee then
+			if table.find(Adding, Tool) and table.find(Adding, Replacee) then
+				table.remove(Adding, table.find(Adding, Replacee))
+			end
 		end
+
 	end
 
 	for _, Tool in ipairs(Adding) do
@@ -118,21 +108,24 @@ end
 
 --- Tool Functions ---
 function Tools.AddTool(Tool, isNew)
-	if Paths.UI.Tools:FindFirstChild(Tool) then return end
-	if IS_QA and string.find(Tool, "Gold") then return end
+	local Info = Modules.AllTools[Tool]
 
-	if TOOL_REPLACEMENTS[Tool] then
-		Tools.RemoveTool(TOOL_REPLACEMENTS[Tool])
+	if Paths.UI.Tools:FindFirstChild(Tool) then return end
+	-- if IS_QA and string.find(Tool, "Gold") then return end
+
+	local Replacee = Modules.AllTools[Tool].Replacee
+	if  Replacee then
+		Tools.RemoveTool(Replacee[Tool])
 	end
-	
+
 	local Template = Dependency.ToolTemplate:Clone()
 	Template.Name = Tool
-	Template.ToolIcon.Image = "rbxgameasset://Images/"..Tool.."_Tool"
+	Template.ToolIcon.Image = Info.Icon or "rbxgameasset://Images/"..Tool.."_Tool"
 
 	local ToolCount = #Paths.UI.Tools:GetChildren() - 1
 	local Keybind = ToolCount + 1
 
-	if not PINNED_TOOLS[Tool] then
+	if not Info.Pinned then
 		Keybind -= #Pinned
 		for _, Button in pairs(Pinned) do
 			local ShiftedKeybind = Button.LayoutOrder + 1
@@ -189,7 +182,7 @@ function Tools.RemoveTool(Tool)
 		local Keybind = Button.LayoutOrder
 		Button:Destroy()
 
-		if PINNED_TOOLS[Tool] then
+		if Modules.AllTools[Tool].Pinned then
 			table.remove(Pinned, table.find(Pinned, Button))
 		end
 
@@ -292,11 +285,11 @@ function ItemRetrievedAnimation(Icon,Amount,Name)
 
 		fishCaught:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Back", 0.5, true)
 
-		wait(2)
+		task.wait(2)
 
 		fishCaught:TweenPosition(UDim2.new(0.5, 0, 1, 0), "In", "Back", 0.5, true)
 
-		wait(0.6)
+		task.wait(0.6)
 
 		fishCaught:Destroy()
 	end)()
@@ -406,14 +399,6 @@ Remotes.Tools.OnClientEvent:Connect(function(Action, Tool, Temporary)
 	end
 end)
 
-
-if IS_QA then
-	for Tool in pairs(TOOL_REPLACEMENTS) do
-		if string.find(Tool, "Gold") then
-			TOOL_REPLACEMENTS[Tool] = nil
-		end
-	end
-end
 LoadTools()
 
 return Tools

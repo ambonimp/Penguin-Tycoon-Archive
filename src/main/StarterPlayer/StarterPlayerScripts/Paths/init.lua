@@ -75,6 +75,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("AllOutfits", Paths.Services.RStorage.Modules.AllOutfits)
 	ModuleLoader.Register("AllAccessories", Paths.Services.RStorage.Modules.AllAccessories)
 	ModuleLoader.Register("AllAchievements", Paths.Services.RStorage.Modules.AllAchievements)
+	ModuleLoader.Register("AllTools", Paths.Services.RStorage.Modules.AllTools);
 	ModuleLoader.Register("AllEyes", Paths.Services.RStorage.Modules.AllEyes)
 	ModuleLoader.Register("AllEmotes", Paths.Services.RStorage.Modules.AllEmotes)
 	ModuleLoader.Register("Indicators", script.Setup.Indicators)
