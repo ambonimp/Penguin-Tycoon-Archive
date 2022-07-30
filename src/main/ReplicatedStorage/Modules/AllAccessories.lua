@@ -186,7 +186,7 @@ Accessories.All = {
 	["Mouse Ears"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420211743"};
 	["Pirate Bandana"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420211164"};
 	["Sweatband"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420208670"};
-	["Thug Life Glasses"] = {Rarity = "Free", IsForSale = false}, Icon = "rbxassetid://10420428291";
+	["Thug Life Glasses"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420428291"};
 	["Propeller Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420209874"};
 
 }

@@ -71,7 +71,7 @@ Outfits.All = {
 	--- Purchaseable Hats ---
 	-- Rares
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};
-	["Gardener"] = {Rarity = "Rare", IsForSale = true}, Icon = "";
+	["Gardener"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
 	["Fisherman"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
 	["Farmer"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
 	["Nurse"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
