@@ -85,109 +85,109 @@ Accessories.All = {
 	["None"] = {Rarity = "Free", IsForSale = false};
 
 	--Rewards
-	["Jellyfish Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Traffic Cone"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Shark Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Goal 150k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Jellyfish Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420216206"};
+	["Traffic Cone"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420208512"};
+	["Shark Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420209525"};
+	["Goal 150k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420392867"};
 
 	--- Unlockable Hats ---
 	-- Collectable
-	["Pirate Captain Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Bunny Ears"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Straw Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Feather Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Beret"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Bee Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Hockey Helmet"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Pirate Captain Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420222353"};
+	["Bunny Ears"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420221896"};
+	["Straw Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420208842"};
+	["Feather Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420219510"};
+	["Beret"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420227689"};
+	["Bee Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420227969"};
+	["Hockey Helmet"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420216657"};
 	-- Penguin Hats
-	["Steampunk Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Fisher Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Ninja Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Pirate Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Backwards Cap"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Gardening Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Adventurer Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Witch Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Bowl Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Cap"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Steampunk Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
+	["Fisher Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420219139"};
+	["Ninja Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420211577"};
+	["Pirate Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420210970"};
+	["Backwards Cap"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420229114"};
+	["Gardening Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420218153"};
+	["Adventurer Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
+	["Witch Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420207826"};
+	["Mushroom Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420230747"};
+	["Bowl Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true};
+	["Cap"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420207982"};
 
 	--Fish Rewards
-	["Boot Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Bottle Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
-	["Seaweed Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = ""};
+	["Boot Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420226858"};
+	["Bottle Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420209369"};
+	["Seaweed Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10420208171"};
 
 	--- Purchaseable Hats ---
 	-- Rares
-	["Conical Straw Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Soldier Helmet"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Party Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Pink Sunhat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Robin Hood"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Cat Ears"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Cowboy"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Spiky Top Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Hair Headband"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Bucket Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Umbrella"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
-	["Detective's Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = ""};
+	["Conical Straw Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420220905"};
+	["Soldier Helmet"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420209156"};
+	["Party Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420211318"};
+	["Pink Sunhat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420226977"};
+	["Robin Hood"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420212116"};
+	["Cat Ears"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420222144"};
+	["Cowboy"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420220714"};
+	["Spiky Top Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420209017"};
+	["Hair Headband"] = {Rarity = "Rare", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420217294"};
+	["Bucket Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
+	["Umbrella"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
+	["Detective's Hat"] = {Rarity = "Rare", IsForSale = true, Achievement = true};
 
 	-- Epics
-	["Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Wizard Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Gentleman's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Bear Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Drinking Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420210048"};
+	["Wizard Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420207585"};
+	["Gentleman's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420217900"};
+	["Bear Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420228240"};
+	["Drinking Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420220155"};
 
-	["Chef's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Sombrero"] = {Rarity = "Epic", IsForSale = true,  Achievement = true, Icon = ""};
-	["Viking Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Graduation Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Santa's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Chef's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420221683"};
+	["Sombrero"] = {Rarity = "Epic", IsForSale = true,  Achievement = true, Icon = "rbxassetid://10420211883"};
+	["Viking Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420208338"};
+	["Graduation Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420217657"};
+	["Santa's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420209684"};
 
-	["Biker Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Flower Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
-	["Nurse's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = ""};
+	["Biker Helmet"] = {Rarity = "Epic", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420227461"};
+	["Flower Pot"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
+	["Nurse's Hat"] = {Rarity = "Epic", IsForSale = true, Achievement = true};
 
 
 	-- Legendaries
-	["Crown"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
-	["Police Cap"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
-	["Football Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
-	["Balaclava"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
-	["Joker's Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
+	["Crown"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420220533"};
+	["Police Cap"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420210459"};
+	["Football Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420218668"};
+	["Balaclava"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420228585"};
+	["Joker's Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420212348"};
 
-	["Firefighter Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
-	["Knight's Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = ""};
+	["Firefighter Hat"] = {Rarity = "Legendary", IsForSale = true, Achievement = true, Icon = "rbxassetid://10420219307"};
+	["Knight's Helmet"] = {Rarity = "Legendary", IsForSale = true, Achievement = true};
 
 
 	--- Code Hats ---
-	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
-	["Miner Hat"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
+	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false};
+	["Miner Hat"] = {Rarity = "Epic", IsForSale = false};
 
 
 	--- Event Hats ---
-	["Valentine's Day"] = {Rarity = "Event", IsForSale = false, Icon = ""};
-	["Easter Basket"] = {Rarity = "Event", IsForSale = false, Icon = ""};
-	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false, Icon = ""};
+	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
+	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
+	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false};
 
 	-- Mining Hats ===
-	["Hard Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Hard Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420226495"};
 
 	-- Achievements
-	["Bath Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Bird Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Giant Bow"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Deely Bopper"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Flower Crown"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Frog Bucket Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Head Lamp"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Headphones"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Mouse Ears"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Pirate Bandana"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Sweatband"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Thug Life Glasses"] = {Rarity = "Free", IsForSale = false}, Icon = "";
-	["Propeller Hat"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Bath Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420228425"};
+	["Bird Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420227205"};
+	["Giant Bow"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420226684"};
+	["Deely Bopper"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420220348"};
+	["Flower Crown"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420218909"};
+	["Frog Bucket Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420231003"};
+	["Head Lamp"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420216832"};
+	["Headphones"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420217019"};
+	["Mouse Ears"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420211743"};
+	["Pirate Bandana"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420211164"};
+	["Sweatband"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420208670"};
+	["Thug Life Glasses"] = {Rarity = "Free", IsForSale = false}, Icon = "rbxassetid://10420428291";
+	["Propeller Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420209874"};
 
 }
 
