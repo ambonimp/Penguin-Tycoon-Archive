@@ -162,14 +162,14 @@ Accessories.All = {
 
 
 	--- Code Hats ---
-	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false};
-	["Miner Hat"] = {Rarity = "Epic", IsForSale = false};
+	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
+	["Miner Hat"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
 
 
 	--- Event Hats ---
-	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
-	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
-	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false};
+	["Valentine's Day"] = {Rarity = "Event", IsForSale = false, Icon = ""};
+	["Easter Basket"] = {Rarity = "Event", IsForSale = false, Icon = ""};
+	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false, Icon = ""};
 
 	-- Mining Hats ===
 	["Hard Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420226495"};
