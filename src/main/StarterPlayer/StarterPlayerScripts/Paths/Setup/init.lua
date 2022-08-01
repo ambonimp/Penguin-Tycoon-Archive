@@ -44,7 +44,6 @@ Paths.Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
             --Modules.Pets.LoadEgg(Prompt:GetAttribute("Egg"),Prompt)
 
         elseif Prompt.ActionText == "Penguin City" then
-            Modules.Teleporting:OpenConfirmation()
             Modules.Buttons:UIOn(UI.Center.TeleportConfirmation,true)
         end
 

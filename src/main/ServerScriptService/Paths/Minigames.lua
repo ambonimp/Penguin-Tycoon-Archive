@@ -6,12 +6,13 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 Modules.Achievements.Reconciled:Connect(function(Data)
-    Modules.Achievements.ReconcileSet(Data, 24, Data["Skate Race Wins"])
-    Modules.Achievements.ReconcileSet(Data, 25, Data["Falling Tiles"])
-    Modules.Achievements.ReconcileSet(Data, 26, Data["Soccer Wins"])
-    Modules.Achievements.ReconcileSet(Data, 27, Data["Candy Rush"])
-    Modules.Achievements.ReconcileSet(Data, 28, Data["Ice Cream Extravaganza"])
-    Modules.Achievements.ReconcileSet(Data, 29, Data["Sled Race Wins"])
+    Modules.Achievements.ReconcileSet(Data, 24, Data.Stats["Skate Race Wins"])
+    Modules.Achievements.ReconcileSet(Data, 25, Data.Stats["Falling Tiles"])
+    Modules.Achievements.ReconcileSet(Data, 26, Data.Stats["Soccer Wins"])
+    Modules.Achievements.ReconcileSet(Data, 27, Data.Stats["Candy Rush"])
+    Modules.Achievements.ReconcileSet(Data, 28, Data.Stats["Ice Cream Extravaganza"])
+    Modules.Achievements.ReconcileSet(Data, 29, Data.Stats["Sled Race Wins"])
+    Modules.Achievements.ReconcileSet(Data, 30, Data.Stats["Soccer"])
 end)
 
 

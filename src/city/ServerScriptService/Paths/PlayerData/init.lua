@@ -11,7 +11,7 @@ local Remotes = Paths.Remotes
 
 --- Other Variables ---
 local Store = "PlayerData#RELEASE"
-local IsTesting = (game.GameId == 3425588324)
+local IsTesting = (game.GameId == 3425588324) or (game.GameId == 3662230549)
 if IsTesting then Store = "TESTINGSTORE3" end
 local IsQA = (game.GameId == 3425594443)
 if IsQA then Store = "QASTORE1" end

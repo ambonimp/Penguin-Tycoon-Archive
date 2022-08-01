@@ -146,11 +146,15 @@ Remotes.Verification.OnServerInvoke = function(player, username)
 end
 
 Modules.Achievements.Reconciled:Connect(function(Data)
-	Modules.Achievements.ReconcileReset(Data, 19)
 
 	if Data["Discord Verification"] then
-		Modules.Achievements.ReconcileIncrement(Data, 19)
+		if not Modules.Achievements.IsCompleted(Data, 19) then
+			Modules.Achievements.ReconcileReset(Data, 19)
+			Modules.Achievements.ReconcileIncrement(Data, 19)
+		end
+
 		Modules.Achievements.ReconcileSet(Data, 18, 1)
+
 	end
 
 	if Data["Twitter Verification"] then

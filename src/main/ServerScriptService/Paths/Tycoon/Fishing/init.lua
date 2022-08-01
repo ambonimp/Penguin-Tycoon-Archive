@@ -399,14 +399,21 @@ modules.Achievements.Reconciled:Connect(function(Data)
 		modules.Achievements.ReconcileSet(Data, 9, JunkFound["52"])
 	end
 
+
 	local FishFound = Data["Fish Found"]
-	for _, Achievement in pairs(FISH_RARITY_ACHIEVEMENTS) do
+	local ReconcilingFishRarityAchievements = modules.FuncLib.TableClone(FISH_RARITY_ACHIEVEMENTS)
+	for Achievement, Id in pairs(ReconcilingFishRarityAchievements) do
+		if modules.Achievements.IsCompleted(Data, Id) then
+			ReconcilingFishRarityAchievements[Achievement] = nil
+		end
+	end
+	for _, Achievement in pairs(ReconcilingFishRarityAchievements) do
 		modules.Achievements.ReconcileReset(Data, Achievement)
 	end
-
 	for Id in pairs(FishFound) do
-		modules.Achievements.ReconcileIncrement(Data, FISH_RARITY_ACHIEVEMENTS[config.ItemList[tonumber(Id)].Rarity])
+		modules.Achievements.ReconcileIncrement(Data, ReconcilingFishRarityAchievements[config.ItemList[tonumber(Id)].Rarity])
 	end
+
 
 	modules.Achievements.ReconcileSet(Data, 6, modules.FuncLib.DictLength(FishFound)) -- Collect all fish in fish index
 

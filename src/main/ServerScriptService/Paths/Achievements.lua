@@ -54,7 +54,12 @@ function Achievements.Progress(Player : Player, Id : number)
 
 end
 
--- When i was testing, i needed to reconcile a bunch of times and that doesn't work well with increment :D
+function Achievements.IsCompleted(Data, Id : number)
+    if not Id then return end
+    return Data.Achievements[2][tostring(Id)][1]
+end
+
+-- When testing, needed to reconcile a bunch of times and that doesn't work well with increment
 function Achievements.ReconcileReset(Data, Id : number)
     if not Id then return end
     Data.Achievements[2][tostring(Id)][2] = 0
@@ -62,7 +67,9 @@ end
 
 function Achievements.ReconcileSet(Data, Id : number, Value : number)
     if not Id or not Value then return end
-    Data.Achievements[2][tostring(Id)][2] = Value
+    if not Achievements.IsCompleted(Data, Id) then
+        Data.Achievements[2][tostring(Id)][2] = Value
+    end
 end
 
 function Achievements.ReconcileIncrement(Data, Id : number)

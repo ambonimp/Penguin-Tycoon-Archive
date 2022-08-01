@@ -38,42 +38,26 @@ if IsQA then Locations = QALocations end
 function Teleporting:TeleportTo(PlaceId)
 	if TeleportDB then return end
 	TeleportDB = true
-	
+
 	local Success, Error = Remotes.TeleportExternal:InvokeServer(PlaceId)
 	
 	if not Success then
+		warn(Error)
 		Confirmation.InfoHolder.Confirm.Error.Visible = true
-		wait(0.8)
+		task.wait(0.8)
 		Confirmation.InfoHolder.Confirm.Error.Visible = false
 	end
 	TeleportDB = false
 end
 
-
--- actual UI is opened in UI.Buttons script, so this just sets the place ID
-function Teleporting:OpenConfirmation()
-	local LocationInfo = Locations[game.PlaceId]
-	
-	if LocationInfo then
-		Confirmation.PlaceId.Value = LocationInfo.PlaceId
-	end
-end
-
-
 -- Confirmation UI buttons
 Confirmation.InfoHolder.Confirm.MouseButton1Down:Connect(function()
-	Teleporting:TeleportTo(tonumber(Confirmation.PlaceId.Value))
+	Teleporting:TeleportTo(Modules.PlaceIds["Penguin City"])
 end)
 
 --Confirmation.Cancel.MouseButton1Down:Connect(function()
 --	Confirmation.Visible = false
 --end)
-
-
--- Different teleport locations/buttonns
-TeleportButton.MouseButton1Down:Connect(function()
-	Teleporting:OpenConfirmation()
-end)
 
 
 --- Switching between tabs ---
