@@ -1,3 +1,4 @@
+local DataStoreService = game:GetService("DataStoreService")
 local Tycoon = {}
 
 --- Main Variables ---
@@ -22,10 +23,13 @@ function Tycoon:InitializePlayer(Player, ChosenTycoon)
 
 	task.spawn(function()
 		local ChosenTycoonModel = workspace:WaitForChild("Tycoons"):WaitForChild(ChosenTycoon)
+		ChosenTycoonModel.IncomeCollectPoint:SetAttribute("Income", Modules.PlayerData.sessionData[Player.Name]["Stored Income"])
+
 		Player:RequestStreamAroundAsync(ChosenTycoonModel:WaitForChild("Spawn").Position)
 		Modules.Character:Spawn(Player, "Penguin", true)
+
 	end)
-  
+
 end
 
 for _, MinigameHandler in ipairs(script.Minigames:GetChildren()) do

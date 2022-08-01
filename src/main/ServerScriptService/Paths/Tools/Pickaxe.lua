@@ -107,10 +107,15 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
         end
 
         local Details = Modules.MiningDetails[Level]
-        local OresMinedThisLevel = Data.Mining.Mined[Details.Ore] + 1
+        local OreMined = Details.Ore
+        local OresMinedThisLevel = Data.Mining.Mined[OreMined] + 1
 
-        Data.Mining.Mined[Details.Ore] = OresMinedThisLevel
+        Data.Mining.Mined[OreMined] = OresMinedThisLevel
         Data.Stats["Total Mined"] += 1
+
+        if OreMined == "Diamond" then
+            Modules.Achievements.Progress(Client, 31)
+        end
 
         local Earnings = Data.Income * Data["Income Multiplier"] * Details.EarningMultiplier * (Client:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1)
         local mult = Modules.Pets.getBonus(Client,"Mining","Income")
@@ -122,56 +127,19 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
             local NextLevel = Level + 1
             if Modules.MiningDetails[NextLevel] and OresMinedThisLevel >= Modules.MiningDetails[NextLevel].Requirement then
                 Data.Mining.Level = NextLevel
-                -- Hat reward
-                if NextLevel == 3 then
-                    Modules.Accessories:ItemAcquired(Client, "Hard Hat", "Accessory")
-                end
 
+                Modules.Achievements.Progress(Client, 32)
                 Remotes.MiningLevelUp:FireClient(Client, NextLevel)
+
             end
-
         end
-
-        -- Exclusive outfit
-        if Data.Mining.Mined["Diamond"] >= 2000 and not Data.Outfits["Miner"] then
-            Modules.Accessories:ItemAcquired(Client, "Miner", "Outfits")
-        end
-
     end
 
 end)
 
-
---[[ if game.PlaceId == 9118461324 then
-    task.spawn(function()
-        require(game.ServerScriptService:WaitForChild("ChatServiceRunner").ChatService):RegisterProcessCommandsFunction("Commands", function(speaker, message)
-            local player = game.Players[speaker]
-            if player then
-                local Data = Modules.PlayerData.sessionData[speaker]
-
-                if string.find(message, "IronOre") then
-                    Data.Mining.Mined.Coal += 100
-                elseif string.find(message, "GoldOre") then
-                    Data.Mining.Mined.Iron += 350
-                elseif string.find(message, "RubyOre") then
-                    Data.Mining.Mined.Gold += 950
-                elseif string.find(message, "EmeraldOre") then
-                    Data.Mining.Mined.Ruby += 1250
-                elseif string.find(message, "DiamondOre") then
-                    Data.Mining.Mined.Emerald += 1750
-                elseif string.find(message, "OutfitOre") then
-                    Data.Mining.Mined.Diamond += 2000
-                end
-
-                return false
-            else
-                return false
-            end
-
-        end)
-
-    end)
-
-end *]]
+Modules.Achievements.Reconciled:Connect(function(Data)
+	Modules.Achievements.ReconcileSet(Data, 31, Data.Mining.Mined["Diamond"])
+	Modules.Achievements.ReconcileSet(Data, 32, Data.Mining.Level)
+end)
 
 return Pickaxe

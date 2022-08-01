@@ -34,6 +34,7 @@ local AllGamepasses = {
 	56637668, -- auto hatch
 	56844198, -- lucky egg
 	58998843, -- Chainsaw
+	66800606, -- Auto Collect
 }
 
 local GamepassButtons = {
@@ -101,6 +102,8 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				Player:SetAttribute("MaxPetsOwned",Data["Pets_Data"].MaxOwned)
 			elseif gamepass == 56637668 then
 				Data["Settings"]["Auto Hatch"] = true
+			elseif gamepass == 66800606 then
+				Data["Auto Collect"] = true
 			end
 
 		end

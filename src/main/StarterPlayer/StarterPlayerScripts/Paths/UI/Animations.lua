@@ -13,19 +13,20 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 
 -- Other Variables
---[[ local CONFETII_COLORS = {
-	Color3.fromRGB(168,100,253),
-	Color3.fromRGB(41,205,255),
-	Color3.fromRGB(120,255,68),
-	Color3.fromRGB(255,113,141),
-	Color3.fromRGB(253,255,106)
-} *]]
-
 local CONFETII_COLORS = {
-	Color3.fromRGB(157, 92, 13),
-	Color3.fromRGB(234, 189, 23),
-	Color3.fromRGB(234, 203, 76),
-	Color3.fromRGB(234, 209, 117),
+	{
+		Color3.fromRGB(157, 92, 13),
+		Color3.fromRGB(234, 189, 23),
+		Color3.fromRGB(234, 203, 76),
+		Color3.fromRGB(234, 209, 117),
+	},
+	{
+		Color3.fromRGB(168,100,253),
+		Color3.fromRGB(41,205,255),
+		Color3.fromRGB(120,255,68),
+		Color3.fromRGB(255,113,141),
+		Color3.fromRGB(253,255,106)
+	}
 }
 
 
@@ -238,7 +239,8 @@ function Animations.BlinkTransition(OnHalfPoint, AlignCamera)
 
 end
 
-function Animations.Confetti(Count, Size)
+function Animations.Confetti(Colors, Count, Size)
+	Colors = Colors and CONFETII_COLORS[Colors] or CONFETII_COLORS[1]
 	Count = Count or Rand:NextInteger(35, 45)
 	Size = Size or Vector2.new(1, 1.4)
 
@@ -277,7 +279,7 @@ function Animations.Confetti(Count, Size)
 
 				local Particle = ParticleTemp:Clone()
 				Particle.Name = i
-				Particle.Color = CONFETII_COLORS[i % #CONFETII_COLORS + 1]
+				Particle.Color = Colors[i % #Colors + 1]
 				Particle.Transparency = 0
 				Particle.CFrame = Start
 				Particle.Anchored = true

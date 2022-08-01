@@ -1,7 +1,5 @@
 local Accessories = {}
 
-
-
 --- Main Variables ---
 local Paths = require(script.Parent.Parent)
 
@@ -26,6 +24,12 @@ local StoreSections = UI.Center.Store.Sections
 
 local bundleCons = {}
 local NewItemUI = UI.Full.NewItem
+
+local InfoModules = {
+	["Accessory"] = Modules.AllAccessories,
+	["Eyes"] = Modules.AllEyes,
+	["Outfits"] = Modules.AllOutfits,
+}
 
 local UnlockItems = {
 	"Bunny Ears","Feather Hat","Pirate Captain Hat","Straw Hat"
@@ -87,7 +91,7 @@ function Accessories:NewItem(Item, ItemType)
 	Template.Name = Item
 
 	if ItemType ~= "Outfits" then
-		Template.AccessoryIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
+		Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	else
 		if Item ~= "None" then
 			local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
@@ -100,14 +104,7 @@ function Accessories:NewItem(Item, ItemType)
 	Template.AccessoryName.Text = Item
 	
 
-	local Module
-	if ItemType == "Accessory" then
-		Module = Modules.AllAccessories
-	elseif ItemType == "Eyes" then
-		Module = Modules.AllEyes
-	elseif ItemType == "Outfits" then
-		Module = Modules.AllOutfits
-	end
+	local Module = InfoModules[ItemType]
 
 	local Rarity = assert(Module.All[Item], Item).Rarity
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
@@ -238,7 +235,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	NewItemUI.ItemName.Text = Item
 
 	if ItemType ~= "Outfits" then
-		NewItemUI.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
+		NewItemUI.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 		NewItemUI.ViewportFrame.Visible = false
 		NewItemUI.ItemIcon.Visible = true
 		if NewItemUI.ViewportFrame:FindFirstChildOfClass("Model") then
@@ -292,7 +289,7 @@ local function NewStoreTemplate(Item, ItemType)
 		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
 		addModelToViewport(Model,Template)
 	else
-		Template.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
+		Template.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	end
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.PurchaseRobux.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInRobux)
@@ -362,7 +359,7 @@ function Accessories:LoadStore()
 
 	-- Create new store
 	for Accessory, v in pairs(Modules.AllAccessories.All) do
-		if v.Rarity ~= "Event" and v.Rarity ~= "Free" then
+		if v.Rarity ~= "Event" and v.Rarity ~= "Free" and v.IsForSale then
 			NewStoreTemplate(Accessory, "Accessory")
 		end
 	end
@@ -372,10 +369,11 @@ function Accessories:LoadStore()
 		end
 	end
 	for Eyes, v in pairs(Modules.AllEyes.All) do
-		if v.Rarity ~= "Event" and v.Rarity ~= "Free" then
+		if v.Rarity ~= "Event" and v.Rarity ~= "Free" and v.IsForSale then
 			NewStoreTemplate(Eyes, "Eyes")
 		end
 	end
+
 end
 
 Accessories:LoadStore()
@@ -388,7 +386,7 @@ do
 	local UI = Paths.UI.Center.Store.Sections.Accessory.Holder
 	local Buttons = UI.Buttons
 
-	local lastOpen = Buttons.Bundles
+	local lastOpen = Buttons.Accessory
 
 	function Accessories.OpenFrame(button)
 		lastOpen.BackgroundTransparency = .8

@@ -14,6 +14,39 @@ local BASE_INCOME_REWARD = 30 -- The amount of seconds of progress for R$ 24 wor
 
 
 --- Functions ---
+function GameFunctions:GetRequiredMoneyProduct(Player, MoneyRequired)
+	local PlayerIncome = Player:GetAttribute("Income")
+	local PlayerMoney = Player:GetAttribute("Money")
+
+	local ProductChosen = 1224873708
+	local ProductAmount = 1000000000000
+
+	for Product, Info in pairs(MoneyProducts) do
+		local RewardAmount = GameFunctions:GetMoneyProductReward(Product, PlayerIncome,Player)
+
+		if PlayerMoney + RewardAmount >= MoneyRequired and RewardAmount < ProductAmount then
+			ProductAmount = RewardAmount
+			ProductChosen = Product
+		end
+	end
+
+	return ProductChosen
+end
+
+function GameFunctions:GetRequiredGemProduct(GemsRequired)
+	local ChosenProduct = 1266975715
+	local ChosenAmount = 4250
+	for Product, Amount in pairs(GemProducts) do
+		if Amount > GemsRequired and Amount < ChosenAmount then
+			ChosenProduct = Product
+			ChosenAmount = Amount
+		end
+	end
+
+	return ChosenProduct
+end
+
+
 function GameFunctions:GetMoneyProductReward(Product, Income)
 	Product = tonumber(Product)
 	local Base1Reward = 500 + (Income+1)/3 * BASE_INCOME_REWARD

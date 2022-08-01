@@ -498,7 +498,8 @@ end
 if ProximityPrompt then
 	ProximityPrompt.Triggered:Connect(function(player)
 		if player == game.Players.LocalPlayer and not Paths.UI.Center.TeleportConfirmation.Visible and not Paths.UI.Center.BuyEgg.Visible and not game.Players.LocalPlayer:GetAttribute("BuyingEgg") then
-			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Clothing,true)
+			Modules.Store.ButtonClicked({Name = "Accessory"}, UI.Center.Store)
+			Modules.Buttons:UIOn(UI.Center.Store, true)
 		end
 	end)
 end
@@ -507,7 +508,8 @@ if prompts then
 	for i,v in pairs (prompts) do
 		v.ProximityPrompt.Triggered:Connect(function(player)
 			if player == game.Players.LocalPlayer then
-				Paths.Modules.Buttons:UIOn(Paths.UI.Center.Clothing,true)
+				Modules.Store.ButtonClicked({Name = "Accessory"}, UI.Center.Store)
+				Modules.Buttons:UIOn(UI.Center.Store, true)
 			end
 		end)
 	end
@@ -532,7 +534,7 @@ task.spawn(function()
 		end
 
 		for _, Section in ipairs(StoreSections.Accessory.Holder:GetChildren()) do
-			if Section.Name ~= "Buttons" then
+			if Section.Name ~= "Buttons" and Section.Name ~= "Bundles" then
 				Section.UIGridLayout.CellSize = UDim2.new(0.485, 0,0.59, 0)
 			end
 

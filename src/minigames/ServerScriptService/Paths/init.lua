@@ -44,6 +44,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.AllQuests = require(Paths.Services.RStorage.Modules.AllQuests)
+	Paths.Modules.AllAchievements = require(Paths.Services.RStorage.Modules.AllAchievements)
 	Paths.Modules.Penguins = require(script.Penguins)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
@@ -63,6 +64,7 @@ function Paths.Initiliaze()
 	
 	Paths.Modules.SpinTheWheel = require(script.SpinTheWheel)
 	Paths.Modules.Playtime = require(script.Playtime)
+	Paths.Modules.Achievements = require(script.Achievements)
 	Paths.Modules.Quests = require(script.Quests)
 
 	-- Store Modules

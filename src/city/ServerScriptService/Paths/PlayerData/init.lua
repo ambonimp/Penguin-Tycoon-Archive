@@ -11,7 +11,7 @@ local Remotes = Paths.Remotes
 
 --- Other Variables ---
 local Store = "PlayerData#RELEASE"
-local IsTesting = (game.GameId == 3425588324)
+local IsTesting = (game.GameId == 3425588324) or (game.GameId == 3662230549)
 if IsTesting then Store = "TESTINGSTORE3" end
 local IsQA = (game.GameId == 3425594443)
 if IsQA then Store = "QASTORE1" end
@@ -396,6 +396,21 @@ game.Players.PlayerAdded:Connect(function(Player)
 	else
 		Modules.Quests.getNewQuests(Player)
 	end
+
+	if not Data["Achievements"] then
+		Data["Achievements"] = {
+			false, -- Reconciled
+			{}
+		}
+		for Id in ipairs(Modules.AllAchievements) do
+			Data["Achievements"][2][tostring(Id)] = {
+				false, -- Completed and collected
+				0, -- Progress,
+			}
+		end
+
+	end
+
 	if PlayerData.sessionData[Player.Name]["Playtime"] and (os.time()-PlayerData.sessionData[Player.Name]["Playtime"][2]) < 5*60 then
 		Player:SetAttribute("JoinTime",PlayerData.sessionData[Player.Name]["Playtime"][1])
 	else

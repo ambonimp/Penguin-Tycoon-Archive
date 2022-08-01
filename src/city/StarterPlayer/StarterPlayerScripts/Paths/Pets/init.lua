@@ -44,7 +44,7 @@ local SMALL_GAMEPASS = 55102169
 local HUGE_GAMEPASS = 55102286
 
 local function getTotalPets()
-	return #PetsFrame.Pets.Pets:GetChildren()-1
+	return Modules.FuncLib.DictLength(RealData.PetsOwned)
 end
 
 local function UpdateStorage()
@@ -647,10 +647,12 @@ function OpenEdit(ID)
 end
 
 function Pets.LoadEgg(Island,Prompt)
-	Paths.Modules.Buttons:UIOff(Paths.UI.Center.UnlockedEggs,true)
 	if CurrentEggLoaded == Island then
 		Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
 		Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
+
+		Paths.Modules.Buttons:UIOff(Paths.UI.Center.UnlockedEggs,true)
+
 		return
 	end
 	if Prompt then
@@ -698,6 +700,9 @@ function Pets.LoadEgg(Island,Prompt)
 	BuyEgg.Bonus.Visible = false
 	Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
 	Paths.Modules.Buttons:UIOn(Paths.UI.Center.BuyEgg,true)
+
+	Paths.Modules.Buttons:UIOff(Paths.UI.Center.UnlockedEggs,true)
+
 end
 
 
@@ -991,7 +996,6 @@ PetsFrame.Capacity.More.MouseButton1Down:Connect(function()
 
 	Modules.Store.ButtonClicked({Name = "Gamepasses"}, UI.Center.Store)
 	Modules.Buttons:UIOn(UI.Center.Store, true)
-	 -- TODO: Point there with the UI
 end)
 
 
@@ -1001,7 +1005,6 @@ function openEgg(Image,Name,Rarity,Color)
 	UI.Top.Visible = false
 	UI.Right.Visible = false
 	UI.Bottom.Visible = false
-	BuyEgg.Visible = false
 	PetAdoptionUI.PetName.Visible = false
 	PetAdoptionUI.Icon.Visible = false
 	PetAdoptionUI.Rarity.Visible = false
@@ -1023,6 +1026,8 @@ function openEgg(Image,Name,Rarity,Color)
 
 	EggMesh.CFrame = default * CFrame.new(0,0,-10)
 	PetAdoptionUI.Visible = true
+	BuyEgg.Visible = false
+
 	local tweenLeft = TweenService:Create(EggMesh,TweenInfo.new(1,Enum.EasingStyle.Bounce,Enum.EasingDirection.Out),{
 		CFrame = default
 	})
@@ -1063,7 +1068,6 @@ function openEgg(Image,Name,Rarity,Color)
 	PetAdoptionUI.PetName:TweenSizeAndPosition(UDim2.new(.3,0,.108,0),UDim2.new(.5,0,.125,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
 	PetAdoptionUI.Icon:TweenSize(UDim2.new(.35,0,.5,0),Enum.EasingDirection.In,Enum.EasingStyle.Quad,.125,true)
 	Dependency.Sounds.Ring:Play()
-	task.wait(1)
 	local wasAuto = autoHatching
 	if not autoHatching then
 		task.wait(1)
@@ -1179,6 +1183,27 @@ task.spawn(function()
 		newIsland.LayoutOrder = i
 		newIsland.Parent = IndexPage.List
 	end]]
+end)
+
+UI.Center.UnlockedEggs:GetPropertyChangedSignal("Visible"):Connect(function()
+	if UI.Center.UnlockedEggs.Visible then
+		Services.ProximityPrompt.Enabled = false
+	elseif not BuyEgg.Visible then
+		Services.ProximityPrompt.Enabled = true
+	end
+end)
+
+BuyEgg:GetPropertyChangedSignal("Visible"):Connect(function()
+	if BuyEgg.Visible then
+		Services.ProximityPrompt.Enabled = false
+	else
+		if PetAdoptionUI.Visible then
+			Services.ProximityPrompt.Enabled = false
+		else
+			Services.ProximityPrompt.Enabled = true
+		end
+	end
+
 end)
 
 return Pets

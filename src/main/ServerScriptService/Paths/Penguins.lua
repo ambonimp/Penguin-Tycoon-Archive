@@ -115,7 +115,7 @@ Penguins["Change Name"] = function(Player, Penguin, NewName)
 					Penguin.Info.PenguinInfo.PenguinName.Text = FilteredName
 				elseif Penguin == Player.Character and Penguin:FindFirstChild("HumanoidRootPart") then
 					Data["My Penguin"]["Name"] = FilteredName
-					Penguin.HumanoidRootPart.CustomName.PlrName.Text = FilteredName
+					Penguin:SetAttribute("CustomName", FilteredName)
 				end
 
 

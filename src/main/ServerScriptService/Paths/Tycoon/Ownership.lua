@@ -18,7 +18,7 @@ end
 
 function Ownership:GetPlayerTycoon(Player)
 	local TycoonName = Player:GetAttribute("Tycoon")
-	return workspace.Tycoons:FindFirstChild(TycoonName)
+	return if TycoonName then workspace.Tycoons:FindFirstChild(TycoonName) else nil
 end
 
 function Ownership:ClaimTycoon(Tycoon, Player)

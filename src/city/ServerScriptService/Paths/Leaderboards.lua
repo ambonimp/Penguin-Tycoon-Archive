@@ -11,14 +11,14 @@ local Remotes = Paths.Remotes
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 --- Variables ---
-local LOOP_INTERVAL = 2.5 * 60
+local LOOP_INTERVAL = 8 * 60
 
 local MIN_VALUE = 0
 local MAX_VALUE = 10e50
 
 local MAX_LIST_SIZE = 200
 
-
+local Usernames = {}
 
 local LastRichestPlayer
 
@@ -43,13 +43,11 @@ function ShowRichestInServer()
 	local RichestNetworth = -1
 
 	for _, Player in ipairs (game.Players:GetPlayers()) do
-		local Leaderstats = Players:FindFirstChild("leaderstats")
+		local Leaderstats = Player:FindFirstChild("leaderstats")
 		if Leaderstats then
-			local Networth = Leaderstats:WaitForChild("Networth")
-
+			local Networth = Leaderstats:FindFirstChild("Networth")
 			if Networth then
 				Networth = Networth.Value
-
 				if Networth > RichestNetworth then
 					RichestNetworth = Networth
 					RichestPlayer = Player
@@ -60,7 +58,7 @@ function ShowRichestInServer()
 
 	end
 
-	if RichestPlayer and not (LastRichestPlayer or LastRichestPlayer.Name == RichestPlayer.Name) then
+	if RichestPlayer and not (LastRichestPlayer and LastRichestPlayer.Name == RichestPlayer.Name) then
 		if LastRichestPlayer then
 			LastRichestPlayer:Destroy()
 		end
@@ -82,34 +80,17 @@ end
 
 function IsValueValid(Stat, Store)
 	local Value = Store.value
-	local FixedValue
 	if Stat == "Skate Race Record" then
 		if Value < Modules.EventsConfig["Skate Race"].FastestPossible*100 then
-			FixedValue = 1200
+			return false
 		end
 	elseif Stat == "Sled Race" then
-		if Value < 100 then
-			FixedValue = Value * 100
+		if Value < 3000 then
+			return false
 		end
-
-		if (FixedValue or Value) < 3000 then
-			FixedValue = 6000
-		end
-
 	end
 
-	if FixedValue then
-		warn(Stat, Value, FixedValue)
-		task.spawn(function()
-			Services.DataStoreService:GetOrderedDataStore(Modules.LeaderboardDetails[Stat].DataStore):UpdateAsync(Store.key, function(oldVal)
-				return tonumber(FixedValue)
-			end)
-		end)
-		return false
-	else
-		return true
-	end
-
+	return true
 end
 
 task.spawn(function()
@@ -168,13 +149,9 @@ task.spawn(function()
 
 						-- Leaderboards don't take doubles
 						PlrStat = math.floor(Data["Stats"][Stat] or Data[Stat])
-						local succ, err = pcall(function()
+						pcall(function()
 							return DataStore:SetAsync(Player.UserId, PlrStat)
 						end)
-						if not succ then
-							warn(PlrStat, Stat, Player, err)
-						end
-
 					end
 
 				end
@@ -185,7 +162,7 @@ task.spawn(function()
 			local succ, err = pcall(function()
 				Pages = DataStore:GetSortedAsync(Details.smallestFirst, 100, MIN_VALUE, MAX_VALUE)
 			end)
-			if not succ then warn(err) end
+			if not warn then warn("PAGES ISSUE", Stat, err) end
 
 			if Pages then
 				local Removed = 0
@@ -211,32 +188,27 @@ task.spawn(function()
 
 						local UserId = Player.key
 
+						local UserName = Usernames[UserId]
+						if not UserName then
+							UserName = "Failed To Load"
+
+							if pcall(function()
+								UserName = game.Players:GetNameFromUserIdAsync(UserId)
+							end) then
+								Usernames[UserId] = UserName
+							end
+						end
+
+
 						Lbl.Visible = true
 						Lbl.Rank.Text = Rank .. "."
 						Lbl.Value.Text = if Details.Format then Details.Format(Value) else Modules.Format.FormatAbbreviated(Value)
-
-						task.spawn(function()
-							local UserName = "[Failed To Load]"
-
-							local Succ
-							local Tries = 0
-							repeat
-								Tries += 1
-								Succ = pcall(function()
-									UserName = game.Players:GetNameFromUserIdAsync(UserId)
-								end)
-							until Tries == 4 or Succ
-
-							Lbl.PlrName.Text = UserName
-							if Rank <= 3 and Rank >= 1 then
-								Leaderboard.Podiums["Penguin#" .. Rank].PlayerName.SurfaceGui.TextLabel.Text = UserName
-							end
-
-						end)
-
+						Lbl.PlrName.Text = UserName
 
 						if Rank <= 3 and Rank >= 1 then
 							local PenguinModel = Leaderboard["Penguin#" .. Rank]
+							Leaderboard.Podiums["Penguin#" .. Rank].PlayerName.SurfaceGui.TextLabel.Text = UserName
+
 							LoadPenguinModel(UserId, PenguinModel)
 						end
 
@@ -266,6 +238,13 @@ task.spawn(function()
 
 end)
 
+task.spawn(function()
+	while true do
+		task.wait(60 * 60)
+		Usernames = {}
+	end
+
+end)
 
 
 return Leaderboards

@@ -47,20 +47,14 @@ Eyes.Unlockables = {
 
 
 Eyes.All = {	
-	--- Default Hat(s) ---
+	--- Default Eye(s) ---
 	["Default"] = {Rarity = "Free", IsForSale = false};
 	["Angry"] = {Rarity = "Free", IsForSale = false};
 	["Surprised"] = {Rarity = "Free", IsForSale = false};
 	["Scared"] = {Rarity = "Free", IsForSale = false};
 	["Unamused"] = {Rarity = "Free", IsForSale = false};
 	
-	
-	
-	--- Unlockable Hats ---
-	
-	
-	
-	--- Purchaseable Hats ---
+	--- Purchaseable Eyes ---
 	["Excited"] = {Rarity = "Regular", IsForSale = true};
 	["Cheeky"] = {Rarity = "Regular", IsForSale = true};
 	["Crying"] = {Rarity = "Regular", IsForSale = true};
@@ -79,11 +73,7 @@ Eyes.All = {
 	["Huh"] = {Rarity = "Regular", IsForSale = true};
 	["Tired"] = {Rarity = "Regular", IsForSale = true};
 	
-	
-	
-	--- Event Hats ---
-	
-	
+	--- Event Eyes ---
 	
 	--- Code Eyes ---
 	["Heart Eyes"] = {Rarity = "Regular", IsForSale = false};

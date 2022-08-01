@@ -34,5 +34,8 @@ return {
     {Object = "New Island!#32", Icon = "rbxassetid://10159585153", Alias = "Woodcutting Island"},
     {Object = "New Island!#33", Icon = "rbxassetid://10159602497", Alias = "Sports Island"},
     {Object = "New Island!#34", Icon = "rbxassetid://10159602960", Alias = "Bee Island"},
-    {Object = "New Island!#35", Icon = "rbxassetid://10159602779", Alias = "Castle Island"}
+    {Object = "New Island!#35", Icon = "rbxassetid://10159602779", Alias = "Castle Island"},
+    {Object = "New Island!#36", Icon = "", Alias = "School"},
+    {Object = "New Island!#37", Icon = "", Alias = "Factory"},
+    {Object = "New Island!#38", Icon = "", Alias = "Zoo"}
 }

@@ -13,7 +13,7 @@ return {
 		DataStore = ("Hearts_v-RELEASE"),
 		smallestFirst = false;
 	};
-	["Skate Race Record"] = {
+	["Skate Race Record"] = { -- Time
 		DataStore = ("Skate Race Record_v-RELEASE"),
 		smallestFirst = true;
 		Format = function(Value)
@@ -24,7 +24,7 @@ return {
 		DataStore = ("Soccer_v-RELEASE"),
 		smallestFirst = false;
 	};
-	["Falling Tiles"] = {
+	["Falling Tiles"] = { -- Wins
 		DataStore = ("Falling Tiles_v-RELEASE"),
 		smallestFirst = false;
 	};
@@ -32,12 +32,12 @@ return {
 		DataStore = ("Candy Rush_v-RELEASE"),
 		smallestFirst = false;
 	};
-	["Ice Cream Extravaganza"] = {
+	["Ice Cream Extravaganza"] = { -- Wins
 		DataStore = ("Ice Cream Extravaganza_v-RELEASE"),
 		smallestFirst = false;
 	};
-	["Sled Race"] = {
-		DataStore = ("Sled Race_v-RELEASE1"),
+	["Sled Race"] = { -- Time
+		DataStore = ("2"),
 		smallestFirst = true;
 		Format = function(Value)
 --[[ 			if Value < 100 then

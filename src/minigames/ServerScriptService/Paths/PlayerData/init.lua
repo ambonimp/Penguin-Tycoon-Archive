@@ -11,7 +11,7 @@ local Remotes = Paths.Remotes
 
 --- Other Variables ---
 local Store = "PlayerData#RELEASE"
-local IsTesting = (game.GameId == 3425588324)
+local IsTesting = (game.GameId == 3425588324) or (game.GameId == 3662230549)
 if IsTesting then Store = "TESTINGSTORE3" end
 local IsQA = (game.GameId == 3425594443)
 if IsQA then Store = "QASTORE1" end
@@ -247,6 +247,19 @@ local function SetupNewStats(Player)
 		Data["Emotes"]["Cheering"] = true;
 	end
 
+	if not Data["Achievements"] then
+		Data["Achievements"] = {
+			false, -- Reconciled
+			{}
+		}
+		for Id in ipairs(Modules.AllAchievements) do
+			Data["Achievements"][2][tostring(Id)] = {
+				false, -- Completed and collected
+				0, -- Progress,
+			}
+		end
+
+	end
 
 	if not Data["Equipped Emotes"] then
 		Data["Equipped Emotes"] = {

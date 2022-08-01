@@ -93,8 +93,8 @@ EventsConfig["Egg Hunt"] = {
 	--["Tutorial"] = "Reach the end to win!",
 }
 
-if game.PlaceId == 9647797909 or game.PlaceId == 9731064019 then -- Testing
-	EventsConfig.INTERMISSION_INTERVAL = 10
+if game.PlaceId == 9647797909 then -- Testing
+	EventsConfig.INTERMISSION_INTERVAL = 15
 	EventsConfig.Names[9647797909] = "Falling Tiles"
 	EventsConfig[EventsConfig.Names[9647797909]].Duration = 20
 

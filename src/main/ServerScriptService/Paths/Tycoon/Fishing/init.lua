@@ -12,6 +12,14 @@ local DataStoreService = game:GetService("DataStoreService")
 local ServerStorage = game:GetService("ServerStorage")
 local EventHandler = ServerStorage:FindFirstChild("EventHandler")
 
+local FISH_RARITY_ACHIEVEMENTS = {
+	[config.Rarity.Common] = 1,
+	[config.Rarity.Rare] = 2,
+	[config.Rarity.Epic] = 3,
+	[config.Rarity.Legendary] = 4,
+	[config.Rarity.Mythic] = 5,
+}
+
 local REEL_DEBOUNCE = 2.9 -- seconds
 local MAXIMUM_THROW_DISTANCE = 100
 local ISLAND_RADIUS = 450
@@ -24,17 +32,6 @@ local RequestList = {}
 local itemTypes = config.ItemType
 
 local Fishing = {}
-local RewardQueue = {}
-
-local awards = {
-	["Common"] = 15,
-	["Rare"] = 30,
-	["Epic"] = 50,
-	["Legendary"] = 250,
-	["Mythic"] = 500,
-	["All"] = 1000,
-}
-local RarityAmount = {}
 local FishCategories = {
 	["Common"] = {},
 	["Rare"] = {},
@@ -50,64 +47,7 @@ for i,v in pairs (config.ItemList) do
 	end
 	table.insert(FishCategories["All"],i)
 end
-for i,v in pairs (FishCategories) do
-	RarityAmount[i] = #v
-end
 
-function checkFishRewards(Player)
-	local sessionData = modules.PlayerData.sessionData[Player.Name]
-	if sessionData then
-		if modules.PlayerData.sessionData[Player.Name]["Fish Rewards"] == nil then
-			modules.PlayerData.sessionData[Player.Name]["Fish Rewards"] = {}
-		end
-		local CaughtFish = sessionData["Fish Found"]
-		local CaughtJunk = sessionData["Junk Found"]
-		local ownedRarity = {
-			["Common"] = 0,
-			["Rare"] = 0,
-			["Epic"] = 0,
-			["Legendary"] = 0,
-			["Mythic"] = 0,
-		}
-		for ID,fishData in pairs (config.ItemList) do
-			if fishData.Rarity and CaughtFish[tostring(ID)] and CaughtFish[tostring(ID)] >= 1 and ownedRarity[fishData.Rarity] then
-				ownedRarity[fishData.Rarity] += 1
-			end
-		end
-		for rarity,amount in pairs (ownedRarity) do
-			if amount >= RarityAmount[rarity] and sessionData["Fish Rewards"][rarity] == nil then
-				modules.PlayerData.sessionData[Player.Name]["Fish Rewards"][rarity] = true
-				modules.Income:AddGems(Player, awards[rarity], "Fish Reward")
-				remotes.FishRewards:FireClient(Player,rarity,awards[rarity])
-			end
-		end
-
-		local total = 0
-		for i,v in pairs (ownedRarity) do
-			total += v
-		end
-
-		if total >= RarityAmount["All"] and sessionData["Fish Rewards"]["all"] == nil then
-			modules.Income:AddGems(Player, awards["All"], "Fish Reward")
-			remotes.FishRewards:FireClient(Player,"possible",awards["All"])
-		end
-
-		if CaughtJunk then
-			if CaughtJunk["51"] and CaughtJunk["51"] >= 200 and sessionData["Accessories"]["Boot Hat"] == nil then --boot
-				modules.Accessories:ItemAcquired(Player, "Boot Hat", "Accessory")
-				remotes.FishRewards:FireClient(Player,"Boot Hat")
-			end
-			if CaughtJunk["52"] and CaughtJunk["52"] >= 200 and sessionData["Accessories"]["Bottle Hat"] == nil then
-				modules.Accessories:ItemAcquired(Player, "Bottle Hat", "Accessory")
-				remotes.FishRewards:FireClient(Player,"Bottle Hat")
-			end
-			if CaughtJunk["53"] and CaughtJunk["53"] >= 200 and sessionData["Accessories"]["Seaweed Hat"] == nil then
-				modules.Accessories:ItemAcquired(Player, "Seaweed Hat", "Accessory")
-				remotes.FishRewards:FireClient(Player,"Seaweed Hat")
-			end
-		end
-	end
-end
 
 function Fishing.GetRandomId(chanceTable,Player)
 	if not chanceTable then
@@ -146,7 +86,9 @@ function Fishing.GetRandomId(chanceTable,Player)
 		if randomNumber >= previousValue and randomNumber <= entry.Percentage then
 			return entry.Id
 		end
+
 	end
+
 end
 
 function Fishing.FindNearestIsland(playerPosition)
@@ -301,6 +243,10 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 			modules.Income:AddGems(player, lootInfo.Gems, "Reward")
 			--end
 
+			if lootInfo.Id == 55 then -- Treasure chest
+				modules.Achievements.Progress(player, 10)
+			end
+
 			-- no need to save junk to index, just give money
 		elseif lootInfo.Type == itemTypes.Junk then
 			modules.Quests.GiveQuest(player,"Catch","Junk",config.ItemList[lootInfo.Id].Name,1)
@@ -312,10 +258,18 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 					["53"] = 0,
 				}
 			end
-			
 			if lootInfo.Id then
 				sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)] += 1
 				returnData.Amount = sessionData[player.Name]["Junk Found"][tostring(lootInfo.Id)]
+
+				if lootInfo.Id == 51 then -- Boots
+					modules.Achievements.Progress(player, 8)
+				elseif lootInfo.Id == 52 then -- Bottles
+					modules.Achievements.Progress(player, 9)
+				elseif lootInfo.Id == 53 then
+					modules.Achievements.Progress(player, 7)
+				end
+
 			end
 			modules.Income:AddMoney(player, returnData.Worth)
 			--end
@@ -330,7 +284,10 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 			if returnData.Enchanted then
 				returnData.Worth *= 10
 			end
-			modules.Quests.GiveQuest(player,"Catch",config.ItemList[lootInfo.Id].Rarity,"Fish",1)
+
+			local rarity = config.ItemList[lootInfo.Id].Rarity
+			modules.Quests.GiveQuest(player,"Catch", rarity,"Fish",1)
+
 			--if not AFKFishing then
 			modules.Income:AddMoney(player, returnData.Worth)
 			--end
@@ -346,11 +303,16 @@ function AddReward(player, returnData, hitPosition, AFKFishing)
 					fishFound[tostring(lootInfo.Id)] += 1
 				else
 					fishFound[tostring(lootInfo.Id)] = 1
+					modules.Achievements.Progress(player, 6) -- All fish in the index
+					modules.Achievements.Progress(player, FISH_RARITY_ACHIEVEMENTS[rarity])
 				end
+
 			end
+
 		end
-		checkFishRewards(player)
+
 	end
+
 end
 
 function Main(player, hitPosition, reroll, AFKFishing)
@@ -427,6 +389,34 @@ FishingRemote.OnServerEvent:Connect(function(player, handlingType, data)
 		return
 	end
 	FishingRemote:FireAllClients(player, handlingType, data)
+end)
+
+modules.Achievements.Reconciled:Connect(function(Data)
+	local JunkFound = Data["Junk Found"]
+	if JunkFound then
+		modules.Achievements.ReconcileSet(Data, 7, JunkFound["53"])
+		modules.Achievements.ReconcileSet(Data, 8, JunkFound["51"])
+		modules.Achievements.ReconcileSet(Data, 9, JunkFound["52"])
+	end
+
+
+	local FishFound = Data["Fish Found"]
+	local ReconcilingFishRarityAchievements = modules.FuncLib.TableClone(FISH_RARITY_ACHIEVEMENTS)
+	for Achievement, Id in pairs(ReconcilingFishRarityAchievements) do
+		if modules.Achievements.IsCompleted(Data, Id) then
+			ReconcilingFishRarityAchievements[Achievement] = nil
+		end
+	end
+	for _, Achievement in pairs(ReconcilingFishRarityAchievements) do
+		modules.Achievements.ReconcileReset(Data, Achievement)
+	end
+	for Id in pairs(FishFound) do
+		modules.Achievements.ReconcileIncrement(Data, ReconcilingFishRarityAchievements[config.ItemList[tonumber(Id)].Rarity])
+	end
+
+
+	modules.Achievements.ReconcileSet(Data, 6, modules.FuncLib.DictLength(FishFound)) -- Collect all fish in fish index
+
 end)
 
 return Fishing

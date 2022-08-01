@@ -8,125 +8,51 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
-
+local HAT_RARITY_ACHIEVEMENTS = {
+	Rare = 20,
+	Epic = 21,
+	Legendary = 22
+}
 
 --- Functions ---
 function Accessories:ItemAcquired(Player, Item, ItemType)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	
+
 	if Data then
-		local PlayerItems 
+		local Path
 		if ItemType == "Accessory" then
-			PlayerItems = Data["Accessories"]
+			Path = "Accessories"
 		elseif ItemType == "Eyes" then
-			PlayerItems = Data["Eyes"]
+			Path = "Eyes"
 		elseif ItemType == "Outfits" then
-			PlayerItems = Data["Outfits"]
+			Path = "Outfits"
 		end
-		
-		if not PlayerItems[Item] then
+
+		local PlayerItems = Data[Path]
+		local Info = Modules["All" .. Path].All[Item]
+		if Info and not PlayerItems[Item] then
 			PlayerItems[Item] = true
-			Remotes.Store:FireClient(Player, ItemType, Item, true)
 
-			if ItemType == "Outfits" then
-				Data["My Penguin"]["Outfit"] = Item
-				Modules.Character:EquipShirt(Player.Character,Item)
-			end
-		end
-	end
-end
-
-
-
---- Collecting Accessories ---
-local TouchDBs = {}
-
-for i, Accessory in pairs(workspace["Collectable Accessories"]:GetChildren()) do
-	local Reward = Accessory:GetAttribute("Reward")
-	
-	if Reward and Accessory:FindFirstChild("Circle") then
-		Accessory.Circle.Touched:Connect(function(Part)
-			if Part.Parent:FindFirstChild("Humanoid") then
-				local Char = Part.Parent
-				local Player = game.Players:GetPlayerFromCharacter(Char)
-				
-				if Char and Player and not TouchDBs[Player.Name] then
-					TouchDBs[Player.Name] = true
-					
-					Accessories:ItemAcquired(Player, Reward, "Accessory")
-					
-					task.wait(1)
-					TouchDBs[Player.Name] = nil
+			if ItemType == "Accessory" then
+				if Info.Achievement then
+					Modules.Achievements.Progress(Player, HAT_RARITY_ACHIEVEMENTS[Info.Rarity])
 				end
+			elseif ItemType == "Eyes" then
+				Modules.Achievements.Progress(Player, 23)
 			end
-		end)
-	end
-end
 
+			Remotes.Store:FireClient(Player, ItemType, Item, true)
+		else
+			warn("INVALID ITEM:", Item, ItemType)
+		end
+
+	end
+
+end
 
 
 --- Purchasing Accessories ---
 local PurchaseDBs = {}
-
-Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Item, ItemType, CurrencyType)
-	local data = Modules.PlayerData.sessionData[Player.Name]
-	
-	if data and ActionType == "Buy Item" and not PurchaseDBs[Player.Name] then
-		if ItemType ~= "Outfits" then
-			--if not Modules.PlayerData.sessionData[Player.Name][ItemType.." Rotation"][Item] then return end
-		end
-		
-		local n = "Accessories"
-		local Module 
-		if ItemType == "Accessory" then
-			Module = Modules.AllAccessories
-		elseif ItemType == "Eyes" then
-			n = ItemType
-			Module = Modules.AllEyes
-		elseif ItemType == "Outfits" then
-			n = ItemType
-			Module = Modules.AllOutfits
-		end
-
-		if data[n][Item] then return end
-		
-		if CurrencyType == "Robux" then
-			PurchaseDBs[Player.Name] = Item 
-			
-			local Info = Module.All[Item]
-			local ProductID = Module.RarityInfo[Info.Rarity].ID
-			
-			Services.MPService:PromptProductPurchase(Player, ProductID)
-			
-		elseif CurrencyType == "Gems" then
-			local Rarity = Module.All[Item].Rarity
-			
-			local Price = Module.RarityInfo[Rarity].PriceInGems
-			local PlayerGems = data.Gems
-			
-			if PlayerGems >= Price then
-				data.Gems -= Price
-				Player:SetAttribute("Gems", data.Gems)
-				Accessories:ItemAcquired(Player, Item, ItemType)
-			end
-		end
-
-	elseif ActionType == "Rotate Store" then
-		local Data = Modules.PlayerData.sessionData[Player.Name]
-
-		if Data then
-			local RotationTimer = Data["Rotation Timer"]
-
-			local TimeSinceRotation = os.time() - RotationTimer
-			local TimeUntilRotation = Modules.AllAccessories.RotationInterval - TimeSinceRotation
-
-			if TimeUntilRotation <= 10 then
-				Accessories:RefreshStore(Player)
-			end
-		end
-	end
-end)
-
 
 function Accessories:RefreshStore(Player)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
@@ -148,7 +74,7 @@ function Accessories:OutfitPurchased(Player)
 	if Modules.PlayerData.sessionData[Player.Name] and PurchaseDBs[Player.Name] then
 		local Outfit = PurchaseDBs[Player.Name]
 		Accessories:ItemAcquired(Player, Outfit, "Outfits")
-		wait()
+		task.wait()
 		PurchaseDBs[Player.Name] = nil
 	end
 end
@@ -158,7 +84,7 @@ function Accessories:AccessoryPurchased(Player)
 	if Modules.PlayerData.sessionData[Player.Name] and PurchaseDBs[Player.Name] then
 		local Accessory = PurchaseDBs[Player.Name]
 		Accessories:ItemAcquired(Player, Accessory, "Accessory")
-		wait()
+		task.wait()
 		PurchaseDBs[Player.Name] = nil
 	end
 end
@@ -167,10 +93,72 @@ function Accessories:EyesPurchased(Player)
 	if Modules.PlayerData.sessionData[Player.Name] and PurchaseDBs[Player.Name] then
 		local Eyes = PurchaseDBs[Player.Name]
 		Accessories:ItemAcquired(Player, Eyes, "Eyes")
-		wait()
+		task.wait()
 		PurchaseDBs[Player.Name] = nil
 	end
 end
 
+
+
+Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Item, ItemType, CurrencyType)
+	local data = Modules.PlayerData.sessionData[Player.Name]
+
+	if data and ActionType == "Buy Item" and not PurchaseDBs[Player.Name] then
+		if ItemType ~= "Outfits" then
+			--if not Modules.PlayerData.sessionData[Player.Name][ItemType.." Rotation"][Item] then return end
+		end
+		local n = "Accessories"
+		local Module
+		if ItemType == "Accessory" then
+			Module = Modules.AllAccessories
+		elseif ItemType == "Eyes" then
+			n = ItemType
+			Module = Modules.AllEyes
+		elseif ItemType == "Outfits" then
+			n = ItemType
+			Module = Modules.AllOutfits
+		end
+
+		if data[n][Item] then return end
+
+		if CurrencyType == "Robux" then
+			PurchaseDBs[Player.Name] = Item
+
+			local Info = Module.All[Item]
+			local ProductID = Module.RarityInfo[Info.Rarity].ID
+
+			Services.MPService:PromptProductPurchase(Player, ProductID)
+
+		elseif CurrencyType == "Gems" then
+			local Rarity = Module.All[Item].Rarity
+
+			local Price = Module.RarityInfo[Rarity].PriceInGems
+			local PlayerGems = data.Gems
+
+			if PlayerGems >= Price then
+				data.Gems -= Price
+				Player:SetAttribute("Gems", data.Gems)
+				Accessories:ItemAcquired(Player, Item, ItemType)
+			end
+		end
+
+	elseif ActionType == "Rotate Store" then
+		local Data = Modules.PlayerData.sessionData[Player.Name]
+
+		if Data then
+			local RotationTimer = Data["Rotation Timer"]
+
+			local TimeSinceRotation = os.time() - RotationTimer
+			local TimeUntilRotation = Modules.AllAccessories.RotationInterval - TimeSinceRotation
+
+			if TimeUntilRotation <= 10 then
+				Accessories:RefreshStore(Player)
+			end
+
+		end
+
+	end
+
+end)
 
 return Accessories
