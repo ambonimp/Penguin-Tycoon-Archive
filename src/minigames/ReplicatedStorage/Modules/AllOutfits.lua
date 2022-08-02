@@ -26,9 +26,9 @@ Outfits.Bundles = {
 Outfits.RarityInfo = {
 	["Free"] = {ID = 0000000000, PriceInRobux = 1, PriceInGems = 1};
 	["Event"] = {ID = 0000000000, PriceInRobux = 1000, PriceInGems = 100000};
-	["Rare"] = {ID = 1259048664, PriceInRobux = 149, PriceInGems = 115};
-	["Epic"] = {ID = 1259048717, PriceInRobux = 299, PriceInGems = 225};
-	["Legendary"] = {ID = 1259048739, PriceInRobux = 599, PriceInGems = 450};
+	["Rare"] = {ID = 1259048664, PriceInRobux = 99, PriceInGems = 125};
+	["Epic"] = {ID = 1259048717, PriceInRobux = 199, PriceInGems = 250};
+	["Legendary"] = {ID = 1259048739, PriceInRobux = 399, PriceInGems = 500};
 }
 
 --- Accessory Functions ---
@@ -63,58 +63,58 @@ Outfits.All = {
 	--- Default Outfit(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
 	--Rewards
-	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false};
-	["Royale Robe"] = {Rarity = "Free", IsForSale = false};
-	["Lobster"] = {Rarity = "Free", IsForSale = false};
-	["Wilco Shirt"] = {Rarity = "Free", IsForSale = false};
-	["Unicorn"] = {Rarity = "Free", IsForSale = false};
+	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Royale Robe"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Lobster"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Wilco Shirt"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Unicorn"] = {Rarity = "Free", IsForSale = false, Icon = ""};
 	--- Purchaseable Hats ---
 	-- Rares
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};
-	["Gardener"] = {Rarity = "Rare", IsForSale = true};
-	["Fisherman"] = {Rarity = "Rare", IsForSale = true};
-	["Farmer"] = {Rarity = "Rare", IsForSale = true};
-	["Nurse"] = {Rarity = "Rare", IsForSale = true};
-	["Paramedic"] = {Rarity = "Rare", IsForSale = true};
-	["Alien"] = {Rarity = "Rare", IsForSale = false};
-	["Dog Suit"] = {Rarity = "Rare", IsForSale = false};
-	["Cat Suit"] = {Rarity = "Rare", IsForSale = false};
+	["Gardener"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
+	["Fisherman"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
+	["Farmer"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
+	["Nurse"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
+	["Paramedic"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
+	["Alien"] = {Rarity = "Rare", IsForSale = false, Icon = ""};
+	["Dog Suit"] = {Rarity = "Rare", IsForSale = false, Icon = ""};
+	["Cat Suit"] = {Rarity = "Rare", IsForSale = false, Icon = ""};
 	-- Epics
-	["Steampunk"] = {Rarity = "Epic", IsForSale = true};
-	["Engineer"] = {Rarity = "Epic", IsForSale = true};
-	["Adventurer"] = {Rarity = "Epic", IsForSale = true};
-	["Caveman"] = {Rarity = "Epic", IsForSale = true};
-	["Sailor"] = {Rarity = "Epic", IsForSale = true};
-	["Lumberjack"] = {Rarity = "Epic", IsForSale = true};
-	["Tuxedo"] = {Rarity = "Epic",IsForSale = true};
-	["Frog"] = {Rarity = "Epic",IsForSale = true};
-	["Scientist"] = {Rarity = "Free", IsForSale = true};
-	["Turtle Suit"] = {Rarity = "Epic", IsForSale = false};
+	["Steampunk"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
+	["Engineer"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
+	["Adventurer"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
+	["Caveman"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
+	["Sailor"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
+	["Lumberjack"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
+	["Tuxedo"] = {Rarity = "Epic",IsForSale = true, Icon = ""};
+	["Frog"] = {Rarity = "Epic",IsForSale = true, Icon = ""};
+	["Scientist"] = {Rarity = "Free", IsForSale = true, Icon = ""};
+	["Turtle Suit"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
 	-- Legendaries
 	--["Red Coat"] = {Rarity = "Legendary", IsForSale = true};
-	["Firefighter"] = {Rarity = "Legendary", IsForSale = true};
-	["Chef"] = {Rarity = "Legendary", IsForSale = true};
-	["Astronaut"] = {Rarity = "Legendary", IsForSale = true};
-	["Police Officer"] = {Rarity = "Legendary", IsForSale = true};
-	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true};
-	["Bee"] = {Rarity = "Legendary", IsForSale = true};
-	["Parrot Suit"] = {Rarity = "Legendary", IsForSale = false};
+	["Firefighter"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
+	["Chef"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
+	["Astronaut"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
+	["Police Officer"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
+	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
+	["Bee"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
+	["Parrot Suit"] = {Rarity = "Legendary", IsForSale = false, Icon = ""};
 	--- Code Outfits ---
 	
 	--- Event Outfits ---
-	["Red Jersey"] = {Rarity = "Event", IsForSale = false};
-	["Blue Jersey"] = {Rarity = "Event", IsForSale = false};
+	["Red Jersey"] = {Rarity = "Event", IsForSale = false, Icon = ""};
+	["Blue Jersey"] = {Rarity = "Event", IsForSale = false, Icon = ""};
 
 	-- Mining Outfits
-	["Miner"] = {Rarity = "Free", IsForSale = false};
+	["Miner"] = {Rarity = "Free", IsForSale = false, Icon = ""};
 
 	-- Achievement
-	["Banana"] = {Rarity = "Free", IsForSale = false};
-	["Disco"] = {Rarity = "Free", IsForSale = false};
-	["Ghost"] = {Rarity = "Free", IsForSale = false};
-	["Mummy"] = {Rarity = "Free", IsForSale = false};
-	["Ninja"] = {Rarity = "Free", IsForSale = false};
-	["Mad Scientist"] = {Rarity = "Free", IsForSale = false};
+	["Banana"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Disco"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Ghost"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Mummy"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Ninja"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Mad Scientist"] = {Rarity = "Free", IsForSale = false, Icon = ""};
 
 }
 

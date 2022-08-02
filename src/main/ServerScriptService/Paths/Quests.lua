@@ -22,10 +22,19 @@ local function shallowCopy(original)
 	return copy
 end
 
-function getRandom(intbl,possible)
+function getRandom(intbl, possible, tycoonData)
     local amount = #possible
     local copy = shallowCopy(possible)
     local new = nil
+
+    -- If quest has an upgrade requirement, then don't show it
+    for i, copy in pairs(possible) do
+        local reqUpgrade = copy[5]
+        if reqUpgrade and not tycoonData[reqUpgrade] then
+            table.remove(copy, i)
+        end
+    end
+
     for i,v in pairs (intbl) do
         if table.find(copy,v) then
             table.remove(copy,table.find(copy,v))
@@ -78,7 +87,7 @@ end
 
 function Quests.getNewQuests(Player)
     local possibleTypes = shallowCopy(AllQuests.Types)
-
+    local Data = Modules.PlayerData.sessionData[Player.Name]
 
     local easy = possibleTypes[math.random(1,#possibleTypes)]
     table.remove(possibleTypes,table.find(possibleTypes,easy))
@@ -92,20 +101,18 @@ function Quests.getNewQuests(Player)
     table.remove(possibleTypes,table.find(possibleTypes,vip1))
     local vip2 = possibleTypes[math.random(1,#possibleTypes)]
 
-    local Data = Modules.PlayerData.sessionData[Player.Name]
-
     local currentQuests = {}
 
-    local newEasy = getRandom(currentQuests,AllQuests["Easy"][easy])
+    local newEasy = getRandom(currentQuests,AllQuests["Easy"][easy], Data.Tycoon)
     table.insert(currentQuests,newEasy[2])
-    local newMedium = getRandom(currentQuests,AllQuests["Medium"][medium])
+    local newMedium = getRandom(currentQuests,AllQuests["Medium"][medium], Data.Tycoon)
     table.insert(currentQuests,newMedium[2])
-    local newHard = getRandom(currentQuests,AllQuests["Hard"][hard])
+    local newHard = getRandom(currentQuests,AllQuests["Hard"][hard], Data.Tycoon)
     table.insert(currentQuests,newHard[2])
 
-    local newVip1 = getRandom(currentQuests,AllQuests["Medium"][vip1])
+    local newVip1 = getRandom(currentQuests,AllQuests["Medium"][vip1], Data.Tycoon)
     table.insert(currentQuests,newVip1[2])
-    local newVip2 = getRandom(currentQuests,AllQuests["Medium"][vip2])
+    local newVip2 = getRandom(currentQuests,AllQuests["Medium"][vip2], Data.Tycoon)
     table.insert(currentQuests,newVip2[2])
 
     Data["Quests"].Timer = os.time() + Quests.QuestResetTime

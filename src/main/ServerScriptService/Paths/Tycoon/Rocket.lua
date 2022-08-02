@@ -8,8 +8,8 @@ local Services = Paths.Services
 
 local function Unlock(Player)
     local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
-    if Tycoon.Tycoon:FindFirstChild("New Island!#12") and Tycoon.Tycoon:FindFirstChild("New Island!#12"):FindFirstChild("BrokenRocketShip") then
-        Tycoon.Tycoon:FindFirstChild("New Island!#12"):FindFirstChild("BrokenRocketShip"):Destroy()
+    if Tycoon.Tycoon:FindFirstChild("Icy Access#1") and Tycoon.Tycoon:FindFirstChild("Icy Access#1"):FindFirstChild("BrokenRocketShip") then
+        Tycoon.Tycoon:FindFirstChild("Icy Access#1"):FindFirstChild("BrokenRocketShip"):Destroy()
     end
 
 end
@@ -35,7 +35,7 @@ Remotes.RocketBuild.OnServerInvoke = function(Client, Item)
     if Data then
         local UnlockingData = Data["RocketUnlocked"]
 
-        local OwnsBrokenRocket  = Data.Tycoon["New Island!#12"]
+        local OwnsBrokenRocket = Data.Tycoon["Icy Access#1"]
         local OwnsIsland = Data.Tycoon[Modules.ProgressionDetails[Modules.Initiate.GetIslandIndex(Modules.BuildADetails.Rocket[Item])].Object]
 
         if not UnlockingData[1] and OwnsBrokenRocket and OwnsIsland then

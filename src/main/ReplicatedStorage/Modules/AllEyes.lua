@@ -9,7 +9,7 @@ local MPService = game:GetService("MarketplaceService")
 Eyes.RarityInfo = {
 	["Free"] = {ID = 0000000000, PriceInRobux = 1, PriceInGems = 1};
 	["Event"] = {ID = 0000000000, PriceInRobux = 1000, PriceInGems = 100000};
-	["Regular"] = {ID = 1232615468, PriceInRobux = 199, PriceInGems = 150};
+	["Regular"] = {ID = 1232615468, PriceInRobux = 49, PriceInGems = 60};
 }
 
 local Time_24Hours = 86400

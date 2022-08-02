@@ -47,7 +47,7 @@ function Placement:GetRelativePos(Tycoon, Item, IsButton)
 	elseif Item == "Plane#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Hot Springs#1")
 	elseif Item == "Rocketship#1" then
-		Button = Paths.Template.Buttons:FindFirstChild("New Island!#12")
+		Button = Paths.Template.Buttons:FindFirstChild("Icy Access#1")
 	end
 
 	if not Button then return end
@@ -94,7 +94,7 @@ function Placement:NewItem(Player, Item, IsAnimated)
 	elseif Item == "Plane#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Hot Springs#1")
 	elseif Item == "Rocketship#1" then
-		Button = Paths.Template.Buttons:FindFirstChild("New Island!#12")
+		Button = Paths.Template.Buttons:FindFirstChild("Icy Access#1")
 	end
 
 	if not Button then return end
@@ -151,7 +151,7 @@ function Placement:NewItem(Player, Item, IsAnimated)
 			Modules.Vehicles:SetUpSailboatBuild(Player)
 		elseif Item == "Hot Springs#1" then
 			Modules.Vehicles:SetUpPlaneBuild(Player)
-		elseif Item == "New Island!#12" then
+		elseif Item == "Icy Access#1" then
 			Modules.Rocket.Load(Player)
 		end
 	end)

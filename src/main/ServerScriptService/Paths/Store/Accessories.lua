@@ -215,13 +215,13 @@ Modules.Achievements.Reconciled:Connect(function(Data)
 	if not Modules.Achievements.IsCompleted(Data, 23) then
 		Modules.Achievements.ReconcileReset(Data, 23)
 		for EyePlural in pairs(Data.Eyes) do
-			if Modules.AllEyes.All[EyePlural].ForSale then
+			if Modules.AllEyes.All[EyePlural].IsForSale then
 				Modules.Achievements.ReconcileIncrement(Data, 23)
 			end
 		end
 	end
 
-	if not Modules.Achievements.IsCompleted(Data, 23) then
+	if not Modules.Achievements.IsCompleted(Data, 13) then
 		Modules.Achievements.ReconcileReset(Data, 13)
 		for _, Accessory in pairs(workspace["Collectable Accessories"]:GetChildren()) do
 			local Reward = Accessory:GetAttribute("Reward")

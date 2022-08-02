@@ -991,14 +991,6 @@ UI.Right.Buttons.Backpack.MouseButton1Down:Connect(function()
 	end
 end)
 
-PetsFrame.Capacity.More.MouseButton1Down:Connect(function()
-	Modules.Buttons:UIOff(PetsFrame, true)
-
-	Modules.Store.ButtonClicked({Name = "Gamepasses"}, UI.Center.Store)
-	Modules.Buttons:UIOn(UI.Center.Store, true)
-end)
-
-
 function openEgg(Image,Name,Rarity,Color)
 	openingEgg = true
 	UI.Left.Visible = false

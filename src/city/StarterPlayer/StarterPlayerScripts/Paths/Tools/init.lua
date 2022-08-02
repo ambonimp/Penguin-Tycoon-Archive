@@ -1,4 +1,3 @@
-local DataStoreService = game:GetService("DataStoreService")
 local TweenService = game:GetService("TweenService")
 local Tools = {}
 
@@ -10,35 +9,17 @@ local Services = Paths.Services
 local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
-local NewItemUI = Paths.UI.Full.NewItem
-local LastAdded = false
-
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
-
---- Tool Variables ---
-local TOOL_EXCEPTIONS = {
-	["Gold Axe"] = "Axe",
-	["Gold Fishing Rod"] = "Fishing Rod",
-	["Powered Glider"] = "Glider",
-	["Gold Pickaxe"] = "Pickaxe"
-}
-
-local ACCEPTABLE_TOOLS = {
-	["Glider"] = true,
-	["Powered Glider"] = true
-}
-
--- Always appear at the end
-local PINNED_TOOLS = {
-	["Vehicle Spawner"] = true
-}
 
 local KEYBINDS = {
 	[Enum.KeyCode.One] = 1, [Enum.KeyCode.Two] = 2, [Enum.KeyCode.Three] = 3, [Enum.KeyCode.Four] = 4, [Enum.KeyCode.Five] = 5,
 	[Enum.KeyCode.Six] = 6, [Enum.KeyCode.Seven] = 7, [Enum.KeyCode.Eight] = 8, [Enum.KeyCode.Nine] = 9, [Enum.KeyCode.Zero] = 0,
 }
 
+
 local Owned
+local NewItemUI = Paths.UI.Full.NewItem
+
 local Pinned = {}
 local CurrentlyEquipped = false
 
@@ -54,7 +35,7 @@ local function OpenNewItem(Tool)
 
 	-- Setup accessory info
 	NewItemUI.ItemName.Text = Tool
-	NewItemUI.ItemIcon.Image = "rbxgameasset://Images/"..Tool.."_Tool"
+	NewItemUI.ItemIcon.Image = Modules.AllTools[Tool].Icon or "rbxgameasset://Images/"..Tool.."_Tool"
 
 	-- Play animation
 	NewItemUI:TweenPosition(UDim2.new(0, 0, 0, -50), "Out", "Quart", 0.4, true)
@@ -100,15 +81,19 @@ local function LoadTools(Whitelist)
 
 	Whitelist = Whitelist or Owned
 	for Tool in pairs(Owned) do
-		if Whitelist[Tool] and ACCEPTABLE_TOOLS[Tool] then
+		if Whitelist[Tool] then
 			table.insert(Adding, Tool)
 		end
 	end
 
-	for name,exception in pairs (TOOL_EXCEPTIONS) do
-		if table.find(Adding,name) and table.find(Adding,exception) then
-			table.remove(Adding,table.find(Adding,exception))
+	for Tool, Info in pairs(Modules.AllTools) do
+		local Replacee = Info.Replacee
+		if Replacee then
+			if table.find(Adding, Tool) and table.find(Adding, Replacee) then
+				table.remove(Adding, table.find(Adding, Replacee))
+			end
 		end
+
 	end
 
 	for _, Tool in ipairs(Adding) do
@@ -117,22 +102,28 @@ local function LoadTools(Whitelist)
 
 end
 
+
 --- Tool Functions ---
 function Tools.AddTool(Tool, isNew)
-	if Paths.UI.Tools:FindFirstChild(Tool) then return end
+	local Info = Modules.AllTools[Tool]
+	if not Info then return end
 
-	if TOOL_EXCEPTIONS[Tool] then
-		Tools.RemoveTool(TOOL_EXCEPTIONS[Tool])
+	if Paths.UI.Tools:FindFirstChild(Tool) then return end
+	-- if IS_QA and string.find(Tool, "Gold") then return end
+
+	local Replacee = Modules.AllTools[Tool].Replacee
+	if Replacee then
+		Tools.RemoveTool(Replacee)
 	end
 
 	local Template = Dependency.ToolTemplate:Clone()
 	Template.Name = Tool
-	Template.ToolIcon.Image = "rbxgameasset://Images/"..Tool.."_Tool"
+	Template.ToolIcon.Image = Info.Icon or "rbxgameasset://Images/"..Tool.."_Tool"
 
 	local ToolCount = #Paths.UI.Tools:GetChildren() - 1
 	local Keybind = ToolCount + 1
 
-	if not PINNED_TOOLS[Tool] then
+	if not Info.Pinned then
 		Keybind -= #Pinned
 		for _, Button in pairs(Pinned) do
 			local ShiftedKeybind = Button.LayoutOrder + 1
@@ -159,14 +150,18 @@ function Tools.AddTool(Tool, isNew)
 	if isAnimating then
 		task.defer(function()
 			while Template:GetAttribute("Animating") and Template.Parent and Template:FindFirstChild("BG") do
-				local tween = TweenService:Create(Template.BG,TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(240, 202, 34)})
+				local tween = TweenService:Create(Template:WaitForChild("BG"),TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(240, 202, 34)})
 				tween:Play()
 				task.wait(.4)
-				local tween = TweenService:Create(Template.BG,TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(48, 176, 255)})
+				local tween = TweenService:Create(Template:WaitForChild("BG"),TweenInfo.new(.3),{BackgroundColor3 = Color3.fromRGB(48, 176, 255)})
 				tween:Play()
 				task.wait(.3)
 			end
 		end)
+	end
+
+	if Tool == "Fishing Rod" and isNew then
+		Remotes.Tools:FireServer("Equip Tool", Tool)
 	end
 
 end
@@ -185,7 +180,7 @@ function Tools.RemoveTool(Tool)
 		local Keybind = Button.LayoutOrder
 		Button:Destroy()
 
-		if PINNED_TOOLS[Tool] then
+		if Modules.AllTools[Tool].Pinned then
 			table.remove(Pinned, table.find(Pinned, Button))
 		end
 

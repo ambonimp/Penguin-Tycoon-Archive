@@ -12,7 +12,6 @@ local Remotes = Paths.Remotes
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 local isStillPlaying = 0
-local IS_QA = (game.GameId == 3425594443)
 
 local KEYBINDS = {
 	[Enum.KeyCode.One] = 1, [Enum.KeyCode.Two] = 2, [Enum.KeyCode.Three] = 3, [Enum.KeyCode.Four] = 4, [Enum.KeyCode.Five] = 5,
@@ -84,7 +83,7 @@ local function LoadTools(Whitelist)
 
 	Whitelist = Whitelist or PlayerTools
 	for Tool in pairs(PlayerTools) do
-		if Whitelist[Tool] then
+		if Whitelist[Tool] and not Modules.AllTools[Tool].Manual then
 			table.insert(Adding, Tool)
 		end
 	end
@@ -111,7 +110,6 @@ function Tools.AddTool(Tool, isNew)
 	local Info = Modules.AllTools[Tool]
 
 	if Paths.UI.Tools:FindFirstChild(Tool) then return end
-	-- if IS_QA and string.find(Tool, "Gold") then return end
 
 	local Replacee = Modules.AllTools[Tool].Replacee
 	if Replacee then

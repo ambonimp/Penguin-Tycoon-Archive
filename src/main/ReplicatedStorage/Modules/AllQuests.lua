@@ -14,7 +14,7 @@ local AllQuests = {
 			{"Minigame","Candy Rush",50,"Collect 50 candy in candy rush"},
 			{"Minigame","Ice Cream Extravaganza",50,"Collect 50 ice cream in ice cream extravanza"},
 			{"Minigame","Soccer",3,"Score 3 goals in soccer"},
-			{"Woodcutting","Tree",20,"Chop 20 trees"}
+			{"Woodcutting","Tree",20,"Chop 20 trees", "Axe#1"}
 		},
 		
 	},
@@ -33,7 +33,7 @@ local AllQuests = {
 			{"Minigame","Candy Rush",100,"Collect 100 candy in candy rush"},
 			{"Minigame","Ice Cream Extravaganza",100,"Collect 100 ice cream in ice cream extravanza"},
 			{"Minigame","Soccer",5,"Score 5 goals in soccer"},
-			{"Woodcutting","Tree",60,"Chop 60 trees"}
+			{"Woodcutting","Tree",60,"Chop 60 trees", "Axe#1"}
 		},
 		
 	},
@@ -52,7 +52,7 @@ local AllQuests = {
 			{"Minigame","Candy Rush",250,"Collect 250 candy in candy rush"},
 			{"Minigame","Ice Cream Extravaganza",200,"Collect 200 ice cream in ice cream extravanza"},
 			{"Minigame","Soccer",15,"Score 15 goals in soccer"},
-			{"Woodcutting","Tree",120,"Chop 120 trees"}
+			{"Woodcutting","Tree",120,"Chop 120 trees", "Axe#1"}
 		},
 		
 	},

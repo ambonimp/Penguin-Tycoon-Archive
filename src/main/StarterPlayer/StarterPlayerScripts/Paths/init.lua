@@ -123,15 +123,6 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Achievements", script.Milestones.Achievements)
 	ModuleLoader.Register("Quests", script.Milestones.Quests)
 
-	-- print("store modules")
-	-- Store Modules
-	ModuleLoader.Register("Store", script.Store)
-	ModuleLoader.Register("Gamepasses", script.Store.Gamepasses)
-	ModuleLoader.Register("Money", script.Store.Money)
-	ModuleLoader.Register("Gems", script.Store.Gems)
-	ModuleLoader.Register("Boosts", script.Store.Boosts)
-	ModuleLoader.Register("Accessories", script.Store.Accessories)
-
 	-- print("penguin modules")
 	-- Penguin Modules
 	ModuleLoader.Register("PenguinsUI", script.Penguins.PenguinsUI)
@@ -160,6 +151,15 @@ function Paths.Initiliaze()
 
 	ModuleLoader.Register("SettingDetails", Paths.Services.RStorage.Modules.SettingDetails)
 	ModuleLoader.Register("Settings", script.Settings)
+
+	-- print("store modules")
+	-- Store Modules
+	ModuleLoader.Register("Store", script.Store)
+	ModuleLoader.Register("Gamepasses", script.Store.Gamepasses)
+	ModuleLoader.Register("Money", script.Store.Money)
+	ModuleLoader.Register("Gems", script.Store.Gems)
+	ModuleLoader.Register("Boosts", script.Store.Boosts)
+	ModuleLoader.Register("Accessories", script.Store.Accessories)
 
 	ModuleLoader.Register("Leaderboards", script.Leaderboards)
 

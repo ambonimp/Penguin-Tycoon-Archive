@@ -29,6 +29,12 @@ local ClothingSections = UI.Center.Clothing.Sections
 
 local NewItemUI = UI.Full.NewItem
 
+local InfoModules = {
+	["Accessory"] = Modules.AllAccessories,
+	["Eyes"] = Modules.AllEyes,
+	["Outfits"] = Modules.AllOutfits,
+}
+
 local UnlockItems = {
 	"Bunny Ears","Feather Hat","Pirate Captain Hat","Straw Hat"
 }
@@ -92,7 +98,7 @@ function Accessories:NewItem(Item, ItemType)
 	Template.Name = Item
 
 	if ItemType ~= "Outfits" then
-		Template.AccessoryIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
+		Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	else
 		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
 		if Model then
@@ -103,14 +109,7 @@ function Accessories:NewItem(Item, ItemType)
 	Template.AccessoryName.Text = Item
 
 
-	local Module
-	if ItemType == "Accessory" then
-		Module = Modules.AllAccessories
-	elseif ItemType == "Eyes" then
-		Module = Modules.AllEyes
-	elseif ItemType == "Outfits" then
-		Module = Modules.AllOutfits
-	end
+	local Module = InfoModules[ItemType]
 
 	local Rarity = assert(Module.All[Item], (Item or "NIL ITEM") .. " " .. "Item").Rarity
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
@@ -242,7 +241,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	NewItemUI.ItemName.Text = Item
 
 	if ItemType ~= "Outfits" then
-		NewItemUI.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
+		NewItemUI.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 		NewItemUI.ViewportFrame.Visible = false
 		NewItemUI.ItemIcon.Visible = true
 	else
@@ -278,14 +277,7 @@ end)
 
 --- Setup Accessory Store ---
 local function NewStoreTemplate(Item, ItemType)
-	local Module
-	if ItemType == "Accessory" then
-		Module = Modules.AllAccessories
-	elseif ItemType == "Eyes" then
-		Module = Modules.AllEyes
-	elseif ItemType == "Outfits" then
-		Module = Modules.AllOutfits
-	end
+	local Module = InfoModules[ItemType]
 	
 	local Rarity = Module.All[Item].Rarity
 	local Template = Dependency.ItemStoreTemplate:Clone()
@@ -295,7 +287,7 @@ local function NewStoreTemplate(Item, ItemType)
 		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
 		addModelToViewport(Model,Template)
 	else
-		Template.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
+		Template.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	end
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.PurchaseRobux.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInRobux)
