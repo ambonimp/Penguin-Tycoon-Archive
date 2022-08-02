@@ -218,7 +218,8 @@ function PlayerData.Defaults(Player)
 	Returning["Quests"] = {}
 	Returning["Achievements"] = {
 		false, -- Reconciled
-		{}
+		{},
+		false, -- Reconciled 2
 	}
 	for Id in ipairs(Modules.AllAchievements) do
 		Returning["Achievements"][2][tostring(Id)] = {
@@ -614,9 +615,9 @@ game.Players.PlayerAdded:Connect(function(Player)
 		end
 	end
 
-	if not Data.Achievements[1] then-- For players who have played prior to the addition of quests, load their data
+	if not Data.Achievements[3] then-- For players who have played prior to the addition of quests, load their data
 		Modules.Achievements.Reconciled:Fire(Data)
-		Data.Achievements[1] = true
+		Data.Achievements[3] = true
 	end
 
 	-- TESTING

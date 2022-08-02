@@ -25,7 +25,7 @@ local StoreSections = UI.Center.Store.Sections
 local bundleCons = {}
 local NewItemUI = UI.Full.NewItem
 
-local Modules = {
+local InfoModules = {
 	["Accessory"] = Modules.AllAccessories,
 	["Eyes"] = Modules.AllEyes,
 	["Outfits"] = Modules.AllOutfits,
@@ -91,7 +91,7 @@ function Accessories:NewItem(Item, ItemType)
 	Template.Name = Item
 
 	if ItemType ~= "Outfits" then
-		Template.AccessoryIcon.Image = Modules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
+		Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	else
 		if Item ~= "None" then
 			local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
@@ -104,7 +104,7 @@ function Accessories:NewItem(Item, ItemType)
 	Template.AccessoryName.Text = Item
 	
 
-	local Module = Modules[ItemType]
+	local Module = InfoModules[ItemType]
 
 	local Rarity = assert(Module.All[Item], Item).Rarity
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
@@ -235,7 +235,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	NewItemUI.ItemName.Text = Item
 
 	if ItemType ~= "Outfits" then
-		NewItemUI.ItemIcon.Image = Modules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
+		NewItemUI.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 		NewItemUI.ViewportFrame.Visible = false
 		NewItemUI.ItemIcon.Visible = true
 		if NewItemUI.ViewportFrame:FindFirstChildOfClass("Model") then
@@ -289,7 +289,7 @@ local function NewStoreTemplate(Item, ItemType)
 		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
 		addModelToViewport(Model,Template)
 	else
-		Template.ItemIcon.Image = Modules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
+		Template.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	end
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.PurchaseRobux.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInRobux)

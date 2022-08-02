@@ -5,7 +5,7 @@ return {
     ["Axe"] = {Icon = "rbxassetid://10420431079", Pinned = false},
     ["Gold Axe"] = {Icon = "rbxassetid://10420430475", Pinned = false, Replacee = "Axe"},
     ["Pickaxe"] = {Icon = "rbxassetid://10420430123", Pinned = false},
-    ["Gold Pickaxe"] = {Icon = "rbxassetid://10420430313", Replacee = "Gold Pickaxe"},
+    ["Gold Pickaxe"] = {Icon = "rbxassetid://10420430313", Replacee = "Pickaxe"},
     ["Fishing Rod"] = {Icon = "rbxassetid://10420430896", Pinned = false},
     ["Gold Fishing Rod"] = {Icon = "rbxassetid://10420466275", Pinned = false, Replacee = "Fishing Rod"},
     ["Rainbow Fishing Rod"] = {Icon = "rbxassetid://10420429904", Pinned = false},

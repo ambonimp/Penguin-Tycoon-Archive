@@ -162,14 +162,14 @@ Accessories.All = {
 
 
 	--- Code Hats ---
-	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
-	["Miner Hat"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
+	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false};
+	["Miner Hat"] = {Rarity = "Epic", IsForSale = false};
 
 
 	--- Event Hats ---
-	["Valentine's Day"] = {Rarity = "Event", IsForSale = false, Icon = ""};
-	["Easter Basket"] = {Rarity = "Event", IsForSale = false, Icon = ""};
-	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false, Icon = ""};
+	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};
+	["Easter Basket"] = {Rarity = "Event", IsForSale = false};
+	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false};
 
 	-- Mining Hats ===
 	["Hard Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420226495"};
@@ -186,7 +186,7 @@ Accessories.All = {
 	["Mouse Ears"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420211743"};
 	["Pirate Bandana"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420211164"};
 	["Sweatband"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420208670"};
-	["Thug Life Glasses"] = {Rarity = "Free", IsForSale = false}, Icon = "rbxassetid://10420428291";
+	["Thug Life Glasses"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420428291"};
 	["Propeller Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420209874"};
 
 }

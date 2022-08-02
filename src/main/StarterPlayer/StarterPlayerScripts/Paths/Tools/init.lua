@@ -114,8 +114,8 @@ function Tools.AddTool(Tool, isNew)
 	-- if IS_QA and string.find(Tool, "Gold") then return end
 
 	local Replacee = Modules.AllTools[Tool].Replacee
-	if  Replacee then
-		Tools.RemoveTool(Replacee[Tool])
+	if Replacee then
+		Tools.RemoveTool(Replacee)
 	end
 
 	local Template = Dependency.ToolTemplate:Clone()

@@ -193,30 +193,43 @@ Remotes.Store.OnServerEvent:Connect(function(Player, ActionType, Item, ItemType,
 end)
 
 Modules.Achievements.Reconciled:Connect(function(Data)
-	for _, Achievement in pairs(HAT_RARITY_ACHIEVEMENTS) do
+	local ReconcilingHatRarityAchievements = Modules.FuncLib.TableClone(HAT_RARITY_ACHIEVEMENTS)
+	for Achievement, Id in pairs(ReconcilingHatRarityAchievements) do
+		if Modules.Achievements.IsCompleted(Data, Id) then
+			ReconcilingHatRarityAchievements[Achievement] = nil
+		end
+	end
+
+	for _, Achievement in pairs(ReconcilingHatRarityAchievements) do
 		Modules.Achievements.ReconcileReset(Data, Achievement)
 	end
 
 	for Hat in pairs(Data.Accessories) do
 		local Info = Modules.AllAccessories.All[Hat]
 		if Info.Achievement then
-			Modules.Achievements.ReconcileIncrement(Data, HAT_RARITY_ACHIEVEMENTS[Info.Rarity])
+			Modules.Achievements.ReconcileIncrement(Data, ReconcilingHatRarityAchievements[Info.Rarity])
 		end
 	end
 
-	Modules.Achievements.ReconcileReset(Data, 23)
-	for EyePlural in pairs(Data.Eyes) do
-		if Modules.AllEyes.All[EyePlural].ForSale then
-			Modules.Achievements.ReconcileIncrement(Data, 23)
+
+	if not Modules.Achievements.IsCompleted(Data, 23) then
+		Modules.Achievements.ReconcileReset(Data, 23)
+		for EyePlural in pairs(Data.Eyes) do
+			if Modules.AllEyes.All[EyePlural].ForSale then
+				Modules.Achievements.ReconcileIncrement(Data, 23)
+			end
 		end
 	end
 
-	Modules.Achievements.ReconcileReset(Data, 13)
-	for _, Accessory in pairs(workspace["Collectable Accessories"]:GetChildren()) do
-		local Reward = Accessory:GetAttribute("Reward")
+	if not Modules.Achievements.IsCompleted(Data, 23) then
+		Modules.Achievements.ReconcileReset(Data, 13)
+		for _, Accessory in pairs(workspace["Collectable Accessories"]:GetChildren()) do
+			local Reward = Accessory:GetAttribute("Reward")
 
-		if Reward and Data.Accessories[Reward] then
-			Modules.Achievements.ReconcileIncrement(Data, 13)
+			if Reward and Data.Accessories[Reward] then
+				Modules.Achievements.ReconcileIncrement(Data, 13)
+			end
+
 		end
 
 	end

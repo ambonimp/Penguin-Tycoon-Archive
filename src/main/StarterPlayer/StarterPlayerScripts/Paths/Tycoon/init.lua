@@ -26,7 +26,7 @@ end
 -- Collecting
 local function LoadCollecting(Hitbox)
 	if not Hitbox or Hitbox.Name ~= "Hitbox" then return end
-	warn("HELLO")
+
 	local Db
 	TycoonSession["Collect"] = Hitbox.Touched:Connect(function(Hit)
 		local Character = Paths.Player.Character
