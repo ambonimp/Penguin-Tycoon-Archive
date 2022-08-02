@@ -92,9 +92,13 @@ coroutine.wrap(function()
 						am = 2
 					end
 					tweenModel(v,v:GetPrimaryPartCFrame()*CFrame.Angles(math.rad(math.random(-am,am)),0,math.rad(math.random(-am,am))))
+
 					Remotes.Axe:FireServer(v)
+					Modules.Index.TreeCut(v.Name)
 				end
+
 			end
+
 		elseif Animation then
 			Animation:Stop()
 		end

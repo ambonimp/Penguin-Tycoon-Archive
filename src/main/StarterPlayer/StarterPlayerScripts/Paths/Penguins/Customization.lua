@@ -98,6 +98,8 @@ end
 local UIToReOpen = nil
 
 function Customization:EnterUI(Penguin, PreviousUI)
+	Services.ProximityPrompt.Enabled = false
+
 	UIToReOpen = PreviousUI
 	local CameraAngleCF = nil
 
@@ -234,6 +236,8 @@ function Customization:EnterUI(Penguin, PreviousUI)
 end
 
 function Customization:ExitUI()
+	Services.ProximityPrompt.Enabled = true
+
 	-- Make plr visible
 	Modules.Character:Visible()
 	Modules.Character:Unfreeze()

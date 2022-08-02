@@ -29,12 +29,7 @@ local AllGamepasses = {
 	{47438416,"Catch fish twice as fast and increase the chance of catching rainbow fish!"}, -- rainbow fishing rod,
 	{47438471,"Double gems from everything!"}, -- x2 gems
 	{47438595,"Ability to use the map in Penguin City!"}, -- map teleport
-	{49090546, "Capture 3 fish per cast!"},
 	{52724179, "Double money from ores mined!"}, -- Gold Pickaxe
-	{55102169, "Add 100 pet storage space!"},
-	{55102286, "Add 300 pet storage space!"},
-	{56637668, "Auto Hatch eggs!"},
-	{56844198, "Increases your egg luck by 20%"},
 	{58998843, "Instantly chop trees and x2 income from them!"},
 	{66800606, "Earn money instantly"}
 }

@@ -38,6 +38,15 @@ local rarityLayoutNumbers = {
 	["Event"] = 100000;
 }
 
+local TREES = {
+	Oak = "rbxassetid://10159607815",
+	Birch = "rbxassetid://10159608368",
+	Spruce = "rbxassetid://10159607587",
+	Acacia = "rbxassetid://10159608574",
+	Jungle = "rbxassetid://10159607982",
+	Blossom = "rbxassetid://10159608192",
+}
+
 
 
 --- UI Variables ---
@@ -157,12 +166,14 @@ function Index.FishCaught(fishInfo, isNew)
 			end
 			playerEnchantedFish[tostring(fishInfo.Id)] += 1
 			Template.EnchantedFishAmount.Text = "x"..playerEnchantedFish[tostring(fishInfo.Id)]
-			
+
 		else
 			playerFish[tostring(fishInfo.Id)] += 1
 			Template.FishAmount.Text = "x"..playerFish[tostring(fishInfo.Id)]
 		end
+
 	end
+
 end
 
 function Index.ItemObtained(Info)
@@ -177,6 +188,11 @@ end
 function Index.OreCollected(Level)
 	local Ore = modules.MiningDetails[Level].Ore
 	indexUI.Sections.Mining.Holder.List[Level].Mined.Text = string.format("%s: %s mined", Ore, remotes.GetStat:InvokeServer("Mining").Mined[Ore])
+end
+
+function Index.TreeCut(Tree)
+	local Lbl =  indexUI.Sections.Woodcutting.Holder.List:FindFirstChild(Tree)
+	Lbl.Cut.TextLabel.Text = string.format("%s chopped", remotes.GetStat:InvokeServer("Woodcutting").Cut[Tree])
 end
 
 -- Loading fish
@@ -323,11 +339,25 @@ local function LoadAllOres()
 	end
 end
 
+local function LoadAllTrees()
+	for Tree, Icon in pairs(TREES) do
+		local Lbl = Dependency.TreeTemplate:Clone()
+		Lbl.Parent = indexUI.Sections.Woodcutting.Holder.List
+		Lbl.Name = Tree
+		Lbl.Cut.Icon.Image = Icon
+
+		Index.TreeCut(Tree)
+
+	end
+
+end
+
 
 task.spawn(function()
 	LoadAllFish()
 	LoadAllItems()
 	LoadAllOres()
+	LoadAllTrees()
 end)
 
 

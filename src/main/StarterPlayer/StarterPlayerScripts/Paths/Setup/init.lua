@@ -45,6 +45,12 @@ Paths.Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
 
         elseif Prompt.ActionText == "Penguin City" then
             Modules.Buttons:UIOn(UI.Center.TeleportConfirmation,true)
+
+        elseif Prompt.ActionText == "Customize Penguin" then
+            local Character = Paths.Player.Character
+            local RootPart = Character.PrimaryPart
+            RootPart.CFrame = CFrame.new(RootPart.Position) * Prompt.Parent.CFrame.Rotation
+            Modules.Customization:EnterUI(Character)
         end
 
     end
@@ -64,8 +70,10 @@ for _, Tycoon in ipairs(workspace.Tycoons:GetChildren()) do
         for _, Descendant in ipairs(Upgrades:GetDescendants()) do
             RemovePrompt(Descendant)
         end
+
         Upgrades.DescendantAdded:Connect(RemovePrompt)
     end
+
 end
 
 return Setup

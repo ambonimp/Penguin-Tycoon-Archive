@@ -22,7 +22,7 @@ local CompletedPopup = UI.Top.Bottom.Popups.RocketCompleted
 
 
 local UPGRADE = "Rocketship#1"
-local BROKEN_SHIP_UPGRADE = "New Island!#12"
+local BROKEN_SHIP_UPGRADE = "Icy Access#1"
 
 local ITEM_TAG = "BuildAItem" -- Collection service tag, how items are found when added to tycoon
 
@@ -94,11 +94,6 @@ local function UnlockItem(Item)
 
 end
 
-local function LoadTeleporters()
-
-
-end
-
 
 local function UpdateProgress(LastItem)
     local Completed = 0
@@ -123,7 +118,6 @@ local function UpdateProgress(LastItem)
     elseif Completed == Total then
         Paths.Audio.FullyRepaired:Play()
 
-        LoadTeleporters()
         LeadToBuildA()
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
 

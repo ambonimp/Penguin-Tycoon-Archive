@@ -99,6 +99,7 @@ function Paths.Initiliaze()
 	Paths.Modules.PoolSpawner = require(script.Fishing.PoolSpawner)
 --- Other Variables ---
 	Paths.Initialized = true
+
 end
 
 return Paths

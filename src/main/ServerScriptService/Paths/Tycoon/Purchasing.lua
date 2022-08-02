@@ -60,7 +60,7 @@ function Purchasing:ItemPurchased(Player, Item, IsAnimated, ForceLoad)
 	elseif Item == "Plane#1" then
 		Button = Paths.Template.Buttons:FindFirstChild("Hot Springs#1")
 	elseif Item == "Rocketship#1" then
-		Button = Paths.Template.Buttons:FindFirstChild("New Island!#12")
+		Button = Paths.Template.Buttons:FindFirstChild("Icy Access#1")
 	end
 
 	if not Button then return end

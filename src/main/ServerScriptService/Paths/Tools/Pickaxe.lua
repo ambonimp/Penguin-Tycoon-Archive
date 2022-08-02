@@ -114,7 +114,7 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
         Data.Stats["Total Mined"] += 1
 
         if OreMined == "Diamond" then
-            Modules.Achievements.Progress(Client, 31)
+            Modules.Achievements.Progress(Client, 32)
         end
 
         local Earnings = Data.Income * Data["Income Multiplier"] * Details.EarningMultiplier * (Client:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1)
@@ -128,7 +128,7 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
             if Modules.MiningDetails[NextLevel] and OresMinedThisLevel >= Modules.MiningDetails[NextLevel].Requirement then
                 Data.Mining.Level = NextLevel
 
-                Modules.Achievements.Progress(Client, 32)
+                Modules.Achievements.Progress(Client, 31)
                 Remotes.MiningLevelUp:FireClient(Client, NextLevel)
 
             end
@@ -138,8 +138,8 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
 end)
 
 Modules.Achievements.Reconciled:Connect(function(Data)
-	Modules.Achievements.ReconcileSet(Data, 31, Data.Mining.Mined["Diamond"])
-	Modules.Achievements.ReconcileSet(Data, 32, Data.Mining.Level)
+	Modules.Achievements.ReconcileSet(Data, 32, Data.Mining.Mined["Diamond"])
+	Modules.Achievements.ReconcileSet(Data, 31, Data.Mining.Level)
 end)
 
 return Pickaxe

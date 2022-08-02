@@ -204,7 +204,9 @@ Players.PlayerAdded:Connect(function(player)
 				task.wait(0.5)
 				player:Kick("Almost completing your tycoon")
 
-			elseif msg == "AlmostComplete2" then
+			elseif msg == "newexpansion" then
+				local newestExpansion = Paths.Template.Buttons[Paths.Modules.ProgressionDetails[#Paths.Modules.ProgressionDetails].Object]:GetAttribute("Island")
+
 				local Data = Paths.Modules.PlayerData.sessionData[player.Name]
 				if Data then
 					Data.RocketUnlocked[1] = true
@@ -212,7 +214,7 @@ Players.PlayerAdded:Connect(function(player)
 
 					for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
 						local Name = Button.Name
-						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and Button:GetAttribute("Island") ~= "Zoo" then
+						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and Button:GetAttribute("Island") ~= newestExpansion then
 							Data.Tycoon[Name] = true
 							Data.Income += Button:GetAttribute("Income") or 0
 
@@ -228,7 +230,7 @@ Players.PlayerAdded:Connect(function(player)
 				end
 
 				task.wait(0.5)
-				player:Kick("Almost completing your tycoon2")
+				player:Kick("PROGRESSSSSS")
 
 			end
 

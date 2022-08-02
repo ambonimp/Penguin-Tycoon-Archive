@@ -14,9 +14,9 @@ Accessories.StoreAmounts = {
 Accessories.RarityInfo = {
 	["Free"] = {ID = 0000000000, PriceInRobux = 1, PriceInGems = 1};
 	["Event"] = {ID = 0000000000, PriceInRobux = 1000, PriceInGems = 100000};
-	["Rare"] = {ID = 1231222253, PriceInRobux = 99, PriceInGems = 75};
-	["Epic"] = {ID = 1231222252, PriceInRobux = 199, PriceInGems = 150};
-	["Legendary"] = {ID = 1231222251, PriceInRobux = 499, PriceInGems = 400};
+	["Rare"] = {ID = 1231222253, PriceInRobux = 49, PriceInGems = 60};
+	["Epic"] = {ID = 1231222252, PriceInRobux = 99, PriceInGems = 125};
+	["Legendary"] = {ID = 1231222251, PriceInRobux = 299, PriceInGems = 380};
 }
 
 local Time_24Hours = 86400
@@ -164,7 +164,8 @@ Accessories.All = {
 	--- Code Hats ---
 	["Lucky Hat"] = {Rarity = "Epic", IsForSale = false};
 	["Miner Hat"] = {Rarity = "Epic", IsForSale = false};
-
+	["Cow Bucket Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10486295301"};
+	["Rainbow Deely Bopper"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10486294303"};
 
 	--- Event Hats ---
 	["Valentine's Day"] = {Rarity = "Event", IsForSale = false};

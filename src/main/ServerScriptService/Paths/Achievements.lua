@@ -34,6 +34,9 @@ Remotes.CollectAchievement.OnServerInvoke = function(Player, Id)
             Store[1] = true
             return true
 
+        else
+            warn("GOOD")
+
         end
 
     end
