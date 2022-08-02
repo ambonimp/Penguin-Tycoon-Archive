@@ -1,7 +1,5 @@
-local PhysicsService = game:GetService("PhysicsService")
-local TweenService = game:GetService("TweenService")
-local Zoo = {}
-
+local CollectionService = game:GetService("CollectionService")
+local NPCS = {}
 
 local Paths = require(script.Parent.Parent.Parent)
 
@@ -14,7 +12,7 @@ local COOLDOWN = 1
 local TURN_SPEED = 3 / (2 * math.pi) -- 3s / 360 deg
 local WALK_SPEED = 5
 
-local ANIMALS = {
+local NpcS = {
     "Zebra#1",
     "Turtle#1",
     "Parrot#1",
@@ -24,31 +22,22 @@ local ANIMALS = {
     "Capybara#1",
 }
 
-local Playing
+local TAG = "NPC"
 
-local ActiveAnimals
-local UnlockConn
-
-local function LoadWalking(Upgrade)
-    Playing = true
-    ActiveAnimals += 1
-
-    local Enclosure = Paths.Tycoon.Tycoon:WaitForChild(Upgrade)
-    local WalkingPoints = Enclosure.WalkingPoints
-
-    local Animal = Enclosure.Animal
-    local Animator = Animal.AnimationController.Animator
-    local AnimationTrack = Animator:LoadAnimation(Animal.AnimationController.Walk)
+local function LoadWalking(Npc)
+    local WalkingPoints = Npc.Parent.WalkingPoints
+    local Animator = Npc.AnimationController.Animator
+    local AnimationTrack = Animator:LoadAnimation(Npc.AnimationController.Walk)
 
     task.spawn(function()
         local RootPart
         repeat
-            RootPart = Animal.PrimaryPart
+            RootPart = Npc.PrimaryPart
             task.wait()
         until RootPart
 
-        -- Loading animal
-        for _, BasePart in ipairs(Animal:GetChildren()) do
+        -- Loading Npc
+        for _, BasePart in ipairs(Npc:GetChildren()) do
             if BasePart:IsA("BasePart") then
                 BasePart.Anchored = BasePart == RootPart
                 BasePart.CanCollide = false
@@ -57,9 +46,9 @@ local function LoadWalking(Upgrade)
 
         local CurrentPoint
 
-        while Playing  do
+        while Npc:IsDescendantOf(workspace) do
             local PotentialNextPoints = WalkingPoints:GetChildren()
-            local RootPart = Animal.PrimaryPart
+            local RootPart = Npc.PrimaryPart
             if #PotentialNextPoints == 4 and RootPart then
                 -- Can't stay in the same place
                 if CurrentPoint then
@@ -97,57 +86,17 @@ local function LoadWalking(Upgrade)
             end
 
             task.wait(COOLDOWN)
+
         end
-
-
-    end)
-
-    task.spawn(function()
-
 
     end)
 
 end
 
-local function Init()
-    ActiveAnimals = 0
-
-    local Data = Remotes.GetStat:InvokeServer("Tycoon")
-    for _, Enclosure in ipairs(ANIMALS) do
-        if Data[Enclosure] then
-            LoadWalking(Enclosure)
-        end
-    end
-
-    if ActiveAnimals ~= #ANIMALS then -- Potential for more to be unlocked in the future
-        UnlockConn = Remotes.ButtonPurchased.OnClientEvent:Connect(function(_, Name)
-            if table.find(ANIMALS, Name) then
-                LoadWalking(Name)
-
-                if ActiveAnimals == #ANIMALS then
-                    UnlockConn:Disconnect()
-                end
-            end
-
-        end)
-
-    end
-
+Paths.Services.CollectionService:GetInstanceAddedSignal(TAG):Connect(LoadWalking)
+for _, Npc in ipairs(CollectionService:GetTagged(TAG)) do
+    LoadWalking(Npc)
 end
 
-Init()
 
-task.spawn(function()
-    repeat task.wait() until Modules.Rebirths
-    Modules.Rebirths.Rebirthed:Connect(function()
-        Playing = false
-
-        if UnlockConn then
-            UnlockConn:Disconnect()
-        end
-
-    end)
-
-end)
-
-return Zoo
+return NPCS

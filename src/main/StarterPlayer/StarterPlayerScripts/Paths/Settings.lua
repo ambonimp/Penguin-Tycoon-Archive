@@ -64,8 +64,12 @@ function Settings:GamepassPurchased(Gamepass)
 		if Details.Gamepass == Gamepass then
 			Lbl.Locked.Visible = false
 			Lbl.Visible = true
+
+			Lbl.Toggle.IsToggled.Value = Details.Default
 		end
+
 	end
+
 end
 
 
@@ -95,6 +99,7 @@ for Setting, Details in Modules.SettingDetails do
 
 		Lbl.BackgroundColor3 = Color3.fromRGB(250, 197, 38)
 		Lbl.Stroke.UIStroke.Color = Color3.fromRGB(250, 197, 38)
+
 	else
 		Lbl.Locked.Visible = false
 
@@ -107,7 +112,7 @@ for Setting, Details in Modules.SettingDetails do
 
 
 	-- Apply saved value
-	local Toggled = SettingsData[Setting]
+	local Toggled = if Lbl.Locked.Visible then false else SettingsData[Setting]
 	local Toggle = Lbl.Toggle
 
 	local IsToggled = Toggle.IsToggled

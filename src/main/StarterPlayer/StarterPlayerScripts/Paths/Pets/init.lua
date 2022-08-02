@@ -423,7 +423,7 @@ function updateIndex(data,islandId)
 
 	local frame = IndexPage.List:FindFirstChild(island.Name)
 	if frame then
-		local Pets = frame.Pets.Pets:GetChildren()
+		local Pets = frame.Pets:GetChildren()
 
 		for i,v in pairs (Pets) do
 			local PetId = tonumber(v.Name)
@@ -1034,19 +1034,6 @@ UI.Right.Buttons.Backpack.MouseButton1Down:Connect(function()
 	end
 end)
 
-PetsFrame.Capacity.More.MouseButton1Down:Connect(function()
-	Modules.Buttons:UIOff(PetsFrame, true)
-
-	local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
-	if not Gamepasses[tostring(SMALL_GAMEPASS)] then
-		Services.MPService:PromptGamePassPurchase(Paths.Player, SMALL_GAMEPASS)
-	elseif not Gamepasses[tostring(HUGE_GAMEPASS)] then
-		Services.MPService:PromptGamePassPurchase(Paths.Player, HUGE_GAMEPASS)
-	end
-
-end)
-
-
 function openEgg(Image,Name,Rarity,Color)
 	openingEgg = true
 	UI.Left.Visible = false
@@ -1276,7 +1263,7 @@ task.spawn(function()
 			end
 			Template.Icon.Image = PetModel.Icon.Texture
 			Template.Name = v.Id
-			Template.Parent = newIsland.Pets.Pets
+			Template.Parent = newIsland.Pets
 		end
 		newIsland.Visible = true
 		newIsland.Name = IslandDetails.Name
@@ -1284,14 +1271,10 @@ task.spawn(function()
 		newIsland.Parent = IndexPage.List
 	end
 
-	local oldPets = {
-		"Cat","Dog","Rabbit","Dinosaur","Unicorn","Panda"
-	}
-
-	for i,v in pairs (oldPets) do
+	local legacyIsland = IndexPage.List["Legacy Pets"]
+	for _, v in pairs ({"Cat","Dog","Rabbit","Dinosaur","Unicorn","Panda"}) do
 		local folder = Assets.Pets:FindFirstChild(v)
 		if folder then
-			local newIsland = IndexPage.List.Island:Clone()
 			for i,v in pairs (folder:GetChildren()) do
 				local Template = Dependency.ShopTemplate:Clone()
 				Template.Amount.Text = ""
@@ -1300,23 +1283,15 @@ task.spawn(function()
 				local model = v:Clone()
 				Template.PetName.Text = v.Name
 				addPetToViewport(model,Template.ViewportFrame)
-				Template.Parent = newIsland.Pets.Pets
+				Template.Parent = legacyIsland.Pets
 			end
 
-			newIsland.TopText.Text = "Legacy Pets: "..v
-			newIsland.LayoutOrder = 1000+i
-			newIsland.Visible = true
-			newIsland.Name = "Legacy Pets: "..v
-			newIsland.Parent = IndexPage.List
 		end
+
 	end
 
-	IndexPage.List.CanvasSize = UDim2.new(0, 0, 0, IndexPage.List.UIGridLayout.AbsoluteContentSize.Y+(#IndexPage.List:GetChildren()*25))
-	IndexPage.List.UIGridLayout.CellSize = UDim2.new(1.15,-4,0.07,0)
-
-
 	local tycoonData = Remotes.GetStat:InvokeServer("Tycoon")
-	for i,v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
+	for _, v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
 		if v:IsA("ImageButton") then
 			print(v,tycoonData[v.Name])
 			if tycoonData[v.Name] or v.Name == "1" then

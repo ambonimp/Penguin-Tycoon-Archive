@@ -2,7 +2,8 @@ local VehicleSpawner = {}
 
 local PLACE_RADIUS = 500
 local TOOL = script.Name
-local GAMEPASS = 54396254
+
+local TYCOON_RADIUS = 1200
 
 --- Main Variables ---
 local Paths = require(script.Parent.Parent)

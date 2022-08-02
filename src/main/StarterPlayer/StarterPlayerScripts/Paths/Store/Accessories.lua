@@ -272,14 +272,7 @@ end)
 
 --- Setup Accessory Store ---
 local function NewStoreTemplate(Item, ItemType)
-	local Module
-	if ItemType == "Accessory" then
-		Module = Modules.AllAccessories
-	elseif ItemType == "Eyes" then
-		Module = Modules.AllEyes
-	elseif ItemType == "Outfits" then
-		Module = Modules.AllOutfits
-	end
+	local Module = InfoModules[ItemType]
 	
 	local Rarity = Module.All[Item].Rarity
 	local Template = Dependency.ItemStoreTemplate:Clone()

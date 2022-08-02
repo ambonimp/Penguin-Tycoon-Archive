@@ -8,13 +8,13 @@ return {
     },
     ["Faster Speed"] = {
         Gamepass = 26268187,
-        Default = false,
+        Default = true,
         AlwaysVisible = true,
         LayoutOrder = 2,
     },
     ["Double Jump"] = {
         Gamepass = 26268229,
-        Default = false,
+        Default = true,
         AlwaysVisible = true,
         LayoutOrder = 3,
     },

@@ -53,24 +53,4 @@ Remotes.VehicleSpawned.OnServerEvent:Connect(function(Client, Id, CF)
 
 end)
 
--- Testing
---[[ if game.PlaceId == 9118461324 or game.PlaceId == 9118436978 then
-    task.spawn(function()
-        require(game.ServerScriptService:WaitForChild("ChatServiceRunner").ChatService):RegisterProcessCommandsFunction("Commands", function(Speaker, Message)
-            local Player = game.Players[Speaker]
-            if Player then
-                if string.find(Message, "EnableVehicleSpawner") then
-                   Modules.Gamepasses:AwardGamepass(Speaker, 54396254)
-                end
-            end
-
-            return false
-        end)
-
-    end)
-
-end
- *]]
-
-
 return BoatSpawner

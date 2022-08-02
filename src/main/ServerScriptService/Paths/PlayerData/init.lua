@@ -615,10 +615,13 @@ game.Players.PlayerAdded:Connect(function(Player)
 		end
 	end
 
-	if not Data.Achievements[3] then-- For players who have played prior to the addition of quests, load their data
+	if not Data.Achievements[4] then-- For players who have played prior to the addition of quests, load their data
 		Modules.Achievements.Reconciled:Fire(Data)
-		Data.Achievements[3] = true
+		Data.Achievements[4] = true
 	end
+
+	Data.Settings["Faster Speed"] = true
+	Data.Settings["Double Jump"] = true
 
 	-- TESTING
 --[[ 	if Player.UserId == 1322669058 and IsTesting then
