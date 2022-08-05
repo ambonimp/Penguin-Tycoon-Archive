@@ -26,9 +26,9 @@ Outfits.Bundles = {
 Outfits.RarityInfo = {
 	["Free"] = {ID = 0000000000, PriceInRobux = 1, PriceInGems = 1};
 	["Event"] = {ID = 0000000000, PriceInRobux = 1000, PriceInGems = 100000};
-	["Rare"] = {ID = 1259048664, PriceInRobux = 149, PriceInGems = 115};
-	["Epic"] = {ID = 1259048717, PriceInRobux = 299, PriceInGems = 225};
-	["Legendary"] = {ID = 1259048739, PriceInRobux = 599, PriceInGems = 450};
+	["Rare"] = {ID = 1259048664, PriceInRobux = 99, PriceInGems = 125};
+	["Epic"] = {ID = 1259048717, PriceInRobux = 199, PriceInGems = 250};
+	["Legendary"] = {ID = 1259048739, PriceInRobux = 399, PriceInGems = 500};
 }
 
 --- Accessory Functions ---

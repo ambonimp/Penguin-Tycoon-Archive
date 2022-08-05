@@ -83,7 +83,7 @@ local function LoadTools(Whitelist)
 
 	Whitelist = Whitelist or PlayerTools
 	for Tool in pairs(PlayerTools) do
-		if Whitelist[Tool] then
+		if Whitelist[Tool] and not Modules.AllTools[Tool].Manual then
 			table.insert(Adding, Tool)
 		end
 	end

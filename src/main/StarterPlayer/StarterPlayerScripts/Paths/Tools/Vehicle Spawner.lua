@@ -1,11 +1,5 @@
 local VehicleSpawner = {}
 
-local PLACE_RADIUS = 500
-local TOOL = script.Name
-
-local TYCOON_RADIUS = 1200
-
---- Main Variables ---
 local Paths = require(script.Parent.Parent)
 
 local Services = Paths.Services
@@ -14,15 +8,23 @@ local Remotes = Paths.Remotes
 local UI = Paths.UI
 local Dependency = Services.RStorage.ClientDependency["VehicleSpawner"]
 
+
+local PLACE_RADIUS = 500
+local TOOL = script.Name
+
+local TYCOON_RADIUS = 1200
+local TOGGLE_COOLDOWN = 5
+
+
 local Menu = UI.Center["VehicleSpawner"]
 local PlacingScreen = UI.Center["VehiclePlacing"]
+
 
 
 local Mouse = Paths.Player:GetMouse()
 local Camera = workspace.CurrentCamera
 
-
-
+local Islands = workspace.Islands:GetChildren()
 
 local Equipped = false
 local Placement = Modules.Maid.new()
@@ -333,6 +335,56 @@ Init()
 task.spawn(function()
     repeat task.wait() until Modules.Rebirths
     Modules.Rebirths.Rebirthed:Connect(Init)
+end)
+
+task.spawn(function()
+    local Enabled = false
+    local Db
+    while true do
+        local Character = Paths.Player.Character
+
+        if Character and not Db then
+            local RayParams = RaycastParams.new()
+            RayParams.IgnoreWater = true
+            RayParams.FilterDescendantsInstances = {Character}
+            RayParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+            local Results = workspace:Raycast(Character.HumanoidRootPart.Position, Vector3.new(0, -50, 0), RayParams)
+            if Results then
+                local Hit = Results.Instance
+                if Hit then
+                    local _Enabled = false
+                    for _, Island in ipairs(Islands) do
+                        if Hit:IsDescendantOf(Island) then
+                            _Enabled = true
+                            break
+                        end
+                    end
+
+                    if Enabled ~= _Enabled then
+                        Db = true
+                        Enabled = _Enabled
+
+                        if Enabled then
+                            Modules.Tools.AddTool(TOOL)
+                        else
+                            Modules.Tools.RemoveTool(TOOL)
+                        end
+
+                        task.wait(TOGGLE_COOLDOWN)
+                        Db = false
+
+                    end
+
+                end
+
+            end
+
+        end
+
+        task.wait(3)
+    end
+
 end)
 
 -- Events

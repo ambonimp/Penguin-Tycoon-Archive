@@ -11,5 +11,5 @@ return {
     ["Rainbow Fishing Rod"] = {Icon = "rbxassetid://10420429904", Pinned = false},
     ["Snow Grenade"] = {Icon = "rbxassetid://10420432256", Pinned = false},
     ["Snowball Launcher"] = {Icon = "rbxassetid://10420428963", Pinned = false},
-    ["Vehicle Spawner"] = {Icon = "rbxassetid://10454660498", Pinned = true}
+    ["Vehicle Spawner"] = {Icon = "rbxassetid://10454660498", Pinned = true, Manual = true}
 }
