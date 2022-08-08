@@ -444,7 +444,7 @@ Config.ItemList = {
 		IncomeMultiplier = 1,
 		Rarity = Config.Rarity.Common,
 		Type = Config.ItemType.Fish,
-		Icon = "rbxassetid://10486760120
+		Icon = "rbxassetid://10486760120"
 	},
 
 	[62] = {

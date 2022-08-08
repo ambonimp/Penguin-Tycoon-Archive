@@ -36,7 +36,7 @@ Remotes.RocketBuild.OnServerInvoke = function(Client, Item)
         local UnlockingData = Data["RocketUnlocked"]
 
         local OwnsBrokenRocket = Data.Tycoon["Icy Access#1"]
-        local OwnsIsland = Data.Tycoon[Modules.ProgressionDetails[Modules.Initiate.GetIslandIndex(Modules.BuildADetails.Rocket[Item])].Object]
+        local OwnsIsland = Data.Tycoon[Modules.ProgressionDetails[Modules.Initiate.GetIslandIndexFromUpgrade(Modules.BuildADetails.Rocket[Item])].Object]
 
         if not UnlockingData[1] and OwnsBrokenRocket and OwnsIsland then
             UnlockingData[2][Item] = true
