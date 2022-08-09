@@ -1,14 +1,10 @@
 local StarterGui = game:GetService("StarterGui")
 
 local Messages = {
-
-	"Group members get $5,000 Bonus Money!";
-	"Group members get $5,000 Bonus Money!";
-	"Have an idea for the game? You can suggest it at any of our social links!";
-	"Support us by leaving a thumbs up!";
-	"Follow us on social media for exclusive codes!";
-	"Check out our Social Links at the bottom of the Game Page!";
-		
+	"[SOCIAL] Have an idea for the game? You can suggest it at any of our social links!";
+	"[SOCIAL] Support us by leaving a thumbs up!";
+	"[SOCIAL] Follow us on social media for exclusive codes!";
+	"[SOCIAL] Check out our Social Links at the bottom of the Game Page!";
 }
 
 local function MakeMessage(Message, colour)
@@ -28,7 +24,7 @@ MakeMessage("Welcome to Penguin City!")
 --end)
 
 while true do
-	wait(600)
+	task.wait(600)
 	local RandomMessage = Messages[Random.new():NextInteger(1, #Messages)]
 	MakeMessage(RandomMessage, Color3.new(73/255, 155/255, 255/255))
 end

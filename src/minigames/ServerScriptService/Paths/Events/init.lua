@@ -8,6 +8,7 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local Players = game:GetService("Players")
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
+local Workspace = game:GetService("Workspace")
 
 --- Variables ---
 local Participants = Services.RStorage.Modules.EventsConfig.Participants
@@ -246,18 +247,20 @@ task.spawn(function()
 	Map.Parent = workspace.Event
 
 	-- Position spectator's box above map
-	local SpectatorBox = workspace.SpectatorBox
+	local SpectatorBox = Services.SStorage.SpectatorBox[ChosenEvent]:Clone()
+	SpectatorBox.Parent = workspace
+
+
 	-- Get spawn offsets from box, then use offsets to get new positions  relative to box's new position above map
 	local Offsets = {}
 	for _, SpawnLocation in ipairs(workspace.Spawns:GetChildren()) do
-		Offsets[SpawnLocation] = SpectatorBox.PrimaryPart.CFrame:ToObjectSpace(SpawnLocation.CFrame)
+		Offsets[SpawnLocation] = Workspace.SpectatorBox.PrimaryPart.CFrame:ToObjectSpace(SpawnLocation.CFrame)
 	end
-	-- Move
-	local NewCFrame = Map.SpectatorBox.CFrame
-	SpectatorBox:SetPrimaryPartCFrame(NewCFrame)
+
+	SpectatorBox:SetPrimaryPartCFrame(SpectatorBox.CFrame)
 
 	for BasePart, Offset in pairs(Offsets) do
-		BasePart.CFrame = NewCFrame:ToWorldSpace(Offset)
+		BasePart.CFrame = SpectatorBox.CFrame:ToWorldSpace(Offset)
 	end
 
 	-- Start loop

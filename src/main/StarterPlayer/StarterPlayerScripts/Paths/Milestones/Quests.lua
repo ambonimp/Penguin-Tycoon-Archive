@@ -64,7 +64,8 @@ function updateQuestData(data)
         Frame.Icon.Image = getQuestIcon(Quest[2])
         Frame.Reward.Icon.Image = Icon
         Frame.Reward.Text.Text = Reward
-        Frame.Description.Text = Quest[2][4]
+        Frame.ShortDescription.Text = Quest[2][4]
+        Frame.LongDescription.Text = Quest[2][5]
         if Quest[3] == "CLAIMED" then
             Frame.ProgressText.Text = Quest[2][3].."/"..Quest[2][3]
             Frame.Progress.Frame.Size = UDim2.new(1,0,1,0)
