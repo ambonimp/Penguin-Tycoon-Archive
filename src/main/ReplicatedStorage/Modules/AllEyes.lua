@@ -56,7 +56,7 @@ Eyes.All = {
 	
 	--- Purchaseable Eyes ---
 	["Excited"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534764969"};
-	["Cheeky"] = {Rarity = "Regular", IsForSale = true}, Icon = "rbxassetid://10534766303";
+	["Cheeky"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534766303";
 	["Crying"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534765819"};
 	["Shook"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534763733"};
 	["Tearing Up"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534763047"};

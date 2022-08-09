@@ -155,7 +155,29 @@ Players.PlayerAdded:Connect(function(player)
 
 				task.wait(0.5)
 				player:Kick("Completing your tycoon")
+			elseif msg == "completeIce" then
+				local Data = Paths.Modules.PlayerData.sessionData[player.Name]
+				if Data then
+					for _, Button in ipairs(Paths.Template.Buttons:GetChildren()) do
+						local Name = Button.Name
+						if Button:GetAttribute("CurrencyType") == "Money" and Name ~= "RebirthMachine" and not Button:GetAttribute("World") and Name ~= "New Island!#32" then
+							Data.Tycoon[Name] = true
+							Data.Income += Button:GetAttribute("Income") or 0
 
+							if Button:GetAttribute("Type") == "Penguin" then
+								Modules.Penguins:PenguinPurchased(player, Name)
+							else
+								Data.Income += Button:GetAttribute("Income") or 0
+							end
+
+						end
+
+					end
+
+				end
+
+				task.wait(0.5)
+				player:Kick("Completing your tycoon")
 			elseif msg == "money100" then
 				local Data = Paths.Modules.PlayerData.sessionData[player.Name]
 				if Data then

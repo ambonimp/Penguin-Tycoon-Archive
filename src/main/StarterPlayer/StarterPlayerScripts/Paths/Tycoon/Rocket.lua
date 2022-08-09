@@ -32,32 +32,47 @@ local TycoonSession = Modules.Maid.new()
 local UnlockingData = Remotes.GetStat:InvokeServer("RocketUnlocked")
 local ItemModels =  Services.RStorage.Assets.BuildA.Rocket
 
+local LeadCons = {}
+
+function Rocket.CloseToBuildA(Name)
+    LeadCons[2]:Destroy()
+    LeadCons[3]:Destroy()
+    LeadCons[1]:Disconnect()
+end
+
 -- Creates arrow to brocken rocket when rocket is unlocked
-local function LeadToBuildA()
+function Rocket.LeadToBuildA(Name)
     local Character = Paths.Player.Character
     if not Character then return end
 
     task.spawn(function()
-        local Upgrade = Paths.Tycoon.Tycoon:WaitForChild(UPGRADE)
-        local PromptPart = Upgrade:WaitForChild("PromptPart")
+        local Upgrade = nil
+        local PromptPart = nil
+        if Name then 
+            Upgrade = Paths.Tycoon.Tycoon:WaitForChild("Icy Access#1"):WaitForChild("BrokenRocketShip")
+            PromptPart = Upgrade:WaitForChild("Ship")
+        else
+            Upgrade = Paths.Tycoon.Tycoon:WaitForChild(UPGRADE)
+            PromptPart = Upgrade:WaitForChild("PromptPart")
+        end
 
-        local Att0 = Instance.new("Attachment")
-        Att0.Parent = Character.Main
+        LeadCons[3] = Instance.new("Attachment")
+        LeadCons[3].Parent = Character.Main
 
         local Att1 = Instance.new("Attachment")
         Att1.Parent = PromptPart
 
-        local Beam = Paths.Services.RStorage.ClientDependency.Help.Pointer:Clone()
-        Beam.Color = ColorSequence.new(Color3.fromRGB(255, 0, 255))
-        Beam.Parent = PromptPart
-        Beam.Attachment0 = Att0
-        Beam.Attachment1 = Att1
+        LeadCons[2] = Paths.Services.RStorage.ClientDependency.Help.Pointer:Clone()
+        LeadCons[2] .Color = ColorSequence.new(Color3.fromRGB(255, 0, 255))
+        LeadCons[2] .Parent = PromptPart
+        LeadCons[2] .Attachment0 = LeadCons[3]
+        LeadCons[2] .Attachment1 = Att1
 
-        local Conn
-        Conn = PromptPart.ProximityPrompt.Triggered:Connect(function()
-            Beam:Destroy()
-            Att0:Destroy()
-            Conn:Disconnect()
+        
+        LeadCons[1] = PromptPart.ProximityPrompt.Triggered:Connect(function()
+            LeadCons[2]:Destroy()
+            LeadCons[3]:Destroy()
+            LeadCons[1]:Disconnect()
         end)
 
      end)
@@ -118,7 +133,7 @@ local function UpdateProgress(LastItem)
     elseif Completed == Total then
         Paths.Audio.FullyRepaired:Play()
 
-        LeadToBuildA()
+        Rocket.LeadToBuildA()
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
 
     elseif LastItem then

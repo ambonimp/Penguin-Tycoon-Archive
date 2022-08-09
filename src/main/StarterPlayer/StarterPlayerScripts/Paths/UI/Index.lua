@@ -311,6 +311,7 @@ local function LoadAllItems()
 	
 	-- Load Eyes
 	for Eyes, Info in pairs(modules.AllEyes.All) do
+		print(Eyes,Info)
 		Info.Name = Eyes
 
 		local Template = Dependency.ItemTemplate:Clone()

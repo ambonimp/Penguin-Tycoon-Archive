@@ -118,7 +118,25 @@ function Help:EnablePointerBeam()
 			end
 			
 			-- Else find a random available item, if none can be afforded
-			if not ChosenButton then Help:DisablePointerBeam() return end
+			if not ChosenButton then
+				local TycoonData = Remotes.GetStat:InvokeServer("Tycoon")
+				local RocketData = Remotes.GetStat:InvokeServer("RocketUnlocked")
+				if TycoonData["Beach House#4"] and not RocketData[1] then
+					if PointerButton.Enable.Visible then
+						Modules.Rocket.LeadToBuildA("Help")
+						PointerButton.Enable.Visible = false
+						PointerButton.Disable.Visible = true
+					else
+						Modules.Rocket.CloseToBuildA()
+						PointerButton.Enable.Visible = true
+						PointerButton.Disable.Visible = false
+					end
+					return
+				else
+					Help:DisablePointerBeam() 
+					return 
+				end
+			end
 			
 			-- Make disable text visible
 			PointerButton.Enable.Visible = false

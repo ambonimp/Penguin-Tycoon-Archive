@@ -54,7 +54,8 @@ local Player = game.Players.LocalPlayer
 local function Reset()
     for _, Placement in FinishedUI.Placement:GetChildren() do
         if Placement:IsA("Frame") then
-            Placement:Destroy()
+            Placement.Visible = false
+            --Placement:Destroy()
         end
     end
 end
@@ -62,13 +63,20 @@ end
 local function AddPlacement(Ranking, Info)
     if FinishedUI.Placement:FindFirstChild(Info.PlayerName) then return end
 
-    local Placement = Dependency.Placement:Clone()
+    local Placement = FinishedUI.Placement:FindFirstChild(Ranking)--Dependency.Placement:Clone()
     Placement.Name = Info.PlayerName
     Placement.PlayerName.Text = Info.PlayerName
     Placement.Score.Text = if Info.Score then ((Info.Score % 1 == 0 and Info.Score or string.format("%.2f", Info.Score)).. (SCORE_UNIT[Player:GetAttribute("Minigame")] or "")) else ""
-    Placement.Medal.Image = MEDALS[Ranking] or ""
+    --Placement.Medal.Image = MEDALS[Ranking] or ""
+    if Placement.Score.Text == "" then
+        if Placement:FindFirstChild("Medal") then
+            Placement.Medal.Position = UDim2.fromScale(.258,.5)
+        end
+    elseif Placement:FindFirstChild("Medal") then
+        Placement.Medal.Position = UDim2.fromScale(0,.5)  
+    end
     Placement.Parent = FinishedUI.Placement
-
+    Placement.Visible = true
     if Info.PlayerName == Player.Name then
         Placement.BackgroundColor3 = Color3.new(0.901960, 0.843137, 0.058823)
 

@@ -63,58 +63,60 @@ Outfits.All = {
 	--- Default Outfit(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};
 	--Rewards
-	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Royale Robe"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Lobster"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Wilco Shirt"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Unicorn"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Hazmat Suit"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534831732"};
+	["Royale Robe"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534828174"};
+	["Lobster"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534831405"};
+	["Wilco Shirt"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534826550"};
+	["Unicorn"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534826814"};
 	--- Purchaseable Hats ---
 	-- Rares
 	--["Green Shirt"] = {Rarity = "Rare", IsForSale = true};
-	["Gardener"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
-	["Fisherman"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
-	["Farmer"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
-	["Nurse"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
-	["Paramedic"] = {Rarity = "Rare", IsForSale = true, Icon = ""};
-	["Alien"] = {Rarity = "Rare", IsForSale = false, Icon = ""};
-	["Dog Suit"] = {Rarity = "Rare", IsForSale = false, Icon = ""};
-	["Cat Suit"] = {Rarity = "Rare", IsForSale = false, Icon = ""};
+	["Gardener"] = {Rarity = "Rare", IsForSale = true, Icon = "rbxassetid://10534832457"};
+	["Fisherman"] = {Rarity = "Rare", IsForSale = true, Icon = "rbxassetid://10534836913"};
+	["Farmer"] = {Rarity = "Rare", IsForSale = true, Icon = "rbxassetid://10534837275"};
+	["Nurse"] = {Rarity = "Rare", IsForSale = true, Icon = "rbxassetid://10534829830"};
+	["Paramedic"] = {Rarity = "Rare", IsForSale = true, Icon = "rbxassetid://10534829591"};
+	["Alien"] = {Rarity = "Rare", IsForSale = false, Icon = "rbxassetid://10534841504"};
+	["Dog Suit"] = {Rarity = "Rare", IsForSale = false, Icon = "rbxassetid://10534838019"};
+	["Cat Suit"] = {Rarity = "Rare", IsForSale = false, Icon = "rbxassetid://10534839811"};
 	-- Epics
-	["Steampunk"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
-	["Engineer"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
-	["Adventurer"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
-	["Caveman"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
-	["Sailor"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
-	["Lumberjack"] = {Rarity = "Epic", IsForSale = true, Icon = ""};
-	["Tuxedo"] = {Rarity = "Epic",IsForSale = true, Icon = ""};
-	["Frog"] = {Rarity = "Epic",IsForSale = true, Icon = ""};
-	["Scientist"] = {Rarity = "Free", IsForSale = true, Icon = ""};
-	["Turtle Suit"] = {Rarity = "Epic", IsForSale = false, Icon = ""};
+	["Steampunk"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534827723"};
+	["Engineer"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534837561"};
+	["Adventurer"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534841727"};
+	["Caveman"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534839475"};
+	["Sailor"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534839214"};
+	["Lumberjack"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534831188"};
+	["Tuxedo"] = {Rarity = "Epic",IsForSale = true, Icon = "rbxassetid://10534827038"};
+	["Frog"] = {Rarity = "Epic",IsForSale = true, Icon = "rbxassetid://10534832799"};
+	["Scientist"] = {Rarity = "Free", IsForSale = true, Icon = "rbxassetid://10534827957"};
+	["Turtle Suit"] = {Rarity = "Epic", IsForSale = false, Icon = "rbxassetid://10534827310"};
+	--["Jester"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534831579"};
 	-- Legendaries
 	--["Red Coat"] = {Rarity = "Legendary", IsForSale = true};
-	["Firefighter"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
-	["Chef"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
-	["Astronaut"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
-	["Police Officer"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
-	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
-	["Bee"] = {Rarity = "Legendary", IsForSale = true, Icon = ""};
-	["Parrot Suit"] = {Rarity = "Legendary", IsForSale = false, Icon = ""};
+	["Firefighter"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534837114"};
+	["Chef"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534838821"};
+	["Astronaut"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534840813"};
+	["Police Officer"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534829209"};
+	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534840169"};
+	["Bee"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534841982"};
+	["Parrot Suit"] = {Rarity = "Legendary", IsForSale = false, Icon = "rbxassetid://10534829414"};
+	--["Clown"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534838528"};
 	--- Code Outfits ---
 	
 	--- Event Outfits ---
-	["Red Jersey"] = {Rarity = "Event", IsForSale = false, Icon = ""};
-	["Blue Jersey"] = {Rarity = "Event", IsForSale = false, Icon = ""};
+	["Red Jersey"] = {Rarity = "Event", IsForSale = false, Icon = "rbxassetid://10534828482"};
+	["Blue Jersey"] = {Rarity = "Event", IsForSale = false, Icon = "rbxassetid://10534840317"};
 
 	-- Mining Outfits
-	["Miner"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Miner"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534830789"};
 
 	-- Achievement
-	["Banana"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Disco"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Ghost"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Mummy"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Ninja"] = {Rarity = "Free", IsForSale = false, Icon = ""};
-	["Mad Scientist"] = {Rarity = "Free", IsForSale = false, Icon = ""};
+	["Banana"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534840571"};
+	["Disco"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534838292"};
+	["Ghost"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534832120"};
+	["Mummy"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534830386"};
+	["Ninja"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534830099"};
+	["Mad Scientist"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534830962"};
 
 }
 

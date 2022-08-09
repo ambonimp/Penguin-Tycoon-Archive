@@ -66,7 +66,7 @@ Remotes.CandyRush.OnClientEvent:Connect(function(kind,tab)
 				end
 			else
 				ui.BackgroundColor3 = Color3.new(1, 1, 1)
-				ui.PlayerName.Text = ""
+				ui.PlayerName.Text = "N/A"
 				ui.Score.Text = ""
 			end
 		end

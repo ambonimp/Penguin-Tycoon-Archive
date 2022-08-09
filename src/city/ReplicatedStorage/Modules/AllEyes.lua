@@ -48,36 +48,38 @@ Eyes.Unlockables = {
 
 Eyes.All = {	
 	--- Default Eye(s) ---
-	["Default"] = {Rarity = "Free", IsForSale = false};
-	["Angry"] = {Rarity = "Free", IsForSale = false};
-	["Surprised"] = {Rarity = "Free", IsForSale = false};
-	["Scared"] = {Rarity = "Free", IsForSale = false};
-	["Unamused"] = {Rarity = "Free", IsForSale = false};
+	["Default"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534765352"};
+	["Angry"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534766583"};
+	["Surprised"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534763447"};
+	["Scared"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534764006"};
+	["Unamused"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534762227"};
 	
 	--- Purchaseable Eyes ---
-	["Excited"] = {Rarity = "Regular", IsForSale = true};
-	["Cheeky"] = {Rarity = "Regular", IsForSale = true};
-	["Crying"] = {Rarity = "Regular", IsForSale = true};
-	["Shook"] = {Rarity = "Regular", IsForSale = true};
-	["Tearing Up"] = {Rarity = "Regular", IsForSale = true};
+	["Excited"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534764969"};
+	["Cheeky"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534766303";
+	["Crying"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534765819"};
+	["Shook"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534763733"};
+	["Tearing Up"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534763047"};
 	
-	["Unbothered"] = {Rarity = "Regular", IsForSale = true};
-	["Raised Eyebrow"] = {Rarity = "Regular", IsForSale = true};
-	["Worried"] = {Rarity = "Regular", IsForSale = true};
-	["Furious"] = {Rarity = "Regular", IsForSale = true};
-	["Thick Eyebrows"] = {Rarity = "Regular", IsForSale = true};
+	["Unbothered"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534762011"};
+	["Raised Eyebrow"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534764187"};
+	["Worried"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534761795"};
+	["Furious"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534764692"};
+	["Thick Eyebrows"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534762705"};
 	
-	["Dizzy"] = {Rarity = "Regular", IsForSale = true};
-	["Cute"] = {Rarity = "Regular", IsForSale = true};
-	["Confused"] = {Rarity = "Regular", IsForSale = true};
-	["Huh"] = {Rarity = "Regular", IsForSale = true};
-	["Tired"] = {Rarity = "Regular", IsForSale = true};
+	["Dizzy"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534765180"};
+	["Cute"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534765568"};
+	["Confused"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534766069"};
+	["Huh"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534764339"};
+	["Tired"] = {Rarity = "Regular", IsForSale = true, Icon = "rbxassetid://10534762464"};
 	
 	--- Event Eyes ---
 	
 	--- Code Eyes ---
-	["Heart Eyes"] = {Rarity = "Regular", IsForSale = false};
-	["100k Eyes"] = {Rarity = "Regular", IsForSale = false};
+	["Heart Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10535189923"};
+	["100k Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10534768113"};
+	["200k Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10534767926"};
+	["300k Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10534767694"};
 }
 
 return Eyes
