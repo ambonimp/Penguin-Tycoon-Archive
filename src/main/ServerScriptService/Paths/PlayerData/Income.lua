@@ -109,27 +109,30 @@ function Income:IncomeLoop()
 				local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
 
 				if PlayerIncome > 0 then
-					local CollectPoint = Tycoon.IncomeCollectPoint
+					local CollectPoint = Tycoon:FindFirstChild("IncomeCollectPoint")
+					if CollectPoint then
 
-					-- Add Money
-					local mult = Paths.Modules.Pets.getBonus(Player,"Paycheck","Income")
-					PlayerIncome = math.floor(PlayerIncome * mult)
+						-- Add Money
+						local mult = Paths.Modules.Pets.getBonus(Player,"Paycheck","Income")
+						PlayerIncome = math.floor(PlayerIncome * mult)
 
-					if Data["Auto Collect"] then
-						if CollectPoint:GetAttribute("Income") then
-							PlayerIncome += CollectPoint:GetAttribute("Income") * mult
-							CollectPoint.Hitbox.BillboardGui.Auto.Visible = true
+						if Data["Auto Collect"] then
+							if CollectPoint:GetAttribute("Income") then
+								PlayerIncome += CollectPoint:GetAttribute("Income") * mult
+								CollectPoint.Hitbox.BillboardGui.Auto.Visible = true
 
-							SetStoredIncome(Data, CollectPoint, 0)
+								SetStoredIncome(Data, CollectPoint, 0)
+							end
+
+							Income:AddMoney(Player, PlayerIncome)
+						else
+							IncrementStoredIncome(Data, CollectPoint, PlayerIncome)
 						end
 
-						Income:AddMoney(Player, PlayerIncome)
-					else
-						IncrementStoredIncome(Data, CollectPoint, PlayerIncome)
-					end
+						-- Add to total playtime
+						Data["Stats"]["Total Playtime"] += INCOME_INTERVAL
 
-					-- Add to total playtime
-					Data["Stats"]["Total Playtime"] += INCOME_INTERVAL
+					end
 
 				end
 

@@ -40,7 +40,7 @@ function PenguinsUI:SetupPenguin(Penguin)
 	if Penguin == Paths.Player.Character then
 		Template.Super.Visible = false
 		Template.Instant.AnchorPoint = Vector2.new(0,0)
-		Template.Instant.Position = UDim2.fromScale(.03,.6)
+		-- Template.Instant.Position = UDim2.fromScale(.03,.6)
 		Template.Upgrade.Position = UDim2.fromScale(.37,.6)
 	else
 		Template.Super.MouseButton1Down:Connect(function()
