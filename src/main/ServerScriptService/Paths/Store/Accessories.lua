@@ -42,6 +42,8 @@ function Accessories:ItemAcquired(Player, Item, ItemType)
 			end
 
 			Remotes.Store:FireClient(Player, ItemType, Item, true)
+			return true
+
 		else
 			warn("INVALID ITEM:", Item, ItemType)
 		end

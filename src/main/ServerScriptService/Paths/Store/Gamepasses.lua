@@ -83,7 +83,7 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 			-- VIP
 			elseif gamepass == 26269102 then
 				Modules.Chat:ApplyChatTag(Player)
-				Remotes.Announcement:FireAllClients(Player.Name, {Type = "PremiumPlayer"})
+				Remotes.Announcement:FireAllClients(Player, {Type = "PremiumPlayer"})
 
 			-- Tool upgrades
 			elseif gamepass == 28927736 then

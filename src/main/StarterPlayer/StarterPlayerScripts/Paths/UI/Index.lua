@@ -334,7 +334,7 @@ local function LoadAllItems()
 	end
 
 	-- Load outfits
-	for Outfit, Info in pairs(modules.Outfits.All) do
+	for Outfit, Info in pairs(modules.AllOutfits.All) do
 		Info.Name = Outfit
 
 		local Template = Dependency.ItemTemplate:Clone()
@@ -345,8 +345,7 @@ local function LoadAllItems()
 
 		Template.Name = Outfit
 		Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
-		Template.Parent = indexUI.Sections.Accessories.Eyes.List
-
+		Template.Parent = indexUI.Sections.Accessories.Outfits.List
 
 		if playerOutfits[Outfit] then
 			Index.ItemObtained(Info)

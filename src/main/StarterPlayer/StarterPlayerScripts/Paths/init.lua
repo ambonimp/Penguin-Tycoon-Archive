@@ -170,6 +170,8 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Accessories", script.Store.Accessories)
 
 	ModuleLoader.Register("Leaderboards", script.Leaderboards)
+	ModuleLoader.Register("SystemMessages", script.SystemMessages)
+
 
 	-- Load Version
 	ModuleLoader.Load()

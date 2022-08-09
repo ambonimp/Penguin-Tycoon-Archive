@@ -7,8 +7,12 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local UI = Paths.UI.Center.Achievements.Sections.Quests
 
+local Snackbar = Paths.UI.Full.QuestHelp
+
 local RerollId = 1284829211
 local QuestData = nil
+
+local GUI_INSET = Paths.Services.GuiService:GetGuiInset()
 
 function getReward(difficult)
     local reward = 5
@@ -57,15 +61,18 @@ end
 
 function updateQuestData(data)
     QuestData = data
-    for i = 1,5 do 
+    for i = 1,5 do
         local Quest = QuestData.Quests[i]
         local Icon,Reward = getReward(i)
         local Frame = UI.Quests:FindFirstChild("Quest"..i)
         Frame.Icon.Image = getQuestIcon(Quest[2])
         Frame.Reward.Icon.Image = Icon
         Frame.Reward.Text.Text = Reward
-        Frame.ShortDescription.Text = Quest[2][4]
-        Frame.LongDescription.Text = Quest[2][5]
+        Frame.Description.Text = Quest[2][4]
+        Frame:SetAttribute("QuestId", i)
+
+        Frame.Help.Visible = Quest[5] ~= nil
+
         if Quest[3] == "CLAIMED" then
             Frame.ProgressText.Text = Quest[2][3].."/"..Quest[2][3]
             Frame.Progress.Frame.Size = UDim2.new(1,0,1,0)
@@ -74,7 +81,7 @@ function updateQuestData(data)
             Frame.Progress.Claim.Visible = true
         else
             Frame.ProgressText.Text = Quest[3].."/"..Quest[2][3]
-        
+
             local per = Quest[3]/Quest[2][3]
             Frame.Progress.Frame.Size = UDim2.new(per,0,1,0)
             if per == 1 then
@@ -85,10 +92,17 @@ function updateQuestData(data)
                 Frame.Progress.Claim:SetAttribute("Claim",false)
                 Frame.Progress.Claim.Visible = false
             end
+
         end
-        
+
+        Frame.Help.MouseButton1Down:Connect(function()
+
+        end)
+
     end
+
 end
+
 --[[
 function OpenQuestHelp(id)
     local Quest = QuestData.Quests[id]
@@ -96,7 +110,7 @@ end]]
 
 for i = 1,5 do
     local Frame = UI.Quests:FindFirstChild("Quest"..i)
-    Frame.Progress.Claim.MouseButton1Down:Connect(function()    
+    Frame.Progress.Claim.MouseButton1Down:Connect(function()
         if Frame.Progress.Claim:GetAttribute("Claimed") then return end
         if Frame.Progress.Claim:GetAttribute("Claim") then
             if (i == 4 or i == 5) then
@@ -113,7 +127,7 @@ for i = 1,5 do
         end
     end)
    --[[ Frame.Help.MouseButton1Down:Connect(function()
-        
+
     end)]]
 end
 
@@ -123,7 +137,7 @@ function Remotes.Quests.OnClientInvoke(Data)
 end
 
 task.spawn(function()
-    repeat 
+    repeat
         QuestData = Remotes.GetStat:InvokeServer("Quests")
         task.wait(1)
     until QuestData and QuestData.Quests
@@ -149,5 +163,65 @@ task.spawn(function()
 
     doTimer()
 end)
+
+-- Help bars
+local ScrollConn
+local function CloseHelp()
+    Snackbar.Visible = false
+    Snackbar:SetAttribute("QuestId", nil)
+
+    if ScrollConn then
+        ScrollConn:Disconnect()
+    end
+
+end
+
+for _, Container in ipairs(UI.Quests:GetChildren()) do
+    if string.find(Container.Name, "Quest") then
+        local Btn = Container.Help
+        Btn.MouseButton1Down:Connect(function()
+            local QuestId = Container:GetAttribute("QuestId")
+
+            if Snackbar:GetAttribute("QuestId") == QuestId then
+                CloseHelp()
+            else
+                local Quest = QuestData.Quests[QuestId]
+
+                Snackbar.Visible = true
+                Snackbar.TextLabel.Text = Quest[2][5]
+                Snackbar:SetAttribute("QuestId", QuestId)
+
+                local ViewportSize = workspace.CurrentCamera.ViewportSize
+                local BtnPos = Btn.AbsolutePosition
+                Snackbar.Position = UDim2.fromScale(
+                    (BtnPos.X + GUI_INSET.X - Snackbar.Arrow.AbsoluteSize.Y) / ViewportSize.X,
+                    (BtnPos.Y + GUI_INSET.Y + (Btn.AbsoluteSize.Y / 2)) / ViewportSize.Y
+                )
+
+                ScrollConn = UI.Quests:GetPropertyChangedSignal("CanvasPosition"):Connect(CloseHelp)
+
+            end
+
+        end)
+
+    end
+
+end
+
+Paths.UI.Center.Achievements:GetPropertyChangedSignal("Visible") do
+    CloseHelp()
+end
+
+for _, tab in ipairs(Paths.UI.Center.Achievements.Buttons:GetChildren()) do
+    if tab:IsA("ImageButton") then
+        tab.MouseButton1Down:Connect(function()
+            if tab.Name ~= "Quests" then
+                CloseHelp()
+            end
+        end)
+    end
+
+end
+
 
 return Quests

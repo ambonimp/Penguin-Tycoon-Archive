@@ -44,6 +44,9 @@ local autoHatching = false
 local SMALL_GAMEPASS = 55102169
 local HUGE_GAMEPASS = 55102286
 
+local GUI_INSET = Paths.Services.GuiService:GetGuiInset()
+
+
 local function getTotalPets()
 	return Modules.FuncLib.DictLength(RealData.PetsOwned)
 end
@@ -55,10 +58,6 @@ end
 LocalPlayer:GetAttributeChangedSignal("MaxPetsOwned"):Connect(function()
 	UpdateStorage()
 end)
-
-local function OnIndexButtonClicked(Pet)
-
-end
 
 function tweenModel(model,cf)
 	local c = TweenValues[model] or Instance.new("CFrameValue")
@@ -347,16 +346,61 @@ end)
 
 function openSelected(x,y)
 	local petDetails = SelectedPetDetails[2]
-	PetSelected.Position = UDim2.fromOffset(x,y)
-	PetSelected.Frame.PetName.Text = petDetails[3]
-	PetSelected.Frame.PetType.Text = petDetails[1]
-	PetSelected.Frame.PetKind.Text = petDetails[2]
-	PetSelected.Frame.Rarity.Text = petDetails[4]
-	PetSelected.Frame.Rarity.TextColor3 = PetDetails.RarityColors[petDetails[4]]
-	PetSelected.Frame.Level.Text = "Lvl. ".. petDetails[5]
-	PetSelected.Frame.Ability.Text = "x"..petDetails[6][1].." ".. petDetails[6][2].." ".. petDetails[6][3]
-	PetSelected.Visible = true
+	openSelected2(UDim2.fromOffset(x,y), {
+		Name = petDetails[3],
+		Type = petDetails[1],
+		Rarity = petDetails[4],
+		Level = "Lvl. ".. petDetails[5],
+		Ability = "x"..petDetails[6][1].." ".. petDetails[6][2].." ".. petDetails[6][3]
+
+	})
+
 end
+
+function openSelected2(Pos, Props)
+	local Content = PetSelected.Frame
+
+	if Props.Name then
+		Content.PetName.Visible = true
+		Content.PetName.Text = Props.Name
+	else
+		Content.PetName.Visible = false
+	end
+
+	if Props.Type then
+		Content.PetType.Visible = true
+		Content.PetType.Text = Props.Type
+	else
+		Content.PetType.Visible = false
+	end
+
+	if Props.Rarity then
+		Content.Rarity.Visible = true
+		Content.Rarity.Text = Props.Rarity
+		Content.Rarity.TextColor3 = PetDetails.RarityColors[Props.Rarity]
+	else
+		Content.Rarity.Visible = false
+	end
+
+	if Props.Level then
+		Content.Level.Visible = true
+		Content.Level.Text = Props.Level
+	else
+		Content.Level.Visible = false
+	end
+
+	if Props.Ability then
+		Content.Ability.Visible = true
+		Content.Ability.Text = Props.Ability
+	else
+		Content.Ability.Visible = false
+	end
+
+	PetSelected.Position = Pos
+	PetSelected.Visible = true
+
+end
+
 
 PetsFrame.Merge.MouseButton1Down:Connect(function()
 	Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets, true)
@@ -440,7 +484,6 @@ function updateIndex(data,islandId)
 						break
 					end
 				end
-				print(pet)
 				local Rarity = PetDetails.Rarities[pet.Percentage]
 				v.Icon.ImageColor3 = Color3.new(1,1,1)
 				v.PetName.Text = PetDetails.Pets[PetId][1]--.." x"..data.Unlocked[tostring(PetId)]
@@ -452,7 +495,7 @@ function updateIndex(data,islandId)
 		end
 
 	end
-	
+
 end
 
 function Pets.UpdateEggUI()
@@ -546,6 +589,7 @@ function updateUI(data,kind,ID)
 			if PetSelected and PetSelected.Visible then
 				PetSelected.Visible = false
 			end
+
 			ButtonClick:Play()
 			if SelectedPetDetails and SelectedPetDetails[1] == ID then SelectedPetDetails = nil return end
 			SelectedPetDetails = {ID,RealData.PetsOwned[tostring(ID)]}
@@ -867,7 +911,25 @@ PetsFrame:GetPropertyChangedSignal("Visible"):Connect(function()
 end)
 
 PetsFrame.Index.MouseButton1Down:Connect(function()
-	Paths.Modules.Buttons:UIOff(Paths.UI.Center.Pets,true)
+	PetSelected.Visible = false
+end)
+
+for _, Section in ipairs(UI.Center.Index.Buttons:GetChildren()) do
+	if Section:IsA("ImageButton") then
+		local Name = Section.Name
+		Section.MouseButton1Down:Connect(function()
+			if Name ~= "Pets" then
+				PetSelected.Visible = false
+			end
+
+		end)
+
+	end
+
+end
+
+UI.Center.Index:GetPropertyChangedSignal("Visible"):Connect(function()
+	PetSelected.Visible = false
 end)
 
 PetsFrame.Edit.MouseButton1Down:Connect(function()
@@ -1174,16 +1236,16 @@ end
 do -- Free Pet
 	local FreePet = Paths.UI.Center.FreePet
 	local Selected = {1,FreePet.Pets:WaitForChild("1")}
-	
+
 	local function updateSelected(button)
 		Selected = {tonumber(button.Name),button}
 		FreePet.Selected.Text = "Selected: "..button.PetName.Text
 		button.BackgroundColor3 = Color3.fromRGB(109, 211, 0)
 	end
-	
+
 	FreePet.Confirm.MouseButton1Down:Connect(function()
 		local Did,Data,Id,Info = Remotes.ClaimPet:InvokeServer(Selected[1])
-		
+
 		if Did and Data and Id then
 			RealData = Data
 			updateUI(Data,"add",Id)
@@ -1196,7 +1258,7 @@ do -- Free Pet
 		UI.Right.Visible = true
 		UI.Bottom.Visible = true
 	end)
-	
+
 	for i,button in pairs (FreePet.Pets:GetChildren()) do
 		if button:IsA("ImageButton") then
 			button.MouseButton1Down:Connect(function()
@@ -1213,7 +1275,7 @@ task.spawn(function()
 	RealData = PetData
 	loadUI(PetData)
 	PetsFrame.Pets.Pets.CanvasSize = UDim2.new(0, 0, 0, PetsFrame.Pets.Pets.UIGridLayout.AbsoluteContentSize.Y+(#PetsFrame.Pets.Pets:GetChildren()*2))
-	
+
 	if Paths.Tycoon then
 		if RealData.ClaimedFree == nil and TycoonData["Pets#1"] then
 			UI.Left.Visible = false
@@ -1243,7 +1305,7 @@ task.spawn(function()
 		end)
 	end
 
-	
+
 	for i,IslandDetails in pairs (PetDetails.ChanceTables) do
 		local newIsland = IndexPage.List.Island:Clone()
 		newIsland.TopText.Text = IslandDetails.Name
@@ -1266,6 +1328,19 @@ task.spawn(function()
 				Template.Icon.ImageColor3 = Color3.new(0,0,0)
 				Template.PetName.Text = ""
 			end
+			Template.MouseButton1Down:Connect(function()
+				local ViewportSize = workspace.CurrentCamera.ViewportSize
+				local BtnPos = Template.AbsolutePosition
+
+				openSelected2(UDim2.fromScale((BtnPos.X + GUI_INSET.X) / ViewportSize.X, (BtnPos.Y + GUI_INSET.Y) / ViewportSize.Y),
+				{
+					Type = Pet[1],
+					Rarity = Rarity,
+					Ability = string.format("%s %s %s", Pet[3], Pet[4], Pet[5])
+				})
+
+			end)
+
 			Template.Icon.Image = PetModel.Icon.Texture
 			Template.Name = v.Id
 			Template.Parent = newIsland.Pets

@@ -174,6 +174,9 @@ Accessories.All = {
 
 	-- Mining Hats ===
 	["Hard Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420226495"};
+	["Chicken Hat"] = {Rarity = "Free", IsForSale = false};
+	["Popcorn Hat"] = {Rarity = "Free", IsForSale = false};
+
 
 	-- Achievements
 	["Bath Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10420228425"};

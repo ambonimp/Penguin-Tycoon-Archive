@@ -1,11 +1,10 @@
 local StarterGui = game:GetService("StarterGui")
 
+local paths = require(script.Parent)
+local remotes = paths.Remotes
+local modules = paths.Modules
 
-local path = require(script.Parent)
-local remotes = path.Remotes
-local modules = path.Modules
-
-local fishingConfig = require(script.Parent.Fishing.Config)
+local SystemMessages = {}
 
 local FISH_RARITY_COLORS = {
 	["Common"] = Color3.fromRGB(240, 240, 240),
@@ -16,7 +15,7 @@ local FISH_RARITY_COLORS = {
 	["Gem"] = Color3.fromRGB(0, 184, 250),
 	["Hat"] = Color3.fromRGB(0, 231, 19)
 }
-local Messages = {
+local MESSAGES = {
 	"[SOCIAL] Have an idea for the game? You can suggest it at any of our social links!";
 	"[SOCIAL] Support us by leaving a thumbs up!";
 	"[SOCIAL] Follow us on social media for exclusive codes!";
@@ -25,7 +24,7 @@ local Messages = {
 }
 
 local function getFishPercentage(id)
-	for _, data in pairs(fishingConfig.ChanceTable) do
+	for _, data in pairs(paths.Modules.FishingConfig.ChanceTable) do
 		for i, entry in ipairs(data) do
 			if id == entry.Id then
 				local previous = 0
@@ -42,25 +41,12 @@ local function getFishPercentage(id)
 
 end
 
-local function MakeMessage(Message, colour)
-	StarterGui:SetCore("ChatMakeSystemMessage",{
-		Text = Message;
-		Color = colour;
-		Font = Enum.Font.FredokaOne;
-		FontSize = Enum.FontSize.Size28;
-	})
-end
 
-MakeMessage("Welcome to Penguin Tycoon!")
 
-while true do
-	task(600)
-	local RandomMessage = Messages[Random.new():NextInteger(1, #Messages)]
-	MakeMessage(RandomMessage, Color3.new(73/255, 155/255, 255/255))
-end
+modules.FuncLib.SendMessage("Welcome to Penguin Tycoon!")
 
 remotes.Announcement.OnClientEvent:Connect(function(player, item)
-	if item == nil then
+	if not item then
 		item = player
 		player = game.Players.LocalPlayer
 	end
@@ -99,7 +85,7 @@ remotes.Announcement.OnClientEvent:Connect(function(player, item)
 	elseif item.Type == "Badge" then
 		modules.FuncLib.SendMessage(
 			string.format("[BADGE] %s has unlocked the '%s' badge!", player.Name, item.Name),
-			Color3.fromRGB(110, 13, 102)
+			Color3.fromRGB(202, 23, 190)
 		)
 	elseif item.Type == "PremiumPlayer" then
 		modules.FuncLib.SendMessage(
@@ -114,3 +100,13 @@ remotes.Announcement.OnClientEvent:Connect(function(player, item)
 	end
 
 end)
+
+task.spawn(function()
+	while true do
+		task.wait(600)
+		local RandomMessage = MESSAGES[Random.new():NextInteger(1, #MESSAGES)]
+		modules.FuncLib.SendMessage(RandomMessage, Color3.new(73/255, 155/255, 255/255))
+	end
+end)
+
+return SystemMessages

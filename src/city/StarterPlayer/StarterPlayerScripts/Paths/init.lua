@@ -127,6 +127,8 @@ function Paths.Initiliaze()
 
 	ModuleLoader.Register("LeaderboardDetails", Paths.Services.RStorage.Modules.LeaderboardDetails)
 	ModuleLoader.Register("Leaderboards", script.Leaderboards)
+	ModuleLoader.Register("SystemMessages", script.SystemMessages)
+
 
 	-- Load Version
 	ModuleLoader.Load()
