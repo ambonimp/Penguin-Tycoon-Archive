@@ -415,7 +415,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 			Modules.Income:AddMoney(Player, 5000)
 			Remotes.GroupReward:FireClient(Player, true)
 
-			Remotes.Announcement:FireAllClients(Player.Name, {Type = "GroupJoin"})
+			Remotes.Announcement:FireAllClients(Player, {Type = "GroupJoin"})
 		end
 
 	end)

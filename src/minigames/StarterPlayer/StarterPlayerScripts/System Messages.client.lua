@@ -16,7 +16,7 @@ local function MakeMessage(Message, colour)
 	})
 end
 
-MakeMessage("Welcome to Penguin City!")
+MakeMessage("Welcome to a Penguin Tycoon minigame!")
 
 --game:GetService("ReplicatedStorage").Remotes.MakeMessage.OnClientEvent:Connect(function(message, colour)
 --	wait(3)

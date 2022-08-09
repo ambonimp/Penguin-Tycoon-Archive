@@ -14,7 +14,7 @@ local AllQuests = {
 			{"Minigame", "Candy Rush", 50, "Collect 50 candy in candy rush", "Travel to the city using the green button on the right of the screen and collect 50 candy in total in the candy rush minigame."},
 			{"Minigame", "Ice Cream Extravaganza", 50, "Collect 50 ice cream in ice cream extravanza", "Travel to the city using the green button on the right of the screen and collect 50 ice scream scoops in total in the ice cream extravaganza minigame."},
 			{"Minigame", "Soccer", 3, "Score 3 goals in soccer", "Travel to the city using the green button on the right of the screen and score 3 goals in the soccer minigame."},
-			{"Woodcutting", "Tree", 20, "Chop 20 trees", "", "Axe#1"}
+			{"Woodcutting", "Tree", 20, "Chop 20 trees", "Use the axe obtained from the woodcutting world to chop 20 trees.", "Axe#1"}
 		},
 		
 	},
@@ -33,7 +33,7 @@ local AllQuests = {
 			{"Minigame", "Candy Rush", 100, "Collect 100 candy in candy rush", "Travel to the city using the green button on the right of the screen and collect 100 candy in total in the candy rush minigame."},
 			{"Minigame", "Ice Cream Extravaganza", 100, "Collect 100 ice cream in ice cream extravanza", "Travel to the city using the green button on the right of the screen and collect 100 ice scream scoops in total in the ice cream extravaganza minigame."},
 			{"Minigame", "Soccer", 5, "Score 5 goals in soccer", "Travel to the city using the green button on the right of the screen and score 5 goals in the soccer minigame."},
-			{"Woodcutting", "Tree", 60, "Chop 60 trees", "", "Axe#1"}
+			{"Woodcutting", "Tree", 60, "Chop 60 trees", "Use the axe obtained from the woodcutting world to chop 60 trees.", "Axe#1"}
 		},
 		
 	},
@@ -52,7 +52,7 @@ local AllQuests = {
 			{"Minigame", "Candy Rush", 250, "Collect 250 candy in candy rush", "Travel to the city using the green button on the right of the screen and collect 200 candy in total in the candy rush minigame."},
 			{"Minigame", "Ice Cream Extravaganza", 200, "Collect 200 ice cream in ice cream extravanza", "Travel to the city using the green button on the right of the screen and collect 200 ice scream scoops in total in the ice cream extravaganza minigame."},
 			{"Minigame", "Soccer", 15, "Score 15 goals in soccer", "Travel to the city using the green button on the right of the screen and score 15 goals in the soccer minigame."},
-			{"Woodcutting", "Tree", 120, "Chop 120 trees", "", "Axe#1"}
+			{"Woodcutting", "Tree", 120, "Chop 120 trees", "Use the axe obtained from the woodcutting world to chop 120 trees.", "Axe#1"}
 
 		},
 	},

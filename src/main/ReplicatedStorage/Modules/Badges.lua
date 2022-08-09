@@ -7,22 +7,25 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Remotes = ReplicatedStorage.Remotes
 
 function Badges:AwardBadge(UserID, BadgeID)
-	pcall(function()
+	local Succ, Succ2 = pcall(function()
 		if not BadgeService:UserHasBadgeAsync(UserID, BadgeID) then
 			BadgeService:AwardBadge(UserID, BadgeID)
-		end
-
-		local BadgeInfo = BadgeService:GetBadgeInfoAsync(BadgeID)
-		local Player = Players:GetPlayerByUserId(UserID)
-		if BadgeInfo and Player then
-			Remotes.Announcement:FireAllClients(Player.Name, {
-				Type = "Badge",
-				Name = BadgeInfo.Name
-			})
 
 		end
 
 	end)
+
+	if Succ and Succ2 then
+		local BadgeInfo = BadgeService:GetBadgeInfoAsync(BadgeID)
+		local Player = Players:GetPlayerByUserId(UserID)
+		if BadgeInfo and Player then
+			Remotes.Announcement:FireAllClients(Player, {
+				Type = "Badge",
+				Name = BadgeInfo.Name
+			})
+		end
+
+	end
 
 end
 

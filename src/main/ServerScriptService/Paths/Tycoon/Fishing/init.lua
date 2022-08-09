@@ -376,6 +376,7 @@ function Main(player, hitPosition, reroll, AFKFishing)
 			announcementRemote:FireAllClients(player, data.LootInfo)
 			return data
 		end
+
 	end
 	
 end

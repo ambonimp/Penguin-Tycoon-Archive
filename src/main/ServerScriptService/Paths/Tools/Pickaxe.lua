@@ -82,7 +82,9 @@ Island.GoldPickaxe.Model.Hitbox.ProximityPrompt.Triggered:Connect(function(Playe
     Modules.Purchasing:PurchaseItem(Player, "Gold Pickaxe#1", false)
 end)
 
-Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
+Remotes.Pickaxe.OnServerInvoke = function(Client, Mineable)
+    local AwardedHat
+
     local Data = Modules.PlayerData.sessionData[Client.Name]
     if not Data then return end
 
@@ -108,12 +110,16 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
                 Mineable:SetAttribute("Health", MINE_MAX_HEALTH)
             end)
 
-            local RNG = math.random(1, math.max(2, math.random(100 / RANDOM_REWARD_LIKELYHOOD)))
+            local RNG = math.random(1, math.max(2, math.random(100 * RANDOM_REWARD_LIKELYHOOD)))
 
             if RNG == 1 then
-                Modules.Accessories:ItemAcquired(Client, "Popcorn Hat", "Accessory")
+                if Modules.Accessories:ItemAcquired(Client, "Popcorn Hat", "Accessory") then
+                    AwardedHat = "Popcorn Hat"
+                end
             elseif RNG == 2 then
-                Modules.Accessories:ItemAcquired(Client, "Chicken Hat", "Accessory")
+                if Modules.Accessories:ItemAcquired(Client, "Chicken Hat", "Accessory") then
+                    AwardedHat = "Chicken Hat"
+                end
             end
 
         end
@@ -146,9 +152,11 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
 
         end
 
+        return AwardedHat
+
     end
 
-end)
+end
 
 Modules.Achievements.Reconciled:Connect(function(Data)
 	Modules.Achievements.ReconcileSet(Data, 32, Data.Mining.Mined["Diamond"])

@@ -306,7 +306,7 @@ end
 
 
 -- Loading current player items
-EmoteMenu.Holder.UIGridLayout.SortOder = Enum.SortOrder.Name
+EmoteMenu.Holder.UIGridLayout.SortOrder = Enum.SortOrder.Name
 for i, Emote in pairs(EmoteDisplay.Emotes.Holder:GetChildren()) do
 	if Emote:IsA("ImageButton") then
 		Emote.MouseButton1Down:Connect(function()
