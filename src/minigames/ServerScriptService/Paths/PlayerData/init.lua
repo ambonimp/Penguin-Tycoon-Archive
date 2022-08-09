@@ -319,6 +319,9 @@ game.Players.PlayerAdded:Connect(function(Player)
 			PlayerData.sessionData[Player.Name]["Group Reward Claimed"] = true
 			Modules.Income:AddMoney(Player, 5000)
 			Remotes.GroupReward:FireClient(Player, true)
+
+			Remotes.Announcement:FireAllClients(Player, {Type = "GroupJoin"})
+x
 		end
 	end)
 

@@ -47,9 +47,9 @@ function Soccer:SpawnPlayers(ChosenBugName, ChosenBugNum)
 
 		table.remove(UnassignedPlayers, playerIndex)
 		if i % 2 == 0 then
-			table.insert(blueteam, player)
+			table.insert(blueteam, player.Name)
 		else
-			table.insert(redteam, player)
+			table.insert(redteam, player.Name)
 		end
 
 	end

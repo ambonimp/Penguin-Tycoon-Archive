@@ -247,7 +247,7 @@ task.spawn(function()
 	Map.Parent = workspace.Event
 
 	-- Position spectator's box above map
-	local SpectatorBox = Services.SStorage.SpectatorBox[ChosenEvent]:Clone()
+	local SpectatorBox = Services.SStorage.SpectatorBoxes[ChosenEvent]:Clone()
 	SpectatorBox.Parent = workspace
 
 
@@ -257,10 +257,11 @@ task.spawn(function()
 		Offsets[SpawnLocation] = Workspace.SpectatorBox.PrimaryPart.CFrame:ToObjectSpace(SpawnLocation.CFrame)
 	end
 
-	SpectatorBox:SetPrimaryPartCFrame(SpectatorBox.CFrame)
+	local NewCFrame = Map.SpectatorBox.CFrame
+	SpectatorBox:SetPrimaryPartCFrame(NewCFrame)
 
 	for BasePart, Offset in pairs(Offsets) do
-		BasePart.CFrame = SpectatorBox.CFrame:ToWorldSpace(Offset)
+		BasePart.CFrame = NewCFrame:ToWorldSpace(Offset)
 	end
 
 	-- Start loop

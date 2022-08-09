@@ -229,7 +229,7 @@ function Pets.BuyRobuxPet(Player,IslandId)
 		local petId, petInfo = givePet(Player,chosen.Id,chosen,IslandId)
 		task.spawn(function()
 			if chosen.Percentage == 1 then
-				announcementRemote:FireAllClients(Player.Name, {
+				announcementRemote:FireAllClients(Player, {
 					Type = "Poofie",
 					Name = petInfo[1],
 			
@@ -256,10 +256,9 @@ function BuyEgg(Player,Island,Type)
 				Player:SetAttribute("Gems", Modules.PlayerData.sessionData[Player.Name]["Gems"])
 				task.spawn(function()
 					if chosen.Percentage == 1 then
-						announcementRemote:FireAllClients(Player.Name, {
+						announcementRemote:FireAllClients(Player, {
 							Type = "Poofie",
 							Name = petInfo[1],
-					
 						})
 					end
 				end)

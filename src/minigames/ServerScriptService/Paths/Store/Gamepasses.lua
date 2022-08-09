@@ -31,7 +31,7 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 		if not AppliedPasses[tostring(gamepass)] then
 			Data["Applied Gamepasses"][tostring(gamepass)] = true
 			Remotes.Store:FireClient(Player, "Gamepass", gamepass, true)
-			
+
 			-- x2 Income
 			if gamepass == 25313170 then
 				Data["Income Multiplier"] *= 2
@@ -45,8 +45,14 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				if Char and Char:FindFirstChild("Humanoid") then
 					Char.Humanoid.WalkSpeed *= 1.6
 				end
+									-- VIP
+			elseif gamepass == 26269102 then
+				Remotes.Announcement:FireAllClients(Player, {Type = "PremiumPlayer"})
+
 			end
+
 		end
+
 	end
 end
 

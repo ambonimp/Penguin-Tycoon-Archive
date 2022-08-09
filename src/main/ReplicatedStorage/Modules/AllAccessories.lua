@@ -176,6 +176,7 @@ Accessories.All = {
 	["Pink Bunny Ears"] = {Rarity = "Event", IsForSale = false, Icon = "rbxassetid://10534498240"};
 
 	-- Mining Hats ===
+
 	["Hard Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534499529"};
 	["Chicken Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534509511"};
 	["Popcorn Hat"] = {Rarity = "Free", IsForSale = false, Icon = "rbxassetid://10534494025"};
