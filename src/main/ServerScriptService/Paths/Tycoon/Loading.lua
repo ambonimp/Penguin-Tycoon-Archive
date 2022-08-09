@@ -27,6 +27,9 @@ function Loading:LoadTycoon(Player)
 			if Tycoon[Button:GetAttribute("Dependency")] and not Tycoon[Button:GetAttribute("Object")] and not TycoonModel.Tycoon:FindFirstChild(Button:GetAttribute("Object")) then
 				Modules.Buttons:NewButton(Player, Button.Name)
 			end
+			if i % 100 == 0 then
+				task.wait(1)
+			end
 		end
 
 		for i, Extra in pairs(Paths.Template.Extra:GetChildren()) do

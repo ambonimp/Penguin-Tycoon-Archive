@@ -47,38 +47,40 @@ end
 
 function Axe.GiveRandom(Player)
     local Data = Modules.PlayerData.sessionData[Player.Name]
-    if Data == nil then return end
-    local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
-    local num = math.random(1,100)
-    local reward = nil
-    if num == 1 and Data["Outfits"]["Unicorn"] == nil then
-        reward = {"Outfit"}
-        Modules.Accessories:ItemAcquired(Player, "Unicorn", "Outfits")
-    elseif num == 1 then
-        reward = {"Gems",5}
-        Modules.Income:AddGems(Player,5,"AxeAward")
-    elseif num == 2 and Data["Accessories"]["Shark Hat"] == nil then
-        reward = {"Outfit"}
-        Modules.Accessories:ItemAcquired(Player, "Shark Hat", "Accessory")
-    elseif num == 2 then
-        reward = {"Gems",10}
-        Modules.Income:AddGems(Player,5,"AxeAward") 
-    elseif num <= 5 then
-        print("Acorn")
-        reward = {"Gems",5,"Acorn"}
-        Modules.Income:AddGems(Player,5,"AxeAward")
-    elseif num <= 13 then
-        print("Money pouch")
-        reward = {"Money",math.floor(10*PlayerIncome),"Pouch"}
-        Modules.Income:AddMoney(Player,math.floor(10*PlayerIncome))
-    elseif num <= 16.5 then
-        print("Log")
-        reward = {"Money",math.floor(20*PlayerIncome),"Log"}
-        Modules.Income:AddMoney(Player,math.floor(20*PlayerIncome))
+    if Data then
+        local PlayerIncome = math.floor(Data["Income"] * Data["Income Multiplier"])
+        local num = math.random(1,100)
+        local reward = nil
+        if num == 1 and Data["Outfits"]["Unicorn"] == nil then
+            reward = {"Outfit"}
+            Modules.Accessories:ItemAcquired(Player, "Unicorn", "Outfits")
+        elseif num == 1 then
+            reward = {"Gems",5}
+            Modules.Income:AddGems(Player,5,"AxeAward")
+        elseif num == 2 and Data["Accessories"]["Shark Hat"] == nil then
+            reward = {"Outfit"}
+            Modules.Accessories:ItemAcquired(Player, "Shark Hat", "Accessory")
+        elseif num == 2 then
+            reward = {"Gems",10}
+            Modules.Income:AddGems(Player,5,"AxeAward")
+        elseif num <= 5 then
+            print("Acorn")
+            reward = {"Gems",5,"Acorn"}
+            Modules.Income:AddGems(Player,5,"AxeAward")
+        elseif num <= 13 then
+            print("Money pouch")
+            reward = {"Money",math.floor(10*PlayerIncome),"Pouch"}
+            Modules.Income:AddMoney(Player,math.floor(10*PlayerIncome))
+        elseif num <= 16.5 then
+            print("Log")
+            reward = {"Money",math.floor(20*PlayerIncome),"Log"}
+            Modules.Income:AddMoney(Player,math.floor(20*PlayerIncome))
+        end
+        if reward then
+            Remotes.Axe:FireClient(Player,reward,true)
+        end
     end
-    if reward then
-        Remotes.Axe:FireClient(Player,reward,true)
-    end
+
 end
 
 

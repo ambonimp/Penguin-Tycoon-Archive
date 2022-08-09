@@ -59,6 +59,10 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				if Char and Char:FindFirstChild("Humanoid") then
 					Char.Humanoid.WalkSpeed *= 1.6
 				end
+			-- VIP
+			elseif gamepass == 26269102 then
+				Remotes.Announcement:FireAllClients(Player, {Type = "PremiumPlayer"})
+
 			elseif gamepass == 28927736 then
 				Data["Tycoon"]["Gold Fishing Rod#1"] = true
 				Data["Tools"]["Gold Fishing Rod"] = true

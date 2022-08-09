@@ -52,6 +52,7 @@ function Paths.Initiliaze()
 	Paths.Modules.GameInfo = require(Paths.Services.RStorage.Modules.GameInfo)
 	Paths.Modules.Camera = require(script.Camera)
 	Paths.Modules.AllAccessories = require(Paths.Services.RStorage.Modules.AllAccessories)
+	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.AllAchievements = require(Paths.Services.RStorage.Modules.AllAchievements)
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
@@ -107,6 +108,7 @@ function Paths.Initiliaze()
 	
 	-- Other Modules (That have to be required after)
 
+	Paths.Modules.SystemMessages = require(script.SystemMessages)
 
 	--- Load Version ---
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version

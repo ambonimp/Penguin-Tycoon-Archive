@@ -132,15 +132,6 @@ function Emotes:PlayEmote(ID)
 	EmoteDB = false
 end
 
-for i, Emote in pairs(EmoteDisplay.Emotes.Holder:GetChildren()) do
-	if Emote:IsA("ImageButton") then
-		Emote.MouseButton1Down:Connect(function()
-			Emotes:PlayEmote(Emote:GetAttribute("AnimationID"))
-		end)
-	end
-end
-
-
 function Emotes:NewCharacter(Character)
 	AnimationTracks = {}
 	
@@ -315,6 +306,16 @@ end
 
 
 -- Loading current player items
+EmoteMenu.Holder.UIGridLayout.SortOrder = Enum.SortOrder.Name
+for i, Emote in pairs(EmoteDisplay.Emotes.Holder:GetChildren()) do
+	if Emote:IsA("ImageButton") then
+		Emote.MouseButton1Down:Connect(function()
+			Emotes:PlayEmote(Emote:GetAttribute("AnimationID"))
+		end)
+	end
+end
+
+
 coroutine.wrap(function()
 	-- Loading emotes
 	local PlayerEmotes = Remotes.GetStat:InvokeServer("Emotes")

@@ -1,13 +1,32 @@
 local Badges = {}
 
 local BadgeService = game:GetService("BadgeService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Remotes = ReplicatedStorage.Remotes
 
 function Badges:AwardBadge(UserID, BadgeID)
-	pcall(function()
+	local Succ, Succ2 = pcall(function()
 		if not BadgeService:UserHasBadgeAsync(UserID, BadgeID) then
 			BadgeService:AwardBadge(UserID, BadgeID)
+
 		end
+
 	end)
+
+	if Succ and Succ2 then
+		local BadgeInfo = BadgeService:GetBadgeInfoAsync(BadgeID)
+		local Player = Players:GetPlayerByUserId(UserID)
+		if BadgeInfo and Player then
+			Remotes.Announcement:FireAllClients(Player, {
+				Type = "Badge",
+				Name = BadgeInfo.Name
+			})
+		end
+
+	end
+
 end
 
 Badges.Purchases = {
@@ -51,12 +70,13 @@ Badges.Purchases = {
 	["New Island!#29"] = 2124929788; --Hospital
 	["New Island!#30"] = 2124929789; -- Military
 
-	["New Island!#32"] = 2127256368; --woodcutting trees
-	["New Island!#33"] = 2127256371; --sports
-	["New Island!#34"] = 2127256374; --bee
-	["New Island!#35"] = 2127256375; --castle
+	["New Island!#32"] = 2127256368; -- woodcutting trees
+	["New Island!#33"] = 2127256371; -- sports
+	["New Island!#34"] = 2127256374; -- bee
+	["New Island!#35"] = 2127256375; -- castle
 	["New Island!#37"] = 2127704120; -- factory
-	["New Island!#38"] = 2127704122; --school
+	["New Island!#38"] = 2127704122; -- school
+
 	["New Island!#39"] = 2127799195; -- arcade
 
 }

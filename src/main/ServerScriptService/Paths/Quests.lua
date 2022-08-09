@@ -29,7 +29,7 @@ function getRandom(intbl, possible, tycoonData)
 
     -- If quest has an upgrade requirement, then don't show it
     for i, copy in pairs(possible) do
-        local reqUpgrade = copy[5]
+        local reqUpgrade = copy[6]
         if reqUpgrade and not tycoonData[reqUpgrade] then
             table.remove(copy, i)
         end

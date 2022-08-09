@@ -138,7 +138,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 	-- For regular, tycoon penguins
 	if Penguin:FindFirstChild("Info") then
 		-- Get penguin info
-		CustomizationUI.Instant.Position = UDim2.fromScale(0.838,1.015)
+		-- CustomizationUI.Instant.Position = UDim2.fromScale(0.838,1.015)
 		CustomizationUI.Super.Visible = true
 		CustomizationUI.PenguinNameBG.UpgradeInfo.Visible = true
 
@@ -169,7 +169,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		CustomizationUI.PenguinNameBG.UpgradeInfo.Visible = false
 
 		local Level = Paths.Player:GetAttribute("Level")
-		CustomizationUI.Instant.Position = UDim2.fromScale(0.645,1.015)
+		-- CustomizationUI.Instant.Position = UDim2.fromScale(0.645,1.015)
 		CustomizationUI.Super.Visible = false
 		CustomizationUI.Instant.Visible = true
 		local Income = Modules.GameFunctions:GetPlayerPenguinIncome(Level)

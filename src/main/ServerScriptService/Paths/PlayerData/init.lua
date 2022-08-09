@@ -409,15 +409,17 @@ game.Players.PlayerAdded:Connect(function(Player)
 	end)
 
 	-- Group reward
-	if not IsQA then
-		pcall(function()
-			if Player:IsInGroup(12843903) and not PlayerData.sessionData[Player.Name]["Group Reward Claimed"] then
-				PlayerData.sessionData[Player.Name]["Group Reward Claimed"] = true
-				Modules.Income:AddMoney(Player, 5000)
-				Remotes.GroupReward:FireClient(Player, true)
-			end
-		end)
-	end
+	pcall(function()
+		if Player:IsInGroup(12843903) and not PlayerData.sessionData[Player.Name]["Group Reward Claimed"] then
+			PlayerData.sessionData[Player.Name]["Group Reward Claimed"] = true
+			Modules.Income:AddMoney(Player, 5000)
+			Remotes.GroupReward:FireClient(Player, true)
+
+			Remotes.Announcement:FireAllClients(Player, {Type = "GroupJoin"})
+		end
+
+	end)
+
 
 
 	-- Data check just incase

@@ -39,13 +39,19 @@ function Soccer:SpawnPlayers(ChosenBugName, ChosenBugNum)
 	blueteam = {}
 	redteam = {}
 	
-	for i = 1,math.floor(#Participants:GetChildren()/2) do
-		local player = Participants:GetChildren()[i].Name
-		table.insert(blueteam,player)
-	end
-	for i = math.floor(#Participants:GetChildren()/2)+1,#Participants:GetChildren() do
-		local player = Participants:GetChildren()[i].Name
-		table.insert(redteam,player)
+	-- Randomly assign players to teams
+	local UnassignedPlayers = Participants:GetChildren()
+	for i = 1, #UnassignedPlayers do
+		local playerIndex = math.random(1, #UnassignedPlayers)
+		local player = UnassignedPlayers[playerIndex]
+
+		table.remove(UnassignedPlayers, playerIndex)
+		if i % 2 == 0 then
+			table.insert(blueteam, player.Name)
+		else
+			table.insert(redteam, player.Name)
+		end
+
 	end
 
 	for i,player in pairs (blueteam) do
