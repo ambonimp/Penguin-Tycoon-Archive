@@ -13,10 +13,9 @@ raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
 
 local remotes = paths.Remotes
 local FishingRemote: RemoteEvent = remotes:WaitForChild("FishingRemote")
-local announcementRemote: RemoteEvent = remotes:WaitForChild("Announcement")
 local funcLib = paths.Modules.FuncLib
 local config = paths.Modules.FishingConfig
-local frameTime 
+local frameTime
 local AnimationService = require(script.Parent.AnimationService)
 
 -- fishing module
@@ -148,72 +147,6 @@ function DestroyBobber(userId)
 	end
 	CurrentBobberData[userId] = {}
 end
-
-function GetFishPercentage(id)
-	for island, data in pairs(config.ChanceTable) do
-		for i, entry in ipairs(data) do
-			if id == entry.Id then
-				local previous = 0
-				if data[i-1] then
-					previous = data[i-1].Percentage
-				end
-				return (entry.Percentage - previous) * 100
-			end
-		end
-	end
-end
-
-announcementRemote.OnClientEvent:Connect(function(player, item)
-	if item == nil then
-		item = player
-		player = game.Players.LocalPlayer
-	end
-	local decimals 
-	
-	local rarityColors = {
-		["Common"] = Color3.fromRGB(240, 240, 240),
-		["Rare"] = Color3.fromRGB(47, 155, 255),
-		["Epic"] = Color3.fromRGB(167, 25, 255),
-		["Legendary"] = Color3.fromRGB(251, 255, 0),
-		["Mythic"] = Color3.fromRGB(227, 53, 53),
-		["Gem"] = Color3.fromRGB(0, 184, 250),
-		["Hat"] = Color3.fromRGB(0, 231, 19)
-	}
-	
-	local fishChance = GetFishPercentage(item.Id)
-	-- fish notification
-	if item.Type == "Fish" and (item.Rarity == 'Legendary' or item.Rarity == 'Mythic') then
-		if item.Rarity == 'Legendary' then decimals = 3
-		elseif item.Rarity == 'Mythic' then decimals = 4
-		end
-		
-		funcLib.SendMessage(
-			string.format("%s has just caught a %s %s (%." .. decimals .."f%%)!", player.Name, string.lower(item.Rarity), item.Name, fishChance), 
-			rarityColors[item.Rarity]
-		)
-	-- gem notification
-	elseif item.Type == "Gem" and item.Name == "Treasure Chest" then
-		decimals = 2
-		
-		funcLib.SendMessage(
-			string.format("%s has just caught a %s (%." .. decimals .."f%%)!", player.Name, item.Name, tostring(item.Gems), fishChance), 
-			rarityColors[item.Type]
-		)
-		
-	elseif item.Type == "Hat" then
-		decimals = 3
-		funcLib.SendMessage(
-			string.format("%s has just caught a %s (%." .. decimals .."f%%)!", player.Name, "random hat", fishChance), 
-			rarityColors[item.Type]
-		)
-	elseif item.Type == "Poofie" then 
-		decimals = 3
-		funcLib.SendMessage(
-			item.Name.." just hatched a legendary "..item.RealName.."!", 
-			Color3.fromRGB(255, 217, 0)
-		)
-	end
-end)
 
 FishingRemote.OnClientEvent:Connect(function(player: Player, handlingType: string, data)
 	

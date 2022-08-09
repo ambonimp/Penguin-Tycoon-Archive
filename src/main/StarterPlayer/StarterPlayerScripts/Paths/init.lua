@@ -151,7 +151,6 @@ function Paths.Initiliaze()
 
 	ModuleLoader.Register("SettingDetails", Paths.Services.RStorage.Modules.SettingDetails)
 	ModuleLoader.Register("Settings", script.Settings)
-
 	-- print("store modules")
 	-- Store Modules
 	ModuleLoader.Register("Store", script.Store)
@@ -162,7 +161,6 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Accessories", script.Store.Accessories)
 
 	ModuleLoader.Register("Leaderboards", script.Leaderboards)
-
 
 	-- Load Version
 	ModuleLoader.Load()

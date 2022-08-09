@@ -7,15 +7,18 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 
+local IS_QA = game.GameId == 3425594443
+
 local MINE_RESPAWN_RATE = 10
 local MINE_MAX_HEALTH = 6
+
+local RANDOM_REWARD_LIKELYHOOD = if IS_QA then 0.25 else 0.01
 
 -- Spawning
 local Island = workspace.Islands["Mining Island"]
 
 -- Functions
 function Pickaxe.Equipped(player)
-
 end
 
 
@@ -104,6 +107,15 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
                 end
                 Mineable:SetAttribute("Health", MINE_MAX_HEALTH)
             end)
+
+            local RNG = math.random(1, math.max(2, math.random(100 / RANDOM_REWARD_LIKELYHOOD)))
+
+            if RNG == 1 then
+                Modules.Accessories:ItemAcquired(Client, "Popcorn Hat", "Accessory")
+            elseif RNG == 2 then
+                Modules.Accessories:ItemAcquired(Client, "Chicken Hat", "Accessory")
+            end
+
         end
 
         local Details = Modules.MiningDetails[Level]
@@ -130,9 +142,10 @@ Remotes.Pickaxe.OnServerEvent:Connect(function(Client, Mineable)
 
                 Modules.Achievements.Progress(Client, 31)
                 Remotes.MiningLevelUp:FireClient(Client, NextLevel)
-
             end
+
         end
+
     end
 
 end)

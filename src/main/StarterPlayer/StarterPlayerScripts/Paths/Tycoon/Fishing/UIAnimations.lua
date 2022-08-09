@@ -39,6 +39,7 @@ function UIAnimations.TripleFish(result)
 			local result = result[i]
 			local lootInfo = result.LootInfo
 			local fishCaught = threeCaught.Frame:FindFirstChild("Fish"..i)
+
 			if lootInfo.Type == itemTypes.Hat then
 				fishCaught.Visible = false
 			elseif lootInfo.Type == itemTypes.Gem then
@@ -46,7 +47,7 @@ function UIAnimations.TripleFish(result)
 				fishCaught.FishRarity.Visible = false
 				fishCaught.Amount.Visible = false
 				fishCaught.Icon.Image = "rbxassetid://8679117564"
-				fishCaught.FishReward.Text = "+ "..result.LootInfo.Gems
+				fishCaught.FishReward.Text = "+ ".. lootInfo.Gems
 				fishCaught.FishName.Text = "Gem"
 			elseif lootInfo.Type == itemTypes.Junk then
 				local junkCaught = fishCaught
@@ -57,32 +58,42 @@ function UIAnimations.TripleFish(result)
 					junkCaught.Amount.Text = result.Amount.."/200"
 					junkCaught.Amount.Visible = true
 					if result.Amount == 1 then
-						paths.Modules.Setup:Notification("Collect 200 "..result.LootInfo.Name.." for the "..result.LootInfo.Name.." hat!",Color3.new(1, 0.760784, 0.4),8.5)
+						paths.Modules.Setup:Notification("Collect 200 "..lootInfo.Name.." for the "..lootInfo.Name.." hat!",Color3.new(1, 0.760784, 0.4),8.5)
 					end
 				else
 					junkCaught.Amount.Visible = false
 				end
 				-- Setup info
-				junkCaught.FishName.Text = result.LootInfo.Name
+				junkCaught.FishName.Text = lootInfo.Name
 				junkCaught.FishRarity.Text = "Junk"
 				junkCaught.FishReward.Text = "+ $ "..paths.Modules.Format:FormatComma(math.floor(tonumber(result.Worth)))
-				junkCaught.Icon.Image = "rbxgameasset://Images/"..result.LootInfo.Name.."_Junk"
+				junkCaught.Icon.Image = "rbxgameasset://Images/"..lootInfo.Name.."_Junk"
+
 			else
+				local icon
+				for _, details in pairs(config.ItemList) do
+					if details.Name == result.Name then
+						icon = details.Icon
+						return
+					end
+
+				end
+
 				fishCaught.Visible = true
 				fishCaught.FishRarity.Visible = true
 				fishCaught.Amount.Visible = false
-				fishCaught.FishName.Text = result.LootInfo.Name
-				fishCaught.FishRarity.Text = result.LootInfo.Rarity
+				fishCaught.FishName.Text = lootInfo.Name
+				fishCaught.FishRarity.Text = lootInfo.Rarity
 				fishCaught.FishReward.Text = "+ $ "..paths.Modules.Format:FormatComma(math.floor(tonumber(result.Worth)))
-				fishCaught.Icon.Image = "rbxgameasset://Images/"..result.LootInfo.Name.."_Fish"
+				fishCaught.Icon.Image = icon or "rbxgameasset://Images/"..lootInfo.Name.."_Fish"
 
-				fishCaught.BackgroundColor3 = rarityColors[result.LootInfo.Rarity]
-				fishCaught.UIStroke.Color = rarityColors[result.LootInfo.Rarity]
-				fishCaught.FishRarity.TextColor3 = rarityColors[result.LootInfo.Rarity]
-				fishCaught.FishRarity.UIStroke.Color = Color3.new(rarityColors[result.LootInfo.Rarity].R/2, rarityColors[result.LootInfo.Rarity].G/2, rarityColors[result.LootInfo.Rarity].B/2)
+				fishCaught.BackgroundColor3 = rarityColors[lootInfo.Rarity]
+				fishCaught.UIStroke.Color = rarityColors[lootInfo.Rarity]
+				fishCaught.FishRarity.TextColor3 = rarityColors[lootInfo.Rarity]
+				fishCaught.FishRarity.UIStroke.Color = Color3.new(rarityColors[lootInfo.Rarity].R/2, rarityColors[lootInfo.Rarity].G/2, rarityColors[lootInfo.Rarity].B/2)
 
 				if result.Enchanted then
-					fishCaught.FishRarity.Text = result.LootInfo.Rarity--.. " [ENCHANTED]"
+					fishCaught.FishRarity.Text = lootInfo.Rarity--.. " [ENCHANTED]"
 					fishCaught.UIStroke.Color = Color3.fromRGB(255, 255, 255)
 					fishCaught.FishRarity.TextColor3 = Color3.fromRGB(255, 255, 255)
 				end
@@ -90,6 +101,7 @@ function UIAnimations.TripleFish(result)
 				fishCaught.UIStroke.Enchanted.Enabled = result.Enchanted
 				fishCaught.FishRarity.Enchanted.Enabled = result.Enchanted
 			end
+
 		end
 		threeCaught.Visible = true
 		threeCaught:TweenPosition(UDim2.new(0.5, 0, -.150, 0), "Out", "Back", 0.5, true)

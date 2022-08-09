@@ -56,6 +56,10 @@ LocalPlayer:GetAttributeChangedSignal("MaxPetsOwned"):Connect(function()
 	UpdateStorage()
 end)
 
+local function OnIndexButtonClicked(Pet)
+
+end
+
 function tweenModel(model,cf)
 	local c = TweenValues[model] or Instance.new("CFrameValue")
 	TweenValues[model] = c
@@ -442,6 +446,7 @@ function updateIndex(data,islandId)
 				v.PetName.Text = PetDetails.Pets[PetId][1]--.." x"..data.Unlocked[tostring(PetId)]
 				v.BackgroundColor3 = PetDetails.RarityColors[Rarity]
 				v.UIStroke.Color = PetDetails.RarityColors[Rarity]
+
 			end
 
 		end
@@ -1284,6 +1289,8 @@ task.spawn(function()
 				Template.PetName.Text = v.Name
 				addPetToViewport(model,Template.ViewportFrame)
 				Template.Parent = legacyIsland.Pets
+
+
 			end
 
 		end

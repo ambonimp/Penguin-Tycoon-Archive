@@ -59,6 +59,7 @@ local playerJunk = remotes.GetStat:InvokeServer("Junk Found") or {
 local playerEnchantedFish = remotes.GetStat:InvokeServer("Enchanted Fish Found")
 local playerAccessories = remotes.GetStat:InvokeServer("Accessories")
 local playerEyes = remotes.GetStat:InvokeServer("Eyes")
+local playerOutfits = remotes.GetStat:InvokeServer("Outfits")
 local indexUI = paths.UI.Center.Index
 local newFishUI = paths.UI.Full.NewFish
 
@@ -177,12 +178,15 @@ function Index.FishCaught(fishInfo, isNew)
 end
 
 function Index.ItemObtained(Info)
-	if indexUI.Sections.Accessories.Accessories.List:FindFirstChild(Info.Name) or indexUI.Sections.Accessories.Eyes.List:FindFirstChild(Info.Name) then
-		local Template = indexUI.Sections.Accessories.Accessories.List:FindFirstChild(Info.Name) or indexUI.Sections.Accessories.Eyes.List:FindFirstChild(Info.Name)
+	local Sections = indexUI.Sections.Accessories
+	local Template = Sections.Accessories.List:FindFirstChild(Info.Name) or Sections.Eyes.List:FindFirstChild(Info.Name) or Sections.Outfits.List:FindFirstChild(Info.Name)
+
+	if Template then
 		Template.Background.BackgroundColor3 = rarityColors[Info.Rarity]
 		Template.Background.UIStroke.Color = rarityColors[Info.Rarity]
 		Template.ItemIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
 	end
+
 end
 
 function Index.OreCollected(Level)
@@ -219,7 +223,7 @@ local function LoadAllFish()
 		local Template = Dependency.FishTemplate:Clone()
 		
 		Template.FishRarity.TextColor3 = rarityColors[info.Type]
-		Template.FishIcon.Image = "rbxgameasset://Images/"..info.Name.."_Junk"
+		Template.FishIcon.Image = info.Icon or "rbxgameasset://Images/"..info.Name.."_Junk"
 		Template.FishName.Text = info.Name
 		Template.Name = id
 		Template.Parent = indexUI.Sections.Fish.Holder.List
@@ -244,7 +248,7 @@ local function LoadAllFish()
 		local Template = Dependency.FishTemplate:Clone()
 		
 		Template.FishRarity.TextColor3 = rarityColors[fishInfo.Rarity]
-		Template.FishIcon.Image = "rbxgameasset://Images/"..fishInfo.Name.."_Fish"
+		Template.FishIcon.Image = fishInfo.Icon or "rbxgameasset://Images/"..fishInfo.Name.."_Fish"
 		
 		Template.Name = id
 		Template.Parent = indexUI.Sections.Fish.Holder.List
@@ -328,6 +332,28 @@ local function LoadAllItems()
 			Index.ItemObtained(Info)
 		end
 	end
+
+	-- Load outfits
+	for Outfit, Info in pairs(modules.Outfits.All) do
+		Info.Name = Outfit
+
+		local Template = Dependency.ItemTemplate:Clone()
+		Template.ItemName.Text = Outfit
+		Template.ItemRarity.Text = Info.Rarity
+		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
+		Template.ItemIcon.Image = Info.Icon or ""
+
+		Template.Name = Outfit
+		Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
+		Template.Parent = indexUI.Sections.Accessories.Eyes.List
+
+
+		if playerOutfits[Outfit] then
+			Index.ItemObtained(Info)
+		end
+	end
+
+
 end
 
 local function LoadAllOres()
