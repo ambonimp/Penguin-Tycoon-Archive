@@ -79,7 +79,6 @@ Accessories.Unlockables = {
 
 }
 
-
 Accessories.All = {
 	--- Default Hat(s) ---
 	["None"] = {Rarity = "Free", IsForSale = false};

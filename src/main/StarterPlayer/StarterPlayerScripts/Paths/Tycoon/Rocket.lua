@@ -78,7 +78,7 @@ local function UnlockLocation(Item)
     local Upgrade = Modules.BuildADetails.Rocket[Item]
 
     local LocationLbl = Lbl.Location
-    LocationLbl.Text = Modules.ProgressionDetails[Remotes.GetIslandIndex:InvokeServer(Upgrade)].Alias
+    LocationLbl.Text = Modules.ProgressionDetails[Remotes.GetIslandIndexFromUpgrade:InvokeServer(Upgrade)].Alias
     LocationLbl.TextColor3 = Color3.new(255, 255, 255)
 
 end

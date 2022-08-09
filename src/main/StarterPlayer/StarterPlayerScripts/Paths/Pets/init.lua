@@ -1290,7 +1290,6 @@ task.spawn(function()
 				addPetToViewport(model,Template.ViewportFrame)
 				Template.Parent = legacyIsland.Pets
 
-
 			end
 
 		end

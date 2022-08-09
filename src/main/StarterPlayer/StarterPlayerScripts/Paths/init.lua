@@ -160,6 +160,15 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Boosts", script.Store.Boosts)
 	ModuleLoader.Register("Accessories", script.Store.Accessories)
 
+	-- print("store modules")
+	-- Store Modules
+	ModuleLoader.Register("Store", script.Store)
+	ModuleLoader.Register("Gamepasses", script.Store.Gamepasses)
+	ModuleLoader.Register("Money", script.Store.Money)
+	ModuleLoader.Register("Gems", script.Store.Gems)
+	ModuleLoader.Register("Boosts", script.Store.Boosts)
+	ModuleLoader.Register("Accessories", script.Store.Accessories)
+
 	ModuleLoader.Register("Leaderboards", script.Leaderboards)
 
 	-- Load Version

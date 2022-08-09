@@ -53,6 +53,7 @@ local AllQuests = {
 			{"Minigame", "Ice Cream Extravaganza", 200, "Collect 200 ice cream in ice cream extravanza", "Travel to the city using the green button on the right of the screen and collect 200 ice scream scoops in total in the ice cream extravaganza minigame."},
 			{"Minigame", "Soccer", 15, "Score 15 goals in soccer", "Travel to the city using the green button on the right of the screen and score 15 goals in the soccer minigame."},
 			{"Woodcutting", "Tree", 120, "Chop 120 trees", "", "Axe#1"}
+
 		},
 	},
 

@@ -62,7 +62,7 @@ Badges.Purchases = {
 	["New Island!#22"] = 2124929783;
 	["New Island!#23"] = 2124929784;
 	["New Island!#24"] = 2124929785;
-	["New Island!#25"] = 2124929786; 
+	["New Island!#25"] = 2124929786;
 	["New Island!#26"] = 2124929787;
 	["New Island!#29"] = 2124929788; --Hospital
 	["New Island!#30"] = 2124929789; -- Military
@@ -73,6 +73,7 @@ Badges.Purchases = {
 	["New Island!#35"] = 2127256375; -- castle
 	["New Island!#37"] = 2127704120; -- factory
 	["New Island!#38"] = 2127704122; -- school
+
 	["New Island!#39"] = 2127799195; -- arcade
 
 }

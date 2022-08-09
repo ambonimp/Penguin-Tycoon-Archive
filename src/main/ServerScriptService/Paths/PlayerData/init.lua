@@ -576,8 +576,19 @@ game.Players.PlayerAdded:Connect(function(Player)
 	end
 
 	-- Initialize Tycoon
-	Modules.Tycoon:InitializePlayer(Player)
+	-- Corrects the reversal of a a change we made where all the islands no longer needed purchasing
+	for Upgrade in pairs(Data.Tycoon) do
+		local Island = Modules.Initiate.GetIslandIndexFromObject(Upgrade)
+		if Island then
+			local IslandRoot = Modules.ProgressionDetails[Island].Object
+			if IslandRoot and not Data.Tycoon[IslandRoot] then
+				Data.Tycoon[IslandRoot] = true
+			end
+		end
 
+	end
+
+	Modules.Tycoon:InitializePlayer(Player)
 
 	-- Check Gamepasses
 	Modules.Gamepasses:CheckGamepasses(Player)
