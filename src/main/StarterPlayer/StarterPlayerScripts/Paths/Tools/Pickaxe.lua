@@ -159,10 +159,8 @@ task.spawn(function()
                     local Earnings = game.Players.LocalPlayer:GetAttribute("Income") * Remotes.GetStat:InvokeServer("Income Multiplier") * Modules.MiningDetails[Level].EarningMultiplier * (Paths.Player:GetAttribute("Tool") == "Gold Pickaxe" and 2 or 1) * Remotes.GetBonus:InvokeServer("Mining","Income")
                     EarningParticle(math.floor(Earnings))
 
-					local AwardedHat = Remotes.Pickaxe:InvokeServer(Mining)
-					if AwardedHat then
-                        -- TODO:
-                    end
+					Remotes.Pickaxe:FireServer(Mining)
+
 
                     local Particles = Mining.PrimaryPart:FindFirstChild("OnMine")
                     if not Particles then

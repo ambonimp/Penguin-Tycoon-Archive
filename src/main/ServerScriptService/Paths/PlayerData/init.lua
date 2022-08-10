@@ -588,6 +588,8 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	end
 
+	Player:SetAttribute("StoredIncome", Data["Stored Income"])
+	Player:SetAttribute("AutoCollectIncome", Data["Auto Collect"])
 	Modules.Tycoon:InitializePlayer(Player)
 
 	-- Check Gamepasses
@@ -622,7 +624,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 	for _, ItemType in ipairs({"Accessories", "Outfits", "Eyes", "Emotes"}) do
 		for Item in pairs(Data[ItemType]) do
 			if not Modules["All" .. ItemType].All[Item] then
-				warn("Invalid item removed:", Player, ItemType, Item)
 				Data[ItemType][Item] = nil
 			end
 		end

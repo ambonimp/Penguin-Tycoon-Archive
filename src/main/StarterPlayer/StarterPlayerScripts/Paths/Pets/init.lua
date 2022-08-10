@@ -346,7 +346,7 @@ end)
 
 function openSelected(x,y)
 	local petDetails = SelectedPetDetails[2]
-	openSelected2(UDim2.fromOffset(x,y), {
+	openSelected2(petDetails[1], UDim2.fromOffset(x,y), {
 		Name = petDetails[3],
 		Type = petDetails[1],
 		Rarity = petDetails[4],
@@ -357,47 +357,56 @@ function openSelected(x,y)
 
 end
 
-function openSelected2(Pos, Props)
-	local Content = PetSelected.Frame
+function closeSelected()
+	PetSelected:SetAttribute("PetId", nil)
+	PetSelected.Visible = false
+end
 
-	if Props.Name then
-		Content.PetName.Visible = true
-		Content.PetName.Text = Props.Name
+function openSelected2(Id, Pos, Props)
+	if PetSelected:GetAttribute("PetId") == Id then
+		closeSelected()
 	else
-		Content.PetName.Visible = false
-	end
+		local Content = PetSelected.Frame
+		if Props.Name then
+			Content.PetName.Visible = true
+			Content.PetName.Text = Props.Name
+		else
+			Content.PetName.Visible = false
+		end
 
-	if Props.Type then
-		Content.PetType.Visible = true
-		Content.PetType.Text = Props.Type
-	else
-		Content.PetType.Visible = false
-	end
+		if Props.Type then
+			Content.PetType.Visible = true
+			Content.PetType.Text = Props.Type
+		else
+			Content.PetType.Visible = false
+		end
 
-	if Props.Rarity then
-		Content.Rarity.Visible = true
-		Content.Rarity.Text = Props.Rarity
-		Content.Rarity.TextColor3 = PetDetails.RarityColors[Props.Rarity]
-	else
-		Content.Rarity.Visible = false
-	end
+		if Props.Rarity then
+			Content.Rarity.Visible = true
+			Content.Rarity.Text = Props.Rarity
+			Content.Rarity.TextColor3 = PetDetails.RarityColors[Props.Rarity]
+		else
+			Content.Rarity.Visible = false
+		end
 
-	if Props.Level then
-		Content.Level.Visible = true
-		Content.Level.Text = Props.Level
-	else
-		Content.Level.Visible = false
-	end
+		if Props.Level then
+			Content.Level.Visible = true
+			Content.Level.Text = Props.Level
+		else
+			Content.Level.Visible = false
+		end
 
-	if Props.Ability then
-		Content.Ability.Visible = true
-		Content.Ability.Text = Props.Ability
-	else
-		Content.Ability.Visible = false
-	end
+		if Props.Ability then
+			Content.Ability.Visible = true
+			Content.Ability.Text = Props.Ability
+		else
+			Content.Ability.Visible = false
+		end
 
-	PetSelected.Position = Pos
-	PetSelected.Visible = true
+		PetSelected.Position = Pos
+		PetSelected.Visible = true
+		PetSelected:SetAttribute("PetId", Id)
+	end
 
 end
 
@@ -586,9 +595,7 @@ function updateUI(data,kind,ID)
 				return
 			end
 
-			if PetSelected and PetSelected.Visible then
-				PetSelected.Visible = false
-			end
+			closeSelected()
 
 			ButtonClick:Play()
 			if SelectedPetDetails and SelectedPetDetails[1] == ID then SelectedPetDetails = nil return end
@@ -904,14 +911,12 @@ end)
 
 PetsFrame:GetPropertyChangedSignal("Visible"):Connect(function()
 	SelectedPetDetails = nil
-	if PetSelected then
-		PetSelected.Visible = false
-	end
+	closeSelected()
 	EndState()
 end)
 
 PetsFrame.Index.MouseButton1Down:Connect(function()
-	PetSelected.Visible = false
+	closeSelected()
 end)
 
 for _, Section in ipairs(UI.Center.Index.Buttons:GetChildren()) do
@@ -919,7 +924,7 @@ for _, Section in ipairs(UI.Center.Index.Buttons:GetChildren()) do
 		local Name = Section.Name
 		Section.MouseButton1Down:Connect(function()
 			if Name ~= "Pets" then
-				PetSelected.Visible = false
+				closeSelected()
 			end
 
 		end)
@@ -929,7 +934,7 @@ for _, Section in ipairs(UI.Center.Index.Buttons:GetChildren()) do
 end
 
 UI.Center.Index:GetPropertyChangedSignal("Visible"):Connect(function()
-	PetSelected.Visible = false
+	closeSelected()
 end)
 
 PetsFrame.Edit.MouseButton1Down:Connect(function()
@@ -937,7 +942,7 @@ PetsFrame.Edit.MouseButton1Down:Connect(function()
 		OpenEdit(SelectedPetDetails[1])
 	else
 		State = "NameChange"
-		PetsFrame.Top.Text = "Click on a click to change it's name"
+		PetsFrame.Top.Text = "Click on a pet to change it's name"
 	end
 end)
 
@@ -1217,9 +1222,11 @@ end)
 
 PetsFrame.Pets.Pets:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
 	SelectedPetDetails = nil
-	if PetSelected then
-		PetSelected.Visible = false
-	end
+	closeSelected()
+end)
+
+IndexPage.List:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+	closeSelected()
 end)
 
 function Remotes.BuyEgg.OnClientInvoke(Type,Data,PetId,PetInfo)
@@ -1331,14 +1338,15 @@ task.spawn(function()
 			Template.MouseButton1Down:Connect(function()
 				local ViewportSize = workspace.CurrentCamera.ViewportSize
 				local BtnPos = Template.AbsolutePosition
-
-				openSelected2(UDim2.fromScale((BtnPos.X + GUI_INSET.X) / ViewportSize.X, (BtnPos.Y + GUI_INSET.Y) / ViewportSize.Y),
+				local BtnSize = Template.AbsoluteSize / 2
+				openSelected2(v.Id, UDim2.fromScale(
+					(BtnPos.X + GUI_INSET.X + BtnSize.X) / ViewportSize.X,
+					(BtnPos.Y + GUI_INSET.Y + BtnSize.Y) / ViewportSize.Y),
 				{
 					Type = Pet[1],
 					Rarity = Rarity,
 					Ability = string.format("%s %s %s", Pet[3], Pet[4], Pet[5])
 				})
-
 			end)
 
 			Template.Icon.Image = PetModel.Icon.Texture

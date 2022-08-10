@@ -114,7 +114,7 @@ function Index.NewFishUnlocked(fishInfo)
 
 	-- Setup accessory info
 	newFishUI.FishName.Text = fishInfo.Name
-	newFishUI.FishIcon.Image = "rbxgameasset://Images/"..fishInfo.Name.."_Fish"
+	newFishUI.FishIcon.Image = fishInfo.Icon or "rbxgameasset://Images/"..fishInfo.Name.."_Fish"
 	
 	newFishUI.FishRarity.Text = fishInfo.Rarity.." ("..indexUI.Sections.Fish.Holder.List[tostring(fishInfo.Id)].FishRarity.Text..")"
 	newFishUI.FishRarity.TextColor3 = rarityColors[fishInfo.Rarity]
@@ -287,47 +287,39 @@ end
 local function LoadAllItems()
 	-- Load Accessories
 	for Accessory, Info in pairs(modules.AllAccessories.All) do
-		Info.Name = Accessory
+		if Accessory ~= "None" then
+			Info.Name = Accessory
 
-		local Template = Dependency.ItemTemplate:Clone()
-		Template.ItemName.Text = Accessory
-		Template.ItemRarity.Text = Info.Rarity
-		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Accessory.."_Accessory"
-
-		Template.Name = Accessory
-		Template.Parent = indexUI.Sections.Accessories.Accessories.List
-		
-		if Accessory == "None" then
-			Template.LayoutOrder = -10
-		else
+			local Template = Dependency.ItemTemplate:Clone()
+			Template.ItemName.Text = Accessory
+			Template.ItemRarity.Text = Info.Rarity
+			Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
+			Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Accessory.."_Accessory"
 			Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
+			Template.Name = Accessory
+			Template.Parent = indexUI.Sections.Accessories.Accessories.List
+
+			if playerAccessories[Accessory] then
+				Index.ItemObtained(Info)
+			end
+
 		end
 
-		if playerAccessories[Accessory] then
-			Index.ItemObtained(Info)
-		end
 	end
 	
 	-- Load Eyes
 	for Eyes, Info in pairs(modules.AllEyes.All) do
-		print(Eyes,Info)
 		Info.Name = Eyes
 
 		local Template = Dependency.ItemTemplate:Clone()
 		Template.ItemName.Text = Eyes
 		Template.ItemRarity.Text = Info.Rarity
 		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = "rbxgameasset://Images/"..Eyes.."_Eyes"
-
+		Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Eyes.."_Eyes"
+		Template.LayoutOrder = if Eyes == "Default" then -10 else rarityLayoutNumbers[Info.Rarity]
 		Template.Name = Eyes
 		Template.Parent = indexUI.Sections.Accessories.Eyes.List
 		
-		if Eyes == "Default" then
-			Template.LayoutOrder = -10
-		else
-			Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
-		end
 
 		if playerEyes[Eyes] then
 			Index.ItemObtained(Info)
@@ -336,20 +328,21 @@ local function LoadAllItems()
 
 	-- Load outfits
 	for Outfit, Info in pairs(modules.AllOutfits.All) do
-		Info.Name = Outfit
+		if Outfit ~= "None" then
+			Info.Name = Outfit
 
-		local Template = Dependency.ItemTemplate:Clone()
-		Template.ItemName.Text = Outfit
-		Template.ItemRarity.Text = Info.Rarity
-		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = Info.Icon or ""
+			local Template = Dependency.ItemTemplate:Clone()
+			Template.ItemName.Text = Outfit
+			Template.ItemRarity.Text = Info.Rarity
+			Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
+			Template.ItemIcon.Image = Info.Icon or ""
+			Template.Name = Outfit
+			Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
+			Template.Parent = indexUI.Sections.Accessories.Outfits.List
 
-		Template.Name = Outfit
-		Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
-		Template.Parent = indexUI.Sections.Accessories.Outfits.List
-
-		if playerOutfits[Outfit] then
-			Index.ItemObtained(Info)
+			if playerOutfits[Outfit] then
+				Index.ItemObtained(Info)
+			end
 		end
 	end
 

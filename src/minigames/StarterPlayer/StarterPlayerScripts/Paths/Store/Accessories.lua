@@ -37,6 +37,12 @@ local RarityColors = {
 	["Event"] = Color3.fromRGB(220, 55, 55);
 }
 
+local InfoModules = {
+	["Accessory"] = Modules.AllAccessories,
+	["Eyes"] = Modules.AllEyes,
+	["Outfits"] = Modules.AllOutfits,
+}
+
 -- Timer variables
 local RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
 
@@ -50,7 +56,7 @@ local EquipDB = false
 function addModelToViewport(Model,Template)
 	Model = Model:Clone()
 	Model.PrimaryPart.Transparency = 1
-	
+
 	local c = Template.ViewportFrame.CurrentCamera or Instance.new("Camera")
 	if Template.ViewportFrame:FindFirstChildOfClass("Model") then
 		Template.ViewportFrame:FindFirstChildOfClass("Model"):Destroy()
@@ -74,7 +80,7 @@ function Accessories:NewItem(Item, ItemType)
 	local CustomizationSection = CustomizationUI.Customization.Sections[ItemType].Holder
 	-- If the accessory is already in the ui, don't clone it
 	if CustomizationSection:FindFirstChild(Item) then return end
-	
+
 	-- Update UI in the store
 	if StoreSectionUI and StoreSectionUI:FindFirstChild(Item) then
 		StoreSectionUI[Item].Owned.Visible = true
@@ -86,46 +92,30 @@ function Accessories:NewItem(Item, ItemType)
 	-- Insert new template
 	local Template = Dependency.AccessoryTemplate:Clone()
 	Template.Name = Item
+	Template.AccessoryIcon.Image = if Item == "None" then "rbxassetid://10546227339" else (InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType)
 
-	if ItemType ~= "Outfits" then
-		Template.AccessoryIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
-	else
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,Template)
-		end
-		Template.AccessoryIcon.Image = ""
-	end
 	Template.AccessoryName.Text = Item
-	
 
-	local Module
-	if ItemType == "Accessory" then
-		Module = Modules.AllAccessories
-	elseif ItemType == "Eyes" then
-		Module = Modules.AllEyes
-	elseif ItemType == "Outfits" then
-		Module = Modules.AllOutfits
-	end
 
+	local Module = InfoModules[ItemType]
 	local x = assert(Module.All[Item], (Item or "NIL ITEM") .. " " .. "Item").Rarity
 
 	local Rarity = Module.All[Item].Rarity
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.BackgroundColor3 = RarityColors[Rarity]
 	Template.Stroke.UIStroke.Color = RarityColors[Rarity]
-		
+
 	if Item == "None" or Item == "Default" then
 		Template.LayoutOrder = 0
 	end
-	
+
 	Template.Parent = CustomizationSection
-	
+
 	-- Equipping the accessory
 	Template.MouseButton1Down:Connect(function()
 		if EquipDB then return end
 		EquipDB = true
-		
+
 		if ItemType == "Accessory" then
 			SelectedAccessoryUI.Parent = Template
 		elseif ItemType == "Eyes" then
@@ -133,14 +123,14 @@ function Accessories:NewItem(Item, ItemType)
 		elseif ItemType == "Outfits" then
 			SelectedOutfitUI.Parent = Template
 		end
-		
+
 		if ItemType == "Outfits" then
 			Remotes.Customization:InvokeServer("Equip "..ItemType, Item)
 		else
 			local Penguin = CustomizationUI.PenguinSelected.Value
 			Remotes.Customization:InvokeServer("Equip "..ItemType, Penguin, Item)
 		end
-		
+
 		task.wait(0.3)
 		EquipDB = false
 	end)
@@ -152,7 +142,7 @@ coroutine.wrap(function()
 	-- Loading accessories
 	local PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories")
 	repeat PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories") if not PlayerAccessories then wait(1) end until PlayerAccessories
-	
+
 	for Accessory, IsOwned in pairs(PlayerAccessories) do
 		if IsOwned then
 			Accessories:NewItem(Accessory, "Accessory")
@@ -167,7 +157,7 @@ coroutine.wrap(function()
 			Accessories:NewItem(Outfit, "Outfits")
 		end
 	end
-	
+
 	-- Loading eyes
 	local PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
 	repeat PlayerEyes = Remotes.GetStat:InvokeServer("Eyes") if not PlayerEyes then wait(1) end until PlayerEyes
@@ -185,7 +175,7 @@ Remotes.Store.OnClientEvent:Connect(function(ActionType, Accessory, Purchased)
 	if (ActionType == "Accessory" or ActionType == "Eyes" or ActionType == "Outfits") and Purchased then
 		Accessories:NewItem(Accessory, ActionType)
 		Accessories:AnimateNewItem(Accessory, ActionType)
-		
+
 	elseif ActionType == "Store Rotated" then
 		RotationTimer = Remotes.GetStat:InvokeServer("Rotation Timer")
 		Accessories:LoadStore()
@@ -211,34 +201,24 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	-- Reset positions and sizes
 	NewItemUI.Position = UDim2.new(0, 0, 1, 0)
 	NewItemUI.Visible = true
-	
+
 	-- Setup accessory info
 	NewItemUI.ItemName.Text = Item
+	NewItemUI.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
+	NewItemUI.ViewportFrame.Visible = false
+	NewItemUI.ItemIcon.Visible = true
 
-	if ItemType ~= "Outfits" then
-		NewItemUI.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
-		NewItemUI.ViewportFrame.Visible = false
-		NewItemUI.ItemIcon.Visible = true
-	else
-		NewItemUI.ItemIcon.Visible = false
-		NewItemUI.ViewportFrame.Visible = true
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,NewItemUI)
-		end
-	end
-
-	
 	-- Play animation
 	NewItemUI:TweenPosition(UDim2.new(0, 0, 0, -50), "Out", "Quart", 0.4, true)
 
 	PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories")
 	PlayerOutfits = Remotes.GetStat:InvokeServer("Outfits")
 	PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
-	if PlayerOutfits["Bunny Suit"] and ProximityPrompt2 then
+	if PlayerOutfits["Police Officer"] and ProximityPrompt2 then
 		ProximityPrompt2.Enabled = false
 	end
 end
+
 
 
 
@@ -252,27 +232,13 @@ end)
 
 --- Setup Accessory Store ---
 local function NewStoreTemplate(Item, ItemType)
-	local Module
-	if ItemType == "Accessory" then
-		Module = Modules.AllAccessories
-	elseif ItemType == "Eyes" then
-		Module = Modules.AllEyes
-	elseif ItemType == "Outfits" then
-		Module = Modules.AllOutfits
-	end
+	local Module = InfoModules[ItemType]
 	
 	local Rarity = Module.All[Item].Rarity
 	local Template = Dependency.ItemStoreTemplate:Clone()
 	Template.Name = Item
 	Template.ItemName.Text = Item
-	if ItemType == "Outfits" then
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,Template)
-		end
-	else
-		Template.ItemIcon.Image = "rbxgameasset://Images/"..Item.."_"..ItemType
-	end
+	Template.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.PurchaseRobux.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInRobux)
 	Template.PurchaseGems.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInGems)
@@ -282,7 +248,7 @@ local function NewStoreTemplate(Item, ItemType)
 	Template.ItemName.TextColor3 = RarityColors[Rarity]
 	
 	if ItemType == "Eyes" then
-		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.36, 0)
+		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.5, 0)
 	end
 
 	if PlayerAccessories[Item] or PlayerEyes[Item] or PlayerOutfits[Item] then
@@ -299,7 +265,7 @@ local function NewStoreTemplate(Item, ItemType)
 	if ItemType ~= "Outfits" then
 		Template.Parent = StoreSections[ItemType].Holder
 	end
-	
+
 	local Template2 = Template:Clone()
 	Template2.Parent = ClothingSections[ItemType].Holder
 	if Template2 then
@@ -328,12 +294,12 @@ function Accessories:LoadStore()
 		--ChosenAccessories = Remotes.GetStat:InvokeServer("Accessory Rotation")
 
 		PlayerOutfits = Remotes.GetStat:InvokeServer("Outfits")
-		
+
 		PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
 		--ChosenEyes = Remotes.GetStat:InvokeServer("Eyes Rotation")
 		task.wait(1)
 	until PlayerAccessories and PlayerEyes and PlayerOutfits
-	
+
 	-- Clear the UI from any old templates
 	for i, v in pairs(StoreSections.Accessory:GetChildren()) do
 		if v:IsA("Frame") then v:Destroy() end
@@ -379,16 +345,16 @@ coroutine.wrap(function()
 	while true do
 		local TimeSinceRotation = os.time() - RotationTimer
 		local TimeUntilRotation = Modules.AllAccessories.RotationInterval - TimeSinceRotation
-		
+
 		local Timer = Modules.Format:FormatTimeHMS(TimeUntilRotation)
-		
+
 		StoreSections.Parent.Timer.Text = "New Store In: "..Timer
 		ClothingSections.Parent.Timer.Text = "New Store In: "..Timer
-		
+
 		if TimeUntilRotation <= 0 then
 			Remotes.Store:FireServer("Rotate Store")
 		end
-		
+
 		task.wait(1)
 	end
 end)()]]

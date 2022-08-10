@@ -827,7 +827,7 @@ PetsFrame.Edit.MouseButton1Down:Connect(function()
 		OpenEdit(SelectedPetDetails[1])
 	else
 		State = "NameChange"
-		PetsFrame.Top.Text = "Click on a click to change it's name"
+		PetsFrame.Top.Text = "Click on a pet to change it's name"
 	end
 end)
 

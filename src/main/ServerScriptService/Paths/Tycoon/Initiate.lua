@@ -92,8 +92,6 @@ end
 function Initiate.GetIslandIndexFromUpgrade(Upgrade : string)
 	local UpgradeModel = Paths.Template.Upgrades:FindFirstChild(Upgrade)
 	if UpgradeModel then
-		warn("NICE")
-
 		for Id, Details in pairs(Modules.ProgressionDetails) do
 			if UpgradeModel:FindFirstChild(Details.Object) then
 				return Id

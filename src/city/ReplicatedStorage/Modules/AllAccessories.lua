@@ -71,12 +71,12 @@ Accessories.Unlockables = {
 	["Ice Hockey Player#1"] = "Hockey Helmet";
 	["Bumble Bee#1"] = "Bee Hat";
 	["Factory Owner#1"] = "Steampunk Hat";
+	["Clown#1"] = "Clown Hair";
 	-- Pick-up Unlockables
 	["Bunny Ears"] = true;
 	["Feather Hat"] = true;
 	["Pirate Captain Hat"] = true;
 	["Straw Hat"] = true;
-
 }
 
 
@@ -202,7 +202,9 @@ if game:GetService("RunService"):IsServer() then
 	task.spawn(function()
 		for Accessory in pairs(Accessories.All) do
 			if Accessory ~= "None" then
-				assert(game:GetService("ServerStorage").Accessories:FindFirstChild(Accessory), Accessory)
+				if not game:GetService("ServerStorage").Accessories:FindFirstChild(Accessory) then
+					warn(Accessory .. " accessory model doesn't exist")
+				end
 			end
 		end
 	end)

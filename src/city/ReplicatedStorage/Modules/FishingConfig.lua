@@ -378,19 +378,22 @@ Config.ItemList = {
 	[51] = {
 		Name = "Old Boots",
 		IncomeMultiplier = 0.2,
-		Type = Config.ItemType.Junk
+		Type = Config.ItemType.Junk,
+		Icon = "rbxassetid://10544455184"
 	},
 
 	[52] = {
 		Name = "Bottle",
 		IncomeMultiplier = 0.2,
-		Type = Config.ItemType.Junk
+		Type = Config.ItemType.Junk,
+		Icon = "rbxassetid://10544455564"
 	},
 
 	[53] = {
 		Name = "Sea Weed",
 		IncomeMultiplier = 0.2,
-		Type = Config.ItemType.Junk
+		Type = Config.ItemType.Junk,
+		Icon = "rbxassetid://10544454924"
 	},
 
 	-- gems

@@ -1,7 +1,7 @@
 return {
     ["Chainsaw"] = {Icon = "rbxassetid://10420432577", Pinned = false},
     ["Glider"] = {Icon = "rbxassetid://10420430700", Pinned = false},
-    ["Powered Glider"] = {Icon = "rbxassetid://10420429543", Pinned = false},
+    ["Powered Glider"] = {Icon = "rbxassetid://10420429543", Pinned = false, Replacee = "Axe"},
     ["Axe"] = {Icon = "rbxassetid://10420431079", Pinned = false},
     ["Gold Axe"] = {Icon = "rbxassetid://10420430475", Pinned = false, Replacee = "Axe"},
     ["Pickaxe"] = {Icon = "rbxassetid://10420430123", Pinned = false},

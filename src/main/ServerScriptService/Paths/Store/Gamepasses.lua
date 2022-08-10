@@ -105,6 +105,7 @@ function Gamepasses:ApplyGamepass(playerName, gamepass)
 				Data["Settings"]["Auto Hatch"] = true
 			elseif gamepass == 66800606 then
 				Data["Auto Collect"] = true
+				Player:SetAttribute("AutoCollectIncome", true)
 			end
 
 		end

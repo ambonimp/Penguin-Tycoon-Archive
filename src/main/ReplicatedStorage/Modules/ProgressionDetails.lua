@@ -38,5 +38,6 @@ return {
     {Object= "New Island!#36", Icon = "", Alias = "School"},
     {Object= "New Island!#37", Icon = "", Alias = "Factory"},
     {Object= "New Island!#38", Icon = "", Alias = "Zoo"},
-    {Object= "New Island!#39", Icon = "", Alias = "Arcade"}
+    {Object= "New Island!#39", Icon = "", Alias = "Arcade"},
+    {Object= "New Island!#40", Icon = "", Alias = "Circus"}
 }

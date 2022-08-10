@@ -35,10 +35,19 @@ function UIAnimations.TripleFish(result)
 		threeCaught.Visible = false
 		threeCaught.Position = UDim2.new(0.5, 0, 1.25, 0)
 
+
 		for i = 1,3 do
 			local result = result[i]
 			local lootInfo = result.LootInfo
 			local fishCaught = threeCaught.Frame:FindFirstChild("Fish"..i)
+
+			local icon
+			for _, details in pairs(config.ItemList) do
+				if details.Name == lootInfo.Name then
+					icon = details.Icon
+					break
+				end
+			end
 
 			if lootInfo.Type == itemTypes.Hat then
 				fishCaught.Visible = false
@@ -67,18 +76,9 @@ function UIAnimations.TripleFish(result)
 				junkCaught.FishName.Text = lootInfo.Name
 				junkCaught.FishRarity.Text = "Junk"
 				junkCaught.FishReward.Text = "+ $ "..paths.Modules.Format:FormatComma(math.floor(tonumber(result.Worth)))
-				junkCaught.Icon.Image = "rbxgameasset://Images/"..lootInfo.Name.."_Junk"
+				junkCaught.Icon.Image = icon or "rbxgameasset://Images/"..lootInfo.Name.."_Junk"
 
 			else
-				local icon
-				for _, details in pairs(config.ItemList) do
-					if details.Name == result.Name then
-						icon = details.Icon
-						return
-					end
-
-				end
-
 				fishCaught.Visible = true
 				fishCaught.FishRarity.Visible = true
 				fishCaught.Amount.Visible = false
@@ -122,8 +122,17 @@ end
 function UIAnimations.FishRetrievedAnimation(result)
 	isStillPlaying += 1
 
-	coroutine.wrap(function()
+
+	task.spawn(function()
 		local currentAnim = isStillPlaying
+		local icon
+		for _, details in pairs(config.ItemList) do
+			if details.Name == result.LootInfo.Name then
+				icon = details.Icon
+				break
+			end
+
+		end
 
 		-- Reset positions and sizes
 		fishCaught.Position = UDim2.new(0.5, 0, 1, 0)
@@ -132,7 +141,7 @@ function UIAnimations.FishRetrievedAnimation(result)
 		fishCaught.FishName.Text = result.LootInfo.Name
 		fishCaught.FishRarity.Text = result.LootInfo.Rarity
 		fishCaught.FishReward.Text = "+ $ "..paths.Modules.Format:FormatComma(math.floor(tonumber(result.Worth)))
-		fishCaught.FishIcon.Image = "rbxgameasset://Images/"..result.LootInfo.Name.."_Fish"
+		fishCaught.FishIcon.Image = icon or "rbxgameasset://Images/"..result.LootInfo.Name.."_Fish"
 
 		fishCaught.BackgroundColor3 = rarityColors[result.LootInfo.Rarity]
 		fishCaught.UIStroke.Color = rarityColors[result.LootInfo.Rarity]
@@ -153,20 +162,29 @@ function UIAnimations.FishRetrievedAnimation(result)
 
 		fishCaught:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Back", 0.5, true)
 
-		wait(2)
+		task.wait(2)
 
 		fishCaught:TweenPosition(UDim2.new(0.5, 0, 1, 0), "In", "Back", 0.5, true)
 
-		wait(0.6)
+		task.wait(0.6)
 
 		if isStillPlaying == currentAnim then
 			fishCaught.Visible = false
 		end
-	end)()
+	end)
 end
 
 function UIAnimations.JunkRetrievedAnimation(result)
 	coroutine.wrap(function()
+		local icon
+		for _, details in pairs(config.ItemList) do
+			if details.Name == result.LootInfo.Name then
+				icon = details.Icon
+				break
+			end
+
+		end
+
 		-- Reset positions and sizes
 		junkCaught.Position = UDim2.new(0.5, 0, 1, 0)
 		if result.Amount and result.Amount <= 200 then
@@ -182,18 +200,18 @@ function UIAnimations.JunkRetrievedAnimation(result)
 		junkCaught.FishName.Text = result.LootInfo.Name
 		junkCaught.FishRarity.Text = "Junk"
 		junkCaught.FishReward.Text = "+ $ "..paths.Modules.Format:FormatComma(math.floor(tonumber(result.Worth)))
-		junkCaught.FishIcon.Image = "rbxgameasset://Images/"..result.LootInfo.Name.."_Junk"
+		junkCaught.FishIcon.Image = icon or "rbxgameasset://Images/"..result.LootInfo.Name.."_Junk"
 
 		-- Play animation
 		junkCaught.Visible = true
 
 		junkCaught:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Back", 0.5, true)
 
-		wait(2)
+		task.wait(2)
 
 		junkCaught:TweenPosition(UDim2.new(0.5, 0, 1, 0), "In", "Back", 0.5, true)
 
-		wait(0.6)
+		task.wait(0.6)
 
 	 	junkCaught.Visible = false
 	end)()
@@ -212,11 +230,11 @@ function UIAnimations.GemsRetrievedAnimation(result)
 
 		gemsCaught:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Back", 0.5, true)
 
-		wait(2)
+		task.wait(2)
 
 		gemsCaught:TweenPosition(UDim2.new(0.5, 0, 1, 0), "In", "Back", 0.5, true)
 
-		wait(0.6)
+		task.wait(0.6)
 
 		gemsCaught.Visible = false
 	end)()

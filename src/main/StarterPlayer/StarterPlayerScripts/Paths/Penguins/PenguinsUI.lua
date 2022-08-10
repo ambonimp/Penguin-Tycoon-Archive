@@ -64,6 +64,7 @@ function PenguinsUI:SetupPenguin(Penguin)
 	end)
 
 	Template.Instant.MouseButton1Down:Connect(function()
+		CustomizationUI.PenguinSelected.Value = Penguin
 		Remotes.Store:FireServer("Penguin", Penguin)
 	end)
 end
@@ -178,15 +179,18 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				Template.PenguinPrice.Visible = false
 				Template.Upgrade.TheText.Text = "MAX"
 				Template.Upgrade.BackgroundTransparency = 0.8
-			end
-			if PenguinLevel == 10 then
+
 				Template.Instant.Visible = false
-				Template.Super.AnchorPoint = Vector2.new(.7,0)
-				Template.Super.Position = UDim2.fromScale(.4,.6)
-				Template.Super.Size = UDim2.fromScale(.4,.17)
-				Template.Upgrade.Position = UDim2.fromScale(.55,.59)
-				Template.Upgrade.Size = UDim2.fromScale(.4,.19)
+				Template.Super.AnchorPoint = Vector2.new(0,0)
+				Template.Super.Position = UDim2.fromScale(.03, 0.6)
+				Template.Super.Size = UDim2.fromScale(.46, .17)
+
+				Template.Upgrade.Position = UDim2.fromScale(1 - 0.03, 0.59)
+				Template.Upgrade.Size = UDim2.fromScale(.46,.17)
+				Template.Upgrade.AnchorPoint = Vector2.new(1, 0)
+
 			end
+
 			if PenguinLevel == 30 then
 				Template.Instant.Visible = false
 				Template.Super.Visible = false
@@ -198,6 +202,7 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				local Rainbow = Dependency.Rainbow:Clone()
 				Rainbow:WaitForChild("Rotation").Disabled = false
 				Rainbow.Parent = Template.PenguinName
+
 			end
 
 		end
