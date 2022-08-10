@@ -96,18 +96,8 @@ function Accessories:NewItem(Item, ItemType)
 	-- Insert new template
 	local Template = Dependency.AccessoryTemplate:Clone()
 	Template.Name = Item
-
-	if ItemType ~= "Outfits" then
-		Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
-	else
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,Template)
-		end
-		Template.AccessoryIcon.Image = ""
-	end
+	Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	Template.AccessoryName.Text = Item
-
 
 	local Module = InfoModules[ItemType]
 
@@ -239,20 +229,9 @@ function Accessories:AnimateNewItem(Item, ItemType)
 
 	-- Setup accessory info
 	NewItemUI.ItemName.Text = Item
-
-	if ItemType ~= "Outfits" then
-		NewItemUI.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
-		NewItemUI.ViewportFrame.Visible = false
-		NewItemUI.ItemIcon.Visible = true
-	else
-		NewItemUI.ItemIcon.Visible = false
-		NewItemUI.ViewportFrame.Visible = true
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		if Model then
-			addModelToViewport(Model,NewItemUI)
-		end
-	end
-
+	NewItemUI.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
+	NewItemUI.ViewportFrame.Visible = false
+	NewItemUI.ItemIcon.Visible = true
 
 	-- Play animation
 	NewItemUI:TweenPosition(UDim2.new(0, 0, 0, -50), "Out", "Quart", 0.4, true)
@@ -283,12 +262,7 @@ local function NewStoreTemplate(Item, ItemType)
 	local Template = Dependency.ItemStoreTemplate:Clone()
 	Template.Name = Item
 	Template.ItemName.Text = Item
-	if ItemType == "Outfits" then
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		addModelToViewport(Model,Template)
-	else
-		Template.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
-	end
+	Template.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.PurchaseRobux.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInRobux)
 	Template.PurchaseGems.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInGems)

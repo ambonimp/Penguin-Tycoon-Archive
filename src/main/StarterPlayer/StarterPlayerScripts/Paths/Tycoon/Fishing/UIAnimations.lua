@@ -72,11 +72,10 @@ function UIAnimations.TripleFish(result)
 			else
 				local icon
 				for _, details in pairs(config.ItemList) do
-					if details.Name == result.Name then
+					if details.Name == lootInfo.Name then
 						icon = details.Icon
-						return
+						break
 					end
-
 				end
 
 				fishCaught.Visible = true
@@ -122,8 +121,17 @@ end
 function UIAnimations.FishRetrievedAnimation(result)
 	isStillPlaying += 1
 
-	coroutine.wrap(function()
+
+	task.spawn(function()
 		local currentAnim = isStillPlaying
+		local icon
+		for _, details in pairs(config.ItemList) do
+			if details.Name == result.LootInfo.Name then
+				icon = details.Icon
+				break
+			end
+
+		end
 
 		-- Reset positions and sizes
 		fishCaught.Position = UDim2.new(0.5, 0, 1, 0)
@@ -132,7 +140,7 @@ function UIAnimations.FishRetrievedAnimation(result)
 		fishCaught.FishName.Text = result.LootInfo.Name
 		fishCaught.FishRarity.Text = result.LootInfo.Rarity
 		fishCaught.FishReward.Text = "+ $ "..paths.Modules.Format:FormatComma(math.floor(tonumber(result.Worth)))
-		fishCaught.FishIcon.Image = "rbxgameasset://Images/"..result.LootInfo.Name.."_Fish"
+		fishCaught.FishIcon.Image = icon or "rbxgameasset://Images/"..result.LootInfo.Name.."_Fish"
 
 		fishCaught.BackgroundColor3 = rarityColors[result.LootInfo.Rarity]
 		fishCaught.UIStroke.Color = rarityColors[result.LootInfo.Rarity]
@@ -153,16 +161,16 @@ function UIAnimations.FishRetrievedAnimation(result)
 
 		fishCaught:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Back", 0.5, true)
 
-		wait(2)
+		task.wait(2)
 
 		fishCaught:TweenPosition(UDim2.new(0.5, 0, 1, 0), "In", "Back", 0.5, true)
 
-		wait(0.6)
+		task.wait(0.6)
 
 		if isStillPlaying == currentAnim then
 			fishCaught.Visible = false
 		end
-	end)()
+	end)
 end
 
 function UIAnimations.JunkRetrievedAnimation(result)
@@ -189,11 +197,11 @@ function UIAnimations.JunkRetrievedAnimation(result)
 
 		junkCaught:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Back", 0.5, true)
 
-		wait(2)
+		task.wait(2)
 
 		junkCaught:TweenPosition(UDim2.new(0.5, 0, 1, 0), "In", "Back", 0.5, true)
 
-		wait(0.6)
+		task.wait(0.6)
 
 	 	junkCaught.Visible = false
 	end)()
@@ -212,11 +220,11 @@ function UIAnimations.GemsRetrievedAnimation(result)
 
 		gemsCaught:TweenPosition(UDim2.new(0.5, 0, 0, 0), "Out", "Back", 0.5, true)
 
-		wait(2)
+		task.wait(2)
 
 		gemsCaught:TweenPosition(UDim2.new(0.5, 0, 1, 0), "In", "Back", 0.5, true)
 
-		wait(0.6)
+		task.wait(0.6)
 
 		gemsCaught.Visible = false
 	end)()

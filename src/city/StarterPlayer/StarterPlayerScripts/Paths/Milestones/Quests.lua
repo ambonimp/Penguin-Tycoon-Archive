@@ -71,7 +71,7 @@ function updateQuestData(data)
         Frame.Description.Text = Quest[2][4]
         Frame:SetAttribute("QuestId", i)
 
-        Frame.Help.Visible = Quest[5] ~= nil
+        Frame.Help.Visible = Quest[2][5] ~= nil
 
         if Quest[3] == "CLAIMED" then
             Frame.ProgressText.Text = Quest[2][3].."/"..Quest[2][3]

@@ -90,7 +90,7 @@ Outfits.All = {
 	["Frog"] = {Rarity = "Epic",IsForSale = true, Icon = "rbxassetid://10534832799"};
 	["Scientist"] = {Rarity = "Free", IsForSale = true, Icon = "rbxassetid://10534827957"};
 	["Turtle Suit"] = {Rarity = "Epic", IsForSale = false, Icon = "rbxassetid://10534827310"};
-	--["Jester"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534831579"};
+	["Jester"] = {Rarity = "Epic", IsForSale = true, Icon = "rbxassetid://10534831579"};
 	-- Legendaries
 	--["Red Coat"] = {Rarity = "Legendary", IsForSale = true};
 	["Firefighter"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534837114"};
@@ -100,9 +100,9 @@ Outfits.All = {
 	["Bunny Suit"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534840169"};
 	["Bee"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534841982"};
 	["Parrot Suit"] = {Rarity = "Legendary", IsForSale = false, Icon = "rbxassetid://10534829414"};
-	--["Clown"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534838528"};
+	["Clown"] = {Rarity = "Legendary", IsForSale = true, Icon = "rbxassetid://10534838528"};
 	--- Code Outfits ---
-	
+
 	--- Event Outfits ---
 	["Red Jersey"] = {Rarity = "Event", IsForSale = false, Icon = "rbxassetid://10534828482"};
 	["Blue Jersey"] = {Rarity = "Event", IsForSale = false, Icon = "rbxassetid://10534840317"};

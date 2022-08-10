@@ -321,7 +321,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 			Remotes.GroupReward:FireClient(Player, true)
 
 			Remotes.Announcement:FireAllClients(Player, {Type = "GroupJoin"})
-x
 		end
 	end)
 

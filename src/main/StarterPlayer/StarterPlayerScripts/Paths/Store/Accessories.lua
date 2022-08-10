@@ -89,10 +89,9 @@ function Accessories:NewItem(Item, ItemType)
 	-- Insert new template
 	local Template = Dependency.AccessoryTemplate:Clone()
 	Template.Name = Item
+	Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
 
-	if ItemType ~= "Outfits" then
-		Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
-	else
+--[[ 	else
 		if Item ~= "None" then
 			local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
 			addModelToViewport(Model,Template)
@@ -100,7 +99,8 @@ function Accessories:NewItem(Item, ItemType)
 		else
 			Template.AccessoryIcon.Image = "rbxassetid://16201262"
 		end
-	end
+	end *]]
+
 	Template.AccessoryName.Text = Item
 	
 
@@ -180,7 +180,8 @@ Remotes.Store.OnClientEvent:Connect(function(ActionType, Accessory, Purchased)
 	if (ActionType == "Accessory" or ActionType == "Eyes" or ActionType == "Outfits") and Purchased then
 		Accessories:NewItem(Accessory, ActionType)
 		Accessories:AnimateNewItem(Accessory, ActionType)
-		
+		Modules.Index.ItemObtained(InfoModules[ActionType].All[Accessory])
+
 		if ActionType == "Outfits" then
 			PlayerOutfits[Accessory] = true
 			local AllOutfits = Paths.Modules.AllOutfits
@@ -230,25 +231,13 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	-- Reset positions and sizes
 	NewItemUI.Position = UDim2.new(0, 0, 1, 0)
 	NewItemUI.Visible = true
-	
+
 	-- Setup accessory info
 	NewItemUI.ItemName.Text = Item
+	NewItemUI.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
+	NewItemUI.ViewportFrame.Visible = false
+	NewItemUI.ItemIcon.Visible = true
 
-	if ItemType ~= "Outfits" then
-		NewItemUI.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
-		NewItemUI.ViewportFrame.Visible = false
-		NewItemUI.ItemIcon.Visible = true
-		if NewItemUI.ViewportFrame:FindFirstChildOfClass("Model") then
-			NewItemUI.ViewportFrame:FindFirstChildOfClass("Model"):Destroy()
-		end
-	else
-		NewItemUI.ItemIcon.Visible = false
-		NewItemUI.ViewportFrame.Visible = true
-		local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
-		addModelToViewport(Model,NewItemUI)
-	end
-
-	
 	-- Play animation
 	NewItemUI:TweenPosition(UDim2.new(0, 0, 0, -50), "Out", "Quart", 0.4, true)
 
@@ -259,6 +248,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 		ProximityPrompt2.Enabled = false
 	end
 end
+
 
 
 
@@ -278,12 +268,8 @@ local function NewStoreTemplate(Item, ItemType)
 	local Template = Dependency.ItemStoreTemplate:Clone()
 	Template.Name = Item
 	Template.ItemName.Text = Item
-	if ItemType == "Outfits" then
-		local Model = Services.RStorage.Assets.Shirts:FindFirstChild(Item)
-		addModelToViewport(Model,Template)
-	else
-		Template.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
-	end
+	Template.ItemIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
+
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.PurchaseRobux.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInRobux)
 	Template.PurchaseGems.TheText.Text = Modules.Format:FormatComma(Module.RarityInfo[Rarity].PriceInGems)
@@ -293,7 +279,7 @@ local function NewStoreTemplate(Item, ItemType)
 	Template.ItemName.TextColor3 = RarityColors[Rarity]
 	
 	if ItemType == "Eyes" then
-		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.36, 0)
+		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.5, 0)
 	end
 
 	if PlayerAccessories[Item] or PlayerEyes[Item] or PlayerOutfits[Item] then

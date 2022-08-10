@@ -114,7 +114,7 @@ function Index.NewFishUnlocked(fishInfo)
 
 	-- Setup accessory info
 	newFishUI.FishName.Text = fishInfo.Name
-	newFishUI.FishIcon.Image = "rbxgameasset://Images/"..fishInfo.Name.."_Fish"
+	newFishUI.FishIcon.Image = fishInfo.Icon or "rbxgameasset://Images/"..fishInfo.Name.."_Fish"
 	
 	newFishUI.FishRarity.Text = fishInfo.Rarity.." ("..indexUI.Sections.Fish.Holder.List[tostring(fishInfo.Id)].FishRarity.Text..")"
 	newFishUI.FishRarity.TextColor3 = rarityColors[fishInfo.Rarity]
@@ -311,14 +311,13 @@ local function LoadAllItems()
 	
 	-- Load Eyes
 	for Eyes, Info in pairs(modules.AllEyes.All) do
-		print(Eyes,Info)
 		Info.Name = Eyes
 
 		local Template = Dependency.ItemTemplate:Clone()
 		Template.ItemName.Text = Eyes
 		Template.ItemRarity.Text = Info.Rarity
 		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = "rbxgameasset://Images/"..Eyes.."_Eyes"
+		Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Eyes.."_Eyes"
 
 		Template.Name = Eyes
 		Template.Parent = indexUI.Sections.Accessories.Eyes.List
@@ -345,7 +344,7 @@ local function LoadAllItems()
 		Template.ItemIcon.Image = Info.Icon or ""
 
 		Template.Name = Outfit
-		Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
+		Template.LayoutOrder = if Outfit == "None" then -10 else rarityLayoutNumbers[Info.Rarity]
 		Template.Parent = indexUI.Sections.Accessories.Outfits.List
 
 		if playerOutfits[Outfit] then
