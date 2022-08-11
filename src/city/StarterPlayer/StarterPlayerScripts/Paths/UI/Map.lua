@@ -133,6 +133,11 @@ for _, Location in ipairs(Locations:GetChildren()) do
 		ProximityPrompt.Parent = MapBoard.PrimaryPart
 
 		ProximityPrompt.Triggered:Connect(function(player)
+            if Frame.Visible then
+                Modules.Buttons:UIOff(Frame, true)
+                CloseMap()
+                return
+            end
 		    -- Closes any previously opened frames and opens map frame
 		    Modules.Buttons:OnMainButtonClicked(MainButton)
             OpenMap()

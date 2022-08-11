@@ -301,5 +301,21 @@ coroutine.wrap(function()
 	end
 end)()
 
+local WorldTeleport = UI.Center.WorldTeleport 
+local Teleports = WorldTeleport.Teleports
+
+for i,TeleportUI in pairs (Teleports:GetChildren()) do
+	local ID = PlaceIds[TeleportUI.Name]
+	if ID then
+		TeleportUI.Teleport.MouseButton1Down:Connect(function()
+			local Success, Error = Remotes.Teleport:InvokeServer(ID)
+			if not Success then
+				TeleportUI.Teleport.TextLabel.Text = "Error.."
+			else
+				TeleportUI.Teleport.TextLabel.Text = "Teleporting.."
+			end
+		end)
+	end
+end
 
 return Teleporting

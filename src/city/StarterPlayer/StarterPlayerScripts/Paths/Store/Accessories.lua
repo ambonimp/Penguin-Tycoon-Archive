@@ -414,6 +414,46 @@ do
 	
 end
 
+
+if workspace:FindFirstChild("Clothing") then
+	ProximityPrompt = workspace.Clothing.ProximityPart.Value:WaitForChild("ProximityPrompt")
+	ProximityPrompt2 = workspace.Clothing.ProximityPart2.Value:WaitForChild("ProximityPrompt")
+
+	for i,v in pairs (workspace.Clothing.ClothingParts:GetChildren()) do
+		local ProximityPrompt = v:WaitForChild("ProximityPrompt")
+		ProximityPrompt.Triggered:Connect(function(player)
+			if player == Paths.Player then
+				Paths.Modules.Buttons:UIOn(Paths.UI.Center.Shop,true)
+				if ProximityPrompt.ActionText == "Buy Shirts" then
+					Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Outfits)
+				elseif ProximityPrompt.ActionText == "Buy Hats" then
+					Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Accessory)
+				end
+			end
+		end)
+	end
+end
+
+if ProximityPrompt then
+	ProximityPrompt.Triggered:Connect(function(player)
+		if player == game.Players.LocalPlayer then
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Shop,true)
+			Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Accessory)
+		end
+	end)
+end
+
+if ProximityPrompt2 then
+	if PlayerOutfits["Police Officer"] then
+		ProximityPrompt2.Enabled = false
+	end
+	ProximityPrompt2.Triggered:Connect(function(player)
+		if player == game.Players.LocalPlayer then
+			Remotes.Store:FireServer("Buy Item", "Police Officer", "Outfits", "Robux")
+		end
+	end)
+end
+
 --[[
 --- Store timer ---
 coroutine.wrap(function()

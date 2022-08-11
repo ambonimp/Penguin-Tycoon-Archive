@@ -359,30 +359,6 @@ coroutine.wrap(function()
 	end
 end)()]]
 
-if workspace:FindFirstChild("Clothing") then
-	ProximityPrompt = workspace.Clothing.ProximityPart.Value:WaitForChild("ProximityPrompt")
-	ProximityPrompt2 = workspace.Clothing.ProximityPart2.Value:WaitForChild("ProximityPrompt")
-end
-
-if ProximityPrompt then
-	ProximityPrompt.Triggered:Connect(function(player)
-		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
-			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Clothing,true)
-		end
-	end)
-end
-
-if ProximityPrompt2 then
-	if PlayerOutfits["Bunny Suit"] then
-		ProximityPrompt2.Enabled = false
-	end
-	ProximityPrompt2.Triggered:Connect(function(player)
-		if player == game.Players.LocalPlayer then
-			Remotes.Store:FireServer("Buy Item", "Bunny Suit", "Outfits", "Robux")
-		end
-	end)
-end
-
 task.spawn(function()
 	repeat task.wait() until Modules.PlatformAdjustments and Modules.PlatformAdjustments.CurrentPlatform
 	if Modules.PlatformAdjustments.CurrentPlatform == "Mobile" then

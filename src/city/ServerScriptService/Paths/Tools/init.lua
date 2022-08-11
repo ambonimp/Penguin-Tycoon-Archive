@@ -142,10 +142,10 @@ for _, Tool in workspace.Tools:GetChildren() do
 
 			end
 
-			ToolPurchaseDbs[Client] = false
-
 		end
 
+		task.wait(1)
+		ToolPurchaseDbs[Client] = false
 	end)
 
 end
