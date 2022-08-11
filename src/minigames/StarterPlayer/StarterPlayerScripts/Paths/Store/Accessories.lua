@@ -92,16 +92,13 @@ function Accessories:NewItem(Item, ItemType)
 	-- Insert new template
 	local Template = Dependency.AccessoryTemplate:Clone()
 	Template.Name = Item
-	Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
+	Template.AccessoryIcon.Image = if Item == "None" then "rbxassetid://10546227339" else (InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType)
 	Template.AccessoryName.Text = Item
 
 
-	local Module
+	local Module = InfoModules[ItemType]
+	local Rarity = assert(Module.All[Item], (Item or "NIL ITEM") .. " " .. "Item").Rarity
 
-
-	local x = assert(Module.All[Item], (Item or "NIL ITEM") .. " " .. "Item").Rarity
-
-	local Rarity = Module.All[Item].Rarity
 	Template.LayoutOrder = Module.RarityInfo[Rarity].PriceInRobux
 	Template.BackgroundColor3 = RarityColors[Rarity]
 	Template.Stroke.UIStroke.Color = RarityColors[Rarity]
@@ -113,6 +110,7 @@ function Accessories:NewItem(Item, ItemType)
 	Template.Parent = CustomizationSection
 
 	-- Equipping the accessory
+
 	Template.MouseButton1Down:Connect(function()
 		if EquipDB then return end
 		EquipDB = true
@@ -249,9 +247,10 @@ local function NewStoreTemplate(Item, ItemType)
 	Template.ItemName.TextColor3 = RarityColors[Rarity]
 	
 	if ItemType == "Eyes" then
-		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.36, 0)
+		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.8, 0)
+	elseif ItemType == "Outfits" then
+		Template.ItemIcon.Size = UDim2.fromScale(0.9, 0.5)
 	end
-
 	if PlayerAccessories[Item] or PlayerEyes[Item] or PlayerOutfits[Item] then
 		Template.Owned.Visible = true
 	else

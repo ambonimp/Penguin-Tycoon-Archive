@@ -89,18 +89,7 @@ function Accessories:NewItem(Item, ItemType)
 	-- Insert new template
 	local Template = Dependency.AccessoryTemplate:Clone()
 	Template.Name = Item
-	Template.AccessoryIcon.Image = InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType
-
---[[ 	else
-		if Item ~= "None" then
-			local Model = assert(Services.RStorage.Assets.Shirts:FindFirstChild(Item), Item)
-			addModelToViewport(Model,Template)
-			Template.AccessoryIcon.Image = ""
-		else
-			Template.AccessoryIcon.Image = "rbxassetid://16201262"
-		end
-	end *]]
-
+	Template.AccessoryIcon.Image = if Item == "None" then "rbxassetid://10546227339" else (InfoModules[ItemType].All[Item].Icon or "rbxgameasset://Images/"..Item.."_"..ItemType)
 	Template.AccessoryName.Text = Item
 	
 
@@ -279,7 +268,9 @@ local function NewStoreTemplate(Item, ItemType)
 	Template.ItemName.TextColor3 = RarityColors[Rarity]
 	
 	if ItemType == "Eyes" then
-		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.5, 0)
+		Template.ItemIcon.Size = UDim2.new(0.9, 0, 0.8, 0)
+	elseif ItemType == "Outfits" then
+		Template.ItemIcon.Size = UDim2.fromScale(0.9, 0.5)
 	end
 
 	if PlayerAccessories[Item] or PlayerEyes[Item] or PlayerOutfits[Item] then
@@ -329,9 +320,6 @@ function Accessories:LoadStore()
 	
 	-- Clear the UI from any old templates
 	for i, v in pairs(StoreSections.Accessory:GetChildren()) do
-		if v:IsA("Frame") then v:Destroy() end
-	end
-	for i, v in pairs(StoreSections.Eyes:GetChildren()) do
 		if v:IsA("Frame") then v:Destroy() end
 	end
 

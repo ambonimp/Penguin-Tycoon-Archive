@@ -201,75 +201,59 @@ end
 
 -- Loading fish
 local function LoadAllFish()
-	-- Load fish templates
-	local junk = {
-		["51"] = {
-			Name = "Old Boots",
-			Type = "Junk"
-		},
-	
-		["52"] = {
-			Name = "Bottle",
-			Type = "Junk"
-		},
-	
-		["53"] = {
-			Name = "Sea Weed",
-			Type = "Junk"
-		},
-	}
-
-	for id,info in pairs (junk) do 
+	for id, info in pairs (modules.FishingConfig.ItemList) do
 		local Template = Dependency.FishTemplate:Clone()
-		
-		Template.FishRarity.TextColor3 = rarityColors[info.Type]
-		Template.FishIcon.Image = info.Icon or "rbxgameasset://Images/"..info.Name.."_Junk"
-		Template.FishName.Text = info.Name
-		Template.Name = id
-		Template.Parent = indexUI.Sections.Fish.Holder.List
-		
-		Template.LayoutOrder = -3
-		if playerJunk[tostring(id)] then
-			Template.FishAmount.Text = "x"..playerJunk[tostring(id)]
-			if playerJunk[tostring(id)] >= 1 then
-				Template.FishIcon.ImageColor3 = Color3.new(1,1,1)
+
+		local type = info.Type
+		if type == modules.FishingConfig.ItemType.Junk then
+			Template.FishRarity.TextColor3 = rarityColors[info.Type]
+			Template.FishIcon.Image = info.Icon or "rbxgameasset://Images/"..info.Name.."_Junk"
+			Template.FishName.Text = info.Name
+			Template.Name = id
+			Template.Parent = indexUI.Sections.Fish.Holder.List
+
+			Template.LayoutOrder = -3
+			if playerJunk[tostring(id)] then
+				Template.FishAmount.Text = "x"..playerJunk[tostring(id)]
+				if playerJunk[tostring(id)] >= 1 then
+					Template.FishIcon.ImageColor3 = Color3.new(1,1,1)
+				end
+			else
+				Template.FishAmount.Text = "x0"
 			end
-		else
-			Template.FishAmount.Text = "x0"
+			Template.FishRarity.Text = "0.825%"
+
+		elseif type == modules.FishingConfig.ItemType.Fish then
+			info.Id = id
+
+			local Template = Dependency.FishTemplate:Clone()
+
+			Template.FishRarity.TextColor3 = rarityColors[info.Rarity]
+			Template.FishIcon.Image = info.Icon or "rbxgameasset://Images/"..info.Name.."_Fish"
+
+			Template.Name = id
+			Template.Parent = indexUI.Sections.Fish.Holder.List
+
+			if playerFish[tostring(id)] then
+				Index.FishCaught({Enchanted = false, LootInfo = info}, false)
+			end
+
 		end
-		Template.FishRarity.Text = "0.825%"
+
 	end
 
-	for id, fishInfo in pairs(modules.FishingConfig.ItemList) do
-		if not fishInfo.Rarity then continue end
-		
-		fishInfo.Id = id
-		
-		local Template = Dependency.FishTemplate:Clone()
-		
-		Template.FishRarity.TextColor3 = rarityColors[fishInfo.Rarity]
-		Template.FishIcon.Image = fishInfo.Icon or "rbxgameasset://Images/"..fishInfo.Name.."_Fish"
-		
-		Template.Name = id
-		Template.Parent = indexUI.Sections.Fish.Holder.List
-		
-		if playerFish[tostring(id)] then
-			Index.FishCaught({Enchanted = false, LootInfo = fishInfo}, false)
-		end
-	end
-	
-	for enchantedFish, amount in pairs(playerEnchantedFish) do
+	for enchantedFish in pairs(playerEnchantedFish) do
 		local Template = indexUI.Sections.Fish.Holder.List[tostring(enchantedFish)]
 		
 		Template.FishAmount.Position = UDim2.new(0.5, 0, 0.39, 0)
 		Template.EnchantedFishAmount.Visible = true
 		Template.EnchantedFishAmount.Text = "x"..playerEnchantedFish[tostring(enchantedFish)]
 	end
-	
+
 	-- Load fish %
 	table.sort(modules.FishingConfig.ChanceTable, function(a, b) return a.Percentage < b.Percentage end)
-	
-	for zone, fishes in pairs(modules.FishingConfig.ChanceTable) do
+
+	for _, fishes in pairs(modules.FishingConfig.ChanceTable) do
 		for i, fishInfo in pairs(fishes) do
 			if indexUI.Sections.Fish.Holder.List:FindFirstChild(tostring(fishInfo.Id)) then
 				local percentageDecimal = fishInfo.Percentage
@@ -280,32 +264,32 @@ local function LoadAllFish()
 					indexUI.Sections.Fish.Holder.List[tostring(fishInfo.Id)].LayoutOrder = (100 - percentageRounded) * 10 * rarityLayoutNumbers[modules.FishingConfig.ItemList[fishInfo.Id].Rarity]
 				end
 			end
+
 		end
+
 	end
+
 end
 
 local function LoadAllItems()
 	-- Load Accessories
 	for Accessory, Info in pairs(modules.AllAccessories.All) do
-		Info.Name = Accessory
+		if Accessory ~= "None" then
+			Info.Name = Accessory
 
-		local Template = Dependency.ItemTemplate:Clone()
-		Template.ItemName.Text = Accessory
-		Template.ItemRarity.Text = Info.Rarity
-		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Accessory.."_Accessory"
+			local Template = Dependency.ItemTemplate:Clone()
+			Template.ItemName.Text = Accessory
+			Template.ItemRarity.Text = Info.Rarity
+			Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
+			Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Accessory.."_Accessory"
 
-		Template.Name = Accessory
-		Template.Parent = indexUI.Sections.Accessories.Accessories.List
-		
-		if Accessory == "None" then
-			Template.LayoutOrder = -10
-		else
+			Template.Name = Accessory
+			Template.Parent = indexUI.Sections.Accessories.Accessories.List
 			Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
-		end
 
-		if playerAccessories[Accessory] then
-			Index.ItemObtained(Info)
+			if playerAccessories[Accessory] then
+				Index.ItemObtained(Info)
+			end
 		end
 	end
 	
@@ -335,21 +319,25 @@ local function LoadAllItems()
 
 	-- Load outfits
 	for Outfit, Info in pairs(modules.AllOutfits.All) do
-		Info.Name = Outfit
+		if Outfit ~= "None" then
+			Info.Name = Outfit
 
-		local Template = Dependency.ItemTemplate:Clone()
-		Template.ItemName.Text = Outfit
-		Template.ItemRarity.Text = Info.Rarity
-		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = Info.Icon or ""
+			local Template = Dependency.ItemTemplate:Clone()
+			Template.ItemName.Text = Outfit
+			Template.ItemRarity.Text = Info.Rarity
+			Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
+			Template.ItemIcon.Image = Info.Icon or ""
 
-		Template.Name = Outfit
-		Template.LayoutOrder = if Outfit == "None" then -10 else rarityLayoutNumbers[Info.Rarity]
-		Template.Parent = indexUI.Sections.Accessories.Outfits.List
+			Template.Name = Outfit
+			Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
+			Template.Parent = indexUI.Sections.Accessories.Outfits.List
 
-		if playerOutfits[Outfit] then
-			Index.ItemObtained(Info)
+			if playerOutfits[Outfit] then
+				Index.ItemObtained(Info)
+			end
+
 		end
+
 	end
 
 
@@ -372,7 +360,6 @@ local function LoadAllTrees()
 		Lbl.Cut.Icon.Image = Icon
 
 		Index.TreeCut(Tree)
-
 	end
 
 end

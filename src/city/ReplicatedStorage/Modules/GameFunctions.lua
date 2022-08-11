@@ -3,11 +3,11 @@ local GameFunctions = {}
 --- Variables ---
 local MPService = game:GetService("MarketplaceService")
 local MoneyProducts = {
-	[1224873708] = {["Base"] = 1.0000, ["Bonus"] = 1}, 
-	[1224873843] = {["Base"] = 3.2900, ["Bonus"] = 1.05}, 
-	[1224873847] = {["Base"] = 8.2900, ["Bonus"] = 1.15}, 
-	[1224873846] = {["Base"] = 20.790, ["Bonus"] = 1.25}, 
-	[1224873844] = {["Base"] = 41.630, ["Bonus"] = 1.40}, 
+	[1224873708] = {["Base"] = 1.0000, ["Bonus"] = 1},
+	[1224873843] = {["Base"] = 3.2900, ["Bonus"] = 1.05},
+	[1224873847] = {["Base"] = 8.2900, ["Bonus"] = 1.15},
+	[1224873846] = {["Base"] = 20.790, ["Bonus"] = 1.25},
+	[1224873844] = {["Base"] = 41.630, ["Bonus"] = 1.40},
 	[1224873842] = {["Base"] = 104.13, ["Bonus"] = 1.60}
 }
 local BASE_INCOME_REWARD = 30 -- The amount of seconds of progress for R$ 24 worth of robux (Base = 1)
@@ -52,7 +52,7 @@ function GameFunctions:GetMoneyProductReward(Product, Income)
 	local Base1Reward = 500 + (Income+1)/3 * BASE_INCOME_REWARD
 	local BaseReward = Base1Reward * MoneyProducts[Product]["Base"]
 	local TotalReward = BaseReward * MoneyProducts[Product]["Bonus"]
-	
+
 	return math.ceil(TotalReward)
 end
 

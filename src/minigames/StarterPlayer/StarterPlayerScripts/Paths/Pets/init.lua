@@ -1069,7 +1069,6 @@ function Remotes.BuyEgg.OnClientInvoke(Type,Data,PetId,PetInfo)
 		local info = RealData.PetsOwned[tostring(PetId)]
 		openEgg(PetModel.Icon.Texture,info[1],info[4],PetDetails.RarityColors[info[4]])
 		updateUI(Data,"add",PetId)
-		updateIndex(Data,Data.PetsOwned[tostring(PetId)][8])
 	end
 end
 

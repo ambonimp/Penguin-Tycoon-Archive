@@ -97,7 +97,7 @@ function Character:EquipShirt(Character,ShirtName,scale)
 	if ShirtName == "None" then
 		return
 	end
-	local Shirt = Paths.Services.RStorage.Assets.Shirts:FindFirstChild(ShirtName):Clone()
+	local Shirt = Paths.Services.SStorage.Shirts:FindFirstChild(ShirtName):Clone()
 	local Model = Instance.new("Model")
 	Model.Parent = Character
 	Model.Name = "Shirt"
