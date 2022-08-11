@@ -60,6 +60,7 @@ function Paths.Initiliaze()
 	-- Chat Modules
 	Paths.Modules.Chat = require(script.Chat)
 
+	Paths.Modules.Feedback = require(script.Feedback)
 	-- Emote Server Modules
 	Paths.Modules.Emotes = require(script.Emotes)
 	

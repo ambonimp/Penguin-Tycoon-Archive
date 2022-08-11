@@ -9,8 +9,6 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 local UI = Paths.UI
 
-local Dependency = Paths.Dependency:FindFirstChild(script.Name)
-
 local AllEmotes = require(Services.RStorage.Modules.AllEmotes)
 
 --- Emotes Variables ---
@@ -26,6 +24,7 @@ local MenuUIVisible = false
 local UIDebounce = false
 local playingPropAnim = false
 
+local Dependency = Paths.Dependency:WaitForChild(script.Name)
 
 local AnimationTracks = {}
 
@@ -48,10 +47,10 @@ local function LoadEmote(ID)
 	if Paths.Player.Character and Paths.Player.Character:FindFirstChild("Humanoid") and not AnimationTracks[ID] then
 		local Animator = Paths.Player.Character.Humanoid:FindFirstChild("Animator") or Paths.Player.Character.Humanoid
 		
-		local Animation = Dependency:FindFirstChild(tostring(ID)) or Instance.new("Animation")
+		local Animation = script:FindFirstChild(tostring(ID)) or Instance.new("Animation")
 		Animation.AnimationId = "rbxassetid://"..ID
 		Animation.Name = ID
-		Animation.Parent = Dependency
+		Animation.Parent = script
 		
 		AnimationTracks[ID] = Animator:LoadAnimation(Animation)
 		AnimationTracks[ID].Priority = Enum.AnimationPriority.Action
@@ -68,8 +67,15 @@ local function LoadEmote(ID)
 end
 
 local function CanPlayEmote()
+	if game.Players.LocalPlayer:GetAttribute("AFKFishing") then return end
 	if EmoteDB then
 		return false
+	end
+	
+	for i, blacklistedTool in pairs(blacklistTools) do
+		if string.match(Paths.Player:GetAttribute("Tool"), blacklistedTool) then
+			return false
+		end
 	end
 	
 	return true
@@ -122,7 +128,7 @@ function Emotes:PlayEmote(ID)
 		PreviousEmote = Track
 	end
 
-	task.wait()
+	wait()
 	EmoteDB = false
 end
 
@@ -156,13 +162,13 @@ function Emotes:EnterUI(UI)
 	MenuUIVisible = (UI == "Menu")
 	
 	if UI == "Display" then
-		EmoteDisplay.Size = UDim2.new(0.165, 0, 0.02, 0)
+		EmoteDisplay.Size = UDim2.new(0.48, 0, 0.02, 0)
 		EmoteDisplay.Visible = true
 		EmoteDisplay:TweenSize(Emotes.FullSize, "Out", "Back", 0.16, true)
 	elseif UI == "Menu" then
 		EmoteMenu.Size = UDim2.new(0.75, 0, 0.02, 0)
 		EmoteMenu.Visible = true
-		EmoteMenu:TweenSize(UDim2.new(0.75, 0, 0.8, 0), "Out", "Back", 0.16, true)
+		EmoteMenu:TweenSize(UDim2.new(0.75, 0, 1.221, 0), "Out", "Back", 0.16, true)
 	end
 end
 
@@ -171,7 +177,7 @@ function Emotes:ExitUI(UI)
 	
 	if UI == "Display" then
 		DisplayUIVisible = false
-		EmoteDisplay:TweenSize(UDim2.new(0.165, 0, 0.02, 0), "In", "Back", 0.16, true)
+		EmoteDisplay:TweenSize(UDim2.new(0.48, 0, 0.02, 0), "In", "Back", 0.16, true)
 	end
 	EmoteMenu:TweenSize(UDim2.new(0.75, 0, 0.02, 0), "In", "Back", 0.16, true)
 	EmoteDisplay.Expand.ExpandIcon.Visible = not MenuUIVisible
@@ -293,6 +299,7 @@ function Emotes:EquipEmote(Emote, Slot)
 end
 
 
+-- Loading current player items
 EmoteMenu.Holder.UIGridLayout.SortOrder = Enum.SortOrder.Name
 for i, Emote in pairs(EmoteDisplay.Emotes.Holder:GetChildren()) do
 	if Emote:IsA("ImageButton") then
@@ -302,7 +309,7 @@ for i, Emote in pairs(EmoteDisplay.Emotes.Holder:GetChildren()) do
 	end
 end
 
--- Loading current player items
+
 coroutine.wrap(function()
 	-- Loading emotes
 	local PlayerEmotes = Remotes.GetStat:InvokeServer("Emotes")
@@ -313,15 +320,9 @@ coroutine.wrap(function()
 		if PlayerEmotes and EquippedEmotes then break else wait(1) end 
 	until PlayerEmotes and EquippedEmotes
 
-	for Emote, IsOwned in pairs(PlayerEmotes) do
-		if IsOwned then
-			Emotes:NewEmote(Emote)
-		end
+	for Emote, i in pairs(AllEmotes.All) do
+		Emotes:NewEmote(Emote)
 	end
-	
-	Services.RStorage.Remotes.NewEmote.OnClientEvent:Connect(function(emote)
-		Emotes:NewEmote(emote)
-	end)
 
 	for Slot, EquippedEmote in pairs(EquippedEmotes) do
 		Emotes:EquipEmote(EquippedEmote, Slot)

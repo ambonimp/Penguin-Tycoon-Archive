@@ -79,9 +79,11 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("CharacterSelect", script.Character.CharacterSelect);
 	
 	-- UI Modules
+	
+	ModuleLoader.Register("DeviceDetector", script.DeviceDetector)
+	ModuleLoader.Register("Feedback", script.Feedback)
 	ModuleLoader.Register("UpdatingUI", script.UI.Updating)
 	ModuleLoader.Register("UIAnimations", script.UI.Animations)
-	ModuleLoader.Register("Buttons", script.UI.Buttons)
 	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
 	ModuleLoader.Register("Map", script.UI.Map)
 	ModuleLoader.Register("PlatformAdjustments", script.UI.PlatformAdjustments)
@@ -125,13 +127,13 @@ function Paths.Initiliaze()
 
 	ModuleLoader.Register("SettingDetails", Paths.Services.RStorage.Modules.SettingDetails)
 	ModuleLoader.Register("Settings", script.Settings)
-
 	ModuleLoader.Register("LeaderboardDetails", Paths.Services.RStorage.Modules.LeaderboardDetails)
 	
 	ModuleLoader.Register("Leaderboards", script.Leaderboards)
 	ModuleLoader.Register("SystemMessages", script.SystemMessages)
 
 
+	ModuleLoader.Register("Buttons", script.UI.Buttons)
 	-- Load Version
 	ModuleLoader.Load()
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version

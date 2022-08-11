@@ -57,7 +57,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllOutfits = require(Paths.Services.RStorage.Modules.AllOutfits)
 	Paths.Modules.AllEyes = require(Paths.Services.RStorage.Modules.AllEyes)
 	Paths.Modules.AllEmotes = require(Paths.Services.RStorage.Modules.AllEmotes)
-	Paths.Modules.Settings = require(script.Settings)
+	Paths.Modules.SettingDetails = require(Paths.Services.RStorage.Modules.SettingDetails)
 	Paths.Modules.Emotes = require(script.Emotes)	
 	Paths.Modules.GroupReward = require(script.GroupReward)
 	Paths.Modules.Lighting = require(script.Lighting)
@@ -95,6 +95,8 @@ function Paths.Initiliaze()
 	Paths.Modules.Hearts = require(script.Hearts);
 	
 	-- Store Modules
+	Paths.Modules.DeviceDetector = require(script.DeviceDetector)
+	Paths.Modules.Feedback = require(script.Feedback)
 	Paths.Modules.Store = require(script.Store)
 	Paths.Modules.Gamepasses = require(script.Store.Gamepasses)
 	Paths.Modules.Money = require(script.Store.Money)
@@ -110,6 +112,9 @@ function Paths.Initiliaze()
 	-- Audio Modules
 	Paths.Modules.Audio = require(Paths.Services.RStorage.Modules.Audio)
 	Paths.Modules.AudioHandler = require(script.AudioHandler)
+
+	
+	Paths.Modules.Settings = require(script.Settings)
 	
 	-- Other Modules (That have to be required after)
 

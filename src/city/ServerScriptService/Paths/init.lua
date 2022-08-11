@@ -48,6 +48,7 @@ function Paths.Initiliaze()
 	Paths.Modules.AllAchievements = require(Paths.Services.RStorage.Modules.AllAchievements)
 	Paths.Modules.Character = require(script.Character)
 	Paths.Modules.Codes = require(script.Codes);
+	Paths.Modules.Feedback = require(script.Feedback);
 	Paths.Modules.ActiveCodes = require(script.Codes.ActiveCodes)
 	Paths.Modules.Verification = require(script.Verification)
 	Paths.Modules.Settings = require(script.Settings)
