@@ -141,52 +141,6 @@ function Buttons:OnMainButtonClicked(button)
 end
 
 
---- Hiding/Showing buttons ---
-local ShowButtonsDB = false
-local OriginalPositions = {}
-
-for i, v in pairs(UI.Left.Buttons:GetChildren()) do
-	if v.Name ~= "Expand" and v.Name ~= "Hide" then
-		OriginalPositions[v] = v.Position
-	end
-end
-
-UI.Left.Buttons.Expand.MouseButton1Down:Connect(function()
-	if ShowButtonsDB then return end
-	ShowButtonsDB = true
-
-	UI.Left.Buttons.Expand.Visible = false
-	UI.Left.Buttons.Hide.Visible = true
-
-	for Button, Position in pairs(OriginalPositions) do
-		Button.Visible = true
-		Button:TweenSizeAndPosition(UDim2.new(0.25, 0, 0.25, 0), Position, "Out", "Quart", 0.15, true)
-	end
-	
-	task.wait(0.12)
-
-	ShowButtonsDB = false
-end)
-
-UI.Left.Buttons.Hide.MouseButton1Down:Connect(function()
-	if ShowButtonsDB then return end
-	ShowButtonsDB = true
-
-	UI.Left.Buttons.Expand.Visible = true
-	UI.Left.Buttons.Hide.Visible = false
-
-	for Button, Position in pairs(OriginalPositions) do
-		Button:TweenSizeAndPosition(UDim2.new(0.01, 0, 0.01, 0), UDim2.new(0.12, 0, 0.495, 0), "Out", "Quart", 0.15, true)
-	end
-	
-	task.wait(0.1)
-	for Button, Position in pairs(OriginalPositions) do
-		Button.Visible = false
-	end
-
-	ShowButtonsDB = false
-end)
-
 
 --- Button Animations ---
 local ButtonAnimationDB = false

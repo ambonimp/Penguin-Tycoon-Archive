@@ -12,17 +12,19 @@ local UI = Paths.UI
 
 --- Handle Store Buttons ---
 local Store = UI.Center.Store
+local WorldTeleport = UI.Center.WorldTeleport
 
 local PreviousOpen = {
-	[Store] = Store.Sections.Accessory,
+	[Store] = Store.Sections.Gamepasses,
+	[WorldTeleport] = WorldTeleport.Sections.Tycoon,
 }
 
 local Debounce = false
 
 -- Initialize Accessories being open
-Store.Sections.Accessory.Visible = true
-Store.Sections.Accessory.Position = UDim2.new(0.5, 0, 0.5, 0)
-Store.Buttons.Accessory.BackgroundTransparency = 0.2
+Store.Sections.Gamepasses.Visible = true
+Store.Sections.Gamepasses.Position = UDim2.new(0.5, 0, 0.5, 0)
+Store.Buttons.Gamepasses.BackgroundTransparency = 0.2
 
 local function ButtonClicked(button,Store)
 	if Debounce then return end
@@ -59,6 +61,15 @@ for i, Button in pairs(Store.Buttons:GetChildren()) do
 		end)
 	end
 end
+
+for i, Button in pairs(WorldTeleport.Buttons:GetChildren()) do
+	if Button:IsA("ImageButton") then
+		Button.MouseButton1Down:Connect(function()
+			ButtonClicked(Button,WorldTeleport)
+		end)
+	end
+end
+
 
 UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Accessory,Store)

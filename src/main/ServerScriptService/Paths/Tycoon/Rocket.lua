@@ -43,6 +43,7 @@ Remotes.RocketBuild.OnServerInvoke = function(Client, Item)
 
             local Completed = true
             for OtherItem in pairs(Modules.BuildADetails.Rocket) do
+                print(OtherItem,UnlockingData[2][OtherItem])
                 if not UnlockingData[2][OtherItem] then
                     Completed = false
                     break

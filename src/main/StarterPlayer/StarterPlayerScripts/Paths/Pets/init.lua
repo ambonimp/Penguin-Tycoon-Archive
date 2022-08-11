@@ -1100,7 +1100,7 @@ PetsFrame.Best.MouseButton1Down:Connect(function()
 end)
 
 -- Capacity
-UI.Right.Buttons.Backpack.MouseButton1Down:Connect(function()
+UI.Center.Menu.Buttons.Pets.MouseButton1Down:Connect(function()
 	if not PetsFrame.Visible then
 		UpdateStorage()
 	end

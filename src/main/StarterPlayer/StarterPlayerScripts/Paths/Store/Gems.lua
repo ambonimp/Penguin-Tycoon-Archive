@@ -32,11 +32,7 @@ for amount, Product in pairs(MoneyProducts) do
 		Template.Background.BackgroundColor3 = Color3.fromRGB(0,170,255)
 		Template.Background.UIStroke.Color = Color3.fromRGB(0,170,255)
 		Template.ProductName.TheText.Text = "+ "..Modules.Format:FormatComma(amount)
-		if Product == 1266975679 then
-			Template.MostPopular.Visible = true
-		elseif Product == 1266975715 then
-			Template.BestValue.Visible = true
-		end
+
 		Template.Purchase.MouseButton1Down:Connect(function()
 			Services.MPService:PromptProductPurchase(Paths.Player, Product)
 		end)

@@ -85,7 +85,7 @@ local function JoinedEvent(Participant)
 end
 
 local function LeftEvent()
-	EventInfoUI.ExitEvents.Visible = true
+	--EventInfoUI.ExitEvents.Visible = true
 	EventInfoUI.Minigames.Visible = true
 	EventInfoUI.Timer.Visible = false
 

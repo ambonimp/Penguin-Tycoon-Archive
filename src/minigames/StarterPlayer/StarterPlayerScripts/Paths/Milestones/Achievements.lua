@@ -7,7 +7,7 @@ local Remotes = Paths.Remotes
 
 local Dependency = Services.RStorage.ClientDependency.Achievements
 
-local Popup = Paths.UI.Top.Popups.AchievementCompleted
+local Popup = Paths.UI.Top.Bottom.Popups.AchievementCompleted
 local List = Paths.UI.Center.Achievements.Sections.Achievements.List
 
 local Template = Dependency.Template

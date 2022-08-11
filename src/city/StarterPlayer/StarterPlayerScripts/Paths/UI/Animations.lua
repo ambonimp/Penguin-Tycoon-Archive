@@ -123,7 +123,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 	Template.Size = UDim2.new(0.5, 0, 0.02, 0)
 
 	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))..add
-	Template.Parent = UI.BLCorner
+	Template.Parent = UI.Top.Currencies
 
 	Template:TweenSize(UDim2.new(0.5, 0, YSize, 0), "Out", "Quart", 0.25, true)
 
@@ -146,17 +146,17 @@ function Animations:MoneyChanged(Change, NewMoney)
 
 	-- Total money tween
 	local Goal = {Value = NewMoney}
-	PreviousTotalTween = Services.TweenService:Create(UI.BLCorner.MoneyDisplay.Amount.Change, TrickleTI, Goal)
+	PreviousTotalTween = Services.TweenService:Create(UI.Top.Currencies.MoneyDisplay.Amount.Change, TrickleTI, Goal)
 
-	UI.BLCorner.MoneyDisplay.Amount.Change.Value = NewMoney - Change
+	UI.Top.Currencies.MoneyDisplay.Amount.Change.Value = NewMoney - Change
 
-	UI.BLCorner.MoneyDisplay.Amount.Change.Changed:Connect(function(Value)
-		UI.BLCorner.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(Value)
+	UI.Top.Currencies.MoneyDisplay.Amount.Change.Changed:Connect(function(Value)
+		UI.Top.Currencies.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(Value)
 	end)
 
 	PreviousTotalTween:Play()
 
-	Template:TweenSizeAndPosition(UDim2.new(0.4, 0, 0.05, 0), UDim2.new(XPos, 0, YPos, 0), "Out", "Quint", 1.4, true)
+	Template:TweenSizeAndPosition(UDim2.new(0.4, 0, 0.15, 0), UDim2.new(XPos, 0, YPos, 0), "Out", "Quint", 1.4, true)
 	wait(0.5)
 
 	for i = 0, 1, 0.1 do
@@ -199,7 +199,7 @@ function Animations:GemsChanged(Change, NewGems)
 	Template.Size = UDim2.new(0.5, 0, 0.02, 0)
 
 	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))..add
-	Template.Parent = UI.BLCorner
+	Template.Parent = UI.Top.Currencies
 
 	Template:TweenSize(UDim2.new(0.5, 0, YSize, -10), "Out", "Quart", 0.25, true)
 
@@ -222,17 +222,17 @@ function Animations:GemsChanged(Change, NewGems)
 
 	-- Total money tween
 	local Goal = {Value = NewGems}
-	PreviousTotalTween = Services.TweenService:Create(UI.BLCorner.GemDisplay.Amount.Change, TrickleTI, Goal)
+	PreviousTotalTween = Services.TweenService:Create(UI.Top.Currencies.GemDisplay.Amount.Change, TrickleTI, Goal)
 
-	UI.BLCorner.GemDisplay.Amount.Change.Value = NewGems - Change
+	UI.Top.Currencies.GemDisplay.Amount.Change.Value = NewGems - Change
 
-	UI.BLCorner.GemDisplay.Amount.Change.Changed:Connect(function(Value)
-		UI.BLCorner.GemDisplay.Amount.Text = Modules.Format:FormatComma(Value)
+	UI.Top.Currencies.GemDisplay.Amount.Change.Changed:Connect(function(Value)
+		UI.Top.Currencies.GemDisplay.Amount.Text = Modules.Format:FormatComma(Value)
 	end)
 
 	PreviousTotalTween:Play()
 
-	Template:TweenSizeAndPosition(UDim2.new(0.4, 0, 0.05, 0), UDim2.new(XPos, 0, YPos, -10), "Out", "Quint", 1.4, true)
+	Template:TweenSizeAndPosition(UDim2.new(0.4, 0, 0.15, 0), UDim2.new(XPos, 0, YPos, -10), "Out", "Quint", 1.4, true)
 	wait(0.5)
 
 	for i = 0, 1, 0.1 do

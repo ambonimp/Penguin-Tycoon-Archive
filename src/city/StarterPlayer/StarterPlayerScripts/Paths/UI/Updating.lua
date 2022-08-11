@@ -18,8 +18,8 @@ function UpdatingUI:Initiate()
 	local PreviousIncome = Paths.Player:GetAttribute("Income")
 	
 	-- Initiating Stats
-	UI.BLCorner.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(PreviousMoney)
-	UI.BLCorner.GemDisplay.Amount.Text = Modules.Format:FormatComma(PreviousGems)
+	UI.Top.Currencies.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(PreviousMoney)
+	UI.Top.Currencies.GemDisplay.Amount.Text = Modules.Format:FormatComma(PreviousGems)
 	
 	
 --- Updating Stats ---

@@ -11,6 +11,7 @@ function Paths.Initiliaze()
 
 	--- Initializing Services ---
 	-- print("Load services")
+	Paths.Services.Players = game:GetService("Players");
 	Paths.Services.RStorage = game:GetService("ReplicatedStorage");
 	Paths.Services.MPService = game:GetService("MarketplaceService");
 	Paths.Services.RunService = game:GetService("RunService");
@@ -29,7 +30,7 @@ function Paths.Initiliaze()
 	Paths.Dependency = Paths.Services.RStorage:WaitForChild("ClientDependency")
 	--- Initializing UI ---
 	-- print("Load UI")
-	local PlayerGui = game.Players.LocalPlayer.PlayerGui
+	local PlayerGui = Paths.Services.Players.LocalPlayer.PlayerGui
 	Paths.UI.Main = PlayerGui:WaitForChild("Main")
 
 	Paths.UI.SpecialEffects = PlayerGui:WaitForChild("SpecialEffects")
@@ -51,7 +52,7 @@ function Paths.Initiliaze()
 
 
 --- Initializing Player Variables ---
-	Paths.Player = game.Players.LocalPlayer;
+	Paths.Player = Paths.Services.Players.LocalPlayer;
 	local TycoonName = Paths.Player:GetAttribute("Tycoon")
 	Paths.Tycoon = workspace.Tycoons:WaitForChild(TycoonName)
 
@@ -109,7 +110,6 @@ function Paths.Initiliaze()
 	-- print("ui modules")
 	ModuleLoader.Register("UpdatingUI", script.UI.Updating)
 	ModuleLoader.Register("UIAnimations", script.UI.Animations)
-	ModuleLoader.Register("Buttons", script.UI.Buttons)
 	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
 	ModuleLoader.Register("TycoonTeleporting", script.UI.TycoonTeleporting)
 	ModuleLoader.Register("PlatformAdjustments", script.UI.PlatformAdjustments)
@@ -143,7 +143,7 @@ function Paths.Initiliaze()
 	-- ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
 	ModuleLoader.Register("Rocket", script.Tycoon.Rocket)
 
-
+	
 	-- print("Load pets module")
 	-- Pets
 	ModuleLoader.Register("PetDetails", Paths.Services.RStorage.Modules.PetDetails)
@@ -172,7 +172,8 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Leaderboards", script.Leaderboards)
 	ModuleLoader.Register("SystemMessages", script.SystemMessages)
 
-
+	ModuleLoader.Register("TycoonUIProgress", script.UI.TycoonUIProgress)
+	ModuleLoader.Register("Buttons", script.UI.Buttons)
 	-- Load Version
 	ModuleLoader.Load()
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version

@@ -12,9 +12,9 @@ local UI = Paths.UI
 local AllEmotes = require(Services.RStorage.Modules.AllEmotes)
 
 --- Emotes Variables ---
-local EmoteDisplay = UI.Right.EmotesDisplay
-local EmoteMenu = UI.Right.EmotesMenu
-local EmoteButton = UI.Right.Buttons.Emotes
+local EmoteDisplay = UI.Bottom.EmotesDisplay
+local EmoteMenu = UI.Bottom.EmotesMenu
+local EmoteButton = UI.Bottom.Buttons.Emotes
 
 local EmoteDB = false
 local PreviousEmote = false

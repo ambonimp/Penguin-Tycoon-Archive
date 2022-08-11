@@ -62,7 +62,7 @@ function Spectate.EnterSpectateMode()
 		if EventValues.CurrentEvent.Value == "Soccer" then
 			Paths.UI.Top.Soccer.Visible = true
 
-			EventInfoUI.Position = UDim2.new(UDim.new(0, 0), UDim.new(0.4, -32))
+			EventInfoUI.Position = UDim2.new(UDim.new(0, 0), UDim.new(0.5, 36))
 			EventInfoUI.TextToDisplay.Visible = false
 
 		else
@@ -81,7 +81,7 @@ function Spectate.ExitSpectateMode()
 	EventInfoUI.TextToDisplay.Visible = true
 	EventInfoUI.StopSpectating.Visible = false
 	EventInfoUI.SpectateInfo.Visible = false
-	EventInfoUI.ExitEvents.Visible = true
+	--EventInfoUI.ExitEvents.Visible = true
 	EventInfoUI.Minigames.Visible = true
 
 	for _, v in pairs(EventUIs:GetChildren()) do v.Visible = false end

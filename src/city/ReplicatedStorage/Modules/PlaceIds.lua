@@ -29,6 +29,15 @@ elseif GameId == 3425594443 then -- QA
 	Ids["Candy Rush"] = 9731075144
 	Ids["Ice Cream Extravaganza"] = 9731078128
 	Ids["Sled Race"] = 9868358917
+else
+	Ids["Penguin Tycoon"] = 9118461324
+	Ids["Penguin City"] = 9170919040
+	Ids["Skate Race"] = 9731035076
+	Ids["Falling Tiles"] = 9731064019
+	Ids["Soccer"] = 9731069338
+	Ids["Candy Rush"] = 9731075144
+	Ids["Ice Cream Extravaganza"] = 9731078128
+	Ids["Sled Race"] = 9868358917
 end
 
 return Ids

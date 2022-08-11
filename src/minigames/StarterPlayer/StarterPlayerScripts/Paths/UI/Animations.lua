@@ -1,3 +1,4 @@
+local TweenService = game:GetService("TweenService")
 local Animations = {}
 
 
@@ -15,11 +16,11 @@ local Day = os.date("%A")
 local Mult = 1
 --[[
 if Day == "Saturday" or Day == "Sunday" or Day == "Friday" then
-	Mult = 1
+	Mult = 2
 else
 	Mult = 1
-end
-]]
+end]]
+
 
 
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
@@ -27,6 +28,40 @@ local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 local TrickleTI = TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local PreviousTotalTween = false
+
+function Animations:SnowSplat()
+	local imgs = {"rbxassetid://9730537323","rbxassetid://9730537169","rbxassetid://9730536976"}
+	local am = math.random(1,2)
+	Paths.Audio.Splat:Play()
+	for i = 1,am do
+		local new = UI.Full.Snow:Clone()
+		local s = math.random(5.5,7.5)/10
+		new.Size = UDim2.fromScale(0,0) 
+		new.Rotation = math.random(0,359)
+		new.Image = imgs[math.random(1,#imgs)]
+		new.Position = UDim2.fromScale(math.random(3,7)/10,math.random(3,7)/10)
+		new.Visible = true
+		new.Parent = UI.Full
+		new:TweenSize(UDim2.fromScale(s,s),Enum.EasingDirection.Out,Enum.EasingStyle.Exponential,.2)
+		local tweenInfo = TweenInfo.new(math.random(10,15)/10)
+		local tween = TweenService:Create(new,tweenInfo,{ImageTransparency = .75,Position = new.Position + UDim2.fromScale(0,.2)})
+		
+		task.spawn(function()
+			task.wait(1)
+			tween:Play()
+			task.wait(tweenInfo.Time)
+			new:Destroy()
+		end)
+	end
+end
+
+function Remotes.GetSnowball.OnClientInvoke(k)
+	if k == "Hit" then
+		Paths.Audio.Hit:Play()
+	elseif k == "Splat" then
+		Animations:SnowSplat()
+	end
+end
 
 
 --- Updating Functions ---
@@ -57,10 +92,14 @@ end
 
 function Animations:MoneyChanged(Change, NewMoney)
 	local Day = os.date("%A")
-	local add = ""--[[
+	local add = ""
+	--[[
 	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday") and Change > 0 then
 		add = " (X2 DAY)"
 	end]]
+	if game.Players.LocalPlayer:GetAttribute("x3MoneyBoost") then
+		add = add.." (x3)"
+	end
 	local Template = Dependency.MoneyChanged:Clone()
 	Template.Position = UDim2.new(0.37, 0, 0.9, 0)
 	Template.AnchorPoint = Vector2.new(0, 0.5)
@@ -84,7 +123,7 @@ function Animations:MoneyChanged(Change, NewMoney)
 	Template.Size = UDim2.new(0.5, 0, 0.02, 0)
 
 	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))..add
-	Template.Parent = UI.BLCorner
+	Template.Parent = UI.Top.Currencies
 
 	Template:TweenSize(UDim2.new(0.5, 0, YSize, 0), "Out", "Quart", 0.25, true)
 
@@ -107,17 +146,17 @@ function Animations:MoneyChanged(Change, NewMoney)
 
 	-- Total money tween
 	local Goal = {Value = NewMoney}
-	PreviousTotalTween = Services.TweenService:Create(UI.BLCorner.MoneyDisplay.Amount.Change, TrickleTI, Goal)
+	PreviousTotalTween = Services.TweenService:Create(UI.Top.Currencies.MoneyDisplay.Amount.Change, TrickleTI, Goal)
 
-	UI.BLCorner.MoneyDisplay.Amount.Change.Value = NewMoney - Change
+	UI.Top.Currencies.MoneyDisplay.Amount.Change.Value = NewMoney - Change
 
-	UI.BLCorner.MoneyDisplay.Amount.Change.Changed:Connect(function(Value)
-		UI.BLCorner.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(Value)
+	UI.Top.Currencies.MoneyDisplay.Amount.Change.Changed:Connect(function(Value)
+		UI.Top.Currencies.MoneyDisplay.Amount.Text = Modules.Format:FormatComma(Value)
 	end)
 
 	PreviousTotalTween:Play()
 
-	Template:TweenSizeAndPosition(UDim2.new(0.4, 0, 0.05, 0), UDim2.new(XPos, 0, YPos, 0), "Out", "Quint", 1.4, true)
+	Template:TweenSizeAndPosition(UDim2.new(0.4, 0, 0.15, 0), UDim2.new(XPos, 0, YPos, 0), "Out", "Quint", 1.4, true)
 	wait(0.5)
 
 	for i = 0, 1, 0.1 do
@@ -132,8 +171,9 @@ end
 
 function Animations:GemsChanged(Change, NewGems)
 	local Day = os.date("%A")
-	local add = ""--[[
-	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday") and Change > 0 then
+	local add = ""
+	--[[
+	if (Day == "Saturday" or Day == "Sunday" or Day == "Friday" ) and Change > 0 then
 		add = " (X2 DAY)"
 	end]]
 	local Template = Dependency.GemsChanged:Clone()
@@ -159,7 +199,7 @@ function Animations:GemsChanged(Change, NewGems)
 	Template.Size = UDim2.new(0.5, 0, 0.02, 0)
 
 	Template.Text = Prefix..Modules.Format:FormatComma(math.abs(Change))..add
-	Template.Parent = UI.BLCorner
+	Template.Parent = UI.Top.Currencies
 
 	Template:TweenSize(UDim2.new(0.5, 0, YSize, -10), "Out", "Quart", 0.25, true)
 
@@ -182,17 +222,17 @@ function Animations:GemsChanged(Change, NewGems)
 
 	-- Total money tween
 	local Goal = {Value = NewGems}
-	PreviousTotalTween = Services.TweenService:Create(UI.BLCorner.GemDisplay.Amount.Change, TrickleTI, Goal)
+	PreviousTotalTween = Services.TweenService:Create(UI.Top.Currencies.GemDisplay.Amount.Change, TrickleTI, Goal)
 
-	UI.BLCorner.GemDisplay.Amount.Change.Value = NewGems - Change
+	UI.Top.Currencies.GemDisplay.Amount.Change.Value = NewGems - Change
 
-	UI.BLCorner.GemDisplay.Amount.Change.Changed:Connect(function(Value)
-		UI.BLCorner.GemDisplay.Amount.Text = Modules.Format:FormatComma(Value)
+	UI.Top.Currencies.GemDisplay.Amount.Change.Changed:Connect(function(Value)
+		UI.Top.Currencies.GemDisplay.Amount.Text = Modules.Format:FormatComma(Value)
 	end)
 
 	PreviousTotalTween:Play()
 
-	Template:TweenSizeAndPosition(UDim2.new(0.4, 0, 0.05, 0), UDim2.new(XPos, 0, YPos, -10), "Out", "Quint", 1.4, true)
+	Template:TweenSizeAndPosition(UDim2.new(0.4, 0, 0.15, 0), UDim2.new(XPos, 0, YPos, -10), "Out", "Quint", 1.4, true)
 	wait(0.5)
 
 	for i = 0, 1, 0.1 do
@@ -202,6 +242,25 @@ function Animations:GemsChanged(Change, NewGems)
 	end
 
 	Template:Destroy()
+end
+
+function Animations.BlinkTransition(OnHalfPoint, AlignCamera)
+    local Info = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+
+    local In = Services.TweenService:Create(Paths.UI.SpecialEffects.Bloom, Info, {BackgroundTransparency = 0})
+    In:Play()
+    In.Completed:Wait()
+
+    OnHalfPoint()
+    if AlignCamera then
+        local Camera = workspace.Camera
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position) * Paths.Player.Character.HumanoidRootPart.CFrame.Rotation
+    end
+
+    local Out = Services.TweenService:Create(Paths.UI.SpecialEffects.Bloom, Info, {BackgroundTransparency = 1})
+    Out:Play()
+    Out.Completed:Wait()
+
 end
 
 return Animations

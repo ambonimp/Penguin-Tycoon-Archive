@@ -96,6 +96,7 @@ function Paths.Initiliaze()
 	Paths.Modules.Placement = require(script.Tycoon.Placement)
 	Paths.Modules.Buttons = require(script.Tycoon.Buttons)
 	Paths.Modules.Loading = require(script.Tycoon.Loading)
+	Paths.Modules.GetTycoonProgress = require(script.GetTycoonProgress)
 	print("Data Modules")
 	-- Data Modules
 	Paths.Modules.Save = require(script.PlayerData.Save)
