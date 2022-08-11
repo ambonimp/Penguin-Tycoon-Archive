@@ -206,7 +206,6 @@ for _, Container in ipairs(UI.Quests:GetChildren()) do
                 )
 
                 ScrollConn = UI.Quests:GetPropertyChangedSignal("CanvasPosition"):Connect(CloseHelp)
-
             end
 
         end)
@@ -215,9 +214,7 @@ for _, Container in ipairs(UI.Quests:GetChildren()) do
 
 end
 
-Paths.UI.Center.Achievements:GetPropertyChangedSignal("Visible") do
-    CloseHelp()
-end
+Paths.UI.Center.Achievements:GetPropertyChangedSignal("Visible"):Connect(CloseHelp)
 
 for _, tab in ipairs(Paths.UI.Center.Achievements.Buttons:GetChildren()) do
     if tab:IsA("ImageButton") then

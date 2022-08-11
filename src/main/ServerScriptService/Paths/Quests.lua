@@ -35,7 +35,7 @@ function getRandom(intbl, possible, tycoonData)
         end
     end
 
-    for i,v in pairs (intbl) do
+    for _, v in pairs (intbl) do
         if table.find(copy,v) then
             table.remove(copy,table.find(copy,v))
         end
@@ -58,7 +58,6 @@ function claimQuest(Player,QuestNumber)
     print(type(QuestNumber))
     local Data = Modules.PlayerData.sessionData[Player.Name]
     if (QuestNumber == 4 or QuestNumber == 5) and not Data["Gamepasses"]["26269102"] then return end --return if they try to claim vip and don't own it
-    print("owns gamepass")
     if Data["Quests"].Quests and Data["Quests"].Quests[QuestNumber] then
         local Quest = Data["Quests"].Quests[QuestNumber]
         local reward = getReward(QuestNumber)
@@ -103,16 +102,16 @@ function Quests.getNewQuests(Player)
 
     local currentQuests = {}
 
-    local newEasy = getRandom(currentQuests,AllQuests["Easy"][easy], Data.Tycoon)
+    local newEasy = getRandom(currentQuests, AllQuests["Easy"][easy], Data.Tycoon)
     table.insert(currentQuests,newEasy[2])
-    local newMedium = getRandom(currentQuests,AllQuests["Medium"][medium], Data.Tycoon)
+    local newMedium = getRandom(currentQuests, AllQuests["Medium"][medium], Data.Tycoon)
     table.insert(currentQuests,newMedium[2])
-    local newHard = getRandom(currentQuests,AllQuests["Hard"][hard], Data.Tycoon)
+    local newHard = getRandom(currentQuests, AllQuests["Hard"][hard], Data.Tycoon)
     table.insert(currentQuests,newHard[2])
 
-    local newVip1 = getRandom(currentQuests,AllQuests["Medium"][vip1], Data.Tycoon)
+    local newVip1 = getRandom(currentQuests, AllQuests["Medium"][vip1], Data.Tycoon)
     table.insert(currentQuests,newVip1[2])
-    local newVip2 = getRandom(currentQuests,AllQuests["Medium"][vip2], Data.Tycoon)
+    local newVip2 = getRandom(currentQuests, AllQuests["Medium"][vip2], Data.Tycoon)
     table.insert(currentQuests,newVip2[2])
 
     Data["Quests"].Timer = os.time() + Quests.QuestResetTime

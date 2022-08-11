@@ -12,16 +12,6 @@ local COOLDOWN = 1
 local TURN_SPEED = 3 / (2 * math.pi) -- 3s / 360 deg
 local WALK_SPEED = 5
 
-local NpcS = {
-    "Zebra#1",
-    "Turtle#1",
-    "Parrot#1",
-    "Gorilla#1",
-    "Lion#1",
-    "Panda#1",
-    "Capybara#1",
-}
-
 local TAG = "NPC"
 
 local function LoadWalking(Npc)

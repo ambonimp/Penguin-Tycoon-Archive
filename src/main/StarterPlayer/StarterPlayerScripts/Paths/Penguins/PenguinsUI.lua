@@ -41,7 +41,6 @@ function PenguinsUI:SetupPenguin(Penguin)
 		Template.Super.Visible = false
 		Template.Instant.AnchorPoint = Vector2.new(0,0)
 		-- Template.Instant.Position = UDim2.fromScale(.03,.6)
-		warn("ROOOO")
 		Template.Upgrade.Position = UDim2.fromScale(.37,.6)
 	else
 		Template.Super.MouseButton1Down:Connect(function()
@@ -171,7 +170,6 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 			Template.PenguinLevel.Text = "Level: "..PenguinLevel.."/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL)
 			Template.PenguinIncome.Text = "Income: "..'<font color="rgb(38,255,14)"> $'..Modules.Format:FormatComma(Income).."</font>"
 
-			warn(PenguinName, PenguinLevel)
 			if PenguinLevel < Modules.GameInfo.MAX_PENGUIN_LEVEL then -- If penguin isn't max level then
 				-- Price text
 				local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), PenguinLevel + 1)
@@ -181,9 +179,7 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				Template.PenguinPrice.Visible = false
 				Template.Upgrade.TheText.Text = "MAX"
 				Template.Upgrade.BackgroundTransparency = 0.8
-			end
 
-			if PenguinLevel == 10 then
 				Template.Instant.Visible = false
 				Template.Super.AnchorPoint = Vector2.new(0,0)
 				Template.Super.Position = UDim2.fromScale(.03, 0.6)
@@ -198,7 +194,6 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				Template.Instant.Visible = false
 				Template.Super.Visible = false
 				Template.Upgrade.AnchorPoint = Vector2.new(0.5,0)
-				warn("SHOO")
 				Template.Upgrade.Position = UDim2.fromScale(.5,.6)
 				Template.Upgrade.Size = UDim2.fromScale(.935,.17)
 				Template.Upgrade.TheText.Text = "SUPER PENGUIN"
@@ -206,6 +201,7 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				local Rainbow = Dependency.Rainbow:Clone()
 				Rainbow:WaitForChild("Rotation").Disabled = false
 				Rainbow.Parent = Template.PenguinName
+
 			end
 
 		end
