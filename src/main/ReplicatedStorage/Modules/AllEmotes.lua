@@ -209,21 +209,21 @@ Emotes.All = {
 		return true
 	end};
 	--- Default Emotes ---
-	["Sit"] = {ID = 8210283194, Rarity = "Free", IsForSale = false,Image = 8528062745};
-	["Wave"] = {ID = 8210268481, Rarity = "Free", IsForSale = false,Image = 8528062380};
-	["Sleep"] = {ID = 8210256955, Rarity = "Free", IsForSale = false,Image = 8528062526};
-	["Point"] = {ID = 8210287558, Rarity = "Free", IsForSale = false,Image = 8528063110};
+	["Sit"] = {ID = 8210283194, Rarity = "Free", IsForSale = false,Image = 10560806339};
+	["Wave"] = {ID = 8210268481, Rarity = "Free", IsForSale = false,Image = 10560806117};
+	["Sleep"] = {ID = 8210256955, Rarity = "Free", IsForSale = false,Image = 10560806225};
+	["Point"] = {ID = 8210287558, Rarity = "Free", IsForSale = false,Image = 10560807004};
 	["Salute"] = {ID = 10308340859 , Rarity = "Free", IsForSale = false,Image = 10308456208};
 
-	["Whack"] = {ID = 8210292011, Rarity = "Free", IsForSale = false,Image = 8527636138};
-	["Dab"] = {ID = 8210285291, Rarity = "Free", IsForSale = false,Image = 8527637011};
-	["Wavy"] = {ID = 8210280508, Rarity = "Free", IsForSale = false,Image = 8527636283};
-	["Clap"] = {ID = 8210274153, Rarity = "Free", IsForSale = false,Image = 8527637084};
+	["Whack"] = {ID = 8210292011, Rarity = "Free", IsForSale = false,Image = 10560805756};
+	["Dab"] = {ID = 8210285291, Rarity = "Free", IsForSale = false,Image = 10560807431};
+	["Wavy"] = {ID = 8210280508, Rarity = "Free", IsForSale = false,Image = 10560805979};
+	["Clap"] = {ID = 8210274153, Rarity = "Free", IsForSale = false,Image = 10560807588};
 	["Hug"] = {ID = 8210270788, Rarity = "Free", IsForSale = false,Image = 10308458488};
 
-	["Shy"] = {ID = 8210265638, Rarity = "Free", IsForSale = false,Image = 8527636506};
-	["Floss"] = {ID = 8210262128, Rarity = "Free", IsForSale = false,Image = 8527636921};
-	["Push Ups"] = {ID = 8210259556, Rarity = "Free", IsForSale = false,Image = 8527636706};
+	["Shy"] = {ID = 8210265638, Rarity = "Free", IsForSale = false,Image = 10560806528};
+	["Floss"] = {ID = 8210262128, Rarity = "Free", IsForSale = false,Image = 10560807200};
+	["Push Ups"] = {ID = 8210259556, Rarity = "Free", IsForSale = false,Image = 10560806858};
 
 	["Bunny Hop"] = {ID = 9412022744, Rarity = "Event",EventName = "Egg Hunt", IsForSale = false,Image = 9375659185};
 	["Eating Egg"] = {ID = 9412038945, Rarity = "Event",EventName = "Egg Hunt", IsForSale = false,Image = 9375658638,Prop = true,
