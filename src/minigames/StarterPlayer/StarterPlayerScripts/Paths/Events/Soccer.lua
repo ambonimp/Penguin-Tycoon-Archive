@@ -179,11 +179,6 @@ end)
 
 
 
--- Interface
-if game:GetService("GuiService"):IsTenFootInterface() == false then
-	SoccerUI.Position = UDim2.fromOffset(0,-36)
-end
-
 EventValues.SoccerTime.Changed:Connect(function()
 	SoccerUI.Timer.Text = EventValues.SoccerTime.Value
 end)

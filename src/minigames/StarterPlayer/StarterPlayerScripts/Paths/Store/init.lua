@@ -1,4 +1,4 @@
-local Store = {}
+local Store1 = {}
 
 
 --- Main Variables ---
@@ -14,16 +14,16 @@ local UI = Paths.UI
 local Store = UI.Center.Store
 
 local PreviousOpen = {
-	[Store] = Store.Sections.Accessory,
+	[Store] = Store.Sections.Gamepasses,
 	[UI.Center.Clothing] = UI.Center.Clothing.Sections.Accessory,
 }
 	
 local Debounce = false
 
 -- Initialize Accessories being open
-Store.Sections.Accessory.Visible = true
-Store.Sections.Accessory.Position = UDim2.new(0.5, 0, 0.5, 0)
-Store.Buttons.Accessory.BackgroundTransparency = 0.2
+Store.Sections.Gamepasses.Visible = true
+Store.Sections.Gamepasses.Position = UDim2.new(0.5, 0, 0.5, 0)
+Store.Buttons.Gamepasses.BackgroundTransparency = 0.2
 
 local function ButtonClicked(button,Store)
 	if Debounce then return end
@@ -49,26 +49,41 @@ local function ButtonClicked(button,Store)
 	Debounce = false
 end
 
+
+Store1.ButtonClicked = function(button,Store)
+	ButtonClicked(button,Store)
+end
+
+
 for i, Button in pairs(Store.Buttons:GetChildren()) do
-	Button.MouseButton1Down:Connect(function()
-		ButtonClicked(Button,Store)
-	end)
+	if Button:IsA("ImageButton") then
+		Button.MouseButton1Down:Connect(function()
+			ButtonClicked(Button,Store)
+		end)
+	end
 end
 
 UI.Left.Customization.Customization.Sections.Accessory.Holder.BuyAccessories.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Accessory, Store)
+	ButtonClicked(Store.Buttons.Accessory,Store)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Accessory)
 end)
 
 UI.Left.Customization.Customization.Sections.Outfits.Holder.BuyOutfits.MouseButton1Down:Connect(function()
 	ButtonClicked(UI.Center.Clothing.Buttons.Outfits,UI.Center.Clothing)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Outfits)
 end)
 
 UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Down:Connect(function()
-	ButtonClicked(Store.Buttons.Accessory, Store)
+	ButtonClicked(Store.Buttons.Accessory,Store)
+	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Eyes)
 end)
 
-UI.BLCorner.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
+UI.Top.Currencies.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Money,Store)
+end)
+
+UI.Top.Currencies.GemDisplay.BuyMore.MouseButton1Down:Connect(function()
+	ButtonClicked(Store.Buttons.Gems,Store)
 end)
 
 for i, Button in pairs(UI.Center.Clothing.Buttons:GetChildren()) do
@@ -78,4 +93,4 @@ for i, Button in pairs(UI.Center.Clothing.Buttons:GetChildren()) do
 end
 
 
-return Store
+return Store1

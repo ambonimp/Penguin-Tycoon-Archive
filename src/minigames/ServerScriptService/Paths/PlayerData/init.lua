@@ -83,7 +83,7 @@ function PlayerData:SetupPlayerData(player)
 				["Outfits"] = {
 					["None"] = true;
 				},
-
+				
 				["Emotes"] = {
 					["Sit"] = true;
 					["Wave"] = true;
@@ -121,7 +121,7 @@ function PlayerData:SetupPlayerData(player)
 					["Total Playtime"] = 0,
 				},
 
-				-- Settings
+				-- Settings 
 				["Settings"] = {
 					["Chat Tag"] = true,
 					["Music"] = true,
@@ -145,7 +145,9 @@ function PlayerData:SetupPlayerData(player)
 		else
 			PlayerData.sessionData[player.Name] = data
 		end
+
 	end
+
 end
 
 
@@ -172,26 +174,26 @@ local function SetupNewStats(Player)
 	--[[if not Data["Outfits Rotation"] then
 		Data["Outfits Rotation"] = Modules.AllOutfits:ChooseStoreAccessories()
 	end]]
-
+	
 	if not Data["LastPlayTime"] then
 		Data["LastPlayTime"] = os.time()-(30*60)
 	end
 
+	if not Data["Playtime"] then
+		Data["Playtime"] = {0,0,{}}
+	end
+	
 	if not Data["Gems"] then
 		Data["Gems"] = 1000
 		Data["Stats"]["Total Gems"] = 0
 	end
-
+	
 	if not Data["Tools"] then
 		Data["Tools"] = {}
 	end
 
 	if not Data["Fish Found"] then
 		Data["Fish Found"] = {}
-	end
-
-	if not Data["Gem Multiplier"] then
-		Data["Gem Multiplier"] = 1
 	end
 
 	if not Data["Enchanted Fish Found"] then
@@ -204,6 +206,18 @@ local function SetupNewStats(Player)
 
 	if not Data["Discord Verification"] then
 		Data["Discord Verification"] = false
+	end
+
+	if not Data["Gem Multiplier"] then
+		Data["Gem Multiplier"] = 1
+	end
+
+	if not Data["Boosts"] then
+		Data["Boosts"] = { --[1]owned, [2]time left in current boost
+			["Super Fishing Luck"] = {0,0}, 
+			["Ultra Fishing Luck"] = {0,0},
+			["x3 Money"] = {0,0},
+		}
 	end
 
 	if not Data["Event"] then
@@ -246,20 +260,7 @@ local function SetupNewStats(Player)
 		Data["Emotes"]["Dough Flipping"] = true;
 		Data["Emotes"]["Cheering"] = true;
 	end
-
-	if not Data["Achievements"] then
-		Data["Achievements"] = {
-			false, -- Reconciled
-			{}
-		}
-		for Id in ipairs(Modules.AllAchievements) do
-			Data["Achievements"][2][tostring(Id)] = {
-				false, -- Completed and collected
-				0, -- Progress,
-			}
-		end
-
-	end
+		
 
 	if not Data["Equipped Emotes"] then
 		Data["Equipped Emotes"] = {
@@ -271,23 +272,26 @@ local function SetupNewStats(Player)
 		}
 	end
 
-	if not Data["Playtime"] then
-		Data["Playtime"] = {0,0,{}}
-	end
-
-	if not Data["Pets"] then
-		Data["Pets"] = {
-			Equipped = nil,
+	if not Data["Pets_Data"] then
+		Data["Pets_Data"] = {
+			Equipped = {},
 			PetsOwned = {
 			},
-			Food = {
-				--{Name = "Carrot", Amount = 4},
-			},
-			Toys = {
-				--{Name = "Plushy"},
-			},
+			MaxEquip = 3,
+			Unlocked = {},
+			MaxOwned = 50,
 		}
 	end
+
+	-- Settings
+	if not Data["Settings"] then
+		Data["Settings"] = {}
+	end
+
+	for Setting, Details in pairs(Modules.SettingDetails) do
+		Data["Settings"][Setting] = Details.Default
+	end
+
 
 end
 
@@ -308,11 +312,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 	PlayerData:SetupPlayerData(Player)
 	SetupNewStats(Player)
 
-
-	-- Setup Chat
-	Modules.Chat:ApplyChatTag(Player)
-
-
 	-- Group reward
 	pcall(function()
 		if Player:IsInGroup(12843903) and not PlayerData.sessionData[Player.Name]["Group Reward Claimed"] then
@@ -323,24 +322,24 @@ game.Players.PlayerAdded:Connect(function(Player)
 			Remotes.Announcement:FireAllClients(Player, {Type = "GroupJoin"})
 		end
 	end)
-
-
+	
+	
 	-- Initialize Character Functions
 	local OldChar = nil
 	Player.CharacterAdded:Connect(function(Character)
 		Modules.Character:Spawned(Player, Character, OldChar)
 		OldChar = Character
 	end)
-
-
+	
+	
 	-- Check Gamepasses
 	Modules.Gamepasses:CheckGamepasses(Player)
-
-
+	
+	
 	-- Data check just incase
 	if not PlayerData.sessionData[Player.Name] then Player:Kick("Data Error: Rejoin") return end
-
-
+	
+	local Data = PlayerData.sessionData[Player.Name]
 	-- Setup Attributes
 	Player:SetAttribute("Tycoon", "None")
 	Player:SetAttribute("Money", PlayerData.sessionData[Player.Name]["Money"])
@@ -348,18 +347,44 @@ game.Players.PlayerAdded:Connect(function(Player)
 	Player:SetAttribute("Income", PlayerData.sessionData[Player.Name]["Income"])
 	Player:SetAttribute("Hearts", PlayerData.sessionData[Player.Name]["Hearts"])
 	Player:SetAttribute("Level", PlayerData.sessionData[Player.Name]["My Penguin"]["Level"])
-
-
-
-
-	if PlayerData.sessionData[Player.Name]["Pets"].Equipped then
-		Player:SetAttribute("Pet", PlayerData.sessionData[Player.Name]["Pets"].Equipped.RealName)
-		Player:SetAttribute("PetID", PlayerData.sessionData[Player.Name]["Pets"].Equipped.ID)
-		Player:SetAttribute("PetName", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Name)
-		Player:SetAttribute("PetHunger", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Hunger)
-		Player:SetAttribute("PetEntertainment", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Entertainment)
-		Player:SetAttribute("PetHappiness", PlayerData.sessionData[Player.Name]["Pets"].Equipped.Happiness)
+	Player:SetAttribute("Tool", "None")
+	
+	if Data["Settings"]["Auto Hatch"] == nil then
+		Data["Settings"]["Auto Hatch"] = false
 	end
+	Player:SetAttribute("IsAutoHatch",Data["Settings"]["Auto Hatch"])
+
+	if Data["Boosts"]["Ultra Lucky Egg"] == nil then
+		Data["Boosts"]["Ultra Lucky Egg"] = {0,0}
+	end
+	if Data["Boosts"]["Super Lucky Egg"] == nil then
+		Data["Boosts"]["Super Lucky Egg"] = {0,0}
+	end
+
+	
+	if PlayerData.sessionData[Player.Name]["Pets"] then
+		for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets"].PetsOwned) do
+			local breed = string.split(v.RealName," ")[2]
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[tostring(v.ID)] = {
+				breed, v.RealName,v.Name,"LEGACY",0,{1.05,"All","Income"}
+			}
+		end
+		PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
+		PlayerData.sessionData[Player.Name]["Pets"] = nil
+	end
+
+	for i,v in pairs (PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned) do
+		if typeof(i) == "number" then
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[i] = nil
+			PlayerData.sessionData[Player.Name]["Pets_Data"].PetsOwned[tostring(i)] = v
+		end
+	end
+
+	PlayerData.sessionData[Player.Name]["OldPets"] = PlayerData.sessionData[Player.Name]["Pets"]
+	PlayerData.sessionData[Player.Name]["Pets"] = nil
+
+	Player:SetAttribute("MaxPetsOwned",PlayerData.sessionData[Player.Name]["Pets_Data"].MaxOwned)
+	Player:SetAttribute("MaxEquip",PlayerData.sessionData[Player.Name]["Pets_Data"].MaxEquip)
 
 	if os.time() > PlayerData.sessionData[Player.Name]["Spin"][3] or (game.PlaceId == 9118436978 or game.PlaceId == 9118461324) then
 		PlayerData.sessionData[Player.Name]["Spin"][3] = os.time()+Modules.SpinTheWheel.SpinTime--(12*60*60)
@@ -373,6 +398,21 @@ game.Players.PlayerAdded:Connect(function(Player)
 	else
 		Modules.Quests.getNewQuests(Player)
 	end
+
+	if not Data["Achievements"] then
+		Data["Achievements"] = {
+			false, -- Reconciled
+			{}
+		}
+		for Id in ipairs(Modules.AllAchievements) do
+			Data["Achievements"][2][tostring(Id)] = {
+				false, -- Completed and collected
+				0, -- Progress,
+			}
+		end
+
+	end
+
 	if PlayerData.sessionData[Player.Name]["Playtime"] and (os.time()-PlayerData.sessionData[Player.Name]["Playtime"][2]) < 5*60 then
 		Player:SetAttribute("JoinTime",PlayerData.sessionData[Player.Name]["Playtime"][1])
 	else
@@ -398,25 +438,60 @@ game.Players.PlayerAdded:Connect(function(Player)
 	local NetworthStat = Instance.new("IntValue", leaderstats)
 	NetworthStat.Name = "Networth"
 	NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
+	
+	local RebirthStat = Instance.new("IntValue", leaderstats)
+	RebirthStat.Name = "Rebirths"
+	RebirthStat.Value = PlayerData.sessionData[Player.Name]["Rebirths"]
 
 	-- Updating Leaderstats
 	Player:GetAttributeChangedSignal("Money"):Connect(function()
 		NetworthStat.Value = PlayerData.sessionData[Player.Name]["Stats"]["Total Money"]
 	end)
-
+	
 	Player:GetAttributeChangedSignal("Hearts"):Connect(function()
 		if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") and Player.Character.HumanoidRootPart:FindFirstChild("CustomName") then
 			Player.Character.HumanoidRootPart.CustomName.Hearts.Amount.Text = Modules.Format:FormatComma(PlayerData.sessionData[Player.Name]["Hearts"])
 		end
 	end)
+	
+	-- Fixes an issue i caused that was in dev and QA
+	if PlayerData.sessionData[Player.Name]["Stats"]["Rebirths"] then
+		PlayerData.sessionData[Player.Name]["Stats"]["Rebirths"] = nil
+	end
+
+	if PlayerData.sessionData[Player.Name]["Stats"]["Hearts"] then
+		PlayerData.sessionData[Player.Name]["Stats"]["Hearts"] = nil
+	end
 
 	--Player:GetAttributeChangedSignal("Income"):Connect(function()
 	--	IncomeStat.Value = PlayerData.sessionData[Player.Name]["Income"] * PlayerData.sessionData[Player.Name]["Income Multiplier"]
 	--end)
-
+	
 	-- Spawn character
 	Modules.Character:Spawn(Player)
 	Player:SetAttribute("Loaded",true)
+
+	task.spawn(function()
+		task.wait(10)
+		if PlayerData.sessionData[Player.Name] then
+			for name,details in pairs (PlayerData.sessionData[Player.Name]["Boosts"]) do
+				if details[2] > 20 then
+					task.spawn(function()
+						Paths.Modules.Boosts.startPlayerBoost(Player,name,true)
+					end)
+				else
+					details[2] = 0
+				end
+			end
+		end
+	end)
+
+	
+
+	task.wait(5)
+	-- Setup Chat
+	Modules.Chat:ApplyChatTag(Player)
+
 end)
 
 return PlayerData
