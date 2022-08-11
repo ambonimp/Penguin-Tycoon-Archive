@@ -72,7 +72,7 @@ function Boosts:StartBoost(Boost)
 	local timeLeft = OwnedBoosts[Boost][2]
 	Template.Use.TheText.Text = "Use ("..OwnedBoosts[Boost][1]..")"
 
-	local cornerUI = Paths.UI.Top.Boosts:FindFirstChild(Boost)
+	local cornerUI = Paths.UI.BLCorner.Boosts:FindFirstChild(Boost)
 	cornerUI.Visible = true
 	Template:SetAttribute("Enabled",true)
 
