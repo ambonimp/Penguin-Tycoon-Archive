@@ -78,8 +78,8 @@ Eyes.All = {
 	--- Code Eyes ---
 	["Heart Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10535189923"};
 	["100k Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10534768113"};
-	["200k Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10534767926"};
-	["300k Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10534767694"};
+	--["200k Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10534767926"};
+	--["300k Eyes"] = {Rarity = "Regular", IsForSale = false, Icon = "rbxassetid://10534767694"};
 }
 
 return Eyes

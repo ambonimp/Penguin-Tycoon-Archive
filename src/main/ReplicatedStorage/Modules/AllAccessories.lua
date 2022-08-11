@@ -89,10 +89,10 @@ Accessories.All = {
 	["Traffic Cone"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10534490062"};
 	["Shark Hat"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10534492432"};
 	["Goal 150k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10534520202"};
-	["Goal 175k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10535584361"};
-	["Goal 225k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10535585356"};
-	["Goal 250k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10535585157"};
-	["Goal 275k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10535583901"};
+	--["Goal 175k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10535584361"};
+	--["Goal 225k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10535585356"};
+	--["Goal 250k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10535585157"};
+	--["Goal 275k"] = {Rarity = "Free", IsForSale = false, Achievement = true, Icon = "rbxassetid://10535583901"};
 
 	--- Unlockable Hats ---
 	-- Collectable
