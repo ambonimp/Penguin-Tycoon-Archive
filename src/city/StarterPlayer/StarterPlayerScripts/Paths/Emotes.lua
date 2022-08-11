@@ -12,9 +12,9 @@ local UI = Paths.UI
 local AllEmotes = require(Services.RStorage.Modules.AllEmotes)
 
 --- Emotes Variables ---
-local EmoteDisplay = UI.Right.EmotesDisplay
-local EmoteMenu = UI.Right.EmotesMenu
-local EmoteButton = UI.Right.Buttons.Emotes
+local EmoteDisplay = UI.Bottom.EmotesDisplay
+local EmoteMenu = UI.Bottom.EmotesMenu
+local EmoteButton = UI.Bottom.Buttons.Emotes
 
 local EmoteDB = false
 local PreviousEmote = false
@@ -164,29 +164,29 @@ end
 
 
 --- UI Functions ---
-Emotes.FullSize = UDim2.new(0.165, 0, 0.8, 0)
+Emotes.FullSize = UDim2.new(0.48, 0, 0.282, 0)
 
 function Emotes:EnterUI(UI)
 	DisplayUIVisible = true
 	MenuUIVisible = (UI == "Menu")
 	
 	if UI == "Display" then
-		EmoteDisplay.Size = UDim2.new(0.165, 0, 0.02, 0)
+		EmoteDisplay.Size = UDim2.new(0.48, 0, 0.02, 0)
 		EmoteDisplay.Visible = true
 		EmoteDisplay:TweenSize(Emotes.FullSize, "Out", "Back", 0.16, true)
 	elseif UI == "Menu" then
 		EmoteMenu.Size = UDim2.new(0.75, 0, 0.02, 0)
 		EmoteMenu.Visible = true
-		EmoteMenu:TweenSize(UDim2.new(0.75, 0, 0.8, 0), "Out", "Back", 0.16, true)
+		EmoteMenu:TweenSize(UDim2.new(0.75, 0, 1.221, 0), "Out", "Back", 0.16, true)
 	end
-end
+end 
 
 function Emotes:ExitUI(UI)
 	MenuUIVisible = false
 	
 	if UI == "Display" then
 		DisplayUIVisible = false
-		EmoteDisplay:TweenSize(UDim2.new(0.165, 0, 0.02, 0), "In", "Back", 0.16, true)
+		EmoteDisplay:TweenSize(UDim2.new(0.48, 0, 0.02, 0), "In", "Back", 0.16, true)
 	end
 	EmoteMenu:TweenSize(UDim2.new(0.75, 0, 0.02, 0), "In", "Back", 0.16, true)
 	EmoteDisplay.Expand.ExpandIcon.Visible = not MenuUIVisible
@@ -282,12 +282,6 @@ function Emotes:NewEmote(Emote)
 	end)
 	
 	Template.Parent = EmoteMenu.Holder
-
-	local scrollingFrame = EmoteMenu.Holder
-	local uiGridLayout = EmoteMenu.Holder.UIGridLayout
-	local NewSize = Vector2.new(.3,.2) * scrollingFrame.AbsoluteSize
-	uiGridLayout.CellSize = UDim2.new(0, NewSize.X, 0, NewSize.Y)
-	scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, uiGridLayout.AbsoluteContentSize.Y)
 end
 
 function Emotes:EquipEmote(Emote, Slot)

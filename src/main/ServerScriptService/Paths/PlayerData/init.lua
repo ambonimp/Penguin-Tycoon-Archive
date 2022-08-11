@@ -578,18 +578,27 @@ game.Players.PlayerAdded:Connect(function(Player)
 	-- Initialize Tycoon
 	-- Corrects the reversal of a a change we made where all the islands no longer needed purchasing
 	for Upgrade in pairs(Data.Tycoon) do
-		local Island = Modules.Initiate.GetIslandIndexFromObject(Upgrade)
-		if Island then
-			local IslandRoot = Modules.ProgressionDetails[Island].Object
-			if IslandRoot and not Data.Tycoon[IslandRoot] then
-				Data.Tycoon[IslandRoot] = true
+		local Button = Paths.Template.Buttons:FindFirstChild(Upgrade)
+		if Button then
+			if Button:GetAttribute("CurrencyType") == "Money" then
+				local Island = Modules.Initiate.GetIslandIndexFromObject(Upgrade)
+				if Island then
+					local IslandRoot = Modules.ProgressionDetails[Island].Object
+					if IslandRoot and not Data.Tycoon[IslandRoot] then
+						Data.Tycoon[IslandRoot] = true
+					end
+
+				end
+
 			end
+
 		end
 
 	end
 
 	Player:SetAttribute("StoredIncome", Data["Stored Income"])
 	Player:SetAttribute("AutoCollectIncome", Data["Auto Collect"])
+
 	Modules.Tycoon:InitializePlayer(Player)
 
 	-- Check Gamepasses
@@ -636,7 +645,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	Data.Settings["Faster Speed"] = true
 	Data.Settings["Double Jump"] = true
-
 	-- TESTING
 --[[ 	if Player.UserId == 1322669058 and IsTesting then
 		Data.Outfits["Banana"] = true

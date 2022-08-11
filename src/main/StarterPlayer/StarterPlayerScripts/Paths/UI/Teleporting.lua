@@ -11,28 +11,9 @@ local UI = Paths.UI
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
 --- Variables ---
-local TeleportButton = UI.Right.Buttons.Teleport
 local Confirmation = UI.Center.TeleportConfirmation
 
 local TeleportDB = false
-
-local Locations = {
-	[7967681044] = {PlaceId = 7951464846}, -- Night Skating -> Tycoon
-	[7951464846] = {PlaceId = 7967681044} -- Tycoon -> Night Skating
-}
-local TestingLocations = {
-	[9118436978] = {PlaceId = 9170899192}, -- Night Skating -> Tycoon
-	[9170899192] = {PlaceId = 9118436978} -- Tycoon -> Night Skating
-}
-local QALocations = {
-	[9170919040] = {PlaceId = 9118461324}, -- Night Skating -> Tycoon
-	[9118461324] = {PlaceId = 9170919040} -- Tycoon -> Night Skating
-}
-
-local IsTesting = (game.GameId == 3425588324)
-if IsTesting then Locations = TestingLocations end
-local IsQA = (game.GameId == 3425594443)
-if IsQA then Locations = QALocations end
 
 --- Functions ---
 function Teleporting:TeleportTo(PlaceId)

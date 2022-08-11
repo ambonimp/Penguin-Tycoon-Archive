@@ -19,7 +19,7 @@ local IGNORED_BUTTONS = {
 }
 
 --- Help Variables ---
-local PointerButton = UI.Right.Buttons.Pointer
+local PointerButton = UI.Bottom.Buttons.Pointer
 local CurrentPointerButton = nil
 
 local LastIsland

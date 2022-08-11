@@ -27,11 +27,11 @@ function Paths.Initiliaze()
 	Paths.UI.SpecialEffects = PlayerGui:WaitForChild("SpecialEffects")
 
 	Paths.UI.Left = Paths.UI.Main:WaitForChild("Left")
-	Paths.UI.Right = Paths.UI.Main:WaitForChild("Right")
 	Paths.UI.Center = Paths.UI.Main:WaitForChild("Center")
 	Paths.UI.Bottom = Paths.UI.Main:WaitForChild("Bottom")
 	Paths.UI.Top = Paths.UI.Main:WaitForChild("Top")
 	Paths.UI.Full = Paths.UI.Main:WaitForChild("Full")
+	Paths.UI.Right = Paths.UI.Main:WaitForChild("Right")
 	Paths.UI.BLCorner = Paths.UI.Main:WaitForChild("BLCorner")
 	Paths.UI.Tools = Paths.UI.Bottom.Tools
 	
@@ -62,6 +62,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("AllOutfits", Paths.Services.RStorage.Modules.AllOutfits)
 	ModuleLoader.Register("AllEyes", Paths.Services.RStorage.Modules.AllEyes)
 	ModuleLoader.Register("AllEmotes", Paths.Services.RStorage.Modules.AllEmotes)
+	ModuleLoader.Register("MiningDetails", Paths.Services.RStorage.Modules.MiningDetails)
 	ModuleLoader.Register("FishingConfig", Paths.Services.RStorage.Modules.FishingConfig)
 	ModuleLoader.Register("FuncLib", Paths.Services.RStorage.Modules.FuncLib)
 	ModuleLoader.Register("Emotes", script.Emotes)
@@ -78,9 +79,11 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("CharacterSelect", script.Character.CharacterSelect);
 	
 	-- UI Modules
+	
+	ModuleLoader.Register("DeviceDetector", script.DeviceDetector)
+	ModuleLoader.Register("Feedback", script.Feedback)
 	ModuleLoader.Register("UpdatingUI", script.UI.Updating)
 	ModuleLoader.Register("UIAnimations", script.UI.Animations)
-	ModuleLoader.Register("Buttons", script.UI.Buttons)
 	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
 	ModuleLoader.Register("Map", script.UI.Map)
 	ModuleLoader.Register("PlatformAdjustments", script.UI.PlatformAdjustments)
@@ -124,12 +127,13 @@ function Paths.Initiliaze()
 
 	ModuleLoader.Register("SettingDetails", Paths.Services.RStorage.Modules.SettingDetails)
 	ModuleLoader.Register("Settings", script.Settings)
-
 	ModuleLoader.Register("LeaderboardDetails", Paths.Services.RStorage.Modules.LeaderboardDetails)
+	
 	ModuleLoader.Register("Leaderboards", script.Leaderboards)
 	ModuleLoader.Register("SystemMessages", script.SystemMessages)
 
 
+	ModuleLoader.Register("Buttons", script.UI.Buttons)
 	-- Load Version
 	ModuleLoader.Load()
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version

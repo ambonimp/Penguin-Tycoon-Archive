@@ -487,7 +487,6 @@ function updateIndex(data,islandId)
 			if PetId and data.Unlocked[tostring(PetId)] then
 				local pet = nil
 				for i,v in pairs (island.Pets) do
-					print(i,v,PetId)
 					if v.Id == PetId then
 						pet = v
 						break
@@ -716,7 +715,6 @@ end
 
 function loadUI(data)
 	for i,v in pairs (data.PetsOwned) do
-		print("load",i,v)
 		updateUI(data,"add",i)
 	end
 	UpdateStorage()
@@ -1100,7 +1098,7 @@ PetsFrame.Best.MouseButton1Down:Connect(function()
 end)
 
 -- Capacity
-UI.Right.Buttons.Backpack.MouseButton1Down:Connect(function()
+UI.Center.Menu.Buttons.Pets.MouseButton1Down:Connect(function()
 	if not PetsFrame.Visible then
 		UpdateStorage()
 	end
@@ -1382,7 +1380,6 @@ task.spawn(function()
 	local tycoonData = Remotes.GetStat:InvokeServer("Tycoon")
 	for _, v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
 		if v:IsA("ImageButton") then
-			print(v,tycoonData[v.Name])
 			if tycoonData[v.Name] or v.Name == "1" then
 				v:SetAttribute("Unlocked",true)
 				v.MouseButton1Down:Connect(function()

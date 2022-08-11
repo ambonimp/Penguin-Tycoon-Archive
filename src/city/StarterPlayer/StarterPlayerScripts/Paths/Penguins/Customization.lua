@@ -35,8 +35,8 @@ CustomizationUI.PenguinNameBG.RenameFinish.MouseButton1Down:Connect(function()
 	CustomizationUI.PenguinNameBG.PenguinName.TextEditable = false
 end)
 
-CustomizationUI.PenguinNameBG.PenguinName.FocusLost:Connect(function(x, a)
-	local NewName = CustomizationUI.PenguinNameBG.PenguinName.Text
+CustomizationUI.PenguinNameBG.PenguinNameTextbox.FocusLost:Connect(function(x, a)
+	local NewName = CustomizationUI.PenguinNameBG.PenguinNameTextbox.Text
 
 	local Success, FilteredName = Remotes.Customization:InvokeServer("Change Name", CustomizationUI.PenguinSelected.Value, NewName)
 
@@ -96,8 +96,8 @@ function Customization:EnterUI(Penguin)
 	UI.Left.GemDisplay.Visible = false
 	UI.Left.Buttons.Visible = false
 	UI.Center.Visible = false
-	UI.Right.Buttons.Visible = false
-	UI.BLCorner.GemDisplay.Visible = false
+	--UI.Right.Buttons.Visible = false
+	
 
 
 	local Level = Paths.Player:GetAttribute("Level")
@@ -184,8 +184,6 @@ function Customization:ExitUI()
 	CustomizationUI:TweenPosition(UDim2.new(-1.5, 0, 0.5, 0), "In", "Back", 0.3, true)
 	UI.Left.Buttons.Visible = true
 	UI.Center.Visible = true
-	UI.Right.Buttons.Visible = true
-	UI.BLCorner.GemDisplay.Visible = true
 	wait(0.25)
 
 	CustomizationUI.Visible = false
@@ -202,7 +200,7 @@ CustomizationUI.ExitCustomization.MouseButton1Down:Connect(function()
 end)
 
 
-Paths.UI.Right.Buttons.Customize.MouseButton1Down:Connect(function()
+Paths.UI.Bottom.Buttons.Customize.MouseButton1Down:Connect(function()
 	if Paths.Player.Character then
 		Customization:EnterUI(Paths.Player.Character)
 	end

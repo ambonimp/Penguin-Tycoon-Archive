@@ -9,7 +9,7 @@ local UI = Paths.UI
 local Dependency = Services.RStorage.ClientDependency.BuildA
 
 local TeleportFrame = UI.Center.WorldTeleport
-local WorldList = TeleportFrame.List
+local WorldList = TeleportFrame.Sections.Tycoon.List
 
 local ItemFrame = UI.Center.RocketUnlock
 local ItemList = ItemFrame.Items.Unlocked
@@ -131,8 +131,11 @@ local function UpdateProgress(LastItem)
         end)
 
     elseif Completed == Total then
+        task.spawn(function()
+            print("COMPLETE ROCKET")
+            Modules.TycoonUIProgress.Update("Rocketship#1")
+        end)
         Paths.Audio.FullyRepaired:Play()
-
         Rocket.LeadToBuildA()
         OpenPopup(CompletedPopup, UDim2.fromScale(0.457, 1))
 
@@ -292,18 +295,30 @@ end)
 
 local function SwitchWorld(Location, Destination)
     Location.MouseButton1Down:Connect(function()
-        if not Location.YouAreHere.Visible then
-            Paths.Audio.BlastOff:Play()
-
-            Modules.Buttons:UIOff(TeleportFrame, true)
-            Modules.UIAnimations.BlinkTransition(function()
-                Remotes.TeleportInternal:InvokeServer(Destination)
-            end, true)
-
+        if Location:GetAttribute("Unlocked") then
+            if not Location.YouAreHere.Visible then
+                Paths.Audio.BlastOff:Play()
+    
+                Modules.Buttons:UIOff(TeleportFrame, true)
+                Modules.UIAnimations.BlinkTransition(function()
+                    Remotes.TeleportInternal:InvokeServer(Destination)
+                end, true)
+            end
         end
-
     end)
 
+    Location.Teleport.MouseButton1Down:Connect(function()
+        if Location:GetAttribute("Unlocked") then
+            if not Location.YouAreHere.Visible then
+                Paths.Audio.BlastOff:Play()
+
+                Modules.Buttons:UIOff(TeleportFrame, true)
+                Modules.UIAnimations.BlinkTransition(function()
+                    Remotes.TeleportInternal:InvokeServer(Destination)
+                end, true)
+            end
+        end
+    end)
 end
 
 SwitchWorld(WorldList.Main, Paths.Player.Name)
