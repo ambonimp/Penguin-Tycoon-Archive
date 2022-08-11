@@ -38,7 +38,7 @@ local Handlers = {
 	end,
 
 	["Auto Activate Boosts"] = function(Value)
-		for _, Boost in ipairs(UI.Top.Boosts:GetChildren()) do
+		for _, Boost in ipairs(UI.BLCorner.Boosts:GetChildren()) do
 			if Boost:IsA("Frame") then
 				Boost.AutoActivate.Visible = Value
 			end

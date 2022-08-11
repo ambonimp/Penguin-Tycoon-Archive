@@ -30,22 +30,5 @@ Services.InputService.LastInputTypeChanged:Connect(UpdatePlatform)
 UpdatePlatform(Services.InputService:GetLastInputType())
 
 
---- Make Adjustments ---
-coroutine.wrap(function()
-	while true do
-		if not PlatformAdjustments.CurrentPlatform then return end
-		
-		if PlatformAdjustments.CurrentPlatform == "Mobile" then
-			Modules.Emotes.FullSize = UDim2.new(0.54, 0, 0.317, 0)
-			
-		elseif PlatformAdjustments.CurrentPlatform == "PC" or PlatformAdjustments.CurrentPlatform == "Console" then
-			Modules.Emotes.FullSize = UDim2.new(0.165, 0, 0.8, 0)
-		end
-			
-		task.wait(5)
-	end
-end)()
-
-
 
 return PlatformAdjustments

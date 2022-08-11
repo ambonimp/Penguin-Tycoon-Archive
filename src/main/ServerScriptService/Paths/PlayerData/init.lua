@@ -645,7 +645,6 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	Data.Settings["Faster Speed"] = true
 	Data.Settings["Double Jump"] = true
-
 	-- TESTING
 --[[ 	if Player.UserId == 1322669058 and IsTesting then
 		Data.Outfits["Banana"] = true

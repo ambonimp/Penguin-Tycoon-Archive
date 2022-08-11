@@ -14,16 +14,16 @@ local UI = Paths.UI
 local Store = UI.Center.Store
 
 local PreviousOpen = {
-	[Store] = Store.Sections.Accessory,
+	[Store] = Store.Sections.Gamepasses,
 	[UI.Center.Clothing] = UI.Center.Clothing.Sections.Accessory,
 }
 	
 local Debounce = false
 
 -- Initialize Accessories being open
-Store.Sections.Accessory.Visible = true
-Store.Sections.Accessory.Position = UDim2.new(0.5, 0, 0.5, 0)
-Store.Buttons.Accessory.BackgroundTransparency = 0.2
+Store.Sections.Gamepasses.Visible = true
+Store.Sections.Gamepasses.Position = UDim2.new(0.5, 0, 0.5, 0)
+Store.Buttons.Gamepasses.BackgroundTransparency = 0.2
 
 local function ButtonClicked(button,Store)
 	if Debounce then return end
@@ -78,11 +78,11 @@ UI.Left.Customization.Customization.Sections.Eyes.Holder.BuyEyes.MouseButton1Dow
 	Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Eyes)
 end)
 
-UI.BLCorner.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
+UI.Top.Currencies.MoneyDisplay.BuyMore.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Money,Store)
 end)
 
-UI.BLCorner.GemDisplay.BuyMore.MouseButton1Down:Connect(function()
+UI.Top.Currencies.GemDisplay.BuyMore.MouseButton1Down:Connect(function()
 	ButtonClicked(Store.Buttons.Gems,Store)
 end)
 

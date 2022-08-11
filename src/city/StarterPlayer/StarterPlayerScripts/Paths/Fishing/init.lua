@@ -274,16 +274,12 @@ function GameLoop()
 		end
 	else
 		localPlayer:SetAttribute("AFKFishing",false)
-		if paths.UI.Top.AFKFishing.Visible ~= false then
-			remotes.AFKFishing:FireServer(false)
-		end
 		totalEarned.Money = 0
 		totalEarned.Gems = 0
 		Fishing.LastUpdate.isAFKFishing = false
 		if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
 			localPlayer.Character.Humanoid.JumpPower = 60
 		end
-		paths.UI.Top.AFKFishing.Visible = false
 	end
 
 	
@@ -307,7 +303,7 @@ InputService.InputBegan:Connect(function(input, gameProcessed)
 		Fishing.Main()
 	end
 end)
-
+--[[
 paths.UI.Top.AFKFishing.Exit.MouseButton1Down:Connect(function()
 	if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
 		paths.Audio.Celebration:Play()
@@ -317,7 +313,7 @@ paths.UI.Top.AFKFishing.Exit.MouseButton1Down:Connect(function()
 		Fishing.CancelThrow(true)
 		remotes.AFKFishing:FireServer(false)
 	end
-end)
+end)]]
 
 localPlayer.Idled:Connect(function(time)
 	local afk = 2*60

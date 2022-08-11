@@ -13,5 +13,4 @@ local UI = Paths.UI
 --- UI Functions ---
 Modules.UpdatingUI:Initiate()
 
-
 return UI

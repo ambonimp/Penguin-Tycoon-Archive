@@ -11,7 +11,8 @@ local UI = Paths.UI
 
 --- Handle Frame Buttons ---
 local Frame = UI.Center.Achievements
-local HUDBtn = UI.Right.Buttons.Achievements
+local HUDBtn = UI.Left.Buttons.Menu
+local HUDBtn2 = UI.Center.Menu.Buttons.Quests
 
 local PreviousOpen = {
 	[Frame] = Frame.Sections.Quests,
@@ -54,11 +55,15 @@ function Milestones.Badge(Toggle, Section)
 
 	local TotalRemaining = BadgeSum()
 	local TotalBadge = HUDBtn.Badge
+	local TotalBadge2 = HUDBtn2.Badge
 	if TotalRemaining == 0 then
 		TotalBadge.Visible = false
+		TotalBadge2.Visible = false
 	else
+		TotalBadge2.Visible = true
 		TotalBadge.Visible = true
 		TotalBadge.TextLabel.Text = TotalRemaining
+		TotalBadge2.TextLabel.Text = TotalRemaining
 	end
 
 end

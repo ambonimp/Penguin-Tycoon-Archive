@@ -22,6 +22,9 @@ local function NewObject(Object, Type)
 	if Modules.Pets then
 		Modules.Pets.UpdateEggUI()
 	end
+	if Modules.TycoonUIProgress then
+		Modules.TycoonUIProgress.Update(Object.Name)
+	end
 end
 
 task.spawn(function()

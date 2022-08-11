@@ -179,7 +179,6 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				Template.PenguinPrice.Visible = false
 				Template.Upgrade.TheText.Text = "MAX"
 				Template.Upgrade.BackgroundTransparency = 0.8
-
 				Template.Instant.Visible = false
 				Template.Super.AnchorPoint = Vector2.new(0,0)
 				Template.Super.Position = UDim2.fromScale(.03, 0.6)

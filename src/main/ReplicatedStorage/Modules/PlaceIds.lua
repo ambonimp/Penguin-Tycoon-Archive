@@ -32,6 +32,9 @@ elseif GameId == 3425594443 then -- QA
 elseif GameId == 3662230549 then
 	Ids["Penguin Tycoon"] = 9925648281
 	Ids["Penguin City"] = 10440430559
+else
+	Ids["Penguin Tycoon"] = 9549503548
+	Ids["Penguin City"] = 10440430559
 end
 
 return Ids
