@@ -732,7 +732,6 @@ BuyEgg.Gems.MouseButton1Down:Connect(function()
 				local info = RealData.PetsOwned[tostring(newId)]
 				openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]])
 				updateUI(Data,"add",newId)
-				updateIndex(Data, Data.PetsOwned[tostring(newId)][8])
 
 			elseif not Bought and Data == "Gems" then
 
@@ -794,7 +793,7 @@ PetsFrame.Edit.MouseButton1Down:Connect(function()
 		OpenEdit(SelectedPetDetails[1])
 	else
 		State = "NameChange"
-		PetsFrame.Top.Text = "Click on a click to change it's name"
+		PetsFrame.Top.Text = "Click on a pet to change it's name"
 	end
 end)
 

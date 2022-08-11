@@ -79,8 +79,9 @@ function updateQuestData(data)
             Frame.Progress.Claim:SetAttribute("Claimed",true)
             Frame.Progress.Claim.Text.Text = "CLAIMED!"
             Frame.Progress.Claim.Visible = true
+            Frame.ProgressText.Visible = false
+
         else
-            Frame.ProgressText.Text = Quest[3].."/"..Quest[2][3]
 
             local per = Quest[3]/Quest[2][3]
             Frame.Progress.Frame.Size = UDim2.new(per,0,1,0)
@@ -88,7 +89,13 @@ function updateQuestData(data)
                 Frame.Progress.Claim:SetAttribute("Claim",true)
                 Frame.Progress.Claim.Text.Text = "CLAIM REWARD"
                 Frame.Progress.Claim.Visible = true
+
+                Frame.ProgressText.Visible = false
+
             else
+                Frame.ProgressText.Text = Quest[3].."/"..Quest[2][3]
+                Frame.ProgressText.Visible = true
+
                 Frame.Progress.Claim:SetAttribute("Claim",false)
                 Frame.Progress.Claim.Visible = false
             end
@@ -222,8 +229,6 @@ for _, tab in ipairs(Paths.UI.Center.Achievements.Buttons:GetChildren()) do
     end
 
 end
-
-
 
 
 return Quests

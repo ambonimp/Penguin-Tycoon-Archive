@@ -124,10 +124,16 @@ if game:GetService("RunService"):IsServer() then
 	task.spawn(function()
 		for Outfit in pairs(Outfits.All) do
 			if Outfit ~= "None" then
-				assert(game:GetService("ReplicatedStorage").Assets.Shirts:FindFirstChild(Outfit), Outfit)
+				if not game:GetService("ServerStorage").Shirts:FindFirstChild(Outfit) then
+					warn(Outfit .. " outfit model doesn't exist")
+				end
+
 			end
+
 		end
+
 	end)
+
 end
 
 return Outfits

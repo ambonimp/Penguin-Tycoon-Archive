@@ -9,8 +9,9 @@ local Remotes = Paths.Remotes
 
 
 --- Connecting penguins to SetupPenguin() function ---
-local TycoonSession = Modules.Maid.new()
-local CollectPoint
+local COLLECT_POINT_TAG = "IncomeCollectPoint"
+local CollectPointConns = Modules.Maid.new()
+local CollectPoints = {}
 
 local function NewObject(Object, Type)
 	if Type then
@@ -23,63 +24,7 @@ local function NewObject(Object, Type)
 	end
 end
 
--- Collecting
-local function LoadCollecting(Hitbox)
-	if not Hitbox or Hitbox.Name ~= "Hitbox" then return end
-
-	local Db
-	TycoonSession["Collect"] = Hitbox.Touched:Connect(function(Hit)
-		local Character = Paths.Player.Character
-		if Character and Hit:IsDescendantOf(Character) and not Db then
-			Db = true
-			print("TOUCH")
-
-			local Income = CollectPoint:GetAttribute("Income")
-			if not Income then
-				TycoonSession["Collect"] = nil
-			elseif Income > 0 then
-				Remotes.CollectIncome:FireServer()
-				-- FX
-				local Sound = Hitbox:WaitForChild("Sound")
-				Sound.TimePosition = 0.5
-				Sound:Play()
-
-				local Particles = Hitbox:WaitForChild("Particles")
-				Particles.Currency:Emit(16)
-				Particles.StarLeft:Emit(16)
-				Particles.StarRight:Emit(16)
-
-			end
-
-			task.wait(1.5)
-			Db = false
-
-		end
-
-	end)
-
-end
-
-local function LoadCollectPoint()
-	TycoonSession:Destroy()
-	CollectPoint = Paths.Tycoon.IncomeCollectPoint
-
-	LoadCollecting(CollectPoint:FindFirstChild("Hitbox"))
-	TycoonSession:GiveTask(CollectPoint.ChildAdded:Connect(LoadCollecting))
-
-	TycoonSession:GiveTask(CollectPoint.ChildRemoved:Connect(function(Hitbox)
-		if Hitbox.Name == "Hitbox" then
-			TycoonSession["Collect"] = nil
-		end
-	end))
-
-end
-
-
 task.spawn(function()
-	-- Collection point
-	LoadCollectPoint()
-
 	-- Laoing items
 	Paths.Tycoon.Tycoon.ChildAdded:Connect(function(Object)
 		local Type = Object:GetAttribute("Type")
@@ -97,12 +42,93 @@ task.spawn(function()
 		NewObject(Object, Type)
 	end
 
-	repeat task.wait() until Modules.Rebirths
-	Modules.Rebirths.Rebirthed:Connect(LoadCollectPoint)
-
 end)
 
+local function UpdateStoreIncome(Point)
+	Point:WaitForChild("BillboardGui").Value.Text = "$" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("StoredIncome"))
+end
 
+local function AutoIncomeCollect(Point)
+	Point:WaitForChild("BillboardGui").Auto.Visible = true
+end
+
+
+local function LoadCollectPoint(Point)
+	if not Point:IsDescendantOf(Paths.Tycoon) then return end
+
+	local AutoCollect = Paths.Player:GetAttribute("AutoCollectIncome")
+
+	if AutoCollect then
+		AutoIncomeCollect(Point)
+	else
+		CollectPoints[Point] = true
+		UpdateStoreIncome(Point)
+
+		CollectPointConns[Point] = Point.Touched:Connect(function(Hit)
+			local Character = Paths.Player.Character
+			if Character and Hit:IsDescendantOf(Character) and not Db then
+				Db = true
+
+				warn("WHOAAAA")
+
+				local Income = Paths.Player:GetAttribute("Income")
+				if not Income then
+					CollectPointConns["Collect"] = nil
+				elseif Income > 0 then
+					Remotes.CollectIncome:FireServer()
+					-- FX
+					local Sound = Point:WaitForChild("Sound")
+					Sound.TimePosition = 0.5
+					Sound:Play()
+
+					local Particles = Point:WaitForChild("Particles")
+					Particles.Currency:Emit(16)
+					Particles.StarLeft:Emit(16)
+					Particles.StarRight:Emit(16)
+
+				end
+
+				task.wait(1.5)
+				Db = false
+			end
+
+		end)
+
+	end
+
+
+end
+
+-- Collecting
+for _, Point in ipairs(Services.CollectionService:GetTagged(COLLECT_POINT_TAG)) do
+	LoadCollectPoint(Point)
+end
+
+Services.CollectionService:GetInstanceAddedSignal(COLLECT_POINT_TAG):Connect(LoadCollectPoint)
+Services.CollectionService:GetInstanceRemovedSignal(COLLECT_POINT_TAG):Connect(function(Point)
+	if Point:IsDescendantOf(Paths.Tycoon) then
+		CollectPoints[Point] = nil
+		CollectPointConns[Point] = nil
+	end
+end)
+
+CollectPointConns:GiveTask(Paths.Player:GetAttributeChangedSignal("StoredIncome"):Connect(function()
+	for Point in pairs(CollectPoints) do
+		UpdateStoreIncome(Point)
+	end
+end))
+
+CollectPointConns:GiveTask(Paths.Player:GetAttributeChangedSignal("AutoCollectIncome"):Connect(function()
+	for Point in pairs(CollectPoints) do
+		AutoIncomeCollect(Point)
+	end
+
+	-- Let them reset to 0
+	repeat task.wait() until Paths.Player:GetAttribute("StoredIncome") == 0
+	CollectPointConns:Destroy()
+	CollectPoints = {}
+
+end))
 
 -- Confetti
 Remotes.ButtonPurchased.OnClientEvent:Connect(function(IslandIndex, Button)

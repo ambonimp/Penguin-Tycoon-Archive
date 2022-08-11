@@ -25,8 +25,8 @@ local NpcS = {
 local TAG = "NPC"
 
 local function LoadWalking(Npc)
-    local WalkingPoints = Npc.Parent.WalkingPoints
-    local Animator = Npc.AnimationController.Animator
+    local WalkingPoints = Npc.Parent:WaitForChild("WalkingPoints")
+    local Animator = Npc:WaitForChild("AnimationController"):WaitForChild("Animator")
     local AnimationTrack = Animator:LoadAnimation(Npc.AnimationController.Walk)
 
     task.spawn(function()

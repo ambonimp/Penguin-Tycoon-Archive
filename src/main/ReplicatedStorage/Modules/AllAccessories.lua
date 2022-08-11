@@ -202,7 +202,9 @@ if game:GetService("RunService"):IsServer() then
 	task.spawn(function()
 		for Accessory in pairs(Accessories.All) do
 			if Accessory ~= "None" then
-				assert(game:GetService("ServerStorage").Accessories:FindFirstChild(Accessory), Accessory)
+				if not game:GetService("ServerStorage").Accessories:FindFirstChild(Accessory) then
+					warn(Accessory .. " accessory model doesn't exist")
+				end
 			end
 		end
 	end)
