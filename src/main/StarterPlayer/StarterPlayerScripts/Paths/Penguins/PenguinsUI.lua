@@ -183,11 +183,7 @@ function PenguinsUI:PenguinInfoUpdated(Penguin)
 				Template.Instant.Visible = false
 				Template.Super.AnchorPoint = Vector2.new(0,0)
 				Template.Super.Position = UDim2.fromScale(.03, 0.6)
-				Template.Super.Size = UDim2.fromScale(.46, .17)
-
-				Template.Upgrade.Position = UDim2.fromScale(1 - 0.03, 0.59)
-				Template.Upgrade.Size = UDim2.fromScale(.46,.17)
-				Template.Upgrade.AnchorPoint = Vector2.new(1, 0)
+				Template.Super.Size = UDim2.fromScale(.63, .17)
 			end
 
 			if PenguinLevel == 30 then

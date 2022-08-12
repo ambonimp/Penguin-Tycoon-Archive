@@ -19,8 +19,8 @@ local SelectedEyesUI = Dependency.SelectedEyes
 local ProximityPrompt
 local ProximityPrompt2
 
-local Store
-local StoreSections = UI.Center.Store.Sections
+local Store = UI.Center.Store
+local StoreSections = Store.Sections
 
 local bundleCons = {}
 local NewItemUI = UI.Full.NewItem
@@ -423,10 +423,13 @@ if workspace:FindFirstChild("Clothing") then
 		local ProximityPrompt = v:WaitForChild("ProximityPrompt")
 		ProximityPrompt.Triggered:Connect(function(player)
 			if player == Paths.Player then
-				Paths.Modules.Buttons:UIOn(Paths.UI.Center.Shop,true)
+				Paths.Modules.Buttons:UIOn(Paths.UI.Center.Store,true)
+				Paths.Modules.Store.ButtonClicked(Store.Buttons.Accessory,Store)
 				if ProximityPrompt.ActionText == "Buy Shirts" then
 					Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Outfits)
 				elseif ProximityPrompt.ActionText == "Buy Hats" then
+					Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Accessory)
+				else
 					Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Accessory)
 				end
 			end
@@ -437,7 +440,8 @@ end
 if ProximityPrompt then
 	ProximityPrompt.Triggered:Connect(function(player)
 		if player == game.Players.LocalPlayer then
-			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Shop,true)
+			Paths.Modules.Buttons:UIOn(Paths.UI.Center.Store,true)
+			Paths.Modules.Store.ButtonClicked(Store.Buttons.Accessory,Store)
 			Modules.Accessories.OpenFrame(Store.Sections.Accessory.Holder.Buttons.Accessory)
 		end
 	end)

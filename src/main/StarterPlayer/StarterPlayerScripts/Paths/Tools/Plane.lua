@@ -155,8 +155,8 @@ function flying()
 		if hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid") then
 			--don't land on player
 		elseif tick()-justStarted > 2 then
-			Paths.UI.Bottom.StartEngine.Visible = true
-			Paths.UI.Bottom.StopEngine.Visible = false
+			Paths.UI.Bottom.Buttons.StartEngine.Visible = true
+			Paths.UI.Bottom.Buttons.StopEngine.Visible = false
 			endFlight()
 		end
 	end
@@ -202,38 +202,38 @@ Player.CharacterAdded:Connect(function(character)
 	HumaoidRP = character:WaitForChild("HumanoidRootPart")
 end)
 
-Paths.UI.Bottom.StartEngine.Button.MouseButton1Down:Connect(function()
+Paths.UI.Bottom.Buttons.StartEngine.Button.MouseButton1Down:Connect(function()
 	local ve = Player:GetAttribute("Vehicle")
 	if ve == "Plane" then
-		Paths.UI.Bottom.StartEngine.Visible = false
-		Paths.UI.Bottom.StopEngine.Visible = true
+		Paths.UI.Bottom.Buttons.StartEngine.Visible = false
+		Paths.UI.Bottom.Buttons.StopEngine.Visible = true
 		Power = 120
 		justStarted = tick()
 		checkflight()
 	elseif ve == "Robux Plane" then
-		Paths.UI.Bottom.StartEngine.Visible = false
-		Paths.UI.Bottom.StopEngine.Visible = true
+		Paths.UI.Bottom.Buttons.StartEngine.Visible = false
+		Paths.UI.Bottom.Buttons.StopEngine.Visible = true
 		Power = 200
 		justStarted = tick()
 		checkflight()
 	end
 end)
 
-Paths.UI.Bottom.StopEngine.Button.MouseButton1Down:Connect(function()
-	Paths.UI.Bottom.StartEngine.Visible = true
-	Paths.UI.Bottom.StopEngine.Visible = false
+Paths.UI.Bottom.Buttons.StopEngine.Button.MouseButton1Down:Connect(function()
+	Paths.UI.Bottom.Buttons.StartEngine.Visible = true
+	Paths.UI.Bottom.Buttons.StopEngine.Visible = false
 	endFlight()
 end)
 
 Player:GetAttributeChangedSignal("Vehicle"):Connect(function()
 	local ve = Player:GetAttribute("Vehicle")
 	if ve == "Plane" then
-		Paths.UI.Bottom.StartEngine.Visible = true
+		Paths.UI.Bottom.Buttons.StartEngine.Visible = true
 	elseif ve == "Robux Plane" then
-		Paths.UI.Bottom.StartEngine.Visible = true
+		Paths.UI.Bottom.Buttons.StartEngine.Visible = true
 	else
-		Paths.UI.Bottom.StopEngine.Visible = false
-		Paths.UI.Bottom.StartEngine.Visible = false
+		Paths.UI.Bottom.Buttons.StopEngine.Visible = false
+		Paths.UI.Bottom.Buttons.StartEngine.Visible = false
 		endFlight()
 	end
 end)
