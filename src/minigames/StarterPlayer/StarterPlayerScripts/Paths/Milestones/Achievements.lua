@@ -57,7 +57,7 @@ function UpdateProgress(Id, Data)
                 Progress.Bar.Visible = false
                 Progress.TextLabel.Visible = false
                 Progress.Claim.Visible = true
-
+                Lbl.LayoutOrder = 0
                 local Conn
                 Conn = Progress.Claim.MouseButton1Down:Connect(function()
                     if Complete(Id) then

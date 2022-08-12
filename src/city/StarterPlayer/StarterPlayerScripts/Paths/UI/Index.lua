@@ -189,6 +189,16 @@ function Index.ItemObtained(Info)
 
 end
 
+function Index.OreCollected(Level)
+	local Ore = modules.MiningDetails[Level].Ore
+	indexUI.Sections.Mining.Holder.List[Level].Mined.Text = string.format("%s: %s mined", Ore, remotes.GetStat:InvokeServer("Mining").Mined[Ore])
+end
+
+function Index.TreeCut(Tree)
+	local Lbl =  indexUI.Sections.Woodcutting.Holder.List:FindFirstChild(Tree)
+	Lbl.Cut.TextLabel.Text = string.format("%s chopped", remotes.GetStat:InvokeServer("Woodcutting").Cut[Tree])
+end
+
 -- Loading fish
 local function LoadAllFish()
 	for id, info in pairs (modules.FishingConfig.ItemList) do
@@ -264,31 +274,27 @@ end
 local function LoadAllItems()
 	-- Load Accessories
 	for Accessory, Info in pairs(modules.AllAccessories.All) do
-		Info.Name = Accessory
+		if Accessory ~= "None" then
+			Info.Name = Accessory
 
-		local Template = Dependency.ItemTemplate:Clone()
-		Template.ItemName.Text = Accessory
-		Template.ItemRarity.Text = Info.Rarity
-		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Accessory.."_Accessory"
+			local Template = Dependency.ItemTemplate:Clone()
+			Template.ItemName.Text = Accessory
+			Template.ItemRarity.Text = Info.Rarity
+			Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
+			Template.ItemIcon.Image = Info.Icon or "rbxgameasset://Images/"..Accessory.."_Accessory"
 
-		Template.Name = Accessory
-		Template.Parent = indexUI.Sections.Accessories.Accessories.List
-		
-		if Accessory == "None" then
-			Template.LayoutOrder = -10
-		else
+			Template.Name = Accessory
+			Template.Parent = indexUI.Sections.Accessories.Accessories.List
 			Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
-		end
 
-		if playerAccessories[Accessory] then
-			Index.ItemObtained(Info)
+			if playerAccessories[Accessory] then
+				Index.ItemObtained(Info)
+			end
 		end
 	end
 	
 	-- Load Eyes
 	for Eyes, Info in pairs(modules.AllEyes.All) do
-		print(Eyes,Info)
 		Info.Name = Eyes
 
 		local Template = Dependency.ItemTemplate:Clone()
@@ -313,30 +319,58 @@ local function LoadAllItems()
 
 	-- Load outfits
 	for Outfit, Info in pairs(modules.AllOutfits.All) do
-		Info.Name = Outfit
+		if Outfit ~= "None" then
+			Info.Name = Outfit
 
-		local Template = Dependency.ItemTemplate:Clone()
-		Template.ItemName.Text = Outfit
-		Template.ItemRarity.Text = Info.Rarity
-		Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
-		Template.ItemIcon.Image = Info.Icon or ""
+			local Template = Dependency.ItemTemplate:Clone()
+			Template.ItemName.Text = Outfit
+			Template.ItemRarity.Text = Info.Rarity
+			Template.ItemRarity.TextColor3 = rarityColors[Info.Rarity]
+			Template.ItemIcon.Image = Info.Icon or ""
 
-		Template.Name = Outfit
-		Template.LayoutOrder = if Outfit == "None" then -10 else rarityLayoutNumbers[Info.Rarity]
-		Template.Parent = indexUI.Sections.Accessories.Outfits.List
+			Template.Name = Outfit
+			Template.LayoutOrder = rarityLayoutNumbers[Info.Rarity]
+			Template.Parent = indexUI.Sections.Accessories.Outfits.List
 
-		if playerOutfits[Outfit] then
-			Index.ItemObtained(Info)
+			if playerOutfits[Outfit] then
+				Index.ItemObtained(Info)
+			end
+
 		end
+
 	end
 
 
 end
 
---[[ task.spawn(function()
+local function LoadAllOres()
+	for Level, Enums in pairs(modules.MiningDetails) do
+		local Lbl = Dependency.OreTemplate:Clone()
+		Lbl.Parent = indexUI.Sections.Mining.Holder.List
+		Lbl.Name = Level
+		Index.OreCollected(Level)
+	end
+end
+
+local function LoadAllTrees()
+	for Tree, Icon in pairs(TREES) do
+		local Lbl = Dependency.TreeTemplate:Clone()
+		Lbl.Parent = indexUI.Sections.Woodcutting.Holder.List
+		Lbl.Name = Tree
+		Lbl.Cut.Icon.Image = Icon
+
+		Index.TreeCut(Tree)
+	end
+
+end
+
+
+task.spawn(function()
 	LoadAllFish()
 	LoadAllItems()
-end) *]]
+	LoadAllOres()
+	LoadAllTrees()
+end)
 
 
 

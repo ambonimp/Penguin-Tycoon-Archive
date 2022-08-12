@@ -81,7 +81,6 @@ function Paths.Initiliaze()
 	-- UI Modules
 	Paths.Modules.UpdatingUI = require(script.UI.Updating)
 	Paths.Modules.UIAnimations = require(script.UI.Animations)
-	Paths.Modules.Buttons = require(script.UI.Buttons)
 	Paths.Modules.Index = require(script.UI.Index)
 	Paths.Modules.Teleporting = require(script.UI.Teleporting)
 	Paths.Modules.PlatformAdjustments = require(script.UI.PlatformAdjustments)
@@ -116,16 +115,15 @@ function Paths.Initiliaze()
 	
 	Paths.Modules.Settings = require(script.Settings)
 	
-	-- Other Modules (That have to be required after)
-	Paths.Modules.SystemMessages = require(script.SystemMessages)
-	Paths.Modules.Scaling = require(script.Chat.Scaling)
-
 	--- Load Version ---
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version
 	
 	-- Pets
 	Paths.Modules.PetDetails = require(Paths.Services.RStorage.Modules.PetDetails)
 	Paths.Modules.Pets = require(script.Pets)
+
+	
+	Paths.Modules.Buttons = require(script.UI.Buttons)
 end
 
 return Paths

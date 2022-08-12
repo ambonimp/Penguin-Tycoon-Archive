@@ -213,9 +213,6 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories")
 	PlayerOutfits = Remotes.GetStat:InvokeServer("Outfits")
 	PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
-	if PlayerOutfits["Police Officer"] and ProximityPrompt2 then
-		ProximityPrompt2.Enabled = false
-	end
 end
 
 

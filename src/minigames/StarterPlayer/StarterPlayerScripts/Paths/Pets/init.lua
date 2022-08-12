@@ -23,8 +23,11 @@ local SelectedPetDetails = nil
 local Example = Dependency.PetTemplate
 local CurrentEggLoaded = nil
 local BuyEgg = UI.Center.BuyEgg
---local IndexPage = UI.Center.Index.Sections.Pets.Holder
+local IndexPage = UI.Center.Index.Sections.Pets.Holder
 local PetAdoptionUI = UI.Full.PetAdoption
+
+local GUI_INSET = Paths.Services.GuiService:GetGuiInset()
+
 
 local Deleting = {}
 local State = "None"
@@ -412,24 +415,37 @@ function changeFrameColors(frame,color1,color2)
 	frame.BackgroundColor3 = color1
 	frame.UIStroke.Color = color2
 end
---[[
+
 function updateIndex(data,islandId)
 	local island = PetDetails.ChanceTables[islandId]
+
 	local frame = IndexPage.List:FindFirstChild(island.Name)
 	if frame then
-		local Pets = frame.Pets.Pets:GetChildren()
+		local Pets = frame.Pets:GetChildren()
+
 		for i,v in pairs (Pets) do
-			if tonumber(v.Name) and data.Unlocked[tonumber(v.Name)] then
-				local Rarity = PetDetails.Rarities[island.Pets[tonumber(v.Name)].Percentage]
+			local PetId = tonumber(v.Name)
+			if PetId and data.Unlocked[tostring(PetId)] then
+				local pet = nil
+				for i,v in pairs (island.Pets) do
+					if v.Id == PetId then
+						pet = v
+						break
+					end
+				end
+				local Rarity = PetDetails.Rarities[pet.Percentage]
 				v.Icon.ImageColor3 = Color3.new(1,1,1)
-				v.PetName.Text = PetDetails.Pets[tonumber(v.Name)][1].." x"..data.Unlocked[tonumber(v.Name)]
+				v.PetName.Text = PetDetails.Pets[PetId][1]--.." x"..data.Unlocked[tostring(PetId)]
 				v.BackgroundColor3 = PetDetails.RarityColors[Rarity]
 				v.UIStroke.Color = PetDetails.RarityColors[Rarity]
-			end
-		end
-	end
-end]]
 
+			end
+
+		end
+
+	end
+
+end
 function addPetToViewport(Model,ViewPort)
 	local camera = ViewPort.CurrentCamera or Instance.new("Camera")
 	camera.Parent = ViewPort.WorldModel
@@ -736,7 +752,7 @@ function buyEgg(auto)
 		local info = RealData.PetsOwned[tostring(newId)]
 		openEgg(PetModel.Icon.Texture,NewPetInfo[1],info[4],PetDetails.RarityColors[info[4]],auto)
 		updateUI(Data,"add",newId)
-		--updateIndex(Data, Data.PetsOwned[tostring(newId)][8])
+		updateIndex(Data, Data.PetsOwned[tostring(newId)][8])
 	end
 	return Bought
 end
@@ -1119,9 +1135,58 @@ function Remotes.BuyEgg.OnClientInvoke(Type,Data,PetId,PetInfo)
 		local info = RealData.PetsOwned[tostring(PetId)]
 		openEgg(PetModel.Icon.Texture,info[1],info[4],PetDetails.RarityColors[info[4]])
 		updateUI(Data,"add",PetId)
-		-- updateIndex(Data,Data.PetsOwned[tostring(PetId)][8])
+		updateIndex(Data,Data.PetsOwned[tostring(PetId)][8])
 	end
 end
+
+function openSelected2(Id, Pos, Props)
+	if PetSelected:GetAttribute("PetId") == Id then
+		closeSelected()
+	else
+		local Content = PetSelected.Frame
+		if Props.Name then
+			Content.PetName.Visible = true
+			Content.PetName.Text = Props.Name
+		else
+			Content.PetName.Visible = false
+		end
+
+		if Props.Type then
+			Content.PetType.Visible = true
+			Content.PetType.Text = Props.Type
+		else
+			Content.PetType.Visible = false
+		end
+
+		if Props.Rarity then
+			Content.Rarity.Visible = true
+			Content.Rarity.Text = Props.Rarity
+			Content.Rarity.TextColor3 = PetDetails.RarityColors[Props.Rarity]
+		else
+			Content.Rarity.Visible = false
+		end
+
+		if Props.Level then
+			Content.Level.Visible = true
+			Content.Level.Text = Props.Level
+		else
+			Content.Level.Visible = false
+		end
+
+		if Props.Ability then
+			Content.Ability.Visible = true
+			Content.Ability.Text = Props.Ability
+		else
+			Content.Ability.Visible = false
+		end
+
+		PetSelected.Position = Pos
+		PetSelected.Visible = true
+		PetSelected:SetAttribute("PetId", Id)
+	end
+
+end
+
 
 task.spawn(function()
 	local PetData = Remotes.PetsRemote:InvokeServer(LocalPlayer)
@@ -1142,7 +1207,6 @@ task.spawn(function()
 			end
 		end
 	end
---[[
 
 	for i,IslandDetails in pairs (PetDetails.ChanceTables) do
 		local newIsland = IndexPage.List.Island:Clone()
@@ -1151,14 +1215,14 @@ task.spawn(function()
 			local Pet = PetDetails.Pets[v.Id]
 			local Rarity = PetDetails.Rarities[v.Percentage]
 			local Template = Dependency.ShopTemplate:Clone()
-			print(Pet[1],Pet[2])
+			-- print(Pet[1],Pet[2])
 			local PetModel = PetsAssets:FindFirstChild(string.upper(Pet[1])):FindFirstChild(string.upper(Pet[2]))
 
 			Template.Amount.Text = ""
-			if PetData.Unlocked[v.Id] then
+			if PetData.Unlocked[tostring(v.Id)] then
 				Template.BackgroundColor3 = PetDetails.RarityColors[Rarity]
 				Template.UIStroke.Color = PetDetails.RarityColors[Rarity]
-				Template.PetName.Text = Pet[1].. " x"..PetData.Unlocked[v.Id]
+				Template.PetName.Text = Pet[1]--.. " x"..PetData.Unlocked[tostring(v.Id)]
 				Template.Icon.ImageColor3 = Color3.new(1,1,1)
 			else
 				Template.BackgroundColor3 = Color3.new()
@@ -1166,15 +1230,67 @@ task.spawn(function()
 				Template.Icon.ImageColor3 = Color3.new(0,0,0)
 				Template.PetName.Text = ""
 			end
+			Template.MouseButton1Down:Connect(function()
+				local ViewportSize = workspace.CurrentCamera.ViewportSize
+				local BtnPos = Template.AbsolutePosition
+				local BtnSize = Template.AbsoluteSize / 2
+				openSelected2(v.Id, UDim2.fromScale(
+					(BtnPos.X + GUI_INSET.X + BtnSize.X) / ViewportSize.X,
+					(BtnPos.Y + GUI_INSET.Y + BtnSize.Y) / ViewportSize.Y),
+				{
+					Type = Pet[1],
+					Rarity = Rarity,
+					Ability = string.format("%s %s %s", Pet[3], Pet[4], Pet[5])
+				})
+			end)
+
 			Template.Icon.Image = PetModel.Icon.Texture
 			Template.Name = v.Id
-			Template.Parent = newIsland.Pets.Pets
+			Template.Parent = newIsland.Pets
 		end
 		newIsland.Visible = true
 		newIsland.Name = IslandDetails.Name
 		newIsland.LayoutOrder = i
 		newIsland.Parent = IndexPage.List
-	end]]
+	end
+
+	local legacyIsland = IndexPage.List["Legacy Pets"]
+	for _, v in pairs ({"Cat","Dog","Rabbit","Dinosaur","Unicorn","Panda"}) do
+		local folder = Assets.Pets:FindFirstChild(v)
+		if folder then
+			for i,v in pairs (folder:GetChildren()) do
+				local Template = Dependency.ShopTemplate:Clone()
+				Template.Amount.Text = ""
+				Template.Icon.Visible = false
+				Template.ViewportFrame.Visible = true
+				local model = v:Clone()
+				Template.PetName.Text = v.Name
+				addPetToViewport(model,Template.ViewportFrame)
+				Template.Parent = legacyIsland.Pets
+
+			end
+
+		end
+
+	end
+
+	local tycoonData = Remotes.GetStat:InvokeServer("Tycoon")
+	for _, v in pairs (UI.Center.UnlockedEggs.Eggs.Pets:GetChildren()) do
+		if v:IsA("ImageButton") then
+			if tycoonData[v.Name] or v.Name == "1" then
+				v:SetAttribute("Unlocked",true)
+				v.MouseButton1Down:Connect(function()
+					if tycoonData[v.Name] or v.Name == "1" then
+						Pets.LoadEgg(v:GetAttribute("Egg"),nil)
+					end
+				end)
+			else
+				v.ViewportFrame.ImageColor3 = Color3.new(0,0,0)
+			end
+
+		end
+
+	end
 end)
 
 UI.Center.UnlockedEggs:GetPropertyChangedSignal("Visible"):Connect(function()

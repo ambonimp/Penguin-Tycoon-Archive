@@ -233,7 +233,7 @@ function Accessories:AnimateNewItem(Item, ItemType)
 	PlayerAccessories = Remotes.GetStat:InvokeServer("Accessories")
 	PlayerOutfits = Remotes.GetStat:InvokeServer("Outfits")
 	PlayerEyes = Remotes.GetStat:InvokeServer("Eyes")
-	if PlayerOutfits["Police Officer"] and ProximityPrompt2 then
+	if PlayerOutfits["Clown"] and ProximityPrompt2 then
 		ProximityPrompt2.Enabled = false
 	end
 end
@@ -448,12 +448,12 @@ if ProximityPrompt then
 end
 
 if ProximityPrompt2 then
-	if PlayerOutfits["Police Officer"] then
+	if PlayerOutfits["Clown"] then
 		ProximityPrompt2.Enabled = false
 	end
 	ProximityPrompt2.Triggered:Connect(function(player)
 		if player == game.Players.LocalPlayer then
-			Remotes.Store:FireServer("Buy Item", "Police Officer", "Outfits", "Robux")
+			Remotes.Store:FireServer("Buy Item", "Clown", "Outfits", "Robux")
 		end
 	end)
 end
