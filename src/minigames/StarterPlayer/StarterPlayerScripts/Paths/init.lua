@@ -117,8 +117,8 @@ function Paths.Initiliaze()
 	Paths.Modules.Settings = require(script.Settings)
 	
 	-- Other Modules (That have to be required after)
-
 	Paths.Modules.SystemMessages = require(script.SystemMessages)
+	Paths.Modules.Scaling = require(script.Chat.Scaling)
 
 	--- Load Version ---
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version

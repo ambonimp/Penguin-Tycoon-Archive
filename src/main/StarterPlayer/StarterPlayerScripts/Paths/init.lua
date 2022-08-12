@@ -109,6 +109,7 @@ function Paths.Initiliaze()
 	-- UI Modules
 	-- print("ui modules")
 	ModuleLoader.Register("UpdatingUI", script.UI.Updating)
+	ModuleLoader.Register("Scaling", script.UI.Scaling)
 	ModuleLoader.Register("UIAnimations", script.UI.Animations)
 	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
 	ModuleLoader.Register("TycoonTeleporting", script.UI.TycoonTeleporting)
@@ -140,7 +141,6 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Rebirths", script.Tycoon.Rebirths)
 	ModuleLoader.Register("BuildA", script.Tycoon.BuildA);
 	ModuleLoader.Register("Fishing", script.Tycoon.Fishing)
-	-- ModuleLoader.Register("TycoonProgressBar", script.UI.TycoonProgressBar)
 	ModuleLoader.Register("Rocket", script.Tycoon.Rocket)
 
 	
