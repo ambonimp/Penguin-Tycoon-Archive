@@ -10,10 +10,68 @@ local Remotes = Paths.Remotes
 local UI = Paths.UI
 local Dependency = Paths.Dependency:FindFirstChild(script.Name)
 
---- Variables ---
+local EventsConfig =  require(Services.RStorage.Modules.EventsConfig)
+local PlaceIds =  require(Services.RStorage.Modules.PlaceIds)
+
+
+--- Variables --
+local Frame = Paths.UI.Center.TeleportConfirmation
+
+local TeleportButton = UI.Left.Buttons.Teleport
 local Confirmation = UI.Center.TeleportConfirmation
 
 local TeleportDB = false
+
+local Locations = {
+	["Penguin Tycoon"] = {
+		PlaceId = PlaceIds["Penguin Tycoon"],
+		Alias = "Tycoon",
+		Description = "Build your islands, customize your Penguins and earn money!",
+		Thumbnail = "rbxassetid://10317615510"
+	},
+	["Penguin City"] = {
+		PlaceId = PlaceIds["Penguin City"],
+		Alias = "City",
+		Description = "Play Minigames, Visit your Friends, and Roleplay",
+		Thumbnail = "rbxassetid://8455934474"
+	},
+	["Falling Tiles"] = {
+		PlaceId = PlaceIds["Falling Tiles"],
+		Description = "Survive the falling tiles!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Falling Tiles"].ImageID,
+	},
+	["Skate Race"] = {
+		PlaceId = PlaceIds["Skate Race"],
+		Description = "Race around the ice track!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Skate Race"].ImageID,
+	},
+	["Soccer"] = {
+		PlaceId = PlaceIds["Soccer"],
+		Description = "Score goals against the other team!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Soccer"].ImageID,
+	},
+	["Candy Rush"] = {
+		PlaceId = PlaceIds["Candy Rush"],
+		Description = "Collect all of the candy!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Candy Rush"].ImageID,
+	},
+	["Ice Cream Extravaganza"] = {
+		PlaceId = PlaceIds["Ice Cream Extravaganza"],
+		Description = "Collect all of the ice cream!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Ice Cream Extravaganza"].ImageID,
+	},
+	["Sled Race"] = {
+		PlaceId = PlaceIds["Sled Race"],
+		Description = "Race down the slope!",
+		Thumbnail = "rbxassetid://" .. EventsConfig["Sled Race"].ImageID,
+	}
+}
+
+local function InitializeLocationIds(Ids)
+	for Name, Id in pairs(Ids) do
+		Locations[Name].PlaceId = Id
+	end
+end
 
 --- Functions ---
 function Teleporting:TeleportTo(PlaceId)
@@ -21,24 +79,43 @@ function Teleporting:TeleportTo(PlaceId)
 	TeleportDB = true
 
 	local Success, Error = Remotes.TeleportExternal:InvokeServer(PlaceId)
-	
-	if not Success then
-		warn(Error)
+
+	if not Success and Confirmation.Visible then
 		Confirmation.InfoHolder.Confirm.Error.Visible = true
-		task.wait(0.8)
+		wait(0.8)
 		Confirmation.InfoHolder.Confirm.Error.Visible = false
 	end
 	TeleportDB = false
+	return Success
 end
+
+
+function Teleporting:OpenConfirmation(Location)
+	local LocationInfo = assert(Locations[Location], string.format("Location: %s does not exist", Location))
+
+	Confirmation.InfoHolder.Thumbnail.Image = LocationInfo.Thumbnail
+	Confirmation.InfoHolder.Description.Text = LocationInfo.Description
+	Confirmation.InfoHolder.TeleportingTo.Text = "Teleporting To: " .. Location
+
+	Confirmation.PlaceId.Value = LocationInfo.PlaceId
+
+end
+
 
 -- Confirmation UI buttons
 Confirmation.InfoHolder.Confirm.MouseButton1Down:Connect(function()
-	Teleporting:TeleportTo(Modules.PlaceIds["Penguin City"])
+	Teleporting:TeleportTo(tonumber(Confirmation.PlaceId.Value))
 end)
 
 --Confirmation.Cancel.MouseButton1Down:Connect(function()
 --	Confirmation.Visible = false
 --end)
+
+
+-- Different teleport locations/buttonns
+TeleportButton.MouseButton1Down:Connect(function()
+	Teleporting:OpenConfirmation(game.PlaceId == PlaceIds["Penguin City"] and "Penguin Tycoon" or "Penguin City")
+end)
 
 
 --- Switching between tabs ---
@@ -52,6 +129,11 @@ Confirmation.FriendsList.Cancel.MouseButton1Down:Connect(function()
 	Confirmation.FriendsList.Visible = false
 end)
 
+-- Reset to default tab on close
+Confirmation.Exit.MouseButton1Down:Connect(function()
+	Confirmation.InfoHolder.Visible = true
+	Confirmation.FriendsList.Visible = false
+end)
 
 
 --- Loading friends ---
@@ -61,53 +143,46 @@ local function FriendTemplate(Info)
 	--Template:SetAttribute("PlaceId", Info.PlaceId)
 	Template.PlayerName.Text = Info.UserName
 	Template.DisplayName.Text = Info.DisplayName
-	
-	if Info.PlaceId == 7967681044 or Info.PlaceId == 8359572680 then
-		Template.Status.Text = "Online (Skating)"
-		Template.LayoutOrder = 0
+
+	local CanFollowTo
+	for Name, LocationInfo in pairs(Locations) do
+		if LocationInfo.PlaceId == Info.PlaceId then
+			CanFollowTo = Name
+			break
+		end
+	end
+
+	if CanFollowTo then
+		local LocationInfo = Locations[CanFollowTo]
+
+		Template.Status.Text = string.format("Online (%s)", LocationInfo.Alias or LocationInfo.Name)
+		Template.LayoutOrder = LocationInfo.LayoutOrder
 		Template.Join.Visible = true
-	elseif Info.PlaceId == 7951464846 or Info.PlaceId == 8241346678 then
-		Template.Status.Text = "Online (Tycoon)"
-		Template.LayoutOrder = 1
-		Template.Join.Visible = true
+
 	else
 		Template.Status.Text = "Online"
 		Template.LayoutOrder = 2
 		Template.Join.Visible = false
+
 	end
-	
+
 	Template.Join.MouseButton1Down:Connect(function()
 		if TeleportDB then return end
 		TeleportDB = true
-		
+
 		local Success, Error = Remotes.TeleportExternal:InvokeServer(Info.PlaceId, Info.GameId)
 
 		if not Success then
 			Template.Join.Error.Visible = true
-			wait(0.8)
+			task.wait(0.8)
 			Template.Join.Error.Visible = false
 		end
+
 		TeleportDB = false
+
 	end)
-	
+
 	Template.Parent = Confirmation.FriendsList.List
-end
-
-
-local function iterPageItems(pages)
-	return coroutine.wrap(function()
-		local pagenum = 1
-		while true do
-			for _, item in ipairs(pages:GetCurrentPage()) do
-				coroutine.yield(item, pagenum)
-			end
-			if pages.IsFinished then
-				break
-			end
-			pages:AdvanceToNextPageAsync()
-			pagenum = pagenum + 1
-		end
-	end)
 end
 
 
@@ -120,21 +195,21 @@ function Teleporting:RefreshFriends()
 	--local Success, FriendPages = pcall(function()
 	--	return game:GetService("Players"):GetFriendsAsync(Paths.Player.UserId)
 	--end)
-	
+
 	--local Friends = {}
-	
+
 	--if Success and FriendPages then
 	--	for Friend, pageNo in iterPageItems(FriendPages) do
 	--		table.insert(Friends, Friend)
 	--	end
-		
+
 	--	local OnlineFriends = {}
 	--	for i, Friend in pairs(Friends) do
 	--		if Friend.IsOnline then
 	--			table.insert(OnlineFriends, Friend)
 	--		end
 	--	end
-		
+
 	--	for i, v in pairs(OnlineFriends) do
 	--		local placeId = nil
 	--		local success, errorMessage = pcall(function()
@@ -143,57 +218,27 @@ function Teleporting:RefreshFriends()
 	--		end)
 	--	end
 	--end
-	
+
 	local Success = pcall(function()
 		local OnlineFriends = Paths.Player:GetFriendsOnline()
-		
+
 		for i, Friend in pairs(OnlineFriends) do
 			FriendTemplate(Friend)
 		end
 	end)
-	
+
 	if not Success then
-		wait(2)
+		task.wait(3)
 		Teleporting:RefreshFriends()
 	end
 end
-
-local ProximityPrompt
---[[
-if workspace:FindFirstChild("Portals") then
-	ProximityPrompt = workspace.Portals.Portal.PrimaryPart.ProximityPrompt
-elseif Paths.Tycoon then
-	ProximityPrompt = Paths.Tycoon:WaitForChild("PenguinCity").PrimaryPart.ProximityPrompt
-end
-
-if ProximityPrompt then
-	ProximityPrompt.Triggered:Connect(function(player)
-		if player == game.Players.LocalPlayer and Paths.UI.Center.TeleportConfirmation.Visible == false and Paths.UI.Center.BuyEgg.Visible == false and game.Players.LocalPlayer:GetAttribute("BuyingEgg") == false then
-			Teleporting:OpenConfirmation()
-			Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
-		end
-	end)
-end
-]]
---[[ if Paths.Tycoon then
-	local BillBoard = Paths.Tycoon:WaitForChild("Board")
-	local UI = BillBoard.PrimaryPart.SurfaceGui
-	UI.Parent = Paths.Player.PlayerGui
-	UI.Adornee = BillBoard.PrimaryPart
-	UI.Confirm.MouseButton1Down:Connect(function()
-		Teleporting:OpenConfirmation()
-		Paths.Modules.Buttons:UIOn(Paths.UI.Center.TeleportConfirmation,true)
-	end)
-end
---]]
 
 coroutine.wrap(function()
 	Teleporting:RefreshFriends()
-	
-	while wait(30) do
+
+	while task.wait(30) do
 		Teleporting:RefreshFriends()
 	end
 end)()
-
 
 return Teleporting

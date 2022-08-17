@@ -81,6 +81,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Indicators", script.Setup.Indicators)
 	ModuleLoader.Register("PassButtons", script.Setup.PassButtons)
 	ModuleLoader.Register("GroupReward", script.GroupReward)
+	ModuleLoader.Register("EventsConfig", Paths.Services.RStorage.Modules.EventsConfig)
 	ModuleLoader.Register("PlaceIds", Paths.Services.RStorage.Modules.PlaceIds)
 	ModuleLoader.Register("FishingConfig", Paths.Services.RStorage.Modules.FishingConfig)
 	ModuleLoader.Register("Maid", Paths.Services.RStorage.Modules.Maid)
@@ -93,7 +94,6 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("BuildADetails", Paths.Services.RStorage.Modules.BuildADetails)
 	ModuleLoader.Register("DeviceDetector", script.DeviceDetector)
 	ModuleLoader.Register("Feedback", script.Feedback)
-
 
 	-- Tool Modules
 	ModuleLoader.Register("Tools", script.Tools);

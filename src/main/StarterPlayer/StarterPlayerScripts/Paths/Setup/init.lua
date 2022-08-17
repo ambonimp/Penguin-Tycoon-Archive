@@ -45,6 +45,7 @@ Paths.Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
             --Modules.Pets.LoadEgg(Prompt:GetAttribute("Egg"),Prompt)
 
         elseif Prompt.ActionText == "Penguin City" then
+            Modules.Teleporting:OpenConfirmation("Penguin City")
             Modules.Buttons:UIOn(UI.Center.TeleportConfirmation,true)
 
         elseif Prompt.ActionText == "Customize Penguin" then
@@ -53,7 +54,9 @@ Paths.Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
             RootPart.CFrame = CFrame.new(RootPart.Position) * Prompt.Parent.CFrame.Rotation
             Modules.Customization:EnterUI(Character)
         elseif Prompt.ObjectText == "Minigame" then
-            if db then return end
+            Modules.Teleporting:OpenConfirmation(Prompt.Parent.Parent.Name)
+            Modules.Buttons:UIOn(UI.Center.TeleportConfirmation,true)
+           --[[ if db then return end
             db = true
             Prompt.Enabled = false
             local Success, Error = Remotes.TeleportExternal:InvokeServer(Prompt:GetAttribute("TeleportId"))
@@ -66,7 +69,7 @@ Paths.Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
             task.wait(2.5)
             Prompt.ActionText = last
             Prompt.Enabled = true
-            db = false
+            db = false--]]
         end
 
     end

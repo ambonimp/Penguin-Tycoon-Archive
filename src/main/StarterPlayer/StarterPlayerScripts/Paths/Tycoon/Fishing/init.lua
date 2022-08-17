@@ -82,6 +82,7 @@ function Fishing.CancelThrow(callEvent, died)
 end
 
 function Fishing.Throw()
+	if paths.Player:GetAttribute("Vehicle") and string.find(paths.Player:GetAttribute("Vehicle"),"Plane") then return end
 	if LastUpdate.BobberReturning then 
 		LastUpdate.RunningMain = false
 		return
