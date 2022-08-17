@@ -78,6 +78,9 @@ Remotes.Rebirth.OnServerInvoke = function(Client, Currency)
                 Data.Income = Defaults.Income
                 Client.leaderstats.Income.Value = Data.Income
 
+                Client:SetAttribute("StoredIncome", 0)
+	            Data["Stored Income"] = 0
+
                 Data["My Penguin"].Level = 0
                 Client:SetAttribute("Level", 0)
 

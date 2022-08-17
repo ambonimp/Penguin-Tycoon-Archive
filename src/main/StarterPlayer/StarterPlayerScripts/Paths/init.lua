@@ -32,7 +32,6 @@ function Paths.Initiliaze()
 	-- print("Load UI")
 	local PlayerGui = Paths.Services.Players.LocalPlayer.PlayerGui
 	Paths.UI.Main = PlayerGui:WaitForChild("Main")
-
 	Paths.UI.SpecialEffects = PlayerGui:WaitForChild("SpecialEffects")
 	Paths.UI.LoadingScreen = PlayerGui:WaitForChild("LoadingScreen")
 
@@ -114,7 +113,7 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("Teleporting", script.UI.Teleporting)
 	ModuleLoader.Register("TycoonTeleporting", script.UI.TycoonTeleporting)
 	ModuleLoader.Register("PlatformAdjustments", script.UI.PlatformAdjustments)
-	-- ModuleLoader.Register("Snackbars", script.UI.Snackbars)
+	ModuleLoader.Register("Snackbars", script.UI.Snackbars)
 	ModuleLoader.Register("UI", script.UI)
 	ModuleLoader.Register("Index", script.UI.Index)
 

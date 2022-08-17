@@ -53,7 +53,10 @@ end)
 Frame.Purchase.Money.MouseButton1Down:Connect(function()
     if Remotes.GetStat:InvokeServer("Money") >= priceMoney then
         Modules.UIAnimations.BlinkTransition(function()
+            local RootPart = Paths.Player.Character.PrimaryPart
+            RootPart.Anchored = true
             Rebirth(Remotes.Rebirth:InvokeServer("Money"))
+            RootPart.Anchored = false
         end)
 
     else
@@ -66,7 +69,10 @@ end)
 Frame.Purchase.Gems.MouseButton1Down:Connect(function()
     if Remotes.GetStat:InvokeServer("Gems") >= priceGems then
         Modules.UIAnimations.BlinkTransition(function()
+            local RootPart = Paths.Player.Character.PrimaryPart
+            RootPart.Anchored = true
             Rebirth(Remotes.Rebirth:InvokeServer("Gems"))
+            RootPart.Anchored = false
         end)
     else
         local ProductRequired = Modules.GameFunctions:GetRequiredGemProduct(priceGems)

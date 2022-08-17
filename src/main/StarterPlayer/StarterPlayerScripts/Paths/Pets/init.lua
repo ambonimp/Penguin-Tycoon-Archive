@@ -867,16 +867,7 @@ BuyEgg.Gems.MouseButton1Down:Connect(function()
 				local bought = buyEgg(auto)
 			end
 		else
-			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
-			if not Gamepasses[tostring(HUGE_GAMEPASS)] then
-				if not Gamepasses[tostring(SMALL_GAMEPASS)] then
-					Services.MPService:PromptGamePassPurchase(Paths.Player, SMALL_GAMEPASS)
-				else
-					Services.MPService:PromptGamePassPurchase(Paths.Player, HUGE_GAMEPASS)
-				end
-
-			end
-
+			Modules.Snackbars.Error("Inventory full. Delete pets before hatching more.")
 		end
 
 	end
@@ -890,17 +881,7 @@ BuyEgg.Robux.MouseButton1Down:Connect(function()
 			autoHatching = false
 			Remotes.BuyEgg:InvokeServer(CurrentEggLoaded,"Robux")
 		else
-			local Gamepasses = Remotes.GetStat:InvokeServer("Gamepasses")
-
-			if not Gamepasses[tostring(HUGE_GAMEPASS)] then
-				if not Gamepasses[tostring(SMALL_GAMEPASS)] then
-					Services.MPService:PromptGamePassPurchase(Paths.Player, SMALL_GAMEPASS)
-				else
-					Services.MPService:PromptGamePassPurchase(Paths.Player, HUGE_GAMEPASS)
-				end
-
-			end
-
+			Modules.Snackbars.Error("Inventory full. Delete pets before hatching more.")
 		end
 
 	end

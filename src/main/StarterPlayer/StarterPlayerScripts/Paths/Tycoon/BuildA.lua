@@ -351,7 +351,6 @@ local function CreateBuildA(self, Name, States, HelperProduct, FixedUpgrade)
     for Item, Info in pairs(States) do
         if Info == true then -- Unlocked
             self:UnlockItem(Item, true)
-
         else -- Info is part's cframe
             self:LockItem(Item)
 

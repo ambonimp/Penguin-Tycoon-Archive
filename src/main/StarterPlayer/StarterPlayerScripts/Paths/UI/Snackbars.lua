@@ -15,7 +15,7 @@ local PADDING = 0.025
 
 
 
-local Frame = UI.Bottom.Snackbars
+local Frame = UI.Main.Snackbars
 
 
 
@@ -44,7 +44,7 @@ local function write(Template, Message)
 
     Snackbar:TweenSize(UDim2.fromScale(1, HEIGHT), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.2)
 
-    local TweenOut = Services.TweenService:Create(Snackbar, TweenInfo.new(LIFETIME * 0.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, LIFETIME * 0.75), {TextTransparency = 1})
+    local TweenOut = Services.TweenService:Create(Snackbar, TweenInfo.new(LIFETIME * 0.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, LIFETIME * 0.75), {TextTransparency = 1, TextStrokeTransparency = 1})
     TweenOut.Completed:Connect(function()
         Snackbar:Destroy()
     end)

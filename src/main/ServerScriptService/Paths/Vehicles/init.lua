@@ -78,12 +78,14 @@ function Vehicles:SetUpSailboatBuild(Player)
 	print("SET UP BOAT BUILD")
 	if Data then
 		if Data["Tycoon"]["Dock#2"] then
-			local unlocked = Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][1]
-			if unlocked == false then
+			if not Data["BoatUnlocked"][1] then
 				local items = {}
 				local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))
-				for i,Model in pairs (game.ReplicatedStorage.Assets.BuildA.Sailboat:GetChildren()) do
-					if Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2][Model.Name] == false then
+
+				for _, Model in pairs (game.ReplicatedStorage.Assets.BuildA.Sailboat:GetChildren()) do
+					print(Model)
+
+					if not Data["BoatUnlocked"][2][Model.Name] then
 						if Model:GetAttribute("InTycoon") then
 							local CenterPos = Paths.Template.Center.Position
 							local ModelPos = Model:GetPivot().p
@@ -102,10 +104,13 @@ function Vehicles:SetUpSailboatBuild(Player)
 						else
 							items[Model.Name] = Model:GetPrimaryPartCFrame()
 						end
+
 					elseif Modules.PlayerData.sessionData[Player.Name]["BoatUnlocked"][2][Model.Name] then
-						items[Model.Name] = true
+						items[Model.Name] = true -- Item is unlocked
 					end
+
 				end
+
 				Paths.Remotes:WaitForChild("SailboatBuild"):InvokeClient(Player,items)
 			else
 				local Tycoon = workspace.Tycoons:FindFirstChild(Player:GetAttribute("Tycoon"))

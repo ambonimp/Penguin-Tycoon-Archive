@@ -18,8 +18,13 @@ function Loading:LoadTycoon(Player)
 		local TycoonModel = Paths.Modules.Ownership:GetPlayerTycoon(Player)
 
 		-- Load Items
-		for Item, IsOwned in pairs(Tycoon) do
+		local i = 0
+		for Item in pairs(Tycoon) do
 			Modules.Placement:NewItem(Player, Item, false)
+			i += 1
+			if i % 50 == 0 then
+				task.wait(0.5)
+			end
 		end
 
 		-- Load Buttons
@@ -27,12 +32,12 @@ function Loading:LoadTycoon(Player)
 			if Tycoon[Button:GetAttribute("Dependency")] and not Tycoon[Button:GetAttribute("Object")] and not TycoonModel.Tycoon:FindFirstChild(Button:GetAttribute("Object")) then
 				Modules.Buttons:NewButton(Player, Button.Name)
 			end
-			if i % 100 == 0 then
-				task.wait(1)
+			if i % 50 == 0 then
+				task.wait(0.5)
 			end
 		end
 
-		for i, Extra in pairs(Paths.Template.Extra:GetChildren()) do
+		for _, Extra in pairs(Paths.Template.Extra:GetChildren()) do
 			Modules.Placement:LoadExtra(Player,Extra:Clone())
 		end
 	end
