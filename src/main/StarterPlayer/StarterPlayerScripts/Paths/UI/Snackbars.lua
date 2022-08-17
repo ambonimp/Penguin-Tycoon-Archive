@@ -15,7 +15,7 @@ local PADDING = 0.025
 
 
 
-local Frame = UI.Main.Snackbars
+local Frame = UI.Bottom.Snackbars
 
 
 

@@ -49,6 +49,7 @@ function Loader.Load()
         if not Paths.Player.Character then
             Paths.Player.CharacterAdded:Wait()
         end
+        task.wait(3)
         SkipBtn.Visible = true
 
         SkipConn = SkipBtn.MouseButton1Down:Connect(function()

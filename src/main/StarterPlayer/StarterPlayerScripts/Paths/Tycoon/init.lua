@@ -55,7 +55,6 @@ local function AutoIncomeCollect(Point)
 	Point:WaitForChild("BillboardGui").Auto.Visible = true
 end
 
-
 local function LoadCollectPoint(Point)
 	if not Point:IsDescendantOf(Paths.Tycoon) then return end
 
@@ -66,36 +65,38 @@ local function LoadCollectPoint(Point)
 	else
 		CollectPoints[Point] = true
 		UpdateStoreIncome(Point)
+		task.spawn(function()
+			while Paths.Player do
+				local Character = Paths.Player.Character
+				if Character and Character.PrimaryPart and (Character.PrimaryPart.Position-Point.Position).magnitude<4.25 then
+					warn("WHOAAAA")
 
-		CollectPointConns[Point] = Point.Touched:Connect(function(Hit)
-			local Character = Paths.Player.Character
-			if Character and Hit:IsDescendantOf(Character) and not Db then
-				Db = true
+					local Income = Paths.Player:GetAttribute("Income")
+					if not Income then
+						CollectPointConns["Collect"] = nil
+					elseif Income > 0 then
+						Remotes.CollectIncome:FireServer()
+						-- FX
+						local Sound = Point:WaitForChild("Sound")
+						Sound.TimePosition = 0.5
+						Sound:Play()
 
-				warn("WHOAAAA")
+						local Particles = Point:WaitForChild("Particles")
+						Particles.Currency:Emit(16)
+						Particles.StarLeft:Emit(16)
+						Particles.StarRight:Emit(16)
 
-				local Income = Paths.Player:GetAttribute("Income")
-				if not Income then
-					CollectPointConns["Collect"] = nil
-				elseif Income > 0 then
-					Remotes.CollectIncome:FireServer()
-					-- FX
-					local Sound = Point:WaitForChild("Sound")
-					Sound.TimePosition = 0.5
-					Sound:Play()
-
-					local Particles = Point:WaitForChild("Particles")
-					Particles.Currency:Emit(16)
-					Particles.StarLeft:Emit(16)
-					Particles.StarRight:Emit(16)
-
+						task.wait(3)
+					end
 				end
-
-				task.wait(1.5)
-				Db = false
+				task.wait(.2)
 			end
-
 		end)
+		
+		--[[CollectPointConns[Point] = Point.Touched:Connect(function(Hit)
+			
+
+		end)]]
 
 	end
 

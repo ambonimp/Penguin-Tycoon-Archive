@@ -32,6 +32,8 @@ local function getData(key)
 	end)
 end
 
+PlayerData.getData = getData
+
 function PlayerData.Defaults(Player)
 	local Returning = {}
 

@@ -6,6 +6,7 @@ local Remotes = Paths.Remotes
 local Services = Paths.Services
 local UI = Paths.UI
 
+local db = false
 local NotifExample = Paths.UI.Main.Notifications.Example
 
 function Setup:Notification(text,color,time)
@@ -51,6 +52,21 @@ Paths.Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
             local RootPart = Character.PrimaryPart
             RootPart.CFrame = CFrame.new(RootPart.Position) * Prompt.Parent.CFrame.Rotation
             Modules.Customization:EnterUI(Character)
+        elseif Prompt.ObjectText == "Minigame" then
+            if db then return end
+            db = true
+            Prompt.Enabled = false
+            local Success, Error = Remotes.TeleportExternal:InvokeServer(Prompt:GetAttribute("TeleportId"))
+            local last = Prompt.ActionText
+            if not Success then
+                Prompt.Enabled = true
+                Prompt.ActionText = "Error Teleporting.. please wait."
+                warn(Error)
+            end
+            task.wait(2.5)
+            Prompt.ActionText = last
+            Prompt.Enabled = true
+            db = false
         end
 
     end

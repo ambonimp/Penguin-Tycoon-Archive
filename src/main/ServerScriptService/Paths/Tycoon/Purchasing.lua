@@ -9,12 +9,12 @@ local Modules = Paths.Modules
 local Remotes = Paths.Remotes
 
 local EventHandler = game:GetService("ServerStorage"):FindFirstChild("EventHandler")
-
+local playerdeb = {}
 
 --- Purchase Functions ---
 function Purchasing:CanPurchaseWithMoney(Player, Item)
 	local Data = Modules.PlayerData.sessionData[Player.Name]
-	
+	local Name = Player.Name
 	if Data then
 		local PlayerMoney = Data["Money"]
 
@@ -23,8 +23,21 @@ function Purchasing:CanPurchaseWithMoney(Player, Item)
 		-- Check if the player has enough Money
 		if PlayerMoney and ItemPrice then
 			if not (PlayerMoney >= ItemPrice) then
-				local ProductRequired = Modules.GameFunctions:GetRequiredMoneyProduct(Player, ItemPrice)
-				Services.MPService:PromptProductPurchase(Player, ProductRequired)
+				if true then
+					if playerdeb[Name] then
+						return
+					end
+					playerdeb[Name] = true
+					Paths.Remotes.ClientNotif:FireClient(Player,"Visit the Money Collector on the first island to collect more cash!",Color3.new(0.12549, 0.85098, 0),5)
+					task.spawn(function()
+						task.wait(7)
+						playerdeb[Name] = nil
+					end)
+				else
+					local ProductRequired = Modules.GameFunctions:GetRequiredMoneyProduct(Player, ItemPrice)
+					Services.MPService:PromptProductPurchase(Player, ProductRequired)
+				end
+				
 
 				return false--, "Not enough Money."
 			end

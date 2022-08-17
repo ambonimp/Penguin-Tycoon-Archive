@@ -72,7 +72,8 @@ function Paths.Initiliaze()
 	Paths.Modules.BuildADetails = require(Paths.Services.RStorage.Modules.BuildADetails)
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Feedback = require(script.Feedback)
-	
+	Paths.Modules.LeaderboardDetails = require(Paths.Services.RStorage.Modules.LeaderboardDetails)
+
 	-- Chat Modules
 	Paths.Modules.Chat = require(script.Chat)
 	
@@ -103,6 +104,8 @@ function Paths.Initiliaze()
 	Paths.Modules.PlayerData = require(script.PlayerData);
 	Paths.Modules.Income = require(script.PlayerData.Income)
 	Paths.Modules.Leaderboards = require(script.Leaderboards)
+	Paths.Modules.PlaceIds = require(Paths.Services.RStorage.Modules.PlaceIds)
+	Paths.Modules.MinigameIslands = require(script.MinigameIslands)
 
 	print("Store Modules")
 	-- Store Modules
