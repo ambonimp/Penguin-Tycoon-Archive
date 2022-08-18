@@ -176,6 +176,10 @@ function Character:Spawn(Player, SpecificLocation,DontLoad)
 
 	Modules.Penguins:LoadPenguin(Penguin, Data["My Penguin"],nil,nil,nil)
 	
+	Penguin.Humanoid.Died:Connect(function()
+		Modules.Tools.UnequipTool(Player)
+	end)
+	
  
 
 	-- Make sure the penguin doesn't fall into unloaded parts

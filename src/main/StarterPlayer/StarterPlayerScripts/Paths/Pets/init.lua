@@ -184,7 +184,7 @@ function loadPlayer(Player)
 
 			local PetName = Dependency.PetName:Clone()
 			PetName.PetName.Text = PetData[3]
-			PetName.Level.Text = "Lvl. "..PetData[5]
+			PetName.Level.Text = "Lvl. "..math.floor(PetData[5]*100)/100
 			PetName.Parent = PetModel.HumanoidRootPart.NametagAttachment
 			PetAnims[PetModel] = {
 				Walk = PetModel.AnimationController.Animator:LoadAnimation(BlankModel.AnimationController.walk),
@@ -1256,6 +1256,7 @@ do -- Free Pet
 end
 
 task.spawn(function()
+	repeat task.wait(.1) until Paths.Modules.Buttons
 	local TycoonData = Remotes.GetStat:InvokeServer("Tycoon")
 	local PetData = Remotes.PetsRemote:InvokeServer(LocalPlayer)
 	RealData = PetData

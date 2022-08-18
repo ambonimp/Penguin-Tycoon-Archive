@@ -62,7 +62,7 @@ function Axe.GiveRandom(Player)
             Modules.Accessories:ItemAcquired(Player, "Shark Hat", "Accessory")
         elseif num == 2 then
             reward = {"Gems",10}
-            Modules.Income:AddGems(Player,5,"AxeAward")
+            Modules.Income:AddGems(Player,10,"AxeAward")
         elseif num <= 5 then
             print("Acorn")
             reward = {"Gems",5,"Acorn"}

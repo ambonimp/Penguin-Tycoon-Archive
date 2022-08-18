@@ -27,7 +27,7 @@ function Indicators:UpdateIsland(Island)
 			local Success, PlayerImage = pcall(function()
 				return game.Players:GetUserThumbnailAsync(Player.UserId, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420)
 			end)
-			
+			Indicator.GUI.PlayerName.Text = Player.DisplayName
 			Indicator.GUI.PlayerIcon.Image = PlayerImage
 			Indicator.GUI.Enabled = true
 			

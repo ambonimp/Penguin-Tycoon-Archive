@@ -48,6 +48,7 @@ task.spawn(function()
 end)
 
 local function UpdateStoreIncome(Point)
+	Point:WaitForChild("BillboardGui").Amount.Text = "$" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("Income")).."/3s"
 	Point:WaitForChild("BillboardGui").Value.Text = "$" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("StoredIncome"))
 end
 

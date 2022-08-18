@@ -261,13 +261,15 @@ end
 -- Minigames
 local MinigameButton = Paths.UI.Top:FindFirstChild("Minigames") or  Paths.UI.Top.EventInfo.Minigames
 local MinigameFrame = Paths.UI.Center.Minigames
+
+--[[
 MinigameButton.MouseButton1Down:Connect(function()
 	if Paths.UI.Center.Minigames.Visible then
 		Paths.Modules.Buttons:UIOff(MinigameFrame,true)
 	else
 		Paths.Modules.Buttons:UIOn(MinigameFrame,true)
 	end
-end)
+end)]]
 
 for PlaceId, Minigame in pairs(EventsConfig.Names) do
 	local Location = Locations[Minigame]

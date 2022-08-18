@@ -163,6 +163,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 			CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
 		else
 			CustomizationUI.Upgrade.TheText.Text = "Max Level"
+			CustomizationUI.Upgrade.Visible = false
 		end
 
 	else -- For the player's penguin

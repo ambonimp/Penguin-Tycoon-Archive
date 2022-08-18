@@ -79,6 +79,7 @@ function Fishing.CancelThrow(callEvent, died)
 	end
 
 	AnimationService.Cancel()
+	FishingRemote:FireServer("STOP")
 end
 
 function Fishing.Throw()
@@ -249,7 +250,7 @@ end
 
 function IsPlayerMovingCancelFishing()
 	if funcLib.PlayerIsMoving(localPlayer.Character) and LastUpdate.IsFishing and not LastUpdate.BobberReturning then
-		Fishing.CancelThrow(true)
+		Fishing.CancelThrow(true) 
 	elseif funcLib.PlayerIsMoving(localPlayer.Character) then
 		localPlayer.Character:FindFirstChild("Main").CanCollide = true
 	end

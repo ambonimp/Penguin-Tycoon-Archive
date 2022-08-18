@@ -118,9 +118,6 @@ function Emotes:PlayEmote(ID)
 			PreviousEmote:Stop(0)
 		end
 
-		if Paths.Player.Character:FindFirstChild("Main") then
-			Paths.Player.Character.Main.CanCollide = false
-		end
 		
 		Track:Play()
 		--Track:AdjustSpeed(0.2)

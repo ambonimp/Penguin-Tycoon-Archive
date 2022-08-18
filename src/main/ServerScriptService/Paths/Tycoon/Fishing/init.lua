@@ -329,7 +329,7 @@ function Main(player, hitPosition, reroll, AFKFishing)
 		multiplier = 0.25 
 	end
 	local playerIncome = player:GetAttribute("Income") or 0
-
+	player:SetAttribute("FISHING", false)
 	if player:GetAttribute("ThreeFish") then
 		local data1 = {}
 		for i = 1,3 do
@@ -388,7 +388,11 @@ local last = {}
 FishingRemote.OnServerEvent:Connect(function(player, handlingType, data)
 	if handlingType == "Delete" and data then
 		return
+	elseif handlingType == "STOP" then
+		player:SetAttribute("FISHING", false)
+		return
 	end
+	player:SetAttribute("FISHING", true)
 	FishingRemote:FireAllClients(player, handlingType, data)
 end)
 
