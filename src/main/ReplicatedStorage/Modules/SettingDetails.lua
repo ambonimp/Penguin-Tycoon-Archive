@@ -32,24 +32,24 @@ return {
         AlwaysVisible = true,
         LayoutOrder = 5,
     },
---[[     ["Progress Bar"] = {
-        Default = false,
+    ["Party Invites"] = {
+        Default = true,
         AlwaysVisible = true,
         LayoutOrder = 6,
-    }, *]]
-    ["Night"] = {
-        Default = false,
-        AlwaysVisible = true,
-        LayoutOrder = 7,
     },
-    ["Shadows"] = {
+    ["Night"] = {
         Default = false,
         AlwaysVisible = true,
         LayoutOrder = 8,
     },
-    ["Auto Activate Boosts"] = {
+    ["Shadows"] = {
         Default = false,
         AlwaysVisible = true,
         LayoutOrder = 9,
+    },
+    ["Auto Activate Boosts"] = {
+        Default = false,
+        AlwaysVisible = true,
+        LayoutOrder = 10,
     },
 }

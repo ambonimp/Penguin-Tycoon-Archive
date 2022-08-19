@@ -29,7 +29,7 @@ local function Close()
 
     Playing = false
     Animations.BlinkTransition(function()
-        Paths.Player.Character.PrimaryPart.Anchored = false
+        (Paths.Player.Character or Paths.Player.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart").Anchored = false
         LoadingScreen:Destroy()
     end)
 end

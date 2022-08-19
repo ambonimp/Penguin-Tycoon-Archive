@@ -605,6 +605,7 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	Modules.Tycoon:InitializePlayer(Player)
 
+
 	-- Check Gamepasses
 	Modules.Gamepasses:CheckGamepasses(Player)
 	if Data["WasFishing"] and (os.time()-Data["WasFishing"] < 60) then
@@ -649,30 +650,8 @@ game.Players.PlayerAdded:Connect(function(Player)
 
 	Data.Settings["Faster Speed"] = true
 	Data.Settings["Double Jump"] = true
-	-- TESTING
---[[ 	if Player.UserId == 1322669058 and IsTesting then
-		Data.Outfits["Banana"] = true
-		Data.Outfits["Disco"] = true
-		Data.Outfits["Ghost"] = true
-		Data.Outfits["Mummy"] = true
-		Data.Outfits["Ninja"] = true
-		Data.Outfits["Mad Scientist"] = true
 
-		Data.Accessories = PlayerData.Defaults(Player).Accessories
-		Data.Accessories["Bath Hat"] = true
-		Data.Accessories["Bird Hat"] = true
-		Data.Accessories["Giant Bow"] = true
-		Data.Accessories["Deely Bopper"] = true
-		Data.Accessories["Flower Crown"] = true
-		Data.Accessories["Frog Bucket Hat"] = true
-		Data.Accessories["Head Lamp"] = true
-		Data.Accessories["Headphones"] = true
-		Data.Accessories["Mouse Ears"] = true
-		Data.Accessories["Pirate Bandana"] = true
-		Data.Accessories["Sweatband"] = true
-		Data.Accessories["Thug Life Glasses"] = true
-		Data.Accessories["Propeller Hat"] = true
-	end *]]
+	Modules.Parties.LoadPlayer(Player)
 
 	--Modules.Vehicles:SetUpSailboatBuild(Player)
 	Modules.Chat:ApplyChatTag(Player)

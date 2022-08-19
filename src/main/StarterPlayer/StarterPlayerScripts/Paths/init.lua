@@ -94,6 +94,8 @@ function Paths.Initiliaze()
 	ModuleLoader.Register("BuildADetails", Paths.Services.RStorage.Modules.BuildADetails)
 	ModuleLoader.Register("DeviceDetector", script.DeviceDetector)
 	ModuleLoader.Register("Feedback", script.Feedback)
+	ModuleLoader.Register("PartyUtil", Paths.Services.RStorage.Modules.PartyUtil)
+
 
 	-- Tool Modules
 	ModuleLoader.Register("Tools", script.Tools);
@@ -173,6 +175,8 @@ function Paths.Initiliaze()
 
 	ModuleLoader.Register("TycoonUIProgress", script.UI.TycoonUIProgress)
 	ModuleLoader.Register("Buttons", script.UI.Buttons)
+	ModuleLoader.Register("Parties", script.UI.Parties)
+
 	-- Load Version
 	ModuleLoader.Load()
 	Paths.UI.Main.Version.Text = Paths.Modules.GameInfo.Version

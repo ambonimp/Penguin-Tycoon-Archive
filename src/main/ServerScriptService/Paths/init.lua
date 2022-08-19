@@ -73,6 +73,7 @@ function Paths.Initiliaze()
 	Paths.Modules.FuncLib = require(Paths.Services.RStorage.Modules.FuncLib)
 	Paths.Modules.Feedback = require(script.Feedback)
 	Paths.Modules.LeaderboardDetails = require(Paths.Services.RStorage.Modules.LeaderboardDetails)
+	Paths.Modules.PartyUtil = require(Paths.Services.RStorage.Modules.PartyUtil)
 
 	-- Chat Modules
 	Paths.Modules.Chat = require(script.Chat)
@@ -98,6 +99,8 @@ function Paths.Initiliaze()
 	Paths.Modules.Buttons = require(script.Tycoon.Buttons)
 	Paths.Modules.Loading = require(script.Tycoon.Loading)
 	Paths.Modules.GetTycoonProgress = require(script.GetTycoonProgress)
+	Paths.Modules.Parties = require(script.Parties)
+
 	print("Data Modules")
 	-- Data Modules
 	Paths.Modules.Save = require(script.PlayerData.Save)
@@ -119,7 +122,8 @@ function Paths.Initiliaze()
 	Paths.Modules.Quests = require(script.Quests)
 	Paths.Modules.Fishing = require(script.Tycoon.Fishing)
 	Paths.Modules.PoolSpawner = require(script.Tycoon.Fishing.PoolSpawner)
-	Paths.Modules.Miningames = require(script.Minigames)
+	Paths.Modules.Minigames = require(script.Minigames)
+
 
 	--- Other Variables ---
 	Paths.Initialized = true

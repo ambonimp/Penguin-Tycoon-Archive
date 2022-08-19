@@ -32,9 +32,13 @@ Remotes.Settings.OnServerEvent:Connect(function(player, Setting, value)
 		elseif Setting == "Chat Tag" then
 			Modules.Chat:ApplyChatTag(player)
 		elseif Setting == "Auto Hatch" then
-			player:SetAttribute("IsAutoHatch",value)
+			player:SetAttribute("IsAutoHatch", value)
+		elseif Setting == "Party Invites" then
+			player:SetAttribute("AcceptingPartyInvites", value)
 		end
+
 	end
+
 end)
 
 

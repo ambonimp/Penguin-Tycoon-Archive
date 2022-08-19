@@ -131,9 +131,13 @@ function Boat:Setup(Model)
 					end
 					Prompt.Enabled = true
 				end
+
 			end
+
 		end
+
 	end)
+
 end
 
 
