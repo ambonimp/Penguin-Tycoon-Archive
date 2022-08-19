@@ -74,7 +74,7 @@ Badges.Purchases = {
 	["New Island!#38"] = 2127704122; -- Zoo
 	["New Island!#39"] = 2127799195; -- Arcade
 	["New Island!#40"] = 2127993820; -- Circus
-
+	["New Island!#41"] = 2128092510; -- Clouds
 }
 
 return Badges

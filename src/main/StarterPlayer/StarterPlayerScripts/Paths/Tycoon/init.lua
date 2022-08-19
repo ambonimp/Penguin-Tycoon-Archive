@@ -62,6 +62,7 @@ local function LoadCollectPoint(Point)
 	local AutoCollect = Paths.Player:GetAttribute("AutoCollectIncome")
 
 	if AutoCollect then
+		Point:WaitForChild("BillboardGui").Amount.Text = "($" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("Income")).."/3s)"
 		AutoIncomeCollect(Point)
 	else
 		CollectPoints[Point] = true
