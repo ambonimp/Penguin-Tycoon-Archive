@@ -32,7 +32,7 @@ function Placement:LoadExtra(Player,Model)
 	local Rotation = PlayerTycoon.Center.Orientation.Y
 	
 	Placement:MoveModel(Model, RelativePos, Rotation)
-
+	Model:SetAttribute("Extra")
 	Model.Parent = PlayerTycoon
 end
 

@@ -39,6 +39,14 @@ local Pointer
 
 local ReturnCFrame
 
+local function disableReset()
+    Paths.Services.StarterGui:SetCore("ResetButtonCallback",false)
+end
+
+local function enableReset()
+    Paths.Services.StarterGui:SetCore("ResetButtonCallback",true)
+end
+
 -- Utility Functions --
 function HideCharacter(Char)
     if Char then
@@ -262,6 +270,7 @@ Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
             -- Initialize round
             ElepasedTime = 0
             if not Remotes.MilitaryMinigame:InvokeServer("OnRoundBegan") then return end
+            disableReset()
             Modules.Tools.HideTools()
 
             -- Hide all other players
@@ -331,7 +340,7 @@ Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
                 HiddenParts = nil
 
             end)
-
+            enableReset()
     		Prompt.Enabled = true
 
         end

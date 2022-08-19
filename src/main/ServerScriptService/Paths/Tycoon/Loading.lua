@@ -17,6 +17,9 @@ function Loading:LoadTycoon(Player)
 		local Tycoon = Data["Tycoon"]
 		local TycoonModel = Paths.Modules.Ownership:GetPlayerTycoon(Player)
 
+		for _, Extra in pairs(Paths.Template.Extra:GetChildren()) do
+			Modules.Placement:LoadExtra(Player,Extra:Clone())
+		end
 		-- Load Items
 		local i = 0
 		for Item in pairs(Tycoon) do
@@ -37,9 +40,6 @@ function Loading:LoadTycoon(Player)
 			end
 		end
 
-		for _, Extra in pairs(Paths.Template.Extra:GetChildren()) do
-			Modules.Placement:LoadExtra(Player,Extra:Clone())
-		end
 	end
 	
 	Modules.Buttons:NewButton(Player, "Snow#1")

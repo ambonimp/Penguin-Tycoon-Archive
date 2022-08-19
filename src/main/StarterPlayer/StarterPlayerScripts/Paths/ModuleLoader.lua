@@ -32,6 +32,7 @@ local function Close()
         Paths.Player.Character.PrimaryPart.Anchored = false
         LoadingScreen:Destroy()
     end)
+    Paths.Player:SetAttribute("Loaded",true)
 end
 
 -- Main Functions --
