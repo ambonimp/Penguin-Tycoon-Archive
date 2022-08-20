@@ -29,7 +29,11 @@ end
 
 
 function Launcher.new(Name, OnHit)
-    local IdleTrack, ShootTrack, Pointing
+    local IdleTrack, ShootTrack
+    Paths.Player.CharacterRemoving:Connect(function()
+        ShootTrack = nil
+        IdleTrack = nil
+    end)
 
     return {
         Hit = Modules.Signal.new(),
@@ -37,7 +41,7 @@ function Launcher.new(Name, OnHit)
         Damageables = nil,
 
         Equipped = function()
-            if not Character then return end
+            if not Character or Paths.Player:GetAttribute("Tool") ~= Name then return end
 
             local Handle = Character:WaitForChild("Tool"):WaitForChild("Handle")
             local Nozzle = Handle:WaitForChild("Nozzle")
@@ -45,11 +49,10 @@ function Launcher.new(Name, OnHit)
             -- Load animations
             local Animations = Assets[Name].Animations
 
-            if not ShootTrack then
+            if not ShootTrack or not IdleTrack then
                 ShootTrack = Humanoid:LoadAnimation(Assets[Name].Animations.Shoot)
                 if Animations:FindFirstChild("Idle") then
                     IdleTrack = Humanoid:LoadAnimation(Assets[Name].Animations.Idle)
-
                 end
             end
 
@@ -65,6 +68,7 @@ function Launcher.new(Name, OnHit)
                         Debounce = true
 
                         -- Play animation
+                        ShootTrack.TimePosition = 0
                         ShootTrack:Play()
                         ShootTrack.Stopped:Wait()
 
@@ -108,7 +112,6 @@ function Launcher.new(Name, OnHit)
 
                             CollisionPoint:Disconnect()
 
-
                             if Pos.Magnitude > 500 then
                                 Projectile:Destroy()
                                 Shot:Disconnect()
@@ -118,6 +121,7 @@ function Launcher.new(Name, OnHit)
 
                         task.wait(COOLDOWN)
                         Debounce = false
+
                     end
 
                 end
@@ -134,10 +138,12 @@ function Launcher.new(Name, OnHit)
 
         Unequipped = function()
             if IdleTrack then IdleTrack:Stop() end
+            ShootTrack:Stop()
+
             Services.ContextActionService:UnbindAction(Name)
         end,
-
     }
+
 
 end
 

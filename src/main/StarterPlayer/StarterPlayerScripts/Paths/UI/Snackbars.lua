@@ -14,10 +14,7 @@ local LIFETIME = 5
 local PADDING = 0.025
 
 
-
-local Frame = UI.Bottom.Snackbars
-
-
+local Frame = UI.Main.Snackbars
 
 local function Move(Item, Position)
     Item:TweenPosition(Position, Enum.EasingDirection.Out, Enum.EasingStyle.Quart, BUMP_LENGTH, true)

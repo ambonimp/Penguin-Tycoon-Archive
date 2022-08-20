@@ -43,7 +43,6 @@ Remotes.MilitaryMinigame.OnServerInvoke = function(Player, Event, ...)
         local Reward =  if ElepasedTime <= 45 then 3 else (if ElepasedTime <= 50 then 2 else (if ElepasedTime <= 60 then 1 else 0))
         Modules.Income:AddGems(Player, Reward, "Military Minigame")
 
-
     elseif Event == "OnRoundCancelled" then
         RemoveTools(Player)
     end

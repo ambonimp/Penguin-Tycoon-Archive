@@ -33,20 +33,6 @@ function GameFunctions:GetRequiredMoneyProduct(Player, MoneyRequired)
 	return ProductChosen
 end
 
-function GameFunctions:GetRequiredGemProduct(GemsRequired)
-	local ChosenProduct = 1266975715
-	local ChosenAmount = 4250
-	for Product, Amount in pairs(GemProducts) do
-		if Amount > GemsRequired and Amount < ChosenAmount then
-			ChosenProduct = Product
-			ChosenAmount = Amount
-		end
-	end
-
-	return ChosenProduct
-end
-
-
 function GameFunctions:GetMoneyProductReward(Product, Income)
 	Product = tonumber(Product)
 	local Base1Reward = 500 + (Income+1)/3 * BASE_INCOME_REWARD

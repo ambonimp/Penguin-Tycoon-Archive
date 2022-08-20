@@ -143,14 +143,7 @@ function Customization:EnterUI(Penguin, PreviousUI)
 		CustomizationUI.PenguinNameBG.UpgradeInfo.Visible = true
 
 		local Level = tonumber(string.split(string.split(Penguin.Info.PenguinInfo.PenguinLevel.Text, "/"..tostring(Modules.GameInfo.MAX_PENGUIN_LEVEL))[1], " ")[2])
-		if Level == 30 then
-			CustomizationUI.Super.Visible = false
-		end
-		if Level >= 10 then
-			CustomizationUI.Instant.Visible = false
-		else
-			CustomizationUI.Instant.Visible = true
-		end
+
 		local Income = Modules.GameFunctions:GetPenguinIncome(Penguin:GetAttribute("Income"), Level)
 		local UpgradePrice = Modules.GameFunctions:GetPenguinPrice(Penguin:GetAttribute("Price"), Level + 1)
 
@@ -161,15 +154,26 @@ function Customization:EnterUI(Penguin, PreviousUI)
 
 		if Level < Modules.GameInfo.MAX_PENGUIN_LEVEL then
 			CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
+
+			CustomizationUI.Super.Size = UDim2.new(0.49, 0,0.07, 0)
+			CustomizationUI.Super.Position = UDim2.fromScale(-0.008, 1.025)
+
+			CustomizationUI.Super.Visible = true
 			CustomizationUI.Upgrade.Visible = true
-			CustomizationUI.Super.Position = UDim2.new(0.498, 0,0.071, 0)
+			CustomizationUI.Instant.Visible = true
+
 		else
-			CustomizationUI.Upgrade.TheText.Text = "Max Level"
 			if Level > 10 then
 				CustomizationUI.Super.Visible = false
 			else
+				CustomizationUI.Super.Visible = true
+
 				CustomizationUI.Super.Position = UDim2.new(0.3, 5,0.93, 0)
+				CustomizationUI.Super.Size = CustomizationUI.Upgrade.Size
+				CustomizationUI.Super.Position = CustomizationUI.Upgrade.Position
 			end
+
+			CustomizationUI.Instant.Visible = false
 			CustomizationUI.Upgrade.Visible = false
 		end
 

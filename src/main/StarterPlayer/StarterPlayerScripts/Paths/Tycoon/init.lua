@@ -71,8 +71,6 @@ local function LoadCollectPoint(Point)
 			while Paths.Player do
 				local Character = Paths.Player.Character
 				if Character and Character.PrimaryPart and (Character.PrimaryPart.Position-Point.Position).magnitude<4.25 then
-					warn("WHOAAAA")
-
 					local Income = Paths.Player:GetAttribute("Income")
 					if not Income then
 						CollectPointConns["Collect"] = nil
