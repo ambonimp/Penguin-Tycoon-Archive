@@ -19,7 +19,12 @@
       "ServerStorage": {
         "$className": "ServerStorage",
         "$ignoreUnknownInstances": true,
-        "$path": "src/minigames/ServerStorage"
+        "$path": "src/minigames/ServerStorage",
+
+        "VoldexAnalytics" : {
+          "$path" : "roblox-analytics-service/src/ServerStorage/Analytics"
+        }
+
       },
   
       "StarterPlayer": {
@@ -27,7 +32,12 @@
         "StarterPlayerScripts": {
           "$className": "StarterPlayerScripts",
           "$ignoreUnknownInstances": true,
-          "$path": "src/minigames/StarterPlayer/StarterPlayerScripts"
+          "$path": "src/minigames/StarterPlayer/StarterPlayerScripts",
+
+          "VoldexAnalytics" : {
+            "$path": "roblox-analytics-service/src/StarterPlayer/StarterPlayerScripts/AnalyticsClientInit.client.lua"
+          }
+
         },
         "$ignoreUnknownInstances": true
       }
