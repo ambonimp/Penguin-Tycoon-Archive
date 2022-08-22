@@ -15,8 +15,29 @@ Remotes.TeleportExternal.OnServerInvoke = function(Player, PlaceId, GameId)
 		TPOptions.ServerInstanceId = GameId
 	end
 
+	local PlayersBeingTeleported
+	local PartyId = Player:GetAttribute("Party")
+	if PartyId and Player.UserId == PartyId then -- Player is in a party and they are it's leader
+		PlayersBeingTeleported = Modules.PartyUtil.GetPartyMembers(PartyId)
+
+		for i = 1, #PlayersBeingTeleported do -- Using this kind of loop because player's can be removed
+			local Player = PlayersBeingTeleported[i]
+
+			local Data = Modules.PlayerData.sessionData[Player.Name]
+			if Data then
+				Data.TeleportedParty = PartyId
+			else
+				table.remove(PlayersBeingTeleported, i)
+			end
+
+		end
+
+	else
+		PlayersBeingTeleported = {Player}
+	end
+
 	local Success, Error = pcall(function()
-		return Services.TeleportService:TeleportAsync(PlaceId, {Player}, TPOptions)
+		return Services.TeleportService:TeleportAsync(PlaceId, PlayersBeingTeleported, TPOptions)
 	end)
 
 	return Success, Error

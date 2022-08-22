@@ -15,6 +15,16 @@ local function GetInviteId(Sender, Receiver)
     return Sender.Name .. Receiver.Name
 end
 
+local function JoinParty(Leader, NewMember)
+    local PartyId = Leader.UserId
+    NewMember:SetAttribute("Party", PartyId)
+    NewMember:SetAttribute("WaitingParty", nil)
+
+    Leader:SetAttribute("Party", PartyId)
+    Leader:SetAttribute("WaitingParty", nil)
+
+end
+
 Remotes.PartyInvite.OnServerEvent:Connect(function(Sender, Receiver)
     if Modules.PartyUtil.IsInviteValid(Sender, Receiver) then
         Remotes.PartyInvite:FireClient(Receiver, Sender)
@@ -34,9 +44,7 @@ Remotes.PartyInviteAccepted.OnServerEvent:Connect(function(Receiver , Sender)
     if InviteHistory[InviteId] then
         InviteHistory[InviteId] = nil
 
-        local PartyId = Sender.UserId
-        Receiver:SetAttribute("Party", PartyId)
-        Sender:SetAttribute("Party", PartyId)
+        JoinParty(Sender, Receiver)
 
     end
 
@@ -58,7 +66,49 @@ end)
 
 function Parties.LoadPlayer(Player)
     local Data = Modules.PlayerData.sessionData[Player.Name]
+    local PartyId = Data.TeleportedParty
+
+    if PartyId then
+        Data.PartyId = nil
+
+        local Members = Modules.PartyUtil.GetPartyMembers(PartyId)
+        if #Members > 0 then
+            -- Add Late-comer to party from old place
+            Player:SetAttribute("Party", PartyId)
+
+        else
+            Player:SetAttribute("WaitingParty", PartyId)
+            if PartyId == Player.UserId then -- This user is the leader
+                local MembersLoadingConn
+                local JoiningOtherPartyConn
+
+                local function LoadParty(FirstMember)
+                    if FirstMember:GetAttribute("WaitingParty") == PartyId then
+                        JoinParty(Player, FirstMember)
+                        MembersLoadingConn:Disconnect()
+                    end
+                end
+
+                -- Wait for first other member to join and then create a party with members from old one
+                for _, Player in ipairs(Services.Players:GetPlayers()) do
+                    LoadParty(Player)
+                end
+                MembersLoadingConn = Services.Players.PlayerAdded:Connect(LoadParty)
+
+                -- If you leader joins another party, this party is disbanded
+                JoiningOtherPartyConn = Player:GetAttributeChangedSignal("Party"):Connect(function()
+                    MembersLoadingConn:Disconnect()
+                    JoiningOtherPartyConn:Disconnect()
+                end)
+
+            end
+
+        end
+
+    end
+
     Player:SetAttribute("AcceptingPartyInvites", Data.Settings["Party Invites"])
+
 end
 
 return Parties

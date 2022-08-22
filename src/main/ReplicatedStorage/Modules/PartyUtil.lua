@@ -14,7 +14,9 @@ function PartyUtil.GetPartyMembers(Id)
             if OtherPlayer:GetAttribute("Party") == Id then
                 table.insert(Members, OtherPlayer)
             end
+
         end
+
     end
 
     return Members
