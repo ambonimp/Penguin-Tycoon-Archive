@@ -184,7 +184,7 @@ function loadPlayer(Player)
 
 			local PetName = Dependency.PetName:Clone()
 			PetName.PetName.Text = PetData[3]
-			PetName.Level.Text = "Lvl. "..math.floor(PetData[5]*100)/100
+			PetName.Level.Text = "Lvl. "..PetData[5]
 			PetName.Parent = PetModel.HumanoidRootPart.NametagAttachment
 			PetAnims[PetModel] = {
 				Walk = PetModel.AnimationController.Animator:LoadAnimation(BlankModel.AnimationController.walk),
@@ -351,7 +351,7 @@ function openSelected(x,y)
 		Type = petDetails[1],
 		Rarity = petDetails[4],
 		Level = "Lvl. ".. petDetails[5],
-		Ability = "x"..petDetails[6][1].." ".. petDetails[6][2].." ".. petDetails[6][3]
+		Ability = "x"..(math.floor(petDetails[6][1]*100)/100).." ".. petDetails[6][2].." ".. petDetails[6][3]
 
 	})
 
@@ -1121,6 +1121,7 @@ function openEgg(Image,Name,Rarity,Color)
 	task.wait(.5)
 	local speed = .3
 	Dependency.Sounds.Cracking:Play()
+
 	for i = 1,2 do
 		local wa = math.random(10,20)/100/speed
 		local tweenLeft = TweenService:Create(EggMesh,TweenInfo.new(wa,Enum.EasingStyle.Bounce,Enum.EasingDirection.Out),{

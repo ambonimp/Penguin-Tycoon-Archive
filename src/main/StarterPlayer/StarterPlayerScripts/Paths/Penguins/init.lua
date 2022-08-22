@@ -135,18 +135,24 @@ Remotes.Store.OnClientEvent:Connect(function(PurchaseType, PurchaseInfo, IsPurch
 
 				if NewLevel < Modules.GameInfo.MAX_PENGUIN_LEVEL then
 					CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
+
 				else
-					CustomizationUI.Upgrade.TheText.Text = "Max Level"
-				end
-				if NewLevel >= 10 then
+					CustomizationUI.Super.Position = UDim2.new(0.3, 5,0.93, 0)
+					CustomizationUI.Super.Size = CustomizationUI.Upgrade.Size
+					CustomizationUI.Super.Position = CustomizationUI.Upgrade.Position
+
 					CustomizationUI.Instant.Visible = false
+					CustomizationUI.Upgrade.Visible = false
+					CustomizationUI.Super.Visible =  NewLevel <= Modules.GameInfo.MAX_PENGUIN_LEVEL
+
 				end
-				if NewLevel == 30 then
-					CustomizationUI.Super.Visible = false
-				end
+
 			end
+
 		end
+
 	end
+
 end)
 CustomizationUI.Upgrade.MouseButton1Down:Connect(function()
 	local Penguin = CustomizationUI.PenguinSelected.Value
@@ -171,7 +177,14 @@ CustomizationUI.Upgrade.MouseButton1Down:Connect(function()
 				if NewLevel < Modules.GameInfo.MAX_PENGUIN_LEVEL then
 					CustomizationUI.Upgrade.TheText.Text = 'Level Up ($ '..Modules.Format:FormatComma(UpgradePrice)..")"
 				else
-					CustomizationUI.Upgrade.TheText.Text = "Max Level"
+					CustomizationUI.Super.Position = UDim2.new(0.3, 5,0.93, 0)
+					CustomizationUI.Super.Size = CustomizationUI.Upgrade.Size
+					CustomizationUI.Super.Position = CustomizationUI.Upgrade.Position
+
+					CustomizationUI.Instant.Visible = false
+					CustomizationUI.Upgrade.Visible = false
+					CustomizationUI.Super.Visible =  NewLevel <= Modules.GameInfo.MAX_PENGUIN_LEVEL
+
 				end
 
 			elseif Penguin:GetAttribute("Penguin") then

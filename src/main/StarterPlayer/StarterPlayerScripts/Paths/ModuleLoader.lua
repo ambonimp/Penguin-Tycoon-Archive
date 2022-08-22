@@ -32,6 +32,7 @@ local function Close()
         (Paths.Player.Character or Paths.Player.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart").Anchored = false
         LoadingScreen:Destroy()
     end)
+    Paths.Player:SetAttribute("Loaded",true)
 end
 
 -- Main Functions --

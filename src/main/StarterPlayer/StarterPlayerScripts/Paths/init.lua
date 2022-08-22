@@ -12,6 +12,7 @@ function Paths.Initiliaze()
 	--- Initializing Services ---
 	-- print("Load services")
 	Paths.Services.Players = game:GetService("Players");
+	Paths.Services.StarterGui = game:GetService("StarterGui");
 	Paths.Services.RStorage = game:GetService("ReplicatedStorage");
 	Paths.Services.MPService = game:GetService("MarketplaceService");
 	Paths.Services.RunService = game:GetService("RunService");

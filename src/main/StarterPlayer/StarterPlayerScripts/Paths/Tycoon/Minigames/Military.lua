@@ -39,6 +39,14 @@ local Pointer
 
 local ReturnCFrame
 
+local function disableReset()
+    Paths.Services.StarterGui:SetCore("ResetButtonCallback",false)
+end
+
+local function enableReset()
+    Paths.Services.StarterGui:SetCore("ResetButtonCallback",true)
+end
+
 -- Utility Functions --
 function HideCharacter(Char)
     if Char then
@@ -78,16 +86,6 @@ local function ToggleOtherUI(toggle)
 	UI.Right.Visible = toggle
 	UI.Top.Visible = toggle
 	-- UI.Bottom.Visible = toggle
-end
-
-local function ToggleShiftlock(Toggle)
---[[     if Toggle then
-        Paths.Player:SetAttribute("Shiftlock", true)
-        Character.Humanoid.CameraOffset = Vector3.new(3, 3, 0)
-    else
-        Paths.Player:SetAttribute("Shiftlock", false)
-        Character.Humanoid.CameraOffset = Vector3.new(0, 0, 0)
-    end *]]
 end
 
 local function PointTo(Destination)
@@ -194,8 +192,6 @@ local function Level(Lvl)
                 local Cage = Zone.Cage
                 PointTo(Cage.PrimaryPart)
 
-                ToggleShiftlock(false)
-
                 local Prompt = Instance.new("ProximityPrompt")
                 Prompt.HoldDuration = 0.25
                 Prompt.MaxActivationDistance = 15
@@ -262,6 +258,7 @@ Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
             -- Initialize round
             ElepasedTime = 0
             if not Remotes.MilitaryMinigame:InvokeServer("OnRoundBegan") then return end
+            -- disableReset()
             Modules.Tools.HideTools()
 
             -- Hide all other players
@@ -296,8 +293,6 @@ Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
                 Modules.Buttons:UIOff(CenterFrames, true)
 
                 Level(1)
-                ToggleShiftlock(true)
-
             end))
 
 
@@ -320,7 +315,6 @@ Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
 
                 Modules.Tools.UnhideTools()
                 ToggleOtherUI(true)
-                ToggleShiftlock(false)
 
                 for HiddenPart, Transparency in HiddenParts do
                     if HiddenPart:IsDescendantOf(workspace) then
@@ -331,7 +325,7 @@ Services.ProximityPrompt.PromptTriggered:Connect(function(Prompt, Player)
                 HiddenParts = nil
 
             end)
-
+            -- enableReset()
     		Prompt.Enabled = true
 
         end

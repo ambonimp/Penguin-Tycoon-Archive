@@ -157,6 +157,7 @@ function flying()
 		elseif tick()-justStarted > 2 then
 			Paths.UI.Bottom.Buttons.StartEngine.Visible = true
 			Paths.UI.Bottom.Buttons.StopEngine.Visible = false
+			print("END FLIGHT, LANDING")
 			endFlight()
 		end
 	end
@@ -222,6 +223,7 @@ end)
 Paths.UI.Bottom.Buttons.StopEngine.Button.MouseButton1Down:Connect(function()
 	Paths.UI.Bottom.Buttons.StartEngine.Visible = true
 	Paths.UI.Bottom.Buttons.StopEngine.Visible = false
+	print("END FLIGHT, CLICKED")
 	endFlight()
 end)
 
@@ -234,6 +236,7 @@ Player:GetAttributeChangedSignal("Vehicle"):Connect(function()
 	else
 		Paths.UI.Bottom.Buttons.StopEngine.Visible = false
 		Paths.UI.Bottom.Buttons.StartEngine.Visible = false
+		print("END FLIGHT, NO VEHICLE")
 		endFlight()
 	end
 end)

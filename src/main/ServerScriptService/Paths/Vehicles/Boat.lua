@@ -3,6 +3,7 @@ local Boat = {}
 
 function Boat:Setup(Model)
 	-- Variables
+	local Owner = game.Players:FindFirstChild(Model.Parent.Parent.Owner.Value)
 	local Seat = Model.DriverSeat
 	local Prompt = Seat.ProximityPrompt
 	local Power = Model:GetAttribute("Power")
@@ -92,6 +93,10 @@ function Boat:Setup(Model)
 				local Hum = Seat.Occupant
 				local Char = Hum.Parent
 				local Player = game.Players:GetPlayerFromCharacter(Char)
+				if Player ~= Owner then
+					Hum.Jump = true
+					return
+				end
 				Player:SetAttribute("Vehicle",Model.Name)
 				Prompt.Enabled = false
 

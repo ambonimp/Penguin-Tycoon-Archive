@@ -48,7 +48,7 @@ task.spawn(function()
 end)
 
 local function UpdateStoreIncome(Point)
-	Point:WaitForChild("BillboardGui").Amount.Text = "$" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("Income")).."/3s"
+	Point:WaitForChild("BillboardGui").Amount.Text = "($" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("Income")).."/3s)"
 	Point:WaitForChild("BillboardGui").Value.Text = "$" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("StoredIncome"))
 end
 
@@ -62,6 +62,7 @@ local function LoadCollectPoint(Point)
 	local AutoCollect = Paths.Player:GetAttribute("AutoCollectIncome")
 
 	if AutoCollect then
+		Point:WaitForChild("BillboardGui").Amount.Text = "($" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("Income")).."/3s)"
 		AutoIncomeCollect(Point)
 	else
 		CollectPoints[Point] = true
@@ -70,8 +71,6 @@ local function LoadCollectPoint(Point)
 			while Paths.Player do
 				local Character = Paths.Player.Character
 				if Character and Character.PrimaryPart and (Character.PrimaryPart.Position-Point.Position).magnitude<4.25 then
-					warn("WHOAAAA")
-
 					local Income = Paths.Player:GetAttribute("Income")
 					if not Income then
 						CollectPointConns["Collect"] = nil
@@ -122,6 +121,12 @@ CollectPointConns:GiveTask(Paths.Player:GetAttributeChangedSignal("StoredIncome"
 		UpdateStoreIncome(Point)
 	end
 end))
+
+Paths.Player:GetAttributeChangedSignal("Income"):Connect(function()
+	for Point in pairs(CollectPoints) do
+		Point:WaitForChild("BillboardGui").Amount.Text = "($" .. Modules.Format:FormatAbbreviated(Paths.Player:GetAttribute("Income")).."/3s)"
+	end
+end)
 
 CollectPointConns:GiveTask(Paths.Player:GetAttributeChangedSignal("AutoCollectIncome"):Connect(function()
 	for Point in pairs(CollectPoints) do

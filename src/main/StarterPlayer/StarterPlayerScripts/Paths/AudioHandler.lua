@@ -39,9 +39,11 @@ end)
 
 
 function AudioHandler:ItemPurchased()
-	local Sound = Modules.Audio:GetSound(Modules.Audio.NEW_PURCHASE, AllAudio, 0.3, 1)
-	Sound.Playing = false
-	Sound:Play()
+	if Paths.Player:GetAttribute("Loaded") then
+		local Sound = Modules.Audio:GetSound(Modules.Audio.NEW_PURCHASE, AllAudio, 0.3, 1)
+		Sound.Playing = false
+		Sound:Play()
+	end
 end
 
 
